@@ -22,5 +22,7 @@ RAW_DATA_PATH = DATA_PATH / "raw" / "파일 이름 넣어주세요"
 
 
 # 모델 이름 여기에 정의
-LLM_MODEL = "gpt-4o-mini"
-EMBED_MODEL = "text-embedding-3-small"
+# LLM_MODEL = "gpt-4o-mini"
+LLM_MODEL = "gemini-3.8-flash"
+# EMBED_MODEL = "text-embedding-3-small"
+EMBED_MODEL = "gemini-embedding-001"

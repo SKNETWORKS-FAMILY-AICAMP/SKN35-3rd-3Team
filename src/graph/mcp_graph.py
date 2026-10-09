@@ -3,4 +3,7 @@ from src.graph.state import State
 
 def build_mcp_graph():
     builder = StateGraph(State)
-    return
+
+    builder.add_edge(START , END)
+    
+    return builder.compile()

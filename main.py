@@ -1,5 +1,7 @@
+from src.graph.workflow import build_workflow
+
 def main():
-    print("Hello from skn35-3rd-3team!")
+    build_workflow()
 
 
 if __name__ == "__main__":

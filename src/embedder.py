@@ -262,7 +262,7 @@ def _create_local_huggingface_embedder(
 def create_embedding_provider(
     settings: EmbeddingSettings,
 ) -> OpenAICompatibleEmbedder:
-    """환경 설정에 맞는 로컬 임베딩 제공자를 생성합니다.
+    """환경 설정에 맞는 임베딩 제공자를 생성합니다.
 
     지원 값은 ``openai``, ``nvidia``, ``openai_compatible``,
     ``local_huggingface``입니다.

@@ -10,7 +10,7 @@
 | `EMBEDDING_PROVIDER` | `openai` | `nvidia` | `local_huggingface` |
 | 모델 | `text-embedding-3-small` | `nvidia/nemotron-3-embed-1b` | 팀에서 정한 Hugging Face 모델 |
 | 벡터 차원 | 1536 | 2048 | 선택한 모델의 실제 차원 |
-| 필요한 키 | `OPENAI_API_KEY` | `NVIDIA_API_KEY` | 없음 |
+| 필요한 키 | `OPENAI_API_KEY` | `NVIDIA_API_KEY` | 공개 모델은 없음 |
 | 추가 설치 | 없음 | 없음 | `sentence-transformers` |
 | 컬렉션 | OpenAI 전용 | NVIDIA 전용 | 로컬 모델 전용 |
 
@@ -22,10 +22,18 @@
 ```powershell
 uv sync
 Copy-Item .env.example .env
+uv run python -m src.Scripts.qdrant_setup check
 ```
 
 실제 API 키가 들어 있는 `.env`는 Git에 올리지 않습니다. 로컬 Qdrant를
 인증 없이 사용할 때는 `QDRANT_API_KEY`를 비워둘 수 있습니다.
+
+`check` 결과 대상 컬렉션이 없고 생성 권한이 있는 경우에만 다음 명령을 한 번
+실행합니다. 기존 컬렉션을 삭제하거나 강제로 재생성하지 않습니다.
+
+```powershell
+uv run python -m src.Scripts.qdrant_setup init
+```
 
 ## 1. OpenAI API 사용
 
@@ -72,19 +80,26 @@ QDRANT_COLLECTION=team_documents_nvidia_dev
 
 ## 3. 개인 그래픽 카드 사용
 
-기본 OpenAI 설정과 별도로 `local_huggingface` 제공자를 지원합니다. 이 방식은
-개인 PC의 GPU 또는 CPU에서 Sentence Transformers 모델을 실행하므로 API 호출
-한도와 429 오류의 영향을 받지 않습니다.
+Hugging Face에서 임베딩 모델을 내려받고, PyTorch·CUDA를 통해 개인 PC의
+NVIDIA GPU에서 벡터를 생성하는 방식입니다. Qdrant 자체의 설정이 아니라
+Qdrant에 저장할 벡터를 만드는 단계에 적용됩니다.
 
-로컬 GPU를 사용할 사람만 선택 패키지를 자신의 가상환경에 설치합니다. 기본
-프로젝트 의존성에는 포함하지 않으므로 다른 팀원의 환경에는 영향을 주지
-않습니다.
+### Hugging Face 토큰이 필요한 경우
+
+- 공개 모델: 일반적으로 토큰 없이 다운로드할 수 있습니다.
+- 비공개 모델: 개인 `HF_TOKEN`이 필요합니다.
+- 사용 승인이 필요한 모델: 모델 사용 동의 후 개인 `HF_TOKEN`이 필요합니다.
+- 다운로드가 완료된 모델: 로컬 캐시를 사용하면 이후 실행에는 일반적으로
+  토큰이 필요하지 않습니다.
 
 ### 개인 환경에만 추가 설치
 
 ```powershell
 uv pip install sentence-transformers
 ```
+
+CUDA를 지원하는 PyTorch와 NVIDIA 그래픽 드라이버도 준비되어 있어야 합니다.
+이 선택 패키지는 팀 기본 의존성에 포함하지 않습니다.
 
 ### `.env`에서 직접 변경할 값
 
@@ -95,16 +110,22 @@ EMBEDDING_DIMENSION=모델의_실제_출력_차원
 EMBEDDING_NORMALIZED=true
 EMBEDDING_DEVICE=cuda
 EMBEDDING_BATCH_SIZE=32
+EMBEDDING_QUERY_PREFIX=
+EMBEDDING_DOCUMENT_PREFIX=
 QDRANT_COLLECTION=team_documents_local_model_dev
+
+# 비공개·승인형 모델을 사용할 때만 입력
+HF_TOKEN=개인_Hugging_Face_토큰
 ```
 
-- CUDA가 없는 PC에서는 `EMBEDDING_DEVICE=cpu`를 사용합니다.
-- 팀이 사용할 모델 ID·버전·차원·정규화 방식은 동일하게 고정합니다.
-- 모델이 query/document 접두사를 요구하면 `EMBEDDING_QUERY_PREFIX`와
-  `EMBEDDING_DOCUMENT_PREFIX`를 모델 설명에 맞게 설정합니다.
-- OpenAI, NVIDIA 및 로컬 모델의 벡터는 각각 별도 Qdrant 컬렉션에 저장합니다.
-- 개인 GPU는 벡터 생성에 사용하며 Qdrant 검색 서버를 GPU로 바꾸는 설정은
-  아닙니다.
+### 확인할 사항
+
+- GPU 메모리가 부족하면 `EMBEDDING_BATCH_SIZE`를 줄입니다.
+- CUDA를 사용할 수 없는 환경에서는 `EMBEDDING_DEVICE=cpu`를 사용합니다.
+- 모델 ID·버전·차원·정규화 방식은 팀원 모두 동일하게 맞춥니다.
+- 모델이 질문과 문서에 별도 접두사를 요구하면
+  `EMBEDDING_QUERY_PREFIX`와 `EMBEDDING_DOCUMENT_PREFIX`를 설정합니다.
+- OpenAI·NVIDIA·개인 GPU에서 만든 벡터는 각각 별도 컬렉션에 저장합니다.
 
 ## HTTP 429 오류가 발생하는 경우
 

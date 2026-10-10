@@ -55,8 +55,9 @@ EMBEDDING_DIMENSION=2048
 QDRANT_COLLECTION=team_documents_nvidia_dev
 ```
 
-개인 GPU에서 Sentence Transformers 모델을 직접 실행할 때는 선택 패키지를
-설치한 뒤 로컬 모델 전용 컬렉션을 사용합니다.
+개인 GPU에서는 Sentence Transformers 모델을 직접 실행할 수 있습니다. 공개
+모델은 일반적으로 Hugging Face 토큰 없이 다운로드할 수 있고, 비공개 또는
+승인형 모델을 사용할 때만 `HF_TOKEN`이 필요합니다.
 
 ```powershell
 uv pip install sentence-transformers
@@ -69,6 +70,9 @@ EMBEDDING_DIMENSION=모델의_실제_차원
 EMBEDDING_DEVICE=cuda
 EMBEDDING_BATCH_SIZE=32
 QDRANT_COLLECTION=team_documents_local_model_dev
+
+# 비공개·승인형 모델일 때만 입력
+HF_TOKEN=개인_Hugging_Face_토큰
 ```
 
 예를 들어 다른 OpenAI 호환 API를 쓸 때는 개인 `.env`에 모델 규격과 전용

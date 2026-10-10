@@ -1,6 +1,6 @@
 """27건 판례의 로컬 문자 n-gram BM25 검색 기준 평가. 임베딩/LLM RAG는 아님.
 
-uv run python src/Scripts/test_precedent_retrieval_pmh.py
+uv run python -m src.Scripts.tests.test_precedent_retrieval_pmh
 """
 
 import json
@@ -11,7 +11,7 @@ from collections import Counter
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 CHUNKS_DIR = ROOT / "data/chunk/precedents"
 EVALUATION_DIR = ROOT / "data/processed/retrieval_evaluation"
 # 소규모 수동 정의 질문. expected_ids는 최소 한 건의 관련 판례 기준이며 모든 정답의 목록은 아니다.

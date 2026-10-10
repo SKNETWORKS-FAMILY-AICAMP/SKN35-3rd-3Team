@@ -1,18 +1,14 @@
 """기존 법령·안내서·판례와 보강 소비자 자료의 로컬 BM25 비교.
 
-uv run python src/Scripts/test_consumer_coverage_pmh.py
+uv run python -m src.Scripts.tests.test_consumer_coverage_pmh
 LLM 답변 정확도 또는 벡터 검색 평가가 아니다.
 """
 import json
 import unittest
 from pathlib import Path
 
-if __package__:
-    from .collect_consumer_sources import ROOT, write_json
-    from .test_precedent_retrieval_pmh import BM25
-else:
-    from collect_consumer_sources import ROOT, write_json
-    from test_precedent_retrieval_pmh import BM25
+from src.Scripts.collect_consumer_sources import ROOT, write_json
+from src.Scripts.tests.test_precedent_retrieval_pmh import BM25
 
 QUESTIONS=[
     {'id':'gym_refund','query':'헬스장 이용권을 중도해지하면 환불은 얼마나 받나요?',

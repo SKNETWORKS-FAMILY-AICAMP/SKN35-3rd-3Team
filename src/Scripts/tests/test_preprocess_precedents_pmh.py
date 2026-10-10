@@ -1,4 +1,4 @@
-"""실행: python -m unittest src.Scripts.test_preprocess_precedents_pmh"""
+"""실행: uv run python -m unittest src.Scripts.tests.test_preprocess_precedents_pmh"""
 
 import hashlib
 import json

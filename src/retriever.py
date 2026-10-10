@@ -53,6 +53,16 @@ class DocumentRetriever:
 
     embedder: QueryEmbedder
     vector_store: VectorStore
+    expected_dimension: int | None = None
+
+    def __post_init__(self) -> None:
+        """시작 시 컬렉션 차원을 한 번 확인해 검색 요청에 재사용합니다."""
+
+        if self.expected_dimension is None:
+            collection_info = self.vector_store.get_collection_info()
+            self.expected_dimension = collection_info.vector_size
+        if self.expected_dimension < 1:
+            raise ValueError("expected_dimension은 1 이상이어야 합니다.")
 
     def health_check(self) -> bool:
         return self.vector_store.health_check()
@@ -72,14 +82,13 @@ class DocumentRetriever:
         if not normalized_query:
             raise ValueError("query는 비어 있을 수 없습니다.")
 
-        collection_info = self.vector_store.get_collection_info()
         query_vector = self.embedder.embed_query(normalized_query)
         request = VectorSearchRequest.create(
             query_vector,
             top_k=top_k,
             score_threshold=score_threshold,
             filters=filters,
-            expected_dimension=collection_info.vector_size,
+            expected_dimension=self.expected_dimension,
         )
         return self.vector_store.search(request)
 

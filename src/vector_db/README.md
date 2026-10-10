@@ -8,8 +8,9 @@ QDRANT_API_KEY=개인별_Qdrant_키_또는_manage_JWT
 EMBEDDING_API_KEY=개인별_임베딩_API_키
 ```
 
-기본 환경에서는 `OPENAI_API_KEY`를 사용합니다. NVIDIA로 전환할 때는
-`NVIDIA_API_KEY`를 사용해도 됩니다.
+`OPENAI_API_KEY` 또는 `NVIDIA_API_KEY` 중 하나를 입력하면 해당 API의 팀 고정
+모델·차원·컬렉션을 자동으로 사용합니다. 모델 정보를 개인이 반복해서 입력할
+필요가 없습니다.
 키 문자열은 사용자마다 달라도 같은 제공자·모델이면 동일한 벡터 공간을
 사용하므로 문제가 없습니다.
 
@@ -69,26 +70,27 @@ Qdrant Payload를 생성합니다.
 `source_url`은 Payload에 그대로 보존하며, 기존 코드 호환성을 위해
 `source_path` 별칭에도 같은 값을 넣습니다.
 
-## 임베딩 제공자 변경
+## API 키에 따른 임베딩 자동 선택
 
-현재 기본값은 OpenAI `text-embedding-3-small`, 1536차원입니다.
-`EMBEDDING_PROVIDER`는 `openai`, `nvidia`, `openai_compatible`,
-`local_huggingface`를 지원합니다.
+현재 고정 API 프로필은 다음과 같습니다.
+
+| 입력한 키 | 모델 | 차원 | 컬렉션 |
+| --- | --- | ---: | --- |
+| `OPENAI_API_KEY` | `text-embedding-3-small` | 1536 | `team_documents_openai_dev` |
+| `NVIDIA_API_KEY` | `nvidia/nemotron-3-embed-1b` | 2048 | `team_documents_nvidia_dev` |
+
+두 키가 모두 설정된 경우에만 `EMBEDDING_PROVIDER=openai` 또는 `nvidia`를
+추가해 사용할 API를 선택합니다.
 
 다른 키를 쓰는 것과 다른 모델을 쓰는 것은 구분해야 합니다.
 
 - 키만 다름: 같은 컬렉션 사용 가능
 - 모델 또는 제공자가 다름: 문서를 다시 임베딩하고 새 컬렉션 사용
 
-NVIDIA `nvidia/nemotron-3-embed-1b`로 전환할 때는 2048차원과 NVIDIA 전용
-컬렉션을 함께 설정합니다.
+NVIDIA를 사용할 때는 개인 키만 입력합니다.
 
 ```dotenv
-EMBEDDING_PROVIDER=nvidia
 NVIDIA_API_KEY=개인키
-EMBEDDING_MODEL=nvidia/nemotron-3-embed-1b
-EMBEDDING_DIMENSION=2048
-QDRANT_COLLECTION=team_documents_nvidia_dev
 ```
 
 개인 GPU에서는 Sentence Transformers 모델을 직접 실행할 수 있습니다. 공개
@@ -142,6 +144,29 @@ results = retriever.search_documents(
 
 현재 필터는 문자열·정수·불리언의 정확한 일치 조건을 지원합니다.
 `effective_date`의 범위 검색은 별도 확장 대상입니다.
+
+## 적재 후 재확인 루프
+
+적재 검증은 데이터를 자동 삭제하지 않습니다. 현재 입력 문서 범위의 Qdrant
+Payload를 읽어 중복·누락·잔여 Point와 `content_hash` 불일치를 보고서로
+남깁니다.
+
+```python
+from src.vector_db import validate_qdrant_ingestion
+
+saved_count = vector_store.upsert_points(points)
+report = validate_qdrant_ingestion(vector_store, points)
+report.write_markdown("tests/report/qdrant_ingestion_validation.md")
+
+print("적재 건수:", saved_count)
+print("검증 통과:", report.passed)
+```
+
+검증에 실패하면 입력의 `document_id`, `chunk_id`, `content_hash`를 수정하고
+같은 절차로 재적재합니다. 안정적 Point ID이므로 같은 논리 청크는 Upsert로
+갱신됩니다. 잔여·중복 Point는 보고서에만 표시하며 자동 삭제하지 않습니다.
+기존 데이터에서 발생한 잔여·중복은 재적재만으로 없어지지 않으므로 별도 정리
+대상으로 남겨 둡니다.
 
 ## Hybrid 검색 확장 경계
 

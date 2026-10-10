@@ -16,8 +16,8 @@ def create_team_retriever(
 ) -> DocumentRetriever:
     """개인 키와 팀 공용 규격으로 바로 사용할 검색기를 만듭니다.
 
-    이 함수 자체는 검색하거나 컬렉션을 변경하지 않습니다. 호출부는 반환된
-    객체의 ``search_documents()``를 사용하면 됩니다.
+    컬렉션을 변경하지 않습니다. 시작 시 실제 컬렉션 규격을 한 번 확인하고,
+    검색할 때는 확인한 벡터 차원을 재사용합니다.
     """
 
     load_project_env(env_path)
@@ -26,7 +26,9 @@ def create_team_retriever(
 
     embedder = create_embedding_provider(settings.embedding)
     vector_store = QdrantVectorStore.from_settings(settings)
+    collection_info = vector_store.validate_collection_contract()
     return DocumentRetriever(
         embedder=embedder,
         vector_store=vector_store,
+        expected_dimension=collection_info.vector_size,
     )

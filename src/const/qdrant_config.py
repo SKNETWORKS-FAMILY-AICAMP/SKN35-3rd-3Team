@@ -12,6 +12,7 @@ from typing import Final
 from urllib.parse import urlparse
 
 from src.const.vector_db_defaults import (
+    API_EMBEDDING_PROFILES,
     TEAM_EMBEDDING_DIMENSION,
     TEAM_EMBEDDING_MODEL,
     TEAM_EMBEDDING_NORMALIZED,
@@ -20,6 +21,8 @@ from src.const.vector_db_defaults import (
     TEAM_QDRANT_DISTANCE,
     TEAM_QDRANT_URL,
     TEAM_QDRANT_VECTOR_NAME,
+    ApiEmbeddingProfile,
+    get_api_embedding_profile,
 )
 
 DEFAULT_QDRANT_URL: Final = TEAM_QDRANT_URL
@@ -37,7 +40,6 @@ SUPPORTED_DISTANCES: Final = frozenset(
 
 TRUE_VALUES: Final = frozenset({"1", "true", "yes", "on"})
 FALSE_VALUES: Final = frozenset({"0", "false", "no", "off"})
-
 
 def _optional_env(name: str) -> str | None:
     """공백 문자열을 ``None``으로 바꿔 반환합니다."""
@@ -122,6 +124,50 @@ def _optional_boolean_env(name: str) -> bool | None:
     )
 
 
+def _api_profile_from_env() -> ApiEmbeddingProfile | None:
+    """개인 API 키에 맞는 팀 고정 임베딩 프로필을 선택합니다.
+
+    OpenAI와 NVIDIA는 과거의 개별 모델 환경변수가 남아 있어도 팀 고정
+    프로필을 사용합니다. 로컬 GPU와 OpenAI 호환 제공자는 기존 설정을
+    그대로 유지합니다. 두 API 키를 함께 쓸 때만 제공자를 명시합니다.
+    """
+
+    # 과거 .env에 값이 남아 있어도 프로필이 우선하지만 잘못된 값은 조용히
+    # 무시하지 않고 기존과 같이 설정 오류로 알립니다.
+    if _optional_env("EMBEDDING_DIMENSION") is not None:
+        _optional_positive_int("EMBEDDING_DIMENSION")
+
+    provider = _optional_env("EMBEDDING_PROVIDER")
+    openai_key_exists = _optional_env("OPENAI_API_KEY") is not None
+    nvidia_key_exists = _optional_env("NVIDIA_API_KEY") is not None
+    if provider is not None:
+        normalized_provider = provider.lower().replace("-", "_")
+        if normalized_provider in API_EMBEDDING_PROFILES:
+            if (
+                normalized_provider == "openai"
+                and not openai_key_exists
+                and nvidia_key_exists
+            ):
+                return get_api_embedding_profile("nvidia")
+            if (
+                normalized_provider == "nvidia"
+                and not nvidia_key_exists
+                and openai_key_exists
+            ):
+                return get_api_embedding_profile("openai")
+            return get_api_embedding_profile(normalized_provider)
+        return None
+
+    if openai_key_exists and nvidia_key_exists:
+        raise ValueError(
+            "OPENAI_API_KEY와 NVIDIA_API_KEY가 모두 설정되어 있습니다. "
+            "EMBEDDING_PROVIDER를 openai 또는 nvidia로 지정하세요."
+        )
+    if nvidia_key_exists:
+        return get_api_embedding_profile("nvidia")
+    return get_api_embedding_profile("openai")
+
+
 @dataclass(frozen=True)
 class QdrantConnectionSettings:
     """Qdrant 서버 연결 설정."""
@@ -184,20 +230,32 @@ class QdrantCollectionSettings:
     vector_name: str | None
 
     @classmethod
-    def from_env(cls) -> QdrantCollectionSettings:
+    def from_env(
+        cls,
+        api_profile: ApiEmbeddingProfile | None = None,
+    ) -> QdrantCollectionSettings:
         """현재 환경변수에서 컬렉션 설정을 읽습니다."""
 
         distance = (
             _optional_env("QDRANT_DISTANCE") or DEFAULT_DISTANCE
         ).lower()
 
+        collection_name = (
+            api_profile.collection
+            if api_profile is not None
+            else _optional_env("QDRANT_COLLECTION") or TEAM_QDRANT_COLLECTION
+        )
+        vector_size = (
+            api_profile.dimension
+            if api_profile is not None
+            else _optional_positive_int("EMBEDDING_DIMENSION")
+            or TEAM_EMBEDDING_DIMENSION
+        )
+
         return cls(
-            name=_optional_env("QDRANT_COLLECTION") or TEAM_QDRANT_COLLECTION,
+            name=collection_name,
             # 문서와 질문 임베딩 차원, 컬렉션 벡터 차원은 같아야 합니다.
-            vector_size=(
-                _optional_positive_int("EMBEDDING_DIMENSION")
-                or TEAM_EMBEDDING_DIMENSION
-            ),
+            vector_size=vector_size,
             distance=distance,
             vector_name=(
                 _optional_env("QDRANT_VECTOR_NAME")
@@ -246,8 +304,19 @@ class EmbeddingSettings:
     normalized: bool | None
 
     @classmethod
-    def from_env(cls) -> EmbeddingSettings:
+    def from_env(
+        cls,
+        api_profile: ApiEmbeddingProfile | None = None,
+    ) -> EmbeddingSettings:
         """현재 환경변수에서 임베딩 규격을 읽습니다."""
+
+        if api_profile is not None:
+            return cls(
+                provider=api_profile.provider,
+                model=api_profile.model,
+                dimension=api_profile.dimension,
+                normalized=api_profile.normalized,
+            )
 
         return cls(
             provider=(
@@ -306,10 +375,12 @@ class QdrantSettings:
     def from_env(cls) -> QdrantSettings:
         """환경변수에서 전체 Qdrant 설정을 읽습니다."""
 
+        api_profile = _api_profile_from_env()
+
         return cls(
             connection=QdrantConnectionSettings.from_env(),
-            collection=QdrantCollectionSettings.from_env(),
-            embedding=EmbeddingSettings.from_env(),
+            collection=QdrantCollectionSettings.from_env(api_profile),
+            embedding=EmbeddingSettings.from_env(api_profile),
         )
 
     def validate_for_collection_creation(self) -> None:

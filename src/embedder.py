@@ -40,6 +40,17 @@ class SentenceTransformerModelLike(Protocol):
     def encode(self, sentences: Sequence[str], **kwargs: object) -> object: ...
 
 
+class EmbeddingProvider(Protocol):
+    """문서와 질문 임베딩 제공자가 공통으로 제공하는 기능."""
+
+    def embed_query(self, text: str) -> Sequence[float]: ...
+
+    def embed_documents(
+        self,
+        texts: Sequence[str],
+    ) -> Sequence[Sequence[float]]: ...
+
+
 @dataclass
 class OpenAICompatibleEmbedder:
     """OpenAI 호환 Embeddings API를 공통 인터페이스로 연결합니다."""
@@ -261,7 +272,7 @@ def _create_local_huggingface_embedder(
 
 def create_embedding_provider(
     settings: EmbeddingSettings,
-) -> OpenAICompatibleEmbedder:
+) -> EmbeddingProvider:
     """환경 설정에 맞는 임베딩 제공자를 생성합니다.
 
     지원 값은 ``openai``, ``nvidia``, ``openai_compatible``,

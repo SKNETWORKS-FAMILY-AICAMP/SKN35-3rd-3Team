@@ -14,9 +14,39 @@ from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Final
 
-
 POINT_ID_NAMESPACE: Final = uuid.UUID(
     "d66a4bc4-ce87-4c7d-bc59-c937799d4d83"
+)
+
+_TEXT_METADATA_NAMES: Final = (
+    "source_name",
+    "source_path",
+    "source_url",
+    "section",
+    "domain",
+    "document_type",
+    "effective_date",
+    "article_label",
+    "content_hash",
+    "document_updated_at",
+    "published_at",
+    "embedding_provider",
+    "embedding_model",
+)
+
+_RESERVED_METADATA_NAMES: Final = frozenset(
+    {
+        *_TEXT_METADATA_NAMES,
+        "page",
+        "indexed_at",
+        "embedding_dimension",
+        "embedding_normalized",
+        # Payload 핵심 필드는 extra_metadata로 덮어쓸 수 없습니다.
+        "text",
+        "document_id",
+        "chunk_id",
+        "vector",
+    }
 )
 
 
@@ -80,6 +110,44 @@ def _optional_boolean(value: object, field_name: str) -> bool | None:
         raise TypeError(f"{field_name}은 true/false 또는 null이어야 합니다.")
 
     return value
+
+
+def _metadata_mapping(data: Mapping[str, object]) -> Mapping[str, object]:
+    """입력에서 metadata 객체를 읽고 형식을 확인합니다."""
+
+    metadata = data.get("metadata", {})
+    if metadata is None:
+        return {}
+    if not isinstance(metadata, Mapping):
+        raise TypeError("metadata는 객체 형태여야 합니다.")
+    return metadata
+
+
+def _text_metadata(
+    metadata: Mapping[str, object],
+) -> dict[str, str | None]:
+    """문자열 Payload 필드를 한 번에 정리합니다."""
+
+    values = {
+        name: _optional_text(metadata.get(name), f"metadata.{name}")
+        for name in _TEXT_METADATA_NAMES
+    }
+    if values["source_path"] is None:
+        # 기존 입력 호환성을 위해 URL을 source_path 별칭으로도 유지합니다.
+        values["source_path"] = values["source_url"]
+    return values
+
+
+def _extra_metadata(
+    metadata: Mapping[str, object],
+) -> dict[str, object]:
+    """표준 Payload 이외의 전처리 메타데이터를 보존합니다."""
+
+    return {
+        str(key): value
+        for key, value in metadata.items()
+        if key not in _RESERVED_METADATA_NAMES
+    }
 
 
 def normalize_vector(value: object) -> tuple[float, ...]:
@@ -152,48 +220,9 @@ class PreparedChunk:
     def from_mapping(cls, data: Mapping[str, object]) -> PreparedChunk:
         """JSON·JSONL 등에서 읽은 사전을 표준 청크로 변환합니다."""
 
-        metadata_value = data.get("metadata", {})
-        if metadata_value is None:
-            metadata_value = {}
-        if not isinstance(metadata_value, Mapping):
-            raise TypeError("metadata는 객체 형태여야 합니다.")
-
-        known_metadata_names = {
-            "source_name",
-            "source_path",
-            "source_url",
-            "page",
-            "section",
-            "domain",
-            "document_type",
-            "effective_date",
-            "article_label",
-            "content_hash",
-            "document_updated_at",
-            "published_at",
-            "indexed_at",
-            "embedding_provider",
-            "embedding_model",
-            "embedding_dimension",
-            "embedding_normalized",
-            # Payload 핵심 필드는 extra_metadata로 덮어쓸 수 없습니다.
-            "text",
-            "document_id",
-            "chunk_id",
-            "vector",
-        }
-
-        source_url = metadata_value.get("source_url")
-        source_path = metadata_value.get("source_path")
-        if source_path is None:
-            # 기존 입력 호환성을 위해 URL을 source_path 별칭으로도 유지합니다.
-            source_path = source_url
-
+        metadata = _metadata_mapping(data)
+        text_values = _text_metadata(metadata)
         text = _required_text(data.get("text"), "text")
-        content_hash = _optional_text(
-            metadata_value.get("content_hash"),
-            "metadata.content_hash",
-        )
 
         return cls(
             document_id=_required_text(
@@ -203,69 +232,31 @@ class PreparedChunk:
             chunk_id=_required_text(data.get("chunk_id"), "chunk_id"),
             text=text,
             vector=_optional_vector(data.get("vector")),
-            source_name=_optional_text(
-                metadata_value.get("source_name"),
-                "metadata.source_name",
+            source_name=text_values["source_name"],
+            source_path=text_values["source_path"],
+            source_url=text_values["source_url"],
+            page=_optional_page(metadata.get("page")),
+            section=text_values["section"],
+            domain=text_values["domain"],
+            document_type=text_values["document_type"],
+            effective_date=text_values["effective_date"],
+            article_label=text_values["article_label"],
+            content_hash=(
+                text_values["content_hash"] or create_content_hash(text)
             ),
-            source_path=_optional_text(
-                source_path,
-                "metadata.source_path",
-            ),
-            source_url=_optional_text(
-                source_url,
-                "metadata.source_url",
-            ),
-            page=_optional_page(metadata_value.get("page")),
-            section=_optional_text(
-                metadata_value.get("section"),
-                "metadata.section",
-            ),
-            domain=_optional_text(
-                metadata_value.get("domain"),
-                "metadata.domain",
-            ),
-            document_type=_optional_text(
-                metadata_value.get("document_type"),
-                "metadata.document_type",
-            ),
-            effective_date=_optional_text(
-                metadata_value.get("effective_date"),
-                "metadata.effective_date",
-            ),
-            article_label=_optional_text(
-                metadata_value.get("article_label"),
-                "metadata.article_label",
-            ),
-            content_hash=content_hash or create_content_hash(text),
-            document_updated_at=_optional_text(
-                metadata_value.get("document_updated_at"),
-                "metadata.document_updated_at",
-            ),
-            published_at=_optional_text(
-                metadata_value.get("published_at"),
-                "metadata.published_at",
-            ),
-            embedding_provider=_optional_text(
-                metadata_value.get("embedding_provider"),
-                "metadata.embedding_provider",
-            ),
-            embedding_model=_optional_text(
-                metadata_value.get("embedding_model"),
-                "metadata.embedding_model",
-            ),
+            document_updated_at=text_values["document_updated_at"],
+            published_at=text_values["published_at"],
+            embedding_provider=text_values["embedding_provider"],
+            embedding_model=text_values["embedding_model"],
             embedding_dimension=_optional_positive_int(
-                metadata_value.get("embedding_dimension"),
+                metadata.get("embedding_dimension"),
                 "metadata.embedding_dimension",
             ),
             embedding_normalized=_optional_boolean(
-                metadata_value.get("embedding_normalized"),
+                metadata.get("embedding_normalized"),
                 "metadata.embedding_normalized",
             ),
-            extra_metadata={
-                str(key): value
-                for key, value in metadata_value.items()
-                if key not in known_metadata_names
-            },
+            extra_metadata=_extra_metadata(metadata),
         )
 
     @property
@@ -320,8 +311,7 @@ class PreparedChunk:
     def point_id(self) -> str:
         """동일 청크 재적재 시에도 같은 Qdrant Point ID를 반환합니다."""
 
-        content_hash = self.content_hash or create_content_hash(self.text)
-        identity = f"{self.document_id}:{self.chunk_id}:{content_hash}"
+        identity = f"{self.document_id}:{self.chunk_id}"
         return str(uuid.uuid5(POINT_ID_NAMESPACE, identity))
 
     def payload(self, *, indexed_at: str) -> dict[str, object]:

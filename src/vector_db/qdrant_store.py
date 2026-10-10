@@ -12,7 +12,8 @@ from dataclasses import dataclass
 from typing import Protocol
 
 from src.const.qdrant_config import QdrantSettings
-from src.vector_db.ingestion import PreparedPoint, iter_point_batches
+from src.vector_db.ingestion import PreparedPoint
+from src.vector_db.validation import StoredPointSnapshot
 from src.vectorstore import (
     VectorCollectionInfo,
     VectorSearchHit,
@@ -32,7 +33,9 @@ class QdrantClientLike(Protocol):
 
     def query_points(self, **kwargs: object) -> object: ...
 
-    def upsert(self, **kwargs: object) -> object: ...
+    def scroll(self, **kwargs: object) -> object: ...
+
+    def upload_points(self, **kwargs: object) -> None: ...
 
 
 PointFactory = Callable[[PreparedPoint, str | None], object]
@@ -379,26 +382,124 @@ class QdrantVectorStore:
         points: Sequence[PreparedPoint],
         *,
         batch_size: int = 64,
+        parallel: int = 2,
+        max_retries: int = 3,
     ) -> int:
-        """준비된 Point를 배치 단위로 Upsert하고 저장 건수를 반환합니다."""
+        """Qdrant 대량 적재 기능으로 Point를 병렬 Upsert합니다."""
 
-        saved_count = 0
-        for batch in iter_point_batches(points, batch_size=batch_size):
-            sdk_points = [
-                self.point_factory(point, self.settings.collection.vector_name)
-                for point in batch
-            ]
-            try:
-                self.client.upsert(
-                    collection_name=self.collection_name,
-                    points=sdk_points,
-                    wait=True,
+        upload_options = {
+            "batch_size": batch_size,
+            "parallel": parallel,
+            "max_retries": max_retries,
+        }
+        for option_name, option_value in upload_options.items():
+            if isinstance(option_value, bool) or not isinstance(
+                option_value,
+                int,
+            ):
+                raise TypeError(f"{option_name}는 정수여야 합니다.")
+            minimum = 0 if option_name == "max_retries" else 1
+            if option_value < minimum:
+                raise ValueError(
+                    f"{option_name}는 {minimum} 이상이어야 합니다."
                 )
-            except Exception as error:
-                raise VectorStoreError(
-                    "connection_error",
-                    "Qdrant Point 적재에 실패했습니다.",
-                ) from error
-            saved_count += len(batch)
 
-        return saved_count
+        if not points:
+            return 0
+
+        sdk_points = (
+            self.point_factory(point, self.settings.collection.vector_name)
+            for point in points
+        )
+        try:
+            self.client.upload_points(
+                collection_name=self.collection_name,
+                points=sdk_points,
+                batch_size=batch_size,
+                parallel=parallel,
+                max_retries=max_retries,
+                wait=True,
+            )
+        except Exception as error:
+            raise VectorStoreError(
+                "connection_error",
+                "Qdrant Point 적재에 실패했습니다.",
+            ) from error
+
+        return len(points)
+
+    def read_document_points(
+        self,
+        document_ids: Sequence[str],
+        *,
+        page_size: int = 256,
+    ) -> Sequence[StoredPointSnapshot]:
+        """검증용으로 지정 문서의 Point ID와 Payload만 읽습니다.
+
+        벡터는 내려받지 않으며, 저장된 Point를 삭제하거나 수정하지 않습니다.
+        """
+
+        if isinstance(page_size, bool) or not isinstance(page_size, int):
+            raise TypeError("page_size는 정수여야 합니다.")
+        if page_size < 1:
+            raise ValueError("page_size는 1 이상이어야 합니다.")
+
+        normalized_ids = sorted(
+            {
+                document_id.strip()
+                for document_id in document_ids
+                if isinstance(document_id, str) and document_id.strip()
+            }
+        )
+        snapshots: list[StoredPointSnapshot] = []
+        for document_id in normalized_ids:
+            query_filter = self.filter_factory({"document_id": document_id})
+            offset: object = None
+            while True:
+                scroll_kwargs: dict[str, object] = {
+                    "collection_name": self.collection_name,
+                    "scroll_filter": query_filter,
+                    "limit": page_size,
+                    "with_payload": True,
+                    "with_vectors": False,
+                }
+                if offset is not None:
+                    scroll_kwargs["offset"] = offset
+
+                try:
+                    response = self.client.scroll(**scroll_kwargs)
+                except Exception as error:
+                    raise VectorStoreError(
+                        "connection_error",
+                        "Qdrant 적재 검증용 Point 조회에 실패했습니다.",
+                    ) from error
+
+                if not isinstance(response, tuple) or len(response) != 2:
+                    raise VectorStoreError(
+                        "invalid_response",
+                        "Qdrant Scroll 결과 형식이 올바르지 않습니다.",
+                    )
+                records, offset = response
+                if not isinstance(records, Sequence) or isinstance(
+                    records,
+                    (str, bytes),
+                ):
+                    raise VectorStoreError(
+                        "invalid_response",
+                        "Qdrant Scroll Point 목록 형식이 올바르지 않습니다.",
+                    )
+
+                for record in records:
+                    payload = _read_value(record, "payload", {})
+                    if not isinstance(payload, Mapping):
+                        payload = {}
+                    snapshots.append(
+                        StoredPointSnapshot(
+                            point_id=str(_read_value(record, "id", "")),
+                            payload=dict(payload),
+                        )
+                    )
+                if offset is None:
+                    break
+
+        return tuple(snapshots)

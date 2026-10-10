@@ -2,12 +2,12 @@
 
 ## 임베딩 방식 빠른 선택
 
-팀 기본값은 **OpenAI API**입니다. 사용할 방식에 따라 프로젝트 루트의
-`.env`만 변경합니다.
+팀 기본값은 **OpenAI API**입니다. API 방식은 개인 키만 입력하면 고정된
+모델·차원·컬렉션을 자동으로 선택합니다.
 
 | 구분 | OpenAI API | NVIDIA API | 개인 그래픽 카드 |
 | --- | --- | --- | --- |
-| `EMBEDDING_PROVIDER` | `openai` | `nvidia` | `local_huggingface` |
+| 선택 기준 | `OPENAI_API_KEY` | `NVIDIA_API_KEY` | `local_huggingface` 직접 설정 |
 | 모델 | `text-embedding-3-small` | `nvidia/nemotron-3-embed-1b` | 팀에서 정한 Hugging Face 모델 |
 | 벡터 차원 | 1536 | 2048 | 선택한 모델의 실제 차원 |
 | 필요한 키 | `OPENAI_API_KEY` | `NVIDIA_API_KEY` | 공개 모델은 없음 |
@@ -44,12 +44,7 @@ uv run python -m src.Scripts.qdrant_setup init
 ### `.env`에서 직접 변경할 값
 
 ```env
-EMBEDDING_PROVIDER=openai
 OPENAI_API_KEY=개인_OpenAI_API_키
-EMBEDDING_MODEL=text-embedding-3-small
-EMBEDDING_DIMENSION=1536
-EMBEDDING_NORMALIZED=true
-QDRANT_COLLECTION=team_documents_openai_dev
 ```
 
 - 다른 OpenAI 임베딩 모델을 선택하면 `EMBEDDING_MODEL`과
@@ -64,19 +59,17 @@ QDRANT_COLLECTION=team_documents_openai_dev
 
 ## 2. NVIDIA API 사용
 
-NVIDIA는 현재 기본값이 아니지만 기존 코드에서 계속 지원합니다. 전환할 때는
-개인 `.env`의 제공자·모델·차원·컬렉션을 함께 변경합니다.
+NVIDIA는 현재 기본값이 아니지만 기존 코드에서 계속 지원합니다. OpenAI 키를
+비우고 NVIDIA 개인 키만 입력하면 NVIDIA 고정 프로필을 사용합니다.
 
 ### `.env`에서 직접 변경할 값
 
 ```env
-EMBEDDING_PROVIDER=nvidia
 NVIDIA_API_KEY=개인_NVIDIA_API_키
-EMBEDDING_MODEL=nvidia/nemotron-3-embed-1b
-EMBEDDING_DIMENSION=2048
-EMBEDDING_NORMALIZED=true
-QDRANT_COLLECTION=team_documents_nvidia_dev
 ```
+
+두 API 키가 모두 설정된 경우에만
+`EMBEDDING_PROVIDER=openai` 또는 `nvidia`를 추가해 하나를 선택합니다.
 
 ## 3. 개인 그래픽 카드 사용
 

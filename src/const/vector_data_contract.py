@@ -132,8 +132,13 @@ class PreparedChunk:
     vector: tuple[float, ...] | None = None
     source_name: str | None = None
     source_path: str | None = None
+    source_url: str | None = None
     page: int | None = None
     section: str | None = None
+    domain: str | None = None
+    document_type: str | None = None
+    effective_date: str | None = None
+    article_label: str | None = None
     content_hash: str | None = None
     document_updated_at: str | None = None
     published_at: str | None = None
@@ -159,6 +164,10 @@ class PreparedChunk:
             "source_url",
             "page",
             "section",
+            "domain",
+            "document_type",
+            "effective_date",
+            "article_label",
             "content_hash",
             "document_updated_at",
             "published_at",
@@ -174,9 +183,11 @@ class PreparedChunk:
             "vector",
         }
 
+        source_url = metadata_value.get("source_url")
         source_path = metadata_value.get("source_path")
         if source_path is None:
-            source_path = metadata_value.get("source_url")
+            # 기존 입력 호환성을 위해 URL을 source_path 별칭으로도 유지합니다.
+            source_path = source_url
 
         text = _required_text(data.get("text"), "text")
         content_hash = _optional_text(
@@ -200,10 +211,30 @@ class PreparedChunk:
                 source_path,
                 "metadata.source_path",
             ),
+            source_url=_optional_text(
+                source_url,
+                "metadata.source_url",
+            ),
             page=_optional_page(metadata_value.get("page")),
             section=_optional_text(
                 metadata_value.get("section"),
                 "metadata.section",
+            ),
+            domain=_optional_text(
+                metadata_value.get("domain"),
+                "metadata.domain",
+            ),
+            document_type=_optional_text(
+                metadata_value.get("document_type"),
+                "metadata.document_type",
+            ),
+            effective_date=_optional_text(
+                metadata_value.get("effective_date"),
+                "metadata.effective_date",
+            ),
+            article_label=_optional_text(
+                metadata_value.get("article_label"),
+                "metadata.article_label",
             ),
             content_hash=content_hash or create_content_hash(text),
             document_updated_at=_optional_text(
@@ -311,8 +342,13 @@ class PreparedChunk:
         optional_values = {
             "source_name": self.source_name,
             "source_path": self.source_path,
+            "source_url": self.source_url,
             "page": self.page,
             "section": self.section,
+            "domain": self.domain,
+            "document_type": self.document_type,
+            "effective_date": self.effective_date,
+            "article_label": self.article_label,
             "document_updated_at": self.document_updated_at,
             "published_at": self.published_at,
             "embedding_provider": self.embedding_provider,

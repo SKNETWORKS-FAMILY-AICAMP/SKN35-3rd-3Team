@@ -33,6 +33,42 @@ uv run python -m src.Scripts.qdrant_setup init
 `init`은 컬렉션이 없을 때만 생성합니다. 기존 컬렉션 삭제·강제 재생성은
 하지 않으며, 이미 존재하면 1536차원·Cosine 규격이 맞는지만 확인합니다.
 
+## 전처리 결과 입력 계약
+
+전처리 담당자가 전달하는 `chunks.jsonl`은 한 줄에 청크 한 건을 저장합니다.
+Vector DB 계층은 전처리 결과를 수정하지 않고 아래 필드를 검증한 뒤 임베딩과
+Qdrant Payload를 생성합니다.
+
+```json
+{
+  "document_id": "law-001",
+  "chunk_id": "law-001-0001",
+  "text": "전처리와 청킹이 끝난 본문",
+  "metadata": {
+    "source_name": "주택임대차보호법.pdf",
+    "domain": "주택임대차",
+    "document_type": "law",
+    "effective_date": "2024-01-01",
+    "source_url": "https://example.com/law/001",
+    "article_label": "제6조의3",
+    "page": 12,
+    "section": "계약갱신 요구"
+  }
+}
+```
+
+검색과 출처 표시에 사용하는 권장 Payload는 다음과 같습니다.
+
+- `domain`: 주택임대차·근로·중고거래 등 문서 업무 영역
+- `document_type`: `law`·`precedent`·`official_guide` 등 문서 종류
+- `effective_date`: 법령·지침의 시행일 또는 기준일 (`YYYY-MM-DD` 권장)
+- `source_url`: 원문 출처 URL
+- `article_label`: 조문·항목 번호 또는 문서 내부 표제
+
+이 값들은 선택 필드이므로 기존 전처리 결과도 계속 사용할 수 있습니다.
+`source_url`은 Payload에 그대로 보존하며, 기존 코드 호환성을 위해
+`source_path` 별칭에도 같은 값을 넣습니다.
+
 ## 임베딩 제공자 변경
 
 현재 기본값은 OpenAI `text-embedding-3-small`, 1536차원입니다.
@@ -97,9 +133,27 @@ results = retriever.search_documents(
     "질문 내용",
     top_k=5,
     score_threshold=None,
-    filters={},
+    filters={
+        "domain": "주택임대차",
+        "document_type": "law",
+    },
 )
 ```
+
+현재 필터는 문자열·정수·불리언의 정확한 일치 조건을 지원합니다.
+`effective_date`의 범위 검색은 별도 확장 대상입니다.
+
+## Hybrid 검색 확장 경계
+
+현재 구현은 OpenAI Embedding 기반 Dense Vector 검색입니다. BM25 키워드
+검색과 Dense 검색을 RRF(Reciprocal Rank Fusion)로 결합하는 Hybrid 검색은
+아직 구현하지 않았습니다.
+
+Hybrid 검색을 추가할 때는 기존 Dense 컬렉션을 삭제하거나 강제로 재생성하지
+않습니다. Sparse Vector 또는 키워드 인덱스 규격을 먼저 확정하고 별도
+컬렉션에서 검증한 뒤 전환합니다. 전처리 결과의 `article_label`, `domain`,
+`document_type`은 Hybrid 검색의 필터와 키워드 정확도를 높이는 데 재사용할 수
+있습니다.
 
 원격 Qdrant 주소가 확정되면 관리자가
 `src/const/vector_db_defaults.py`의 `TEAM_QDRANT_URL`을 한 번 변경해

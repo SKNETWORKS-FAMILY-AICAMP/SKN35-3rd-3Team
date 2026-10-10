@@ -18,8 +18,8 @@ def build_rag_graph():
     builder = StateGraph(State)
 
     # 노드 생성
-    builder.add_node("multi_query" , multi_query_node)
     builder.add_node("query_rewrite" , query_rewrite_node)
+    builder.add_node("multi_query" , multi_query_node)
     builder.add_node("rrf" , rrf_node)
     builder.add_node("rerank" , rerank_node)
     builder.add_node("validation" , validation_node)

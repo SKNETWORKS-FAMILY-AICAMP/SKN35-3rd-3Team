@@ -19,6 +19,11 @@ def route_start(state: State) -> str:
     label = llm.invoke(message).text.strip().lower()
     return label if label in {"general", "rag", "mcp", "out_of_scope"} else "rag"
 
+def route_image(state: State) -> str:
+    if state.get("images"):
+        return "image"
+    return route_start(state)
+
 def build_workflow():
     builder = StateGraph(State)
 
@@ -27,7 +32,9 @@ def build_workflow():
     builder.add_node("rag", build_rag_graph())
     builder.add_node("mcp", build_mcp_graph())
 
-    builder.add_edge(START , "image")
+    builder.add_conditional_edges(START , route_image ,
+        {"image": "image", "general": "general", "out_of_scope": "general", "rag": "rag", "mcp": "mcp"})
+    
     builder.add_conditional_edges("image", route_start,
         {"general": "general", "out_of_scope" : "general", "rag": "rag", "mcp" : "mcp"})
     

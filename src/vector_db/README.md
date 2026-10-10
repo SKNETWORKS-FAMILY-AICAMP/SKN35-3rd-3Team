@@ -8,7 +8,8 @@ QDRANT_API_KEY=개인별_Qdrant_키_또는_manage_JWT
 EMBEDDING_API_KEY=개인별_임베딩_API_키
 ```
 
-기존 환경처럼 `NVIDIA_API_KEY` 또는 `OPENAI_API_KEY`를 사용해도 됩니다.
+기본 환경에서는 `OPENAI_API_KEY`를 사용합니다. NVIDIA로 전환할 때는
+`NVIDIA_API_KEY`를 사용해도 됩니다.
 키 문자열은 사용자마다 달라도 같은 제공자·모델이면 동일한 벡터 공간을
 사용하므로 문제가 없습니다.
 
@@ -30,17 +31,28 @@ uv run python -m src.Scripts.qdrant_setup init
 ```
 
 `init`은 컬렉션이 없을 때만 생성합니다. 기존 컬렉션 삭제·강제 재생성은
-하지 않으며, 이미 존재하면 2048차원·Cosine 규격이 맞는지만 확인합니다.
+하지 않으며, 이미 존재하면 1536차원·Cosine 규격이 맞는지만 확인합니다.
 
 ## 임베딩 제공자 변경
 
-현재 기본값은 NVIDIA `nvidia/nemotron-3-embed-1b`, 2048차원입니다.
+현재 기본값은 OpenAI `text-embedding-3-small`, 1536차원입니다.
 `EMBEDDING_PROVIDER`는 `nvidia`, `openai`, `openai_compatible`을 지원합니다.
 
 다른 키를 쓰는 것과 다른 모델을 쓰는 것은 구분해야 합니다.
 
 - 키만 다름: 같은 컬렉션 사용 가능
 - 모델 또는 제공자가 다름: 문서를 다시 임베딩하고 새 컬렉션 사용
+
+NVIDIA `nvidia/nemotron-3-embed-1b`로 전환할 때는 2048차원과 NVIDIA 전용
+컬렉션을 함께 설정합니다.
+
+```dotenv
+EMBEDDING_PROVIDER=nvidia
+NVIDIA_API_KEY=개인키
+EMBEDDING_MODEL=nvidia/nemotron-3-embed-1b
+EMBEDDING_DIMENSION=2048
+QDRANT_COLLECTION=team_documents_nvidia_dev
+```
 
 예를 들어 다른 OpenAI 호환 API를 쓸 때는 개인 `.env`에 모델 규격과 전용
 컬렉션을 함께 지정합니다.

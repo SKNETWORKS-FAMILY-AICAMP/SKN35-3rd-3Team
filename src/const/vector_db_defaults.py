@@ -10,12 +10,12 @@ from typing import Final
 
 # 원격 서버 배포 전까지는 수업과 같은 로컬 Docker 주소를 사용합니다.
 TEAM_QDRANT_URL: Final = "http://localhost:6333"
-TEAM_QDRANT_COLLECTION: Final = "team_documents_dev"
+TEAM_QDRANT_COLLECTION: Final = "team_documents_openai_dev"
 TEAM_QDRANT_VECTOR_NAME: Final[str | None] = None
 TEAM_QDRANT_DISTANCE: Final = "cosine"
 
-TEAM_EMBEDDING_PROVIDER: Final = "nvidia"
-TEAM_EMBEDDING_MODEL: Final = "nvidia/nemotron-3-embed-1b"
-TEAM_EMBEDDING_DIMENSION: Final = 2048
+TEAM_EMBEDDING_PROVIDER: Final = "openai"
+TEAM_EMBEDDING_MODEL: Final = "text-embedding-3-small"
+TEAM_EMBEDDING_DIMENSION: Final = 1536
 TEAM_EMBEDDING_NORMALIZED: Final = True
 NVIDIA_EMBEDDING_BASE_URL: Final = "https://integrate.api.nvidia.com/v1"

@@ -9,9 +9,9 @@ from collections import Counter
 from pathlib import Path
 
 if __package__:
-    from .preprocess_guides import ROOT, OUTPUT_DIR as INPUT_DIR, sha256, write_json
+    from .preprocess_guides import ROOT, OUTPUT_DIR as INPUT_DIR, sha256, write_json, validate_source_coverage
 else:
-    from preprocess_guides import ROOT, OUTPUT_DIR as INPUT_DIR, sha256, write_json
+    from preprocess_guides import ROOT, OUTPUT_DIR as INPUT_DIR, sha256, write_json, validate_source_coverage
 
 OUTPUT_DIR = ROOT / "data/chunk/guides"
 
@@ -80,6 +80,7 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
             or input_dir.is_relative_to(output_dir)):
         raise ValueError("출력은 원본·정제 입력과 분리해야 합니다.")
     manifest = json.loads((input_dir / "guide_preprocessing_report.json").read_text(encoding="utf-8"))
+    validate_source_coverage(manifest)
     if manifest["failures"]:
         raise ValueError("전처리 실패를 먼저 확인하세요.")
     # 쓰기 전에 모든 입력과 원본 지문을 검증한다.
@@ -89,6 +90,8 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
         doc = json.loads(path.read_text(encoding="utf-8"))
         if doc["raw_sha256"] != sha256(ROOT / doc["source_path"]):
             raise ValueError("PDF 원본이 정제 당시와 다릅니다.")
+        if (entry['source_file'] != doc['source_file'] or entry['raw_sha256'] != doc['raw_sha256']):
+            raise ValueError('정제 보고서와 문서 출처 불일치')
         prepared.append((path, make_chunks(doc, size, overlap), doc))
     output_dir.mkdir(parents=True, exist_ok=True)
     report = {"schema_version": 1, "size": size, "overlap": overlap, "saved": [],
@@ -100,7 +103,10 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
                                 "processed_sha256": sha256(path), "raw_sha256": doc["raw_sha256"],
                                 "chunk_count": len(chunks), "counts": dict(Counter(c["content_type"] for c in chunks)),
                                 "represented_pages": sorted({c["page_number"] for c in chunks}),
-                                "excluded_pages": [p["page_number"] for p in doc["pages"] if not p["embedding_candidate"]]})
+                                "excluded_pages": [p["page_number"] for p in doc["pages"] if not p["embedding_candidate"]],
+                                "exclusion_details": [{"page_number":p['page_number'],"page_kind":p['page_kind'],
+                                    "needs_manual_review":p['needs_manual_review'],"warnings":p['warnings']}
+                                    for p in doc['pages'] if not p['embedding_candidate']]})
     report["chunk_count"] = sum(e["chunk_count"] for e in report["saved"])
     report["counts"] = dict(sum((Counter(e["counts"]) for e in report["saved"]), Counter()))
     write_json(output_dir / "guide_chunking_report.json", report)

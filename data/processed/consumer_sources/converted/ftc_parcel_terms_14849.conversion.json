@@ -1,0 +1,16 @@
+{
+  "raw_source": "data\\raw\\consumer_sources\\ftc_terms_11185_file_a321590d_745c0f1e2657454b.hwp",
+  "raw_sha256": "745c0f1e2657454b281db6b35f974902000aade14f167a6620c0ae66517159cc",
+  "official_viewer_url": "https://www.ftc.go.kr/viewer/synap/skin/doc.html?fn=BBS_202006170927057600&rs=/viewer/synap/preview/",
+  "method": "official_synap_html_print_to_pdf",
+  "source_html_parts": 10,
+  "note": "Derived PDF; official viewer conversion may alter layout.",
+  "pdf_sha256": "513885ac631cb5f87d14bd688d2aabcf1b09e011f30da9a7d119863697166a91",
+  "pdf_page_count": 10,
+  "pdf_text_characters": 10246,
+  "validation": "Raw SHA256 matched official attachment; all pages render and text extraction checked.",
+  "document_revision_date": "2020-06-05",
+  "normalized_text_exact_match": true,
+  "normalized_character_counts_match": true,
+  "visual_check": "All PDF pages rendered and visually reviewed; no visible clipping or blank pages."
+}

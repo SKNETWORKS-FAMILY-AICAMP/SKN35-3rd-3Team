@@ -1,0 +1,63 @@
+{
+  "source_id": "kca_parcel_1003817349",
+  "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
+  "document_type": "mediation_case",
+  "source_url": "https://www.kca.go.kr/odr/bj/br/osBjDecisionExamDetW.do?brdId=00000007&dataStts=Y&seq=1003817349",
+  "domain": "parcel_loss",
+  "publisher": "한국소비자원",
+  "resolved_url": "https://www.kca.go.kr/odr/bj/br/osBjDecisionExamDetW.do?brdId=00000007&dataStts=Y&seq=1003817349",
+  "raw_file": "data/raw/consumer_sources/kca_parcel_1003817349_ee85f1b96a5d2842.html",
+  "raw_sha256": "ee85f1b96a5d2842536c6987da5027f82bf0f4e1abb1e005e5c2003c548dd720",
+  "collected_at": "2026-10-10T12:34:32.324375+00:00",
+  "format": "html",
+  "schema_version": 1,
+  "units": [
+    {
+      "unit_id": "case_facts",
+      "role": "facts",
+      "text": "□ 신청인은 2022. 10. 31. 공기청정기를 대금 489,000원에 구입한 후 2022. 11. 5. 제품을 수령하였고, 지인에게 선물하기 위해 2022. 11. 8. 피신청인과 공기청정기 택배 운송 계약을 체결하고 운임 6,000원을 지급함.\n* 신청인은 배송 물품의 단가를 300,000원으로 기재\n□ 2022. 11. 9. 택배기사가 물품을 수거해 배송하던 중 2022. 11. 15. 교통사고로 물품이 분실(전소)된 사실을 알게 되어 배상을 요청하니, 피신청인은 공기청정기 구입대금이 아닌 계약 시 기재한 물품 가액인 300,000원 배상 및 운임 6,000원만 환급 가능하다고 하여 분쟁이 발생함.",
+      "source_label": "사건개요",
+      "source_locator": "HTML table row th=사건개요"
+    },
+    {
+      "unit_id": "case_party_claims",
+      "role": "party_claims",
+      "text": "□ (신청인) 운송물의 구매 영수증을 통해 손해액이 입증되므로, 계약 시 기재한 배송 물품 단가 기준이 아닌 구매 영수증 기준으로 배상 및 운임 환급을 요구함.\n□ (피신청인) 손해배상 관련 약관 조항은 물품 가액이 기재된 경우 해당 가액이 배상한도로 설정되므로 신청인 요청을 수용할 수 없다고 주장함.",
+      "source_label": "당사자주장",
+      "source_locator": "HTML table row th=당사자주장"
+    },
+    {
+      "unit_id": "case_reasoning",
+      "role": "reasoning",
+      "text": "□ 피신청인 약관 제22조에 ‘고객이 운송장에 운송물의 가액을 기재하고 전부 멸실된 경우 사업자는 운송장에 기재된 운송물의 가액을 기준으로 산정한 손해액 또는 고객(송화인)이 입증한 운송물의 손해액(영수증 등)을 배상한다고 기재되어 있음.\n□ 이에 약관 내용이 다르게 해석될 수 있는 여지가 있어 보이는데, 「약관의 규제에 관한 법률」 제5조 제2항에 따르면 약관의 뜻이 명백하지 아니한 경우에는 고객에게 유리하게 해석되어야 한다고 명시되어 있고, 신청인이 물품 구매 영수증(489,000원)을 제출하여 손해액을 입증한바, 신청인의 주장을 인정함이 타당함.",
+      "source_label": "판단",
+      "source_locator": "HTML table row th=판단"
+    },
+    {
+      "unit_id": "case_decision",
+      "role": "decision",
+      "text": "□ 피신청인은 신청인에게 495,000원(물품 가액 489,000원, 운임 6,000원)을 지급하는 것으로 조정결정함.",
+      "source_label": "결정사항",
+      "source_locator": "HTML table row th=결정사항"
+    },
+    {
+      "unit_id": "case_cited_law",
+      "role": "cited_law",
+      "text": "상법 제54조, 제134조, 약관의 규제에 관한 법률 제2조, 제5조",
+      "source_label": "관련법률",
+      "source_locator": "HTML table row th=관련법률"
+    }
+  ],
+  "embedding_candidate": true,
+  "needs_manual_review": false,
+  "publication_date": null,
+  "updated_date": "2025-02-12",
+  "decision_date": null,
+  "effective_date": null,
+  "warnings": [
+    "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
+    "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+  ],
+  "processed_at": "2026-10-10T14:04:23.637032+00:00",
+  "source_missing_fields": []
+}

@@ -1,10 +1,11 @@
 import json
 import copy
 import unittest
+import tempfile
 from pathlib import Path
 
 from src.Scripts.preprocess_guides import (
-    INPUT_DIR, OUTPUT_DIR, clean_page, headings, page_kind, run, sha256, apply_visual_review, outside_tables,
+    INPUT_DIR, OUTPUT_DIR, ROOT, clean_page, headings, page_kind, run, sha256, apply_visual_review, outside_tables, validate_source_coverage,
 )
 
 
@@ -37,7 +38,7 @@ class GuidePreprocessingTests(unittest.TestCase):
 
     def test_saved_documents_match_pdf_hashes_and_page_manifest(self):
         expected = {'[pdf]인터넷 쇼핑.pdf': 35, '[pdf]주택임대차.pdf': 87,
-                    '[pdf]중고거래 피해자.pdf': 38, '[pdf]해고근로자.pdf': 102}
+                    '[pdf]중고거래 피해자.pdf': 38, '[pdf]해고근로자.pdf': 102, '[pdf]택배.pdf':32}
         report = json.loads((OUTPUT_DIR / 'guide_preprocessing_report.json').read_text(encoding='utf-8'))
         self.assertEqual(report['failures'], [])
         self.assertEqual({e['source_file'] for e in report['saved']}, set(expected))
@@ -116,7 +117,44 @@ class GuidePreprocessingTests(unittest.TestCase):
                         self.assertEqual(image['image_sha256'], sha256(ROOT / image['image_path']))
                         self.assertEqual(summary['raw_sha256'], doc['raw_sha256'])
                         total += 1
-        self.assertEqual(total, 18)
+        self.assertEqual(total, 21)
+
+    def test_every_current_raw_pdf_has_a_processing_record(self):
+        report=json.loads((OUTPUT_DIR/'guide_preprocessing_report.json').read_text(encoding='utf-8'))
+        self.assertTrue(validate_source_coverage(report))
+        self.assertEqual({e['source_file'] for e in report['saved']+report['failures']},
+                         {p.name for p in INPUT_DIR.glob('*.pdf')})
+
+    def test_coverage_detects_new_removed_changed_and_duplicate_sources(self):
+        with tempfile.TemporaryDirectory(dir=ROOT/'tmp') as directory:
+            folder=Path(directory)
+            original=folder/'original.pdf';original.write_bytes(b'original')
+            report={'saved':[{'source_file':'original.pdf'}],'failures':[],
+                    'input_files':[{'source_file':'original.pdf','raw_sha256':sha256(original)}]}
+            self.assertTrue(validate_source_coverage(report,folder))
+            added=folder/'new.pdf';added.write_bytes(b'new')
+            with self.assertRaisesRegex(ValueError,'미기록'):
+                validate_source_coverage(report,folder)
+            added.unlink()
+            original.write_bytes(b'changed')
+            with self.assertRaisesRegex(ValueError,'지문 변경'):
+                validate_source_coverage(report,folder)
+            original.write_bytes(b'original')
+            duplicate=copy.deepcopy(report);duplicate['saved']*=2
+            with self.assertRaises(ValueError):validate_source_coverage(duplicate,folder)
+            original.unlink()
+            with self.assertRaisesRegex(ValueError,'원본 없음'):
+                validate_source_coverage(report,folder)
+
+    def test_parcel_guide_images_are_reviewed_and_only_front_matter_is_excluded(self):
+        doc=json.loads((OUTPUT_DIR/'guide_94e9d4bd30eadf0b.json').read_text(encoding='utf-8'))
+        self.assertEqual(doc['page_count'],32)
+        self.assertEqual([p['page_number'] for p in doc['pages'] if not p['embedding_candidate']],[1,2,3])
+        for number in [9,29,31]:
+            page=doc['pages'][number-1]
+            self.assertTrue(page['embedding_candidate'])
+            self.assertEqual(len(page['visual_summaries']),1)
+            self.assertFalse(page['needs_manual_review'])
 
 
 if __name__ == '__main__':

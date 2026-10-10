@@ -1,10 +1,12 @@
 import copy
 import json
 import unittest
+import tempfile
+from pathlib import Path
 from collections import Counter
 
 from src.Scripts.chunk_guides import INPUT_DIR, OUTPUT_DIR, make_chunks, run
-from src.Scripts.preprocess_guides import sha256
+from src.Scripts.preprocess_guides import sha256, ROOT
 
 
 class GuideChunkTests(unittest.TestCase):
@@ -24,7 +26,7 @@ class GuideChunkTests(unittest.TestCase):
             expected = {p['page_number'] for p in doc['pages'] if p['embedding_candidate']}
             self.assertEqual({c['page_number'] for c in chunks}, expected)
             self.assertEqual(entry['represented_pages'], sorted(expected))
-        self.assertEqual(sum(len(e['represented_pages']) for e in self.report['saved']), 248)
+        self.assertEqual(sum(len(e['represented_pages']) for e in self.report['saved']), 277)
 
     def test_body_windows_cover_every_character_with_correct_offsets(self):
         for entry, doc, chunks in self.documents:
@@ -62,7 +64,28 @@ class GuideChunkTests(unittest.TestCase):
                     self.assertTrue(c['not_full_transcription'])
                     self.assertIn('전문 전사 아님', c['embedding_text'])
                     count += 1
-        self.assertEqual(count, 18)
+        self.assertEqual(count, 21)
+
+    def test_parcel_guide_chunks_keep_all_body_pages_tables_and_reviewed_images(self):
+        entry,doc,chunks=next(x for x in self.documents if x[1]['source_file']=='[pdf]택배.pdf')
+        self.assertEqual(entry['represented_pages'],list(range(4,33)))
+        self.assertEqual(entry['excluded_pages'],[1,2,3])
+        self.assertEqual([p['page_kind'] for p in entry['exclusion_details']],['cover','publication_notice','table_of_contents'])
+        self.assertEqual(sum(c['content_type']=='table' for c in chunks),7)
+        self.assertEqual({c['page_number'] for c in chunks if c['content_type']=='image_summary'},{9,29,31})
+
+    def test_unrecorded_raw_source_blocks_chunk_writes(self):
+        with tempfile.TemporaryDirectory(dir=ROOT/'tmp') as directory:
+            root=Path(directory);raw=root/'raw';processed=root/'processed';output=root/'chunks'
+            raw.mkdir();processed.mkdir()
+            first=raw/'first.pdf';first.write_bytes(b'first')
+            report={'raw_input_dir':str(raw),'saved':[{'source_file':'first.pdf'}],'failures':[],
+                    'input_files':[{'source_file':'first.pdf','raw_sha256':sha256(first)}]}
+            (processed/'guide_preprocessing_report.json').write_text(json.dumps(report),encoding='utf-8')
+            (raw/'new.pdf').write_bytes(b'new')
+            with self.assertRaisesRegex(ValueError,'미기록'):
+                run(processed,output)
+            self.assertFalse(output.exists())
 
     def test_ids_metadata_and_report_counts(self):
         all_chunks = []

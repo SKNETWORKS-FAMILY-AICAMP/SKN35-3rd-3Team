@@ -203,6 +203,27 @@ def write_json(path, data):
     temporary.replace(path)
 
 
+def validate_source_coverage(report, input_dir=None):
+    """추가·삭제·변경된 원본 또는 처리 상태 누락을 감지한다."""
+    directory = Path(input_dir) if input_dir is not None else ROOT / report.get('raw_input_dir', 'data/raw/guides')
+    current = {p.name:p for p in directory.glob('*.pdf')}
+    records = report['saved'] + report['failures']
+    names = [entry['source_file'] for entry in records]
+    if len(names) != len(set(names)) or set(names) != set(current):
+        missing = sorted(set(current)-set(names))
+        stale = sorted(set(names)-set(current))
+        raise ValueError(f'원본 PDF 처리 기록 불일치: 미기록={missing}, 원본 없음={stale}')
+    inventory = report.get('input_files')
+    if inventory is None:
+        raise ValueError('원본 목록 기록이 없습니다. 전처리를 다시 실행하세요.')
+    if len(inventory) != len(current) or {e['source_file'] for e in inventory} != set(current):
+        raise ValueError('원본 PDF 목록 기록 불일치')
+    for entry in inventory:
+        if sha256(current[entry['source_file']]) != entry['raw_sha256']:
+            raise ValueError('원본 PDF 지문 변경: '+entry['source_file'])
+    return True
+
+
 def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
     input_dir, output_dir = Path(input_dir).resolve(), Path(output_dir).resolve()
     if output_dir.is_relative_to(input_dir) or output_dir.is_relative_to(ROOT / "data/raw"):
@@ -211,7 +232,9 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
     if not paths:
         raise ValueError("입력 폴더에 PDF가 없습니다.")
     output_dir.mkdir(parents=True, exist_ok=True)
-    report = {"processed_at": datetime.now(timezone.utc).isoformat(), "saved": [], "failures": []}
+    report = {"processed_at": datetime.now(timezone.utc).isoformat(), "saved": [], "failures": [],
+              "raw_input_dir": input_dir.relative_to(ROOT).as_posix() if input_dir.is_relative_to(ROOT) else str(input_dir),
+              "input_files": [{"source_file":p.name,"raw_sha256":sha256(p)} for p in paths]}
     for path in paths:
         print(f"[추출 시작] {path.name}", flush=True)
         try:
@@ -233,6 +256,7 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
         except Exception as exc:
             report["failures"].append({"source_file": path.name, "error": f"{type(exc).__name__}: {exc}"})
     report["usage"] = "saved 목록의 JSON을 읽고 pages.embedding_candidate를 확인하세요. 표의 rows와 페이지 번호를 보존한 청크 생성은 별도 단계입니다."
+    validate_source_coverage(report, input_dir)
     write_json(output_dir / "guide_preprocessing_report.json", report)
     return report
 

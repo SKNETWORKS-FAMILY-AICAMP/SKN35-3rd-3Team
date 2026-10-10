@@ -1,0 +1,223 @@
+{
+  "document_count": 23,
+  "chunk_count": 169,
+  "size": 1200,
+  "overlap": 120,
+  "chunks_sha256": "f78621d8d9a624ca4c4dffd6408e8e66de8620051ac545f2171a8d975926fdbb",
+  "inputs": [
+    {
+      "file": "consumer_dispute_standard.json",
+      "processed_sha256": "7860880c19bc68f6e72c588cf7932bd5a0d749858054bbdd7841f616c2f924d9"
+    },
+    {
+      "file": "consumer_dispute_standard_appendix_0.json",
+      "processed_sha256": "d112ae59a895bb03ffb053075fb5a9acbb4ed0d1eed837f75c0d975a815fde39"
+    },
+    {
+      "file": "consumer_dispute_standard_appendix_1.json",
+      "processed_sha256": "cbbd1caa399b5e16d9decab6902b91330cb772c1a2ab89d087db47e77e54468f"
+    },
+    {
+      "file": "consumer_dispute_standard_appendix_2.json",
+      "processed_sha256": "b38b6cb9d9f138758e6175f411239bca4c15eee44ddd210d0faaa0d723127771"
+    },
+    {
+      "file": "consumer_dispute_standard_appendix_3.json",
+      "processed_sha256": "e6488ff0ee6c32016a756d54f64eda3ee0e92245409a91fa01d4df451b3c012b"
+    },
+    {
+      "file": "kca_pilates_1003941650.json",
+      "processed_sha256": "e9c718d1e59a229113697007b0e482ee41fcbfd584ccd8efd50e6bbc9d74e3a3"
+    },
+    {
+      "file": "kca_parcel_1003817349.json",
+      "processed_sha256": "7085ceaa44a6310af018e2b1a2dcd191befc41d29c15de8d68c97b167fcc716e"
+    },
+    {
+      "file": "kca_discovery_fitness.json",
+      "processed_sha256": "bbbebda067aa76f51adb4d718a04b8d08c2c6deacd07be9cfe5f4a2e974390c8"
+    },
+    {
+      "file": "ftc_terms_discovery.json",
+      "processed_sha256": "03943a70faf5bd624ccad61c163c45eae961ef610e890360763b2cc6f7a94f7e"
+    },
+    {
+      "file": "kca_discovery_parcel.json",
+      "processed_sha256": "956085a09c614700f227720a0cb453c051c3a685907e10cb7e7673a58eed02eb"
+    },
+    {
+      "file": "kca_discovery_shopping.json",
+      "processed_sha256": "3b71db4dd524f53ea1d6a6b121771c223b4658ed4d0dbbdd3ea6d0e3ddbe6aae"
+    },
+    {
+      "file": "ftc_terms_discovery_parcel.json",
+      "processed_sha256": "53bb4809b87e0f08ae82c12e279aaa5ac537d8bc231ee9ecdbb2cf0efd434803"
+    },
+    {
+      "file": "kca_case_1003941875.json",
+      "processed_sha256": "14a28cea303855c1f28df8ed89542274dcfebd91a8d7a9f79dd74ccaddac32fd"
+    },
+    {
+      "file": "kca_case_1003892170.json",
+      "processed_sha256": "42a2419c67aaccc603c227d4866e8eec02046fe9d3176fef5b33f106b5820129"
+    },
+    {
+      "file": "kca_case_1003892039.json",
+      "processed_sha256": "af07f214beb8bd3dc67d58b6307839fc940d2be247fa357b4b1046b8753ed7b5"
+    },
+    {
+      "file": "kca_case_1003817065.json",
+      "processed_sha256": "790fa3c07eac6479422e1445bfafde0eafefef2d057b90bd2bececb7c8a20567"
+    },
+    {
+      "file": "kca_case_1003739114.json",
+      "processed_sha256": "6b23cd88883f10841f3e171dd676cc0f99fbe0df99e07240164405334bd6d92a"
+    },
+    {
+      "file": "kca_case_1003640779.json",
+      "processed_sha256": "291e2ac4c806d72d3b05ca9188c3f8f31a086c920e2abe0341b31ea8fdec5fc8"
+    },
+    {
+      "file": "ftc_terms_47762.json",
+      "processed_sha256": "7d0bef6dc492e86249eaf197b799abd55566859dad1999459b8a2b008086a08d"
+    },
+    {
+      "file": "ftc_terms_46118.json",
+      "processed_sha256": "3eaefaa99188a4e04383010f005125df82cc008674439ecfc432432f96e56ab1"
+    },
+    {
+      "file": "kca_case_1003475989.json",
+      "processed_sha256": "106f918102759c8f529de1c20fc3bf489e191109b41d99645f3a9128544ab931"
+    },
+    {
+      "file": "kca_case_1003148978.json",
+      "processed_sha256": "c04e72cd65fa2e8dba546d25011aa6ec1ecd1467f33345798864e9791883251e"
+    },
+    {
+      "file": "kca_case_1002730975.json",
+      "processed_sha256": "b8cda3e5d1ebe6194db091878a8c078e59185b14be38c3b7334b99fd38f228b3"
+    },
+    {
+      "file": "kca_case_1001329664.json",
+      "processed_sha256": "774a38c3f6b448b6a1fe22230a99ad8de07ac63045255c78ca11cff6e3122f6b"
+    },
+    {
+      "file": "kca_case_1001243565.json",
+      "processed_sha256": "844863871afeec418e3935427194a7d010cfdddd4e3faf0135c2b9422e3c14dc"
+    },
+    {
+      "file": "kca_case_1003940398.json",
+      "processed_sha256": "17e02051b591c457627dc11d672acf16936a896ca44d0560626cd93c2de22aca"
+    },
+    {
+      "file": "kca_case_1003890245.json",
+      "processed_sha256": "111ef3fd10867970c9ba4a321f1461d0cd1f43edd6629ea6fade186cb255d03b"
+    },
+    {
+      "file": "kca_case_1003641715.json",
+      "processed_sha256": "b49da81aedb75fc15e71948b0cb38ed026577a1dda33fdd31454ee6759280fd1"
+    },
+    {
+      "file": "kca_case_1003641375.json",
+      "processed_sha256": "d2dbafade6093b6b60462a08a00041e33b4f53d485b5fc981e39fd105e56ff60"
+    },
+    {
+      "file": "kca_case_1003604873.json",
+      "processed_sha256": "298a164aebc21bafb3b42b6fe474bc53d8e229facc6f277b38bc52022b010514"
+    },
+    {
+      "file": "kca_case_1003164054.json",
+      "processed_sha256": "5eaa966067fa09d325a0132b5658a64378685c3cfb9d965c8e3b6f5f57e73339"
+    },
+    {
+      "file": "ftc_terms_11185.json",
+      "processed_sha256": "492c8d84057ad8e4d3b35a346c44d75d70aef5f71507beb70724001c61160775"
+    },
+    {
+      "file": "ftc_terms_11125.json",
+      "processed_sha256": "5d3a2c0b8981178abfb2763fd4029fdba5ef17b5234752083becff402aadcf01"
+    },
+    {
+      "file": "ftc_terms_47762_file_05d51a47.json",
+      "processed_sha256": "235a6f878ad107e5d0bfdf8c6ed9faf368e8e050ef1056e27980c013ccc8287d"
+    },
+    {
+      "file": "ftc_terms_46118_file_5b139f26.json",
+      "processed_sha256": "4c3ea12bc52b67eabd2f1b3b2de4721f3cc9a6cc1d14dd320c1dc6eccf33aac5"
+    },
+    {
+      "file": "ftc_terms_11185_file_a321590d.json",
+      "processed_sha256": "5027669a87a362db8a43dd2e5b0cff997e28f3b99e774ba407d6a0f61a378102"
+    },
+    {
+      "file": "ftc_terms_11125_file_e27d5f98.json",
+      "processed_sha256": "85816fb29fc55702c5f50a3db7a6416765e5b662686449c96b7d4dfaf2741eb9"
+    }
+  ],
+  "oversize_atomic_count": 8,
+  "usage": "embedding_text 사용. 표·약관 조문은 원자 단위 유지. 실제 임베딩 전 모델 토큰 제한 확인.",
+  "excluded": [
+    {
+      "source_id": "consumer_dispute_standard_appendix_0",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_1",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_2",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_3",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "kca_discovery_fitness",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_discovery",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "kca_discovery_parcel",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "kca_discovery_shopping",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_discovery_parcel",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_47762",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_46118",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_11185",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_11125",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_11125_file_e27d5f98",
+      "reason": "processed_historical"
+    }
+  ],
+  "duplicate_aliases": [
+    {
+      "source_id": "kca_case_1003817349",
+      "representative_id": "kca_parcel_1003817349"
+    }
+  ]
+}

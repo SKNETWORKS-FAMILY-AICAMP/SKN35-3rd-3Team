@@ -1,10 +1,39 @@
 # SKN35-3rd-3Team
 
-## 기본 임베딩 설정
+## 임베딩 방식 빠른 선택
 
-기본 임베딩 모델은 OpenAI `text-embedding-3-small`이며 출력 벡터는
+팀 기본값은 **OpenAI API**입니다. 사용할 방식에 따라 프로젝트 루트의
+`.env`만 변경합니다.
+
+| 구분 | OpenAI API | NVIDIA API | 개인 그래픽 카드 |
+| --- | --- | --- | --- |
+| `EMBEDDING_PROVIDER` | `openai` | `nvidia` | `local_huggingface` |
+| 모델 | `text-embedding-3-small` | `nvidia/nemotron-3-embed-1b` | 팀에서 정한 Hugging Face 모델 |
+| 벡터 차원 | 1536 | 2048 | 선택한 모델의 실제 차원 |
+| 필요한 키 | `OPENAI_API_KEY` | `NVIDIA_API_KEY` | 없음 |
+| 추가 설치 | 없음 | 없음 | `sentence-transformers` |
+| 컬렉션 | OpenAI 전용 | NVIDIA 전용 | 로컬 모델 전용 |
+
+세 방식의 벡터는 같은 Qdrant 컬렉션에 섞지 않습니다. 방식을 변경하면 문서를
+다시 임베딩하고 해당 방식의 전용 컬렉션에 적재합니다.
+
+### 공통 준비
+
+```powershell
+uv sync
+Copy-Item .env.example .env
+```
+
+실제 API 키가 들어 있는 `.env`는 Git에 올리지 않습니다. 로컬 Qdrant를
+인증 없이 사용할 때는 `QDRANT_API_KEY`를 비워둘 수 있습니다.
+
+## 1. OpenAI API 사용
+
+팀 기본 임베딩 모델은 OpenAI `text-embedding-3-small`이며 출력 벡터는
 1536차원입니다. 개인 `.env`에는 API 키를 입력하고, 실제 키가 들어 있는
 `.env`는 Git에 올리지 않습니다.
+
+### `.env`에서 직접 변경할 값
 
 ```env
 EMBEDDING_PROVIDER=openai
@@ -25,10 +54,12 @@ QDRANT_COLLECTION=team_documents_openai_dev
 - 질문 검색에도 문서를 적재할 때 사용한 것과 동일한 임베딩 모델과 차원을
   사용해야 합니다.
 
-## NVIDIA API로 전환하는 경우
+## 2. NVIDIA API 사용
 
 NVIDIA는 현재 기본값이 아니지만 기존 코드에서 계속 지원합니다. 전환할 때는
 개인 `.env`의 제공자·모델·차원·컬렉션을 함께 변경합니다.
+
+### `.env`에서 직접 변경할 값
 
 ```env
 EMBEDDING_PROVIDER=nvidia
@@ -39,7 +70,7 @@ EMBEDDING_NORMALIZED=true
 QDRANT_COLLECTION=team_documents_nvidia_dev
 ```
 
-## 개인 GPU로 로컬 임베딩을 생성하는 경우
+## 3. 개인 그래픽 카드 사용
 
 기본 OpenAI 설정과 별도로 `local_huggingface` 제공자를 지원합니다. 이 방식은
 개인 PC의 GPU 또는 CPU에서 Sentence Transformers 모델을 실행하므로 API 호출
@@ -49,9 +80,13 @@ QDRANT_COLLECTION=team_documents_nvidia_dev
 프로젝트 의존성에는 포함하지 않으므로 다른 팀원의 환경에는 영향을 주지
 않습니다.
 
+### 개인 환경에만 추가 설치
+
 ```powershell
 uv pip install sentence-transformers
 ```
+
+### `.env`에서 직접 변경할 값
 
 ```env
 EMBEDDING_PROVIDER=local_huggingface
@@ -71,7 +106,7 @@ QDRANT_COLLECTION=team_documents_local_model_dev
 - 개인 GPU는 벡터 생성에 사용하며 Qdrant 검색 서버를 GPU로 바꾸는 설정은
   아닙니다.
 
-### HTTP 429 오류가 발생하는 경우
+## HTTP 429 오류가 발생하는 경우
 
 HTTP 429는 일반적으로 Qdrant 오류가 아니라 임베딩 API의 호출 제한 또는
 사용 한도 문제입니다.

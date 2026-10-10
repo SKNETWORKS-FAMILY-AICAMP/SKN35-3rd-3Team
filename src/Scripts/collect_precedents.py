@@ -21,6 +21,7 @@ import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import requests
 from dotenv import load_dotenv
@@ -36,6 +37,19 @@ API_BASE = "https://www.law.go.kr/DRF/"
 def fields(element):
     """빈 필드와 본문 내 HTML 문자열을 포함해 API 필드를 보존한다."""
     return {child.tag: "".join(child.itertext()) for child in element}
+
+
+def sanitize_listing(listing):
+    """목록 링크의 OC 인증값만 제거하고 판례 본문은 건드리지 않는다."""
+    result = dict(listing)
+    for key, value in result.items():
+        if isinstance(value, str) and "?" in value:
+            parts = urlsplit(value)
+            params = parse_qsl(parts.query, keep_blank_values=True)
+            if any(name.lower() == "oc" for name, _ in params):
+                result[key] = urlunsplit(parts._replace(query=urlencode(
+                    [(name, val) for name, val in params if name.lower() != "oc"])))
+    return result
 
 
 def request_xml(session, endpoint, oc, **params):
@@ -68,9 +82,14 @@ def valid_saved(path, identifier):
         return False
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(data, dict) or not isinstance(data.get("detail"), dict):
+            return False
+        detail = data["detail"]
+        body = detail.get("판례내용")
         return (
             data.get("precedent_id") == identifier
-            and bool(data.get("detail", {}).get("판례내용", "").strip())
+            and detail.get("판례정보일련번호") == identifier
+            and isinstance(body, str) and bool(body.strip())
         )
     except (ValueError, OSError, AttributeError):
         return False
@@ -110,7 +129,7 @@ def collect(query, limit, delay):
                 for entry in entries:
                     if len(seen) >= limit:
                         break
-                    listing = fields(entry)
+                    listing = sanitize_listing(fields(entry))
                     identifier = listing.get("판례일련번호", "").strip()
                     if not identifier.isdigit():
                         raise RuntimeError("목록 응답에 유효한 판례일련번호가 없습니다.")

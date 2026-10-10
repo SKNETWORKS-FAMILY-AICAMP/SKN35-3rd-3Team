@@ -18,7 +18,7 @@
     "판결유형": "처분청 패소",
     "선고": "",
     "데이터출처명": "지방세법령정보시스템",
-    "판례상세링크": "/DRF/lawService.do?OC=project31010&target=prec&ID=618723&type=HTML&mobileYn="
+    "판례상세링크": "/DRF/lawService.do?target=prec&ID=618723&type=HTML&mobileYn="
   },
   "detail": {
     "판례정보일련번호": "618723",

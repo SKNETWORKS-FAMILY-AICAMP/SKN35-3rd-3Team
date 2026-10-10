@@ -188,9 +188,19 @@ def preprocess(row, raw):
     sections = get_sections(texts["full_text"])
     is_partial = row["status"] == "부분 사용"
     selected = partial_spans(identifier, texts["full_text"]) if is_partial else sections
+    retrieval_segments = []
     if is_partial:
-        retrieval_text = "\n\n".join(
-            f"[{s['heading']} / {ROLE_LABELS[s['role']]}]\n{s['text'].strip()}" for s in selected)
+        parts = []
+        cursor = 0
+        for s in selected:
+            header = f"[{s['heading']} / {ROLE_LABELS[s['role']]}]"
+            part = f"{header}\n{s['text'].strip()}"
+            retrieval_segments.append({"start": cursor, "end": cursor + len(part),
+                                       "heading": s['heading'], "role": s['role'],
+                                       "context_header": header})
+            parts.append(part)
+            cursor += len(part) + 2
+        retrieval_text = "\n\n".join(parts)
     else:
         # 참조 목록은 metadata로 보존하고, 검색용 본문은 요지·판시사항과 전문으로 구성한다.
         retrieval_text = "\n\n".join(f"[{title}]\n{texts[key]}" for key, title in
@@ -225,6 +235,7 @@ def preprocess(row, raw):
         "relevance_status": row["status"], "relevance_reason": row["reason"],
         "texts": texts, "sections": sections, "selected_spans": selected,
         "retrieval_text": retrieval_text,
+        "retrieval_segments": retrieval_segments,
         "retrieval_scope": "selected_spans" if is_partial else "full_document",
         "missing_fields": [field for key, field in TEXT_FIELDS.items() if not texts[key]],
         "warnings": warnings, "needs_manual_review": is_partial and not reviewed,

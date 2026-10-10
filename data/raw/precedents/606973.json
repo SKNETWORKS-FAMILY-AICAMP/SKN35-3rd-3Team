@@ -18,7 +18,7 @@
     "판결유형": "판결 : 항소",
     "선고": "선고",
     "데이터출처명": "대법원",
-    "판례상세링크": "/DRF/lawService.do?OC=project31010&target=prec&ID=606973&type=HTML&mobileYn="
+    "판례상세링크": "/DRF/lawService.do?target=prec&ID=606973&type=HTML&mobileYn="
   },
   "detail": {
     "판례정보일련번호": "606973",

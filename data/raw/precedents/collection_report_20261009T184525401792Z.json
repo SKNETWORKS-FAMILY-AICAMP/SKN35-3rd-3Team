@@ -1,0 +1,14 @@
+{
+  "query": "보증금반환",
+  "started_at": "2026-10-09T18:45:19.371635+00:00",
+  "limit": 20,
+  "saved": [],
+  "skipped": [],
+  "failures": [
+    {
+      "page": 1,
+      "error": "API 요청 실패: ConnectionError, HTTP=None"
+    }
+  ],
+  "finished_at": "2026-10-09T18:45:25.401792+00:00"
+}

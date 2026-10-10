@@ -36,7 +36,8 @@ uv run python -m src.Scripts.qdrant_setup init
 ## 임베딩 제공자 변경
 
 현재 기본값은 OpenAI `text-embedding-3-small`, 1536차원입니다.
-`EMBEDDING_PROVIDER`는 `nvidia`, `openai`, `openai_compatible`을 지원합니다.
+`EMBEDDING_PROVIDER`는 `openai`, `nvidia`, `openai_compatible`,
+`local_huggingface`를 지원합니다.
 
 다른 키를 쓰는 것과 다른 모델을 쓰는 것은 구분해야 합니다.
 
@@ -52,6 +53,22 @@ NVIDIA_API_KEY=개인키
 EMBEDDING_MODEL=nvidia/nemotron-3-embed-1b
 EMBEDDING_DIMENSION=2048
 QDRANT_COLLECTION=team_documents_nvidia_dev
+```
+
+개인 GPU에서 Sentence Transformers 모델을 직접 실행할 때는 선택 패키지를
+설치한 뒤 로컬 모델 전용 컬렉션을 사용합니다.
+
+```powershell
+uv pip install sentence-transformers
+```
+
+```dotenv
+EMBEDDING_PROVIDER=local_huggingface
+EMBEDDING_MODEL=팀에서_정한_Hugging_Face_모델_ID
+EMBEDDING_DIMENSION=모델의_실제_차원
+EMBEDDING_DEVICE=cuda
+EMBEDDING_BATCH_SIZE=32
+QDRANT_COLLECTION=team_documents_local_model_dev
 ```
 
 예를 들어 다른 OpenAI 호환 API를 쓸 때는 개인 `.env`에 모델 규격과 전용

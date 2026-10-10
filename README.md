@@ -39,6 +39,38 @@ EMBEDDING_NORMALIZED=true
 QDRANT_COLLECTION=team_documents_nvidia_dev
 ```
 
+## 개인 GPU로 로컬 임베딩을 생성하는 경우
+
+기본 OpenAI 설정과 별도로 `local_huggingface` 제공자를 지원합니다. 이 방식은
+개인 PC의 GPU 또는 CPU에서 Sentence Transformers 모델을 실행하므로 API 호출
+한도와 429 오류의 영향을 받지 않습니다.
+
+로컬 GPU를 사용할 사람만 선택 패키지를 자신의 가상환경에 설치합니다. 기본
+프로젝트 의존성에는 포함하지 않으므로 다른 팀원의 환경에는 영향을 주지
+않습니다.
+
+```powershell
+uv pip install sentence-transformers
+```
+
+```env
+EMBEDDING_PROVIDER=local_huggingface
+EMBEDDING_MODEL=팀에서_정한_Hugging_Face_모델_ID
+EMBEDDING_DIMENSION=모델의_실제_출력_차원
+EMBEDDING_NORMALIZED=true
+EMBEDDING_DEVICE=cuda
+EMBEDDING_BATCH_SIZE=32
+QDRANT_COLLECTION=team_documents_local_model_dev
+```
+
+- CUDA가 없는 PC에서는 `EMBEDDING_DEVICE=cpu`를 사용합니다.
+- 팀이 사용할 모델 ID·버전·차원·정규화 방식은 동일하게 고정합니다.
+- 모델이 query/document 접두사를 요구하면 `EMBEDDING_QUERY_PREFIX`와
+  `EMBEDDING_DOCUMENT_PREFIX`를 모델 설명에 맞게 설정합니다.
+- OpenAI, NVIDIA 및 로컬 모델의 벡터는 각각 별도 Qdrant 컬렉션에 저장합니다.
+- 개인 GPU는 벡터 생성에 사용하며 Qdrant 검색 서버를 GPU로 바꾸는 설정은
+  아닙니다.
+
 ### HTTP 429 오류가 발생하는 경우
 
 HTTP 429는 일반적으로 Qdrant 오류가 아니라 임베딩 API의 호출 제한 또는

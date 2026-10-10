@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Protocol, cast
 
 from src.const.qdrant_config import EmbeddingSettings
+from src.const.vector_data_contract import normalize_vector
 from src.const.vector_db_defaults import NVIDIA_EMBEDDING_BASE_URL
 
 
@@ -31,6 +32,12 @@ class EmbeddingEndpointLike(Protocol):
 
 class EmbeddingClientLike(Protocol):
     embeddings: EmbeddingEndpointLike
+
+
+class SentenceTransformerModelLike(Protocol):
+    """로컬 Sentence Transformers 모델의 최소 실행 인터페이스."""
+
+    def encode(self, sentences: Sequence[str], **kwargs: object) -> object: ...
 
 
 @dataclass
@@ -111,6 +118,67 @@ class NvidiaEmbedder(OpenAICompatibleEmbedder):
         )
 
 
+@dataclass
+class LocalHuggingFaceEmbedder:
+    """개인 GPU 또는 CPU에서 Sentence Transformers 모델을 실행합니다."""
+
+    model: SentenceTransformerModelLike
+    model_name: str
+    dimension: int
+    batch_size: int = 32
+    normalize_embeddings: bool = True
+    query_prefix: str = ""
+    document_prefix: str = ""
+
+    def _embed(
+        self,
+        texts: Sequence[str],
+        *,
+        prefix: str,
+    ) -> list[list[float]]:
+        normalized_texts = [text.strip() for text in texts]
+        if not normalized_texts or any(not text for text in normalized_texts):
+            raise ValueError("임베딩할 텍스트는 비어 있을 수 없습니다.")
+
+        encoded = self.model.encode(
+            [f"{prefix}{text}" for text in normalized_texts],
+            batch_size=self.batch_size,
+            normalize_embeddings=self.normalize_embeddings,
+            convert_to_numpy=True,
+            show_progress_bar=False,
+        )
+        to_list = getattr(encoded, "tolist", None)
+        raw_vectors = to_list() if callable(to_list) else encoded
+        if not isinstance(raw_vectors, Sequence) or isinstance(
+            raw_vectors,
+            (str, bytes),
+        ):
+            raise TypeError("로컬 임베딩 결과는 벡터 배열이어야 합니다.")
+        if len(raw_vectors) != len(normalized_texts):
+            raise RuntimeError("임베딩 응답 개수가 입력 개수와 다릅니다.")
+
+        vectors: list[list[float]] = []
+        for raw_vector in raw_vectors:
+            vector = list(normalize_vector(raw_vector))
+            if len(vector) != self.dimension:
+                raise ValueError(
+                    "로컬 임베딩 결과 차원이 설정과 다릅니다: "
+                    f"expected={self.dimension}, actual={len(vector)}"
+                )
+            vectors.append(vector)
+        return vectors
+
+    def embed_query(self, text: str) -> Sequence[float]:
+        """검색 질문 한 건을 로컬 벡터로 변환합니다."""
+
+        return self._embed([text], prefix=self.query_prefix)[0]
+
+    def embed_documents(self, texts: Sequence[str]) -> list[list[float]]:
+        """문서 청크를 로컬 벡터로 변환합니다."""
+
+        return self._embed(texts, prefix=self.document_prefix)
+
+
 def _first_api_key(*environment_names: str) -> str:
     """공통 키를 우선하고 제공자별 기존 키를 대체값으로 읽습니다."""
 
@@ -143,12 +211,61 @@ def _create_openai_client(
     return cast(EmbeddingClientLike, OpenAI(**client_options))
 
 
+def _positive_integer_env(name: str, default: int) -> int:
+    """선택 환경변수를 양의 정수로 읽습니다."""
+
+    raw_value = os.getenv(name, "").strip()
+    if not raw_value:
+        return default
+    try:
+        value = int(raw_value)
+    except ValueError as error:
+        raise ValueError(f"{name}은 정수여야 합니다.") from error
+    if value < 1:
+        raise ValueError(f"{name}은 1 이상이어야 합니다.")
+    return value
+
+
+def _create_local_huggingface_embedder(
+    settings: EmbeddingSettings,
+) -> LocalHuggingFaceEmbedder:
+    """선택 설치된 Sentence Transformers 모델을 지연 생성합니다."""
+
+    try:
+        from sentence_transformers import SentenceTransformer
+    except ModuleNotFoundError as error:
+        raise RuntimeError(
+            "개인 GPU 임베딩에는 sentence-transformers 설치가 필요합니다. "
+            "`uv pip install sentence-transformers` 실행 후 다시 시도하세요."
+        ) from error
+
+    assert settings.model is not None
+    assert settings.dimension is not None
+
+    device = os.getenv("EMBEDDING_DEVICE", "").strip()
+    model_options: dict[str, object] = {}
+    if device:
+        model_options["device"] = device
+
+    model = SentenceTransformer(settings.model, **model_options)
+    return LocalHuggingFaceEmbedder(
+        model=cast(SentenceTransformerModelLike, model),
+        model_name=settings.model,
+        dimension=settings.dimension,
+        batch_size=_positive_integer_env("EMBEDDING_BATCH_SIZE", 32),
+        normalize_embeddings=settings.normalized is not False,
+        query_prefix=os.getenv("EMBEDDING_QUERY_PREFIX", ""),
+        document_prefix=os.getenv("EMBEDDING_DOCUMENT_PREFIX", ""),
+    )
+
+
 def create_embedding_provider(
     settings: EmbeddingSettings,
 ) -> OpenAICompatibleEmbedder:
     """환경 설정에 맞는 로컬 임베딩 제공자를 생성합니다.
 
-    지원 값은 ``nvidia``, ``openai``, ``openai_compatible``입니다.
+    지원 값은 ``openai``, ``nvidia``, ``openai_compatible``,
+    ``local_huggingface``입니다.
     API 키는 공통 ``EMBEDDING_API_KEY``를 우선하며 기존 제공자별 키도
     지원합니다. 비밀값은 객체 외부로 출력하지 않습니다.
     """
@@ -201,9 +318,13 @@ def create_embedding_provider(
             dimension=settings.dimension,
         )
 
+    if provider in {"local_huggingface", "sentence_transformers"}:
+        return _create_local_huggingface_embedder(settings)
+
     raise ValueError(
         "지원하지 않는 EMBEDDING_PROVIDER입니다. "
-        "nvidia, openai, openai_compatible 중 하나를 사용하세요."
+        "openai, nvidia, openai_compatible, local_huggingface 중 "
+        "하나를 사용하세요."
     )
 
 

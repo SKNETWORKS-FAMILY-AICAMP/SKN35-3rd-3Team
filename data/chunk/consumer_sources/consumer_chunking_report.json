@@ -1,9 +1,10 @@
 {
+  "metadata_version": 1,
   "document_count": 23,
   "chunk_count": 169,
   "size": 1200,
   "overlap": 120,
-  "chunks_sha256": "f78621d8d9a624ca4c4dffd6408e8e66de8620051ac545f2171a8d975926fdbb",
+  "chunks_sha256": "e32e1e0c2033210672837627e9fa55099d9c5969d59504580ed996d74c67189d",
   "inputs": [
     {
       "file": "consumer_dispute_standard.json",

@@ -10,6 +10,8 @@ import unittest
 from collections import Counter
 from pathlib import Path
 
+from src.Scripts.chunk_metadata import normalize_chunk
+
 
 ROOT = Path(__file__).resolve().parents[3]
 CHUNKS_DIR = ROOT / "data/chunk/precedents"
@@ -30,6 +32,23 @@ QUESTIONS = [
 UNCOVERED = ["헬스장 이용권을 중도해지하면 환불은 얼마나 받나요?",
              "인터넷 쇼핑몰에서 옷을 샀는데 단순변심 반품 배송비는 누가 부담하나요?",
              "택배가 분실됐는데 누가 배상해야 하나요?"]
+
+
+def make_source_header(document, segment):
+    """확인된 사건 출처와 기존 구간 설명을 함께 표시한다. 없는 값은 추정하지 않는다."""
+    def label(key):
+        value = document.get(key)
+        return " ".join(str(value).split()) if value else "미확인"
+
+    lines = [f"[판례 / {label('case_name')} / {label('court')} / "
+             f"사건번호 {label('case_number')} / 판결일 {label('judgment_date')}]"]
+    if segment.get("context_header"):
+        lines.append(segment["context_header"])
+    else:
+        heading = " ".join(str(segment.get("heading") or "판례 검색 본문").split())
+        lines.append(f"[본문 구간: {heading}]")
+    lines.append(f"[출처: {label('source')} / {label('source_url')}]")
+    return "\n".join(lines)
 
 
 def make_chunks(document, size=900, overlap=120):
@@ -58,13 +77,14 @@ def make_chunks(document, size=900, overlap=120):
                      "retrieval_scope": document["retrieval_scope"], "warnings": document["warnings"]}
             chunk["role"] = segment.get("role", "full_document")
             chunk["section_heading"] = segment.get("heading", "판례 검색 본문")
-            chunk["context_header"] = segment.get("context_header", "")
-            chunk["embedding_text"] = (chunk["context_header"] + "\n" + chunk["text"]).strip()
+            chunk["section_context_header"] = segment.get("context_header", "")
+            chunk["context_header"] = make_source_header(document, segment)
+            chunk["embedding_text"] = chunk["context_header"] + "\n" + chunk["text"]
             chunks.append(chunk)
             if end == stop:
                 break
             start = max(start + 1, end - overlap)
-    return chunks
+    return [normalize_chunk(c, document) for c in chunks]
 
 
 def tokens(text):
@@ -179,8 +199,31 @@ class RetrievalTests(unittest.TestCase):
                 segment = next(s for s in doc["retrieval_segments"] if s["start"] <= chunk["start"] < s["end"])
                 self.assertLessEqual(chunk["end"], segment["end"])
                 self.assertEqual(chunk["role"], segment["role"])
-                self.assertTrue(chunk["embedding_text"].startswith(segment["context_header"]))
+                self.assertEqual(chunk["section_context_header"], segment["context_header"])
+                self.assertIn(segment["context_header"], chunk["context_header"].splitlines())
+                self.assertEqual(chunk["embedding_text"], chunk["context_header"] + "\n" + chunk["text"])
                 self.assertEqual(chunk["text"], doc["retrieval_text"][chunk["start"]:chunk["end"]])
+
+    def test_saved_headers_include_verified_provenance_and_original_section_headers(self):
+        chunks = [json.loads(line) for line in (CHUNKS_DIR / "chunks.jsonl").read_text(encoding="utf-8").splitlines() if line]
+        self.assertTrue(chunks)
+        for chunk in chunks:
+            with self.subTest(chunk_id=chunk["chunk_id"]):
+                for key in ("case_name", "case_number", "court", "judgment_date", "source_url"):
+                    self.assertIn(chunk[key], chunk["context_header"])
+                self.assertEqual(chunk["embedding_text"], chunk["context_header"] + "\n" + chunk["text"])
+                if chunk["section_context_header"]:
+                    self.assertIn(chunk["section_context_header"], chunk["context_header"].splitlines())
+                doc = json.loads((ROOT / "data/processed/precedents" / f"{chunk['precedent_id']}.json").read_text(encoding="utf-8"))
+                self.assertIn(doc["source"], chunk["context_header"])
+
+    def test_header_does_not_invent_missing_provenance_or_replace_argument_role(self):
+        document = {"case_name": "사건", "case_number": None}
+        header = make_source_header(document, {"context_header": "[주장 / 당사자 주장]"})
+        self.assertIn("사건번호 미확인", header)
+        self.assertIn("판결일 미확인", header)
+        self.assertIn("[주장 / 당사자 주장]", header)
+        self.assertIn("[출처: 미확인 / 미확인]", header)
 
 
 if __name__ == "__main__":

@@ -3,9 +3,11 @@ import json
 from pathlib import Path
 
 if __package__:
+    from .chunk_metadata import normalize_chunk, METADATA_VERSION
     from .preprocess_consumer_sources import OUTPUT_DIR as INPUT_DIR
     from .collect_consumer_sources import ROOT, digest, write_json
 else:
+    from chunk_metadata import normalize_chunk, METADATA_VERSION
     from preprocess_consumer_sources import OUTPUT_DIR as INPUT_DIR
     from collect_consumer_sources import ROOT, digest, write_json
 
@@ -57,7 +59,7 @@ def make_chunks(doc,size=1200,overlap=120):
             if end==len(text):
                 break
             start=max(start+1,end-overlap)
-    return chunks
+    return [normalize_chunk(c, doc) for c in chunks]
 
 
 def run():
@@ -84,7 +86,7 @@ def run():
     temporary=path.with_suffix('.jsonl.tmp')
     temporary.write_text(content,encoding='utf-8')
     temporary.replace(path)
-    result={'document_count':len({c['source_id'] for c in chunks}),'chunk_count':len(chunks),
+    result={'metadata_version':METADATA_VERSION,'document_count':len({c['source_id'] for c in chunks}),'chunk_count':len(chunks),
             'size':1200,'overlap':120,'chunks_sha256':digest(path.read_bytes()),'inputs':inputs,
             'oversize_atomic_count':sum(c['oversize_atomic_unit'] for c in chunks),
             'usage':'embedding_text 사용. 표·약관 조문은 원자 단위 유지. 실제 임베딩 전 모델 토큰 제한 확인.',

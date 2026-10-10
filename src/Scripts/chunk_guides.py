@@ -9,8 +9,10 @@ from collections import Counter
 from pathlib import Path
 
 if __package__:
+    from .chunk_metadata import normalize_chunk, METADATA_VERSION
     from .preprocess_guides import ROOT, OUTPUT_DIR as INPUT_DIR, sha256, write_json, validate_source_coverage
 else:
+    from chunk_metadata import normalize_chunk, METADATA_VERSION
     from preprocess_guides import ROOT, OUTPUT_DIR as INPUT_DIR, sha256, write_json, validate_source_coverage
 
 OUTPUT_DIR = ROOT / "data/chunk/guides"
@@ -71,7 +73,7 @@ def make_chunks(document, size=1200, overlap=120):
             append("image_summary", summary["image_index"], summary["summary"],
                    extraction_method="manual_visual_summary", visual_review=summary,
                    document_snapshot=True, not_full_transcription=True)
-    return chunks
+    return [normalize_chunk(c, document) for c in chunks]
 
 
 def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
@@ -94,7 +96,7 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
             raise ValueError('정제 보고서와 문서 출처 불일치')
         prepared.append((path, make_chunks(doc, size, overlap), doc))
     output_dir.mkdir(parents=True, exist_ok=True)
-    report = {"schema_version": 1, "size": size, "overlap": overlap, "saved": [],
+    report = {"metadata_version": METADATA_VERSION, "schema_version": 1, "size": size, "overlap": overlap, "saved": [],
               "usage": "saved 파일만 로드. embedding_text 사용. 이미지 요약은 수동 설명이며 기준일 당시 자료임. 임베딩은 아직 수행하지 않음."}
     for path, chunks, doc in prepared:
         filename = doc["guide_id"] + "_chunks.json"

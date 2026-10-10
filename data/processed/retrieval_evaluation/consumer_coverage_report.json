@@ -20,10 +20,10 @@
             "chunk_id": "613301_0005",
             "precedent_id": "613301",
             "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=613301",
-            "title": null,
+            "title": "시정명령및과징금납부명령취소",
             "role": "full_document",
             "unit_id": null,
-            "score": 88.27516
+            "score": 85.21831
           },
           {
             "chunk_id": "guide_23ffe4c8fd5715cb_p0084_table_0000",
@@ -32,7 +32,7 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 41.54414
+            "score": 41.8565
           },
           {
             "chunk_id": "guide_cad7b1de1e4dc64c_p0050_table_0000",
@@ -41,7 +41,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 40.97423
+            "score": 41.60077
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0007_body_0000",
@@ -50,7 +50,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 34.67891
+            "score": 35.21212
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0011_body_0001",
@@ -59,7 +59,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 31.98607
+            "score": 32.25871
           }
         ]
       },
@@ -75,16 +75,7 @@
             "title": "PT 수강 및 헬스장 이용계약 중도해지에 따른 대금 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 83.60135
-          },
-          {
-            "chunk_id": "613301_0003",
-            "precedent_id": "613301",
-            "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=613301",
-            "title": null,
-            "role": "full_document",
-            "unit_id": null,
-            "score": 82.23004
+            "score": 84.80996
           },
           {
             "chunk_id": "kca_case_1003817065_case_facts_0000",
@@ -93,7 +84,16 @@
             "title": "헬스장 이용 계약의 중도해지 및 잔여대금 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 78.90021
+            "score": 79.70224
+          },
+          {
+            "chunk_id": "613301_0005",
+            "precedent_id": "613301",
+            "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=613301",
+            "title": "시정명령및과징금납부명령취소",
+            "role": "full_document",
+            "unit_id": null,
+            "score": 78.94154
           },
           {
             "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_10_0000",
@@ -102,7 +102,7 @@
             "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_10",
-            "score": 61.29714
+            "score": 62.07066
           },
           {
             "chunk_id": "kca_case_1003892170_case_reasoning_0000",
@@ -111,7 +111,7 @@
             "title": "PT 수강 계약해지에 따른 잔여 대금 환급 및 배상 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 42.31157
+            "score": 43.08902
           }
         ]
       }
@@ -134,16 +134,16 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 43.91594
+            "score": 44.62534
           },
           {
             "chunk_id": "009318_282793_20260721_art_18_0_chunk_0000",
             "precedent_id": "law_009318",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=282793",
-            "title": null,
+            "title": "전자상거래 등에서의 소비자보호에 관한 법률",
             "role": null,
             "unit_id": null,
-            "score": 42.77294
+            "score": 43.5444
           },
           {
             "chunk_id": "guide_cad7b1de1e4dc64c_p0096_table_0000",
@@ -152,16 +152,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 35.66415
-          },
-          {
-            "chunk_id": "009883_284455_20260918_art_27_0_chunk_0000",
-            "precedent_id": "law_009883",
-            "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284455",
-            "title": null,
-            "role": null,
-            "unit_id": null,
-            "score": 34.608
+            "score": 35.93471
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0027_body_0000",
@@ -170,7 +161,16 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 34.38484
+            "score": 35.18967
+          },
+          {
+            "chunk_id": "009883_284455_20260918_art_27_0_chunk_0000",
+            "precedent_id": "law_009883",
+            "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284455",
+            "title": "근로자퇴직급여 보장법",
+            "role": null,
+            "unit_id": null,
+            "score": 34.81685
           }
         ]
       },
@@ -186,7 +186,7 @@
             "title": "[제10083호]요가·필라테스 표준약관 (2026. 7. 16. 제정)",
             "role": "standard_terms_article",
             "unit_id": "terms_article_8",
-            "score": 111.30175
+            "score": 113.52158
           },
           {
             "chunk_id": "consumer_dispute_standard_industry_fitness_refund_0000",
@@ -195,7 +195,7 @@
             "title": "소비자분쟁해결기준",
             "role": "industry_table",
             "unit_id": "industry_fitness_refund",
-            "score": 107.22323
+            "score": 108.92497
           },
           {
             "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_15_0000",
@@ -204,7 +204,7 @@
             "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_15",
-            "score": 78.04142
+            "score": 79.32601
           },
           {
             "chunk_id": "kca_case_1003739114_case_party_claims_0000",
@@ -213,7 +213,7 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 76.33024
+            "score": 77.32106
           },
           {
             "chunk_id": "kca_pilates_1003941650_case_reasoning_0000",
@@ -222,7 +222,7 @@
             "title": "필라테스 계약 중도해지에 따른 환급 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 69.41092
+            "score": 70.69229
           }
         ]
       }
@@ -245,7 +245,7 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 36.73582
+            "score": 37.39983
           },
           {
             "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
@@ -254,7 +254,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 35.25812
+            "score": 35.66094
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0021_body_0000",
@@ -263,7 +263,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 32.34587
+            "score": 33.12781
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0029_table_0000",
@@ -272,7 +272,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 31.54816
+            "score": 32.2713
           },
           {
             "chunk_id": "guide_246eabd0676d5957_p0032_body_0000",
@@ -281,7 +281,7 @@
             "title": "찾기쉬운 생활법령 - 중고거래 피해자",
             "role": null,
             "unit_id": null,
-            "score": 30.67149
+            "score": 31.42836
           }
         ]
       },
@@ -297,7 +297,7 @@
             "title": "필라테스 계약 중도해지에 따른 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 142.80211
+            "score": 144.78329
           },
           {
             "chunk_id": "kca_case_1003739114_case_party_claims_0000",
@@ -306,7 +306,7 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 139.28152
+            "score": 140.98584
           },
           {
             "chunk_id": "kca_case_1003640779_case_facts_0000",
@@ -315,7 +315,7 @@
             "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 56.42357
+            "score": 56.9836
           },
           {
             "chunk_id": "ftc_terms_47762_file_05d51a47_terms_article_1_0000",
@@ -324,7 +324,7 @@
             "title": "[제10083호]요가·필라테스 표준약관 (2026. 7. 16. 제정)",
             "role": "standard_terms_article",
             "unit_id": "terms_article_1",
-            "score": 51.06311
+            "score": 51.97836
           },
           {
             "chunk_id": "consumer_dispute_standard_industry_fitness_refund_0000",
@@ -333,7 +333,7 @@
             "title": "소비자분쟁해결기준",
             "role": "industry_table",
             "unit_id": "industry_fitness_refund",
-            "score": 45.78776
+            "score": 46.4639
           }
         ]
       }
@@ -353,10 +353,10 @@
             "chunk_id": "001706_284415_20260317_art_698_0_chunk_0000",
             "precedent_id": "law_001706",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415",
-            "title": null,
+            "title": "민법",
             "role": null,
             "unit_id": null,
-            "score": 50.39912
+            "score": 50.69717
           },
           {
             "chunk_id": "guide_23ffe4c8fd5715cb_p0061_body_0000",
@@ -365,7 +365,7 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 40.10101
+            "score": 40.95284
           },
           {
             "chunk_id": "guide_cad7b1de1e4dc64c_p0071_table_0000",
@@ -374,7 +374,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 33.61542
+            "score": 34.46289
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0021_body_0000",
@@ -383,7 +383,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 31.39179
+            "score": 32.14954
           },
           {
             "chunk_id": "guide_246eabd0676d5957_p0030_body_0000",
@@ -392,7 +392,7 @@
             "title": "찾기쉬운 생활법령 - 중고거래 피해자",
             "role": null,
             "unit_id": null,
-            "score": 31.03208
+            "score": 31.64719
           }
         ]
       },
@@ -408,7 +408,7 @@
             "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 174.07867
+            "score": 176.50231
           },
           {
             "chunk_id": "kca_case_1003739114_case_party_claims_0000",
@@ -417,7 +417,7 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 81.8932
+            "score": 83.01162
           },
           {
             "chunk_id": "ftc_terms_47762_file_05d51a47_terms_article_10_0000",
@@ -426,7 +426,7 @@
             "title": "[제10083호]요가·필라테스 표준약관 (2026. 7. 16. 제정)",
             "role": "standard_terms_article",
             "unit_id": "terms_article_10",
-            "score": 64.31918
+            "score": 65.2168
           },
           {
             "chunk_id": "kca_case_1003892039_case_facts_0000",
@@ -435,7 +435,7 @@
             "title": "PT 강습 계약 해지에 따른 잔여 대금 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 54.40987
+            "score": 55.21562
           },
           {
             "chunk_id": "kca_pilates_1003941650_case_facts_0000",
@@ -444,7 +444,7 @@
             "title": "필라테스 계약 중도해지에 따른 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 54.07388
+            "score": 54.5408
           }
         ]
       }
@@ -470,7 +470,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 57.22137
+            "score": 58.15836
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0012_body_0001",
@@ -479,7 +479,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 37.02026
+            "score": 37.66063
           },
           {
             "chunk_id": "guide_23ffe4c8fd5715cb_p0024_table_0000",
@@ -488,7 +488,7 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 33.50819
+            "score": 33.95847
           },
           {
             "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
@@ -497,7 +497,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 32.66824
+            "score": 33.12837
           },
           {
             "chunk_id": "guide_246eabd0676d5957_p0015_body_0000",
@@ -506,14 +506,14 @@
             "title": "찾기쉬운 생활법령 - 중고거래 피해자",
             "role": null,
             "unit_id": null,
-            "score": 30.52122
+            "score": 31.23941
           }
         ]
       },
       "after": {
         "expected_source_hit_at_3": false,
-        "expected_source_hit_at_5": true,
-        "rank": 5,
+        "expected_source_hit_at_5": false,
+        "rank": null,
         "results": [
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0022_body_0000",
@@ -522,7 +522,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 54.63218
+            "score": 55.53079
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0012_body_0001",
@@ -531,7 +531,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 36.59794
+            "score": 37.18543
           },
           {
             "chunk_id": "guide_23ffe4c8fd5715cb_p0024_table_0000",
@@ -540,7 +540,7 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 33.97348
+            "score": 34.38813
           },
           {
             "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
@@ -549,16 +549,16 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 33.13236
+            "score": 33.55631
           },
           {
-            "chunk_id": "kca_parcel_1003817349_case_cited_law_0000",
-            "precedent_id": "kca_parcel_1003817349",
-            "source_url": "https://www.kca.go.kr/odr/bj/br/osBjDecisionExamDetW.do?brdId=00000007&dataStts=Y&seq=1003817349",
-            "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
-            "role": "cited_law",
-            "unit_id": "case_cited_law",
-            "score": 30.42537
+            "chunk_id": "guide_246eabd0676d5957_p0015_body_0000",
+            "precedent_id": "guide_246eabd0676d5957",
+            "source_url": null,
+            "title": "찾기쉬운 생활법령 - 중고거래 피해자",
+            "role": null,
+            "unit_id": null,
+            "score": 30.16641
           }
         ]
       }
@@ -581,7 +581,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 106.58604
+            "score": 107.42352
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0023_table_0000",
@@ -590,7 +590,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 75.20091
+            "score": 76.17588
           },
           {
             "chunk_id": "guide_246eabd0676d5957_p0015_body_0001",
@@ -599,25 +599,25 @@
             "title": "찾기쉬운 생활법령 - 중고거래 피해자",
             "role": null,
             "unit_id": null,
-            "score": 67.56067
+            "score": 68.45089
           },
           {
             "chunk_id": "616251_0003",
             "precedent_id": "616251",
             "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=616251",
-            "title": null,
+            "title": "배당이의",
             "role": "full_document",
             "unit_id": null,
-            "score": 46.17665
+            "score": 43.85003
           },
           {
-            "chunk_id": "623961_0009",
-            "precedent_id": "623961",
-            "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=623961",
-            "title": null,
+            "chunk_id": "213515_0003",
+            "precedent_id": "213515",
+            "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=213515",
+            "title": "해고무효확인",
             "role": "full_document",
             "unit_id": null,
-            "score": 43.02687
+            "score": 42.42219
           }
         ]
       },
@@ -633,7 +633,7 @@
             "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 214.18305
+            "score": 217.20469
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0011_body_0001",
@@ -642,7 +642,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 105.93149
+            "score": 106.69498
           },
           {
             "chunk_id": "kca_case_1003475989_case_facts_0000",
@@ -651,7 +651,7 @@
             "title": "반값택배 이용 중 분실된 제품의 배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 78.35631
+            "score": 79.77293
           },
           {
             "chunk_id": "ftc_terms_11185_file_a321590d_terms_article_22_0000",
@@ -660,7 +660,7 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_22",
-            "score": 76.74669
+            "score": 77.94698
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0023_table_0000",
@@ -669,7 +669,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 68.84228
+            "score": 69.66691
           }
         ]
       }
@@ -692,7 +692,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 63.34143
+            "score": 64.7199
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0021_table_0000",
@@ -701,7 +701,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 52.2644
+            "score": 53.11621
           },
           {
             "chunk_id": "guide_23ffe4c8fd5715cb_p0008_table_0000",
@@ -710,7 +710,7 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 36.73582
+            "score": 37.39983
           },
           {
             "chunk_id": "guide_246eabd0676d5957_p0028_body_0000",
@@ -719,7 +719,7 @@
             "title": "찾기쉬운 생활법령 - 중고거래 피해자",
             "role": null,
             "unit_id": null,
-            "score": 34.86255
+            "score": 35.4079
           },
           {
             "chunk_id": "guide_cad7b1de1e4dc64c_p0048_table_0000",
@@ -728,7 +728,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 30.54169
+            "score": 30.93954
           }
         ]
       },
@@ -744,7 +744,7 @@
             "title": "반값택배 이용 중 분실된 제품의 배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 67.77028
+            "score": 69.28432
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0019_body_0000",
@@ -753,7 +753,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 57.52654
+            "score": 58.67325
           },
           {
             "chunk_id": "kca_case_1003148978_case_facts_0000",
@@ -762,7 +762,7 @@
             "title": "택배 운송 과정에서 파손된 PC용 모니터에 대한 손해배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 47.22656
+            "score": 47.77075
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0021_table_0000",
@@ -771,7 +771,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 46.20934
+            "score": 46.89305
           },
           {
             "chunk_id": "kca_parcel_1003817349_case_facts_0000",
@@ -780,7 +780,7 @@
             "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 43.13932
+            "score": 43.68037
           }
         ]
       }
@@ -804,7 +804,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 128.33828
+            "score": 130.52791
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0022_body_0001",
@@ -813,7 +813,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 64.78119
+            "score": 65.82001
           },
           {
             "chunk_id": "guide_246eabd0676d5957_p0030_body_0000",
@@ -822,7 +822,7 @@
             "title": "찾기쉬운 생활법령 - 중고거래 피해자",
             "role": null,
             "unit_id": null,
-            "score": 31.50952
+            "score": 32.34951
           },
           {
             "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
@@ -831,16 +831,16 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 29.75086
+            "score": 30.14957
           },
           {
-            "chunk_id": "622247_0011",
-            "precedent_id": "622247",
-            "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=622247",
-            "title": null,
-            "role": "full_document",
+            "chunk_id": "009883_284455_20260918_art_20_0_chunk_0000",
+            "precedent_id": "law_009883",
+            "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284455",
+            "title": "근로자퇴직급여 보장법",
+            "role": null,
             "unit_id": null,
-            "score": 23.28729
+            "score": 22.39899
           }
         ]
       },
@@ -856,7 +856,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 125.48271
+            "score": 127.4708
           },
           {
             "chunk_id": "kca_case_1003641715_case_party_claims_0000",
@@ -865,7 +865,7 @@
             "title": "해외직구 가방의 과도한 반품 배송비 조정 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 79.2823
+            "score": 80.60753
           },
           {
             "chunk_id": "consumer_dispute_standard_industry_shopping_return_0000",
@@ -874,7 +874,7 @@
             "title": "소비자분쟁해결기준",
             "role": "industry_table",
             "unit_id": "industry_shopping_return",
-            "score": 65.37123
+            "score": 66.03444
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0022_body_0001",
@@ -883,7 +883,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 64.76447
+            "score": 65.71377
           },
           {
             "chunk_id": "kca_case_1003641375_case_reasoning_0001",
@@ -892,7 +892,7 @@
             "title": "안내와 다르게 판매한 새우젓의 반품 및 환급 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 37.02151
+            "score": 37.60544
           }
         ]
       }
@@ -915,16 +915,16 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 80.32458
+            "score": 81.83742
           },
           {
             "chunk_id": "009318_282793_20260721_art_18_0_chunk_0001",
             "precedent_id": "law_009318",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=282793",
-            "title": null,
+            "title": "전자상거래 등에서의 소비자보호에 관한 법률",
             "role": null,
             "unit_id": null,
-            "score": 55.19523
+            "score": 55.93161
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0016_body_0000",
@@ -933,25 +933,25 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 49.14884
+            "score": 50.27826
           },
           {
             "chunk_id": "001706_284415_20260317_art_679_0_chunk_0000",
             "precedent_id": "law_001706",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415",
-            "title": null,
+            "title": "민법",
             "role": null,
             "unit_id": null,
-            "score": 43.72341
+            "score": 44.04196
           },
           {
-            "chunk_id": "622247_0003",
-            "precedent_id": "622247",
-            "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=622247",
-            "title": null,
-            "role": "full_document",
+            "chunk_id": "guide_246eabd0676d5957_p0022_body_0000",
+            "precedent_id": "guide_246eabd0676d5957",
+            "source_url": null,
+            "title": "찾기쉬운 생활법령 - 중고거래 피해자",
+            "role": null,
             "unit_id": null,
-            "score": 37.35286
+            "score": 37.65615
           }
         ]
       },
@@ -967,7 +967,7 @@
             "title": "맞춤제작을 이유로 반품을 거절당한 한복의 청약철회 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 150.31862
+            "score": 151.99931
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0028_table_0000",
@@ -976,16 +976,16 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 79.69974
+            "score": 81.07032
           },
           {
             "chunk_id": "009318_282793_20260721_art_18_0_chunk_0001",
             "precedent_id": "law_009318",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=282793",
-            "title": null,
+            "title": "전자상거래 등에서의 소비자보호에 관한 법률",
             "role": null,
             "unit_id": null,
-            "score": 53.429
+            "score": 54.0809
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0016_body_0000",
@@ -994,16 +994,16 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 49.37564
+            "score": 50.41329
           },
           {
             "chunk_id": "001706_284415_20260317_art_679_0_chunk_0000",
             "precedent_id": "law_001706",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415",
-            "title": null,
+            "title": "민법",
             "role": null,
             "unit_id": null,
-            "score": 42.6794
+            "score": 42.96163
           }
         ]
       }
@@ -1026,7 +1026,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 70.20194
+            "score": 71.38737
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0022_body_0000",
@@ -1035,7 +1035,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 58.657
+            "score": 59.70047
           },
           {
             "chunk_id": "guide_cad7b1de1e4dc64c_p0095_body_0001",
@@ -1044,7 +1044,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 50.95657
+            "score": 51.69932
           },
           {
             "chunk_id": "guide_23ffe4c8fd5715cb_p0037_body_0000",
@@ -1053,16 +1053,16 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 48.0025
+            "score": 48.72266
           },
           {
-            "chunk_id": "guide_246eabd0676d5957_p0036_image_summary_0000",
+            "chunk_id": "guide_246eabd0676d5957_p0010_body_0000",
             "precedent_id": "guide_246eabd0676d5957",
             "source_url": null,
             "title": "찾기쉬운 생활법령 - 중고거래 피해자",
             "role": null,
             "unit_id": null,
-            "score": 46.77473
+            "score": 47.67704
           }
         ]
       },
@@ -1078,7 +1078,7 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_22",
-            "score": 119.11272
+            "score": 121.59682
           },
           {
             "chunk_id": "kca_parcel_1003817349_case_reasoning_0000",
@@ -1087,7 +1087,7 @@
             "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 67.11816
+            "score": 68.1733
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0000",
@@ -1096,7 +1096,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 66.67653
+            "score": 67.72724
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0022_body_0000",
@@ -1105,7 +1105,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 56.49004
+            "score": 57.44093
           },
           {
             "chunk_id": "kca_case_1001243565_case_party_claims_0000",
@@ -1114,7 +1114,7 @@
             "title": "택배 의뢰 후 분실된 물품에 대한 손해배상 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 53.69799
+            "score": 54.2767
           }
         ]
       }
@@ -1137,7 +1137,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 84.05999
+            "score": 85.70728
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0018_body_0000",
@@ -1146,34 +1146,34 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 72.76425
+            "score": 74.44784
           },
           {
             "chunk_id": "001706_284415_20260317_art_700_0_chunk_0000",
             "precedent_id": "law_001706",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415",
-            "title": null,
+            "title": "민법",
             "role": null,
             "unit_id": null,
-            "score": 45.83703
+            "score": 46.23722
           },
           {
             "chunk_id": "003058_270551_20251023_art_56_0_chunk_0000",
             "precedent_id": "law_003058",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=270551",
-            "title": null,
+            "title": "근로기준법 시행령",
             "role": null,
             "unit_id": null,
-            "score": 40.29463
+            "score": 40.61058
           },
           {
-            "chunk_id": "613301_0006",
-            "precedent_id": "613301",
-            "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=613301",
-            "title": null,
-            "role": "full_document",
+            "chunk_id": "guide_cad7b1de1e4dc64c_p0067_table_0000",
+            "precedent_id": "guide_cad7b1de1e4dc64c",
+            "source_url": null,
+            "title": "찾기쉬운 생활법령 - 해고근로자",
+            "role": null,
             "unit_id": null,
-            "score": 39.60303
+            "score": 37.75275
           }
         ]
       },
@@ -1189,7 +1189,7 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_15",
-            "score": 195.41008
+            "score": 197.42655
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0020_body_0000",
@@ -1198,7 +1198,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 81.85588
+            "score": 83.3336
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0018_body_0000",
@@ -1207,25 +1207,25 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 71.24552
+            "score": 72.76852
           },
           {
             "chunk_id": "001706_284415_20260317_art_700_0_chunk_0000",
             "precedent_id": "law_001706",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415",
-            "title": null,
+            "title": "민법",
             "role": null,
             "unit_id": null,
-            "score": 45.17748
+            "score": 45.53513
           },
           {
-            "chunk_id": "613301_0006",
-            "precedent_id": "613301",
-            "source_url": "https://www.law.go.kr/LSW/precInfoP.do?precSeq=613301",
-            "title": null,
-            "role": "full_document",
+            "chunk_id": "003058_270551_20251023_art_56_0_chunk_0000",
+            "precedent_id": "law_003058",
+            "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=270551",
+            "title": "근로기준법 시행령",
+            "role": null,
             "unit_id": null,
-            "score": 40.36832
+            "score": 40.54077
           }
         ]
       }
@@ -1248,7 +1248,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 144.19683
+            "score": 145.50251
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0000",
@@ -1257,7 +1257,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 99.16373
+            "score": 100.64614
           },
           {
             "chunk_id": "guide_23ffe4c8fd5715cb_p0034_body_0000",
@@ -1266,16 +1266,16 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 71.46924
+            "score": 71.82
           },
           {
             "chunk_id": "009318_282793_20260721_art_13_0_chunk_0000",
             "precedent_id": "law_009318",
             "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=282793",
-            "title": null,
+            "title": "전자상거래 등에서의 소비자보호에 관한 법률",
             "role": null,
             "unit_id": null,
-            "score": 59.32393
+            "score": 60.00151
           },
           {
             "chunk_id": "guide_246eabd0676d5957_p0015_body_0000",
@@ -1284,7 +1284,7 @@
             "title": "찾기쉬운 생활법령 - 중고거래 피해자",
             "role": null,
             "unit_id": null,
-            "score": 50.49662
+            "score": 51.04712
           }
         ]
       },
@@ -1300,7 +1300,7 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_6",
-            "score": 267.60389
+            "score": 269.72645
           },
           {
             "chunk_id": "guide_94e9d4bd30eadf0b_p0010_table_0000",
@@ -1309,7 +1309,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 137.74998
+            "score": 138.76205
           },
           {
             "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0000",
@@ -1318,7 +1318,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 84.48394
+            "score": 85.6394
           },
           {
             "chunk_id": "guide_23ffe4c8fd5715cb_p0034_body_0000",
@@ -1327,7 +1327,7 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 70.66764
+            "score": 70.89656
           },
           {
             "chunk_id": "consumer_dispute_standard_industry_parcel_loss_0000",
@@ -1336,7 +1336,7 @@
             "title": "소비자분쟁해결기준",
             "role": "industry_table",
             "unit_id": "industry_parcel_loss",
-            "score": 64.78661
+            "score": 65.56425
           }
         ]
       }
@@ -1353,6 +1353,6 @@
   },
   "after": {
     "expected_source_hit_at_3": 0.8333333333333334,
-    "expected_source_hit_at_5": 1.0
+    "expected_source_hit_at_5": 0.9166666666666666
   }
 }

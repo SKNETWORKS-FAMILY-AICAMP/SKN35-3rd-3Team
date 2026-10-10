@@ -1,0 +1,135 @@
+# 데이터 수집·전처리 인계서
+
+## 현재 상태와 인계 범위
+
+- 검증 시각(UTC): 2026-10-10T17:26:46.485228+00:00
+- 구조 검증: 통과 · 9개 항목
+- 전체 단위 테스트: 93개 · 통과
+- 수집·정제·청크 생성, 공통 메타데이터, 판례 출처 헤더, 초기 BM25 평가까지 구현했습니다.
+- 이 인계는 초기 데이터 스냅샷에 대한 것입니다. 부족 자료 보강과 실제 RAG 서비스 검증까지 완료했다는 의미가 아닙니다.
+
+## 데이터 수와 읽을 파일
+
+| 자료 | 정제 문서 / 검색 대상 | 청크 수 | 로딩 형식 |
+|---|---|---:|---|
+| 법령 | 8종 | 2231 | `data/chunk/laws/chunks.jsonl` |
+| 판례 | 정제 파일 29개 / 중복 제외 후보 27건 | 349 | `data/chunk/precedents/chunks.jsonl` |
+| 안내서 | PDF 5개 | 488 | `data/chunk/guides/guide_chunking_report.json`의 `saved[].file` → 파일별 `chunks` 배열 |
+| 소비자 자료 | 정제 문서 37개 / 검색 대상 23개 | 169 | `data/chunk/consumer_sources/chunks.jsonl` |
+| 합계 | 분야 간 공유 자료를 다시 합산하지 않음 | 3237 | JSONL 3개 + 안내서별 JSON 5개 |
+
+소비자 청크는 행정규칙 7개, 조정사례 98개, 표준약관 64개입니다. 파일 수·문서 수·청크 수는 서로 다른 집계입니다.
+
+## 폴더와 원본 보존 정책
+
+| 위치 | 역할 |
+|---|---|
+| `data/raw/laws` | 법령 8종의 수집 API 응답 JSON과 수집 기록 |
+| `data/raw/law_appendices` | 별표 PDF 8개와 원본 메타데이터 JSON 8개. 정제 법령의 appendices와 연결 |
+| `data/raw/precedents` | 판례 원본 95건과 수집 기록. 전체 관련성 검토 후 29개 정제 파일, 27건 검색 후보 |
+| `data/raw/guides` | 주택임대차·해고근로자·중고거래 피해자·인터넷 쇼핑·택배 PDF 5개 |
+| `data/raw/consumer_sources` | 공정위 약관 HWP/HWPX·행정규칙 XML·KCA HTML·참고 PDF·이전 스냅샷·수집 기록 |
+| `data/processed/{laws,precedents,guides,consumer_sources}` | 정제 본문·구조·검색 후보/제외·검토 정보 |
+| `data/processed/retrieval_evaluation` | 검색·분야 충분성·최종 검증 보고서. 원문 데이터와 구분 |
+| `data/chunk/{laws,precedents,guides,consumer_sources}` | 임베딩 입력용 청크. 자료별 형식 유지 |
+
+수집 시 인증정보를 저장 전에 제거합니다. 이미 저장한 raw는 추가 정제를 위해 덮어쓰지 않습니다. 갱신본은 새 원본 식별자·해시·시점을 기록하고 processed와 chunk를 다시 생성합니다. raw 스냅샷은 인증정보 제거 이전의 최초 응답과 바이트 단위로 동일하다는 뜻이 아닙니다.
+폴더 개수는 같을 필요가 없습니다. 별표는 법령 정제/청크로 합류하며, 평가 보고서는 별도 위치에 있습니다. 이전 raw 수집 보고서의 실패는 현재 최신 보고서 실패와 구분합니다.
+
+## 청크 로딩과 필드 계약
+
+1. JSONL은 빈 줄을 제외하고 한 줄씩 JSON 객체로 읽습니다.
+2. 안내서는 청크 보고서 `saved` 목록만 읽고 PDF별 JSON의 `chunks` 배열을 펼칩니다. 보고서 JSON을 청크로 읽지 않습니다.
+3. `chunk_id`는 청크 식별자입니다. `document_id`는 자료 유형과 원문 ID를 결합하며 법령은 개정본 `version_id`를 사용합니다.
+4. `embedding_text`를 임베딩 입력으로 사용하고 `text`, 출처 필드, 시점, 경고를 payload로 함께 보존합니다. 모델 토큰 한도는 별도로 확인합니다.
+5. 임베딩/재적재 전 현재 청크 해시와 검증 보고서를 대조합니다. ID 변경 없이 텍스트가 바뀌면 해당 벡터도 갱신해야 합니다.
+
+| 필드 | 의미 |
+|---|---|
+| `metadata_version` | 공통 메타데이터 버전 1. 자료별 schema_version과 별개 |
+| `document_type` | law / precedent / official_guide / administrative_rule / mediation_case / standard_terms |
+| `document_id`, `title` | 원문 식별자와 문서 제목 |
+| `domains`, `domain_classification` | 복수 분야 후보 태그와 분류 근거. 기존 domain 원값 유지 |
+| `source_url`, `source_path` | 확인한 URL과 프로젝트 상대 원본 경로. URL 없는 PDF는 null |
+| `dates` | 시행일·조문/별표 시행일·공포일·판결일·조정일·개정일·자료 기준일 등을 ISO 날짜/null로 분리 |
+| `context_header`, `section_context_header` | 출처 헤더와 판례의 원래 구간 설명 |
+| `warnings`, `source_anomaly`, `calculation_restricted_clause` | 원문·추출 주의사항 및 계산 제한. 삭제하지 않음 |
+
+분야 태그는 문서/기존 분류 수준의 후보이며 모든 조문이 해당 질문의 근거라는 뜻이 아닙니다. 민법·형법·근로기준법의 일반 태그를 임의로 9개 분야에 모두 매핑하지 않습니다. 세부 계약/사건 적용 및 시점 판단은 별도입니다.
+
+## 제외·중복·본문 구조 정책
+
+- 판례는 관련성 검토표의 사유를 보존합니다. 중복 대표 판례만 검색하며 당사자 주장·증거·법원 판단의 역할을 유지합니다.
+- 소비자 정제 문서 37개 중 14개는 참고용·이전 약관 등으로 검색 제외합니다. 별칭 1건은 대표 자료로 합칩니다. 2007년 택배 약관은 역사 자료로 보존하고 기본 검색에서 제외합니다.
+- 법령 삭제 조문·검토 보류 자료를 임의로 적재하지 않습니다. 개정별 부칙의 공포일을 시행일로 추정하지 않습니다.
+- 안내서 표지·목차 등 제외 페이지와 이유는 청크 보고서에 있습니다. 이미지 요약은 수동 설명이며 원문 전문 전사가 아닙니다.
+- 표·약관 조문 등 원자 단위는 문자 목표 크기를 넘을 수 있습니다. 동일 본문도 출처·시점·문맥이 다를 수 있어 자동 삭제하지 않습니다.
+
+현재 공백 정규화 후 동일 본문 그룹은 3개이며 ID 중복과 구분해 검증 JSON에 기록했습니다. 원문 URL 없는 청크는 488개로, 원본 경로를 보존합니다.
+
+## 원문 이상과 적용 제한
+
+택배 2020년 약관 제22조 제2항 제3호 나목은 `운송장기재운임액의 200`으로 끝나며 단위가 없습니다. 원본 HWP와 변환 PDF에서 확인했습니다. **200%로 임의 보정하거나 이 문장으로 배상액을 계산하지 않습니다.** 안내서의 표기와 대조가 필요하며 경고를 검색·답변 단계까지 전달해야 합니다. 현재 서비스 실행 단계의 계산 제한 기능은 미구현입니다.
+조정사례의 금액·이율·사실관계를 다른 사건에 그대로 적용하지 않습니다. 수집본을 현행 적용 가능 자료로 자동 간주하지 않습니다. PDF 원문 URL이 확인되지 않은 경우 기관 홈페이지를 원문 URL로 대체하지 않습니다.
+
+## 검색·분야 검토 결과와 보강 목록
+
+- 판례 10문항: BM25 Hit@3=100%, MRR@3=1.000.
+- 소비자 12문항: 보강 포함 기대 출처 Hit@3=83.3%, Hit@5=91.7%. 판례 헤더 보완 후 Top 5가 12/12에서 11/12로 변경됐습니다.
+- 분야 검토: 선정 질문 45개. 자료 내용 검토와 검색 진단을 분리합니다. 키워드 적중만으로 충분하다고 판정하지 않습니다.
+
+| 분야 | 기본 근거 | 보완 | 추가 검토 | 적용 보류 |
+|---|---:|---:|---:|---:|
+| 전세·월세 분쟁 | 5 | 0 | 0 | 0 |
+| 중고거래 피해 | 4 | 1 | 0 | 0 |
+| 온라인 쇼핑 환불 | 3 | 2 | 0 | 0 |
+| 헬스장·필라테스 환불 | 2 | 3 | 0 | 0 |
+| 아르바이트 임금체불 | 3 | 2 | 0 | 0 |
+| 갑작스러운 해고 | 4 | 0 | 1 | 0 |
+| 보증금 반환 | 1 | 4 | 0 | 0 |
+| 택배 분실 | 4 | 0 | 0 | 1 |
+| 소비자 피해 | 2 | 3 | 0 | 0 |
+
+분야별 세부 질문·청크 ID·부족 자료는 [분야 검토 보고서](../data/processed/retrieval_evaluation/domain_coverage_report_pmh.md)를 참조합니다. 원문을 이미 수집했는지 먼저 확인한 후 필요한 발췌·정제 또는 추가 수집을 결정합니다.
+
+우선 보강 후보는 방문판매법/계속거래 환급 산정기준, 전자상거래법 시행령, 최저임금법/시행령/해당 연도 고시, 주택임대차보호법 시행령의 지역·시점별 기준입니다. 민사집행 절차, 소비자 피해구제·신고 준비서류, 품목별 분쟁해결기준은 서비스 질문 범위를 정한 뒤 보강합니다.
+
+## 재현 실행 순서
+
+프로젝트 루트에서 실행합니다. 필요한 의존성은 pyproject.toml/uv.lock에 기록되어 있습니다. 수집 API 인증은 로컬 환경변수로 설정하며 값은 공유하지 않습니다.
+
+```bash
+# 원본 및 관련성/시각 검토 기록을 준비한 후 정제
+uv run python src/Scripts/preprocess_laws.py
+uv run python src/Scripts/preprocess_precedents.py
+uv run python src/Scripts/preprocess_guides.py
+uv run python src/Scripts/preprocess_consumer_sources.py
+# 청크 생성
+uv run python src/Scripts/chunk_laws.py
+uv run python src/Scripts/chunk_guides.py
+uv run python src/Scripts/chunk_consumer_sources.py
+uv run python -m src.Scripts.tests.test_precedent_retrieval_pmh
+# 검색/분야 평가
+uv run python -m src.Scripts.tests.test_consumer_coverage_pmh
+uv run python -m src.Scripts.tests.test_domain_coverage_pmh
+# 최종 감사·전체 테스트·인계서 갱신
+uv run python -m src.Scripts.tests.test_data_handoff_pmh
+# 보고서 생성 없이 전체 테스트만 실행
+uv run python -m unittest discover -s src/Scripts/tests -t . -p "test*_pmh.py"
+```
+
+분야 검토 코드는 선정 근거의 본문 지문이 바뀌면 추가 검토로 표시합니다. 질문·근거 메모와 지문을 내용 확인 없이 갱신하지 않습니다. 원본 추가 시 수집 목록·검토표·보고서에 반영한 뒤 위 순서로 재생성합니다.
+
+## 다음 담당자의 작업
+
+1. 이 스냅샷의 검증 결과와 부족 자료 범위를 확인합니다.
+2. 두 저장 형식을 지원하는 서비스 로더와 임베딩 실행·실패 처리·토큰 제한 검증을 구현합니다.
+3. Qdrant 적재·갱신·검색과 필터를 구현합니다. 출처 적중과 정확한 근거 청크 적중을 구분해 평가합니다.
+4. LLM 답변의 근거·출처 표시, 근거 부족 시 대응, 원문 경고 전달을 구현하고 MCP를 연결합니다.
+5. 미사용 질문으로 실제 RAG 답변·계산·시점·출처 정확성을 평가합니다. 단위 테스트 통과를 답변 정확성으로 해석하지 않습니다.
+
+## 검증 산출물
+
+- [최종 검증 JSON](../data/processed/retrieval_evaluation/data_validation_report_pmh.json): 항목별 결과·파일 크기/해시·테스트 결과·제외 기록.
+- [검증 실행 파일](../src/Scripts/tests/test_data_handoff_pmh.py): 직접 실행 시 보고서와 이 문서를 작성하고 전체 테스트를 실행합니다.
+- 기존 수집·정제·청크 파일은 최종 감사에서 변경하지 않습니다. 생성 코드·검토 기록·보고서는 재현을 위해 함께 인계합니다.

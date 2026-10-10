@@ -1,12 +1,13 @@
 {
-  "generated_at": "2026-10-10T08:41:24.793226+00:00",
+  "metadata_version": 1,
+  "generated_at": "2026-10-10T16:47:41.213098+00:00",
   "law_count": 8,
   "chunk_count": 2231,
   "chunked_article_count": 1950,
   "size": 1200,
   "overlap": 120,
   "split_policy": "문자 수 기준 최대 크기. 항·호·목 경계 우선, 긴 단일 본문 내부에서만 겹침",
-  "chunks_sha256": "971d90864f80cd44620b5c949ef276e5bb558c32f3c80cb824a80e0587ec3d39",
+  "chunks_sha256": "57611393a51aa8b4a8a0b45c5bd175cea9e95f13fb46829ed419d79445def7a8",
   "laws": [
     {
       "law_name": "주택임대차보호법",

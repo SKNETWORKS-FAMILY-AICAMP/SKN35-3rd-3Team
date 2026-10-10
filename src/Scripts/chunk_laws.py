@@ -10,8 +10,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 if __package__:
+    from .chunk_metadata import normalize_chunk, METADATA_VERSION
     from .preprocess_laws import ROOT, OUTPUT_DIR as INPUT_DIR, REPORT_NAME, ensure_output, sha256, write_json
 else:
+    from chunk_metadata import normalize_chunk, METADATA_VERSION
     from preprocess_laws import ROOT, OUTPUT_DIR as INPUT_DIR, REPORT_NAME, ensure_output, sha256, write_json
 
 OUTPUT_DIR = ROOT / "data/chunk/laws"
@@ -85,7 +87,7 @@ def make_chunks(document, article, size=1200, overlap=120):
             break
         # 항·호 경계에서는 겹치지 않고 긴 단일 본문 내부에서만 겹친다.
         start = end if structural_end else max(start + 1, end - overlap)
-    return chunks
+    return [normalize_chunk(c, document) for c in chunks]
 
 
 def make_aux_chunks(document, unit, size=1200, overlap=120):
@@ -161,7 +163,7 @@ def make_aux_chunks(document, unit, size=1200, overlap=120):
             if end == stop:
                 break
             start = end if options else max(start + 1, end - overlap)
-    return chunks
+    return [normalize_chunk(c, document) for c in chunks]
 
 
 def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
@@ -208,7 +210,7 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
     temporary = target.with_suffix(".jsonl.tmp")
     temporary.write_text("".join(json.dumps(c, ensure_ascii=False) + "\n" for c in chunks), encoding="utf-8")
     temporary.replace(target)
-    report = {"generated_at": datetime.now(timezone.utc).isoformat(), "law_count": len(reports),
+    report = {"metadata_version": METADATA_VERSION, "generated_at": datetime.now(timezone.utc).isoformat(), "law_count": len(reports),
               "chunk_count": len(chunks), "chunked_article_count": sum(e["chunked_article_count"] for e in reports),
               "size": size, "overlap": overlap,
               "split_policy": "문자 수 기준 최대 크기. 항·호·목 경계 우선, 긴 단일 본문 내부에서만 겹침",

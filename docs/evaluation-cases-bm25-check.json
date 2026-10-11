@@ -1,0 +1,165 @@
+{
+  "k": 5,
+  "query_count": 12,
+  "results": {
+    "bm25_sample": {
+      "recall": 0.8333333333333334,
+      "precision": 0.16666666666666666,
+      "hit_rate": 0.8333333333333334,
+      "mrr": 0.7083333333333334,
+      "mean_seconds": 3.122499523063501e-05,
+      "per_query": [
+        {
+          "query": "최저임금법의 목적은 무엇인가요?",
+          "retrieved_ids": [],
+          "recall": 0.0,
+          "precision": 0.0,
+          "hit": 0.0,
+          "rr": 0.0,
+          "seconds": 3.6199926398694515e-05
+        },
+        {
+          "query": "최저임금법에서 근로자, 사용자, 임금은 어느 법의 정의를 따르나요?",
+          "retrieved_ids": [
+            "law:000129_218303_20200526::000129_218303_20200526_art_2_0_chunk_0000"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 1.0,
+          "seconds": 3.630004357546568e-05
+        },
+        {
+          "query": "소비자분쟁해결기준은 어떤 목적으로 마련된 고시인가요?",
+          "retrieved_ids": [
+            "law:000129_218303_20200526::000129_218303_20200526_art_1_0_chunk_0000",
+            "standard_terms:ftc_terms_47762_file_05d51a47::ftc_terms_47762_file_05d51a47_terms_article_0_0000"
+          ],
+          "recall": 0.0,
+          "precision": 0.0,
+          "hit": 0.0,
+          "rr": 0.0,
+          "seconds": 2.8199981898069382e-05
+        },
+        {
+          "query": "소비자와 사업자가 합의하지 못하면 어디에 피해구제를 청구할 수 있나요?",
+          "retrieved_ids": [
+            "administrative_rule:consumer_dispute_standard::consumer_dispute_standard_article_1_0000",
+            "administrative_rule:consumer_dispute_standard::consumer_dispute_standard_article_0_0000",
+            "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_body_0000",
+            "precedent:147076::147076_0001",
+            "precedent:147076::147076_0000"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 1.0,
+          "seconds": 3.909994848072529e-05
+        },
+        {
+          "query": "요가·필라테스 표준약관 제10083호는 언제 제정됐나요?",
+          "retrieved_ids": [
+            "standard_terms:ftc_terms_47762_file_05d51a47::ftc_terms_47762_file_05d51a47_preamble_0000",
+            "mediation_case:kca_pilates_1003941650::kca_pilates_1003941650_case_facts_0000"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 1.0,
+          "seconds": 2.989999484270811e-05
+        },
+        {
+          "query": "요가·필라테스 표준약관 제1조는 사업자와 회원 사이의 무엇을 정하나요?",
+          "retrieved_ids": [
+            "standard_terms:ftc_terms_47762_file_05d51a47::ftc_terms_47762_file_05d51a47_preamble_0000",
+            "standard_terms:ftc_terms_47762_file_05d51a47::ftc_terms_47762_file_05d51a47_terms_article_0_0000",
+            "mediation_case:kca_pilates_1003941650::kca_pilates_1003941650_case_facts_0000"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 0.5,
+          "seconds": 2.9399991035461426e-05
+        },
+        {
+          "query": "필라테스 환급 분쟁 사례에서 수강 계약의 총 횟수와 대금은 얼마였나요?",
+          "retrieved_ids": [
+            "mediation_case:kca_pilates_1003941650::kca_pilates_1003941650_case_party_claims_0000",
+            "mediation_case:kca_pilates_1003941650::kca_pilates_1003941650_case_facts_0000",
+            "standard_terms:ftc_terms_47762_file_05d51a47::ftc_terms_47762_file_05d51a47_preamble_0000"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 0.5,
+          "seconds": 3.0499999411404133e-05
+        },
+        {
+          "query": "하루 두 번 필라테스 수강을 허용했던 사례에서 사업자는 어떤 이유로 환급을 거부했다고 주장했나요?",
+          "retrieved_ids": [
+            "mediation_case:kca_pilates_1003941650::kca_pilates_1003941650_case_party_claims_0000",
+            "mediation_case:kca_pilates_1003941650::kca_pilates_1003941650_case_facts_0000",
+            "standard_terms:ftc_terms_47762_file_05d51a47::ftc_terms_47762_file_05d51a47_preamble_0000",
+            "precedent:147076::147076_0001"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 1.0,
+          "seconds": 3.6199926398694515e-05
+        },
+        {
+          "query": "전세권과 임대차의 법률상 개념은 어떻게 다른가요?",
+          "retrieved_ids": [
+            "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_body_0000",
+            "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_table_0000"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 1.0,
+          "seconds": 2.2300053387880325e-05
+        },
+        {
+          "query": "주택임대차 안내에서 사글세는 차임을 어떤 방식으로 지급하는 형태인가요?",
+          "retrieved_ids": [
+            "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_body_0000",
+            "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_table_0000"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 0.5,
+          "seconds": 2.4700071662664413e-05
+        },
+        {
+          "query": "학원 건물 임대차 판례에서 임대인과 임차인은 본소와 반소로 각각 무엇을 청구했나요?",
+          "retrieved_ids": [
+            "precedent:147076::147076_0000",
+            "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_table_0000",
+            "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_body_0000"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 1.0,
+          "seconds": 3.029999788850546e-05
+        },
+        {
+          "query": "학원 건물 임대차 판례에서 관리회사는 무엇 때문에 전기와 수도 공급을 중단했나요?",
+          "retrieved_ids": [
+            "precedent:147076::147076_0001",
+            "precedent:147076::147076_0000",
+            "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_table_0000",
+            "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_body_0000"
+          ],
+          "recall": 1.0,
+          "precision": 0.2,
+          "hit": 1.0,
+          "rr": 1.0,
+          "seconds": 3.160000778734684e-05
+        }
+      ]
+    }
+  }
+}

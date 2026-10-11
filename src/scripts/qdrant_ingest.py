@@ -21,6 +21,7 @@ from src.vector_db.ingestion import (
     prepare_upsert_points,
 )
 from src.vector_db.qdrant_store import QdrantVectorStore
+from src.vector_db.sparse_embedder import create_sparse_embedding_provider
 from src.vector_db.validation import validate_qdrant_ingestion
 from src.vectorstore import VectorStoreError
 
@@ -71,6 +72,14 @@ def ingest(args: argparse.Namespace) -> int:
     load_project_env(args.env_file)
     settings = load_qdrant_settings()
     settings.validate_for_vector_work()
+    if settings.collection.search_mode != "hybrid":
+        print(
+            "팀 컬렉션 적재는 Dense와 BM25 Sparse Vector를 함께 저장하도록 "
+            "SEARCH_MODE=hybrid에서만 실행할 수 있습니다. Dense 단독 모드는 "
+            "적재 완료 후 검색 비교용으로 사용하세요.",
+            file=sys.stderr,
+        )
+        return 2
 
     embedder = create_embedding_provider(settings.embedding)
     store = QdrantVectorStore.from_settings(settings)
@@ -82,9 +91,19 @@ def ingest(args: argparse.Namespace) -> int:
         settings=settings.embedding,
         batch_size=args.embedding_batch_size,
     )
+    assert settings.collection.sparse_model is not None
+    sparse_embedder = create_sparse_embedding_provider(
+        settings.collection.sparse_model
+    )
+    sparse_vectors = sparse_embedder.embed_documents(
+        [record.text for record in embedded_records],
+        batch_size=args.embedding_batch_size,
+    )
     points = prepare_upsert_points(
         embedded_records,
         expected_dimension=collection_info.vector_size,
+        sparse_vector_name=collection_info.sparse_vector_name,
+        sparse_vectors=sparse_vectors,
     )
     saved_count = store.upsert_points(
         points,

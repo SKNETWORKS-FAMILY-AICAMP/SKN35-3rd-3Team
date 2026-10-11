@@ -9,6 +9,7 @@ from src.const.qdrant_config import load_qdrant_settings
 from src.embedder import create_embedding_provider
 from src.retriever import DocumentRetriever
 from src.vector_db.qdrant_store import QdrantVectorStore
+from src.vector_db.sparse_embedder import create_sparse_embedding_provider
 
 
 def create_team_retriever(
@@ -35,8 +36,20 @@ def create_team_retriever(
         expected_dimension = collection_info.vector_size
 
     assert expected_dimension is not None
+    sparse_embedder = None
+    collection_settings = getattr(settings, "collection", None)
+    if (
+        collection_settings is not None
+        and collection_settings.search_mode == "hybrid"
+    ):
+        assert collection_settings.sparse_model is not None
+        sparse_embedder = create_sparse_embedding_provider(
+            collection_settings.sparse_model
+        )
+
     return DocumentRetriever(
         embedder=embedder,
         vector_store=vector_store,
         expected_dimension=expected_dimension,
+        sparse_embedder=sparse_embedder,
     )

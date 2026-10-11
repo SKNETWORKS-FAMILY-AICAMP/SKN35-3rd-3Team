@@ -48,6 +48,9 @@ class VectorSearchRequest:
     top_k: int = 5
     score_threshold: float | None = None
     filters: Mapping[str, object] = field(default_factory=dict)
+    query_text: str | None = None
+    sparse_indices: tuple[int, ...] | None = None
+    sparse_values: tuple[float, ...] | None = None
 
     @classmethod
     def create(
@@ -58,6 +61,9 @@ class VectorSearchRequest:
         score_threshold: float | None = None,
         filters: Mapping[str, object] | None = None,
         expected_dimension: int | None = None,
+        query_text: str | None = None,
+        sparse_indices: Sequence[int] | None = None,
+        sparse_values: Sequence[float] | None = None,
     ) -> VectorSearchRequest:
         """일반 입력값을 검증된 검색 요청으로 변환합니다."""
 
@@ -83,11 +89,30 @@ class VectorSearchRequest:
                 f"expected={expected_dimension}, actual={len(vector)}"
             )
 
+        if (sparse_indices is None) != (sparse_values is None):
+            raise ValueError(
+                "Sparse Vector의 indices와 values는 함께 지정해야 합니다."
+            )
+        normalized_sparse_indices = None
+        normalized_sparse_values = None
+        if sparse_indices is not None and sparse_values is not None:
+            normalized_sparse_indices = tuple(int(item) for item in sparse_indices)
+            normalized_sparse_values = tuple(float(item) for item in sparse_values)
+            if len(normalized_sparse_indices) != len(normalized_sparse_values):
+                raise ValueError(
+                    "Sparse Vector의 indices와 values 길이가 다릅니다."
+                )
+            if not normalized_sparse_indices:
+                raise ValueError("Sparse Vector는 비어 있을 수 없습니다.")
+
         return cls(
             query_vector=vector,
             top_k=top_k,
             score_threshold=score_threshold,
             filters=dict(filters or {}),
+            query_text=query_text.strip() if query_text is not None else None,
+            sparse_indices=normalized_sparse_indices,
+            sparse_values=normalized_sparse_values,
         )
 
 
@@ -153,6 +178,8 @@ class VectorCollectionInfo:
     points_count: int
     status: str
     vector_name: str | None = None
+    search_mode: str = "dense"
+    sparse_vector_name: str | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -162,6 +189,8 @@ class VectorCollectionInfo:
             "points_count": self.points_count,
             "status": self.status,
             "vector_name": self.vector_name,
+            "search_mode": self.search_mode,
+            "sparse_vector_name": self.sparse_vector_name,
         }
 
 

@@ -18,13 +18,26 @@ from src.vectorstore import (
     VectorStore,
 )
 
-
 @runtime_checkable
 class QueryEmbedder(Protocol):
     """문서와 같은 모델로 질문 벡터를 만드는 인터페이스."""
 
     def embed_query(self, text: str) -> Sequence[float]:
         """질문 문자열을 벡터로 변환합니다."""
+
+
+class SparseQueryVector(Protocol):
+    """검색에 필요한 Sparse Vector 최소 구조."""
+
+    indices: Sequence[int]
+    values: Sequence[float]
+
+
+class SparseQueryEmbedder(Protocol):
+    """질문을 Sparse Vector로 만드는 최소 인터페이스."""
+
+    def embed_query(self, text: str) -> SparseQueryVector:
+        """질문 문자열을 Sparse Vector로 변환합니다."""
 
 
 @runtime_checkable
@@ -63,6 +76,7 @@ class DocumentRetriever:
     embedder: QueryEmbedder
     vector_store: VectorStore
     expected_dimension: int | None = None
+    sparse_embedder: SparseQueryEmbedder | None = None
 
     def __post_init__(self) -> None:
         """시작 시 컬렉션 차원을 한 번 확인해 검색 요청에 재사용합니다."""
@@ -92,12 +106,24 @@ class DocumentRetriever:
             raise ValueError("query는 비어 있을 수 없습니다.")
 
         query_vector = self.embedder.embed_query(normalized_query)
+        sparse_vector = (
+            self.sparse_embedder.embed_query(normalized_query)
+            if self.sparse_embedder is not None
+            else None
+        )
         request = VectorSearchRequest.create(
             query_vector,
             top_k=top_k,
             score_threshold=score_threshold,
             filters=filters,
             expected_dimension=self.expected_dimension,
+            query_text=normalized_query,
+            sparse_indices=(
+                sparse_vector.indices if sparse_vector is not None else None
+            ),
+            sparse_values=(
+                sparse_vector.values if sparse_vector is not None else None
+            ),
         )
         return self.vector_store.search(request)
 

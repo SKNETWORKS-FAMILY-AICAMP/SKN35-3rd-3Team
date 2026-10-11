@@ -12,6 +12,8 @@
 | Qdrant | Cloud 연결 정상 |
 | 활성 개발 컬렉션 | `team_documents_openai_dev` |
 | 활성 임베딩 | OpenAI `text-embedding-3-small`, 1536차원 |
+| 검색 방식 | Dense + BM25 Sparse + RRF Hybrid |
+| Sparse 모델 | FastEmbed `Qdrant/bm25` |
 | 거리 방식 | Cosine |
 | 컬렉션 상태 | green |
 | Point 수 | 0 |
@@ -26,13 +28,13 @@
     ↓
 Qdrant 연결·컬렉션·Payload 인덱스 준비
     ↓
-문서 임베딩
+문서 Dense 임베딩·BM25 Sparse 임베딩
     ↓
 Qdrant Batch Upsert
     ↓
 적재 결과 검증
     ↓
-질문 임베딩·Dense 검색
+질문 Dense·BM25 검색 후 RRF 결합
     ↓
 MCP/RAG 전달
 ```
@@ -212,7 +214,8 @@ HF_TOKEN=개인_Hugging_Face_토큰
 
 현재 구현:
 
-- Dense Vector Top-K 검색
+- Dense Vector와 BM25 Sparse Vector의 RRF Hybrid 검색
+- Hybrid 적재 완료 후 `SEARCH_MODE=dense`를 통한 Dense 단독 비교·복귀
 - 선택적 점수 임계값
 - 문자열·정수·불리언 정확 일치 필터
 - `document_id` 기반 임베딩 없는 정확 조회
@@ -220,11 +223,11 @@ HF_TOKEN=개인_Hugging_Face_토큰
 - 공식 MCP Python SDK v2 기반 `MCPServer`
 - `search_documents`, `lookup_document`, `health_check`, `get_collection_info` Tool
 - 로컬 `stdio` Transport와 선택적 Streamable HTTP 실행
+- 인증 없는 Streamable HTTP의 비로컬 주소 바인딩 차단
 - 실제 MCP Client의 Tool 조회 및 원격 Qdrant 상태 확인
 
-아직 구현하지 않은 항목:
+실제 데이터 수령 후 검증할 항목:
 
-- BM25·Sparse Vector·RRF Hybrid 검색
 - Datetime 범위 검색
 - 실제 3,793건 적재와 검색 품질 평가
 - 별도 `article_label`·`case_number` 필드 기반 정확 조회
@@ -241,9 +244,14 @@ uv run python -m src.scripts.mcp_probe --transport stdio `
   --document-id "precedent:240967"
 ```
 
-질문 검색 명령은 선택한 provider의 질문 임베딩과 Qdrant 검색을 호출합니다.
+질문 검색 명령은 선택한 provider의 Dense 질문 임베딩과 로컬 BM25 Sparse
+임베딩을 만든 뒤 Qdrant RRF Hybrid 검색을 호출합니다.
 `document_id` 조회는 임베딩 API를 호출하지 않고 Payload 인덱스를 사용합니다.
 Point가 없는 상태에서는 `empty_result`가 정상입니다.
+
+팀 적재 명령은 Dense와 Sparse Vector 누락을 방지하기 위해
+`SEARCH_MODE=hybrid`에서만 실행됩니다. `SEARCH_MODE=dense`는 Hybrid 적재가
+완료된 컬렉션의 검색 결과 비교에만 사용합니다.
 
 ## 안전 원칙
 

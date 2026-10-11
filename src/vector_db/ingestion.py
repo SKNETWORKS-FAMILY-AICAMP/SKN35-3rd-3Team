@@ -18,6 +18,7 @@ from src.const.vector_data_contract import (
     normalize_vector,
     validate_unique_records,
 )
+from src.vector_db.sparse_embedder import SparseEmbedding
 
 
 @runtime_checkable
@@ -38,6 +39,9 @@ class PreparedPoint:
     point_id: str
     vector: tuple[float, ...]
     payload: Mapping[str, object]
+    sparse_indices: tuple[int, ...] | None = None
+    sparse_values: tuple[float, ...] | None = None
+    sparse_vector_name: str | None = None
 
 
 def _utc_now_iso() -> str:
@@ -163,6 +167,8 @@ def prepare_upsert_points(
     *,
     expected_dimension: int,
     indexed_at: str | None = None,
+    sparse_vector_name: str | None = None,
+    sparse_vectors: Sequence[SparseEmbedding] | None = None,
 ) -> tuple[PreparedPoint, ...]:
     """검증된 청크를 Qdrant 적재 후보 Point로 변환합니다."""
 
@@ -173,9 +179,17 @@ def prepare_upsert_points(
         raise TypeError("expected_dimension은 정수여야 합니다.")
     if expected_dimension < 1:
         raise ValueError("expected_dimension은 1 이상이어야 합니다.")
+    if (sparse_vector_name is None) != (sparse_vectors is None):
+        raise ValueError(
+            "Sparse Vector 이름과 벡터 목록은 함께 설정해야 합니다."
+        )
 
     record_list = list(records)
     validate_unique_records(record_list)
+    if sparse_vectors is not None and len(sparse_vectors) != len(record_list):
+        raise ValueError(
+            "Sparse Vector 개수가 입력 청크 개수와 다릅니다."
+        )
 
     inferred_dimension = infer_vector_dimension(record_list)
     if inferred_dimension is not None and inferred_dimension != expected_dimension:
@@ -186,17 +200,25 @@ def prepare_upsert_points(
 
     indexed_time = indexed_at or _utc_now_iso()
     points: list[PreparedPoint] = []
-    for record in record_list:
+    for index, record in enumerate(record_list):
         record.validate(
             require_vector=True,
             expected_dimension=expected_dimension,
         )
         assert record.vector is not None
+        sparse_vector = sparse_vectors[index] if sparse_vectors else None
         points.append(
             PreparedPoint(
                 point_id=record.point_id(),
                 vector=record.vector,
                 payload=record.payload(indexed_at=indexed_time),
+                sparse_indices=(
+                    sparse_vector.indices if sparse_vector is not None else None
+                ),
+                sparse_values=(
+                    sparse_vector.values if sparse_vector is not None else None
+                ),
+                sparse_vector_name=sparse_vector_name,
             )
         )
 

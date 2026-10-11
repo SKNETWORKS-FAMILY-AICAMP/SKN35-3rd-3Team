@@ -256,17 +256,27 @@ print("검증 통과:", report.passed)
 기존 데이터에서 발생한 잔여·중복은 재적재만으로 없어지지 않으므로 별도 정리
 대상으로 남겨 둡니다.
 
-## Hybrid 검색 확장 경계
+## Hybrid 검색
 
-현재 구현은 선택한 OpenAI 또는 NVIDIA 임베딩 모델을 사용하는 Dense Vector
-검색입니다. BM25 키워드 검색과 Dense 검색을 RRF(Reciprocal Rank Fusion)로
-결합하는 Hybrid 검색은 아직 구현하지 않았습니다.
+기본값은 `SEARCH_MODE=hybrid`입니다. 선택한 OpenAI·NVIDIA·로컬 Dense
+임베딩과 FastEmbed `Qdrant/bm25` Sparse Vector를 함께 저장하고, 검색 시 두
+후보 목록을 Qdrant RRF(Reciprocal Rank Fusion)로 결합합니다.
 
-Hybrid 검색을 추가할 때는 기존 Dense 컬렉션을 삭제하거나 강제로 재생성하지
-않습니다. Sparse Vector 또는 키워드 인덱스 규격을 먼저 확정하고 별도
-컬렉션에서 검증한 뒤 전환합니다. 전처리 결과의 `article_label`, `domain`,
-`document_type`은 Hybrid 검색의 필터와 키워드 정확도를 높이는 데 재사용할 수
-있습니다.
+BM25는 로컬에서 생성하므로 Qdrant Cloud의 유료 Inference에 의존하지
+않습니다. 한국어 원문에는 영어 stemming과 stopword를 적용하지 않습니다.
+최초 실행 시 약 0.01GB의 BM25 모델 파일을 내려받으며 공개 모델이므로
+`HF_TOKEN`은 필수가 아닙니다.
+
+기존 Dense 컬렉션은 삭제하거나 재생성하지 않습니다. 컬렉션이 비어 있으면
+`qdrant_setup init`이 `bm25` Sparse Vector 설정을 추가합니다. 데이터가 있는
+컬렉션에서 Sparse 설정이 누락된 경우에는 자동 변경을 중단하고 재적재 계획을
+먼저 확인하도록 오류를 반환합니다.
+
+팀 적재 명령은 모든 Point가 Dense와 Sparse를 함께 보유하도록
+`SEARCH_MODE=hybrid`에서만 실행됩니다. 적재가 끝난 뒤 Dense 단독 비교가
+필요하면 `.env`에 `SEARCH_MODE=dense`를 지정합니다. Hybrid로 적재한 Point는
+Dense와 Sparse를 모두 보유하므로 동일 컬렉션에서 Dense 단독 검색과 Hybrid
+검색을 비교할 수 있습니다.
 
 팀 공용 Qdrant Cloud 주소는 `src/const/vector_db_defaults.py`에 고정되어
 있습니다. 팀원은 URL·컬렉션명·모델·차원을 반복 입력하지 않고 개인

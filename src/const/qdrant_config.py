@@ -19,8 +19,12 @@ from src.const.vector_db_defaults import (
     TEAM_EMBEDDING_PROVIDER,
     TEAM_QDRANT_COLLECTION,
     TEAM_QDRANT_DISTANCE,
+    TEAM_HYBRID_PREFETCH_LIMIT,
+    TEAM_QDRANT_SPARSE_MODEL,
+    TEAM_QDRANT_SPARSE_VECTOR_NAME,
     TEAM_QDRANT_URL,
     TEAM_QDRANT_VECTOR_NAME,
+    TEAM_SEARCH_MODE,
     ApiEmbeddingProfile,
     get_api_embedding_profile,
 )
@@ -37,6 +41,7 @@ SUPPORTED_DISTANCES: Final = frozenset(
         "manhattan",
     }
 )
+SUPPORTED_SEARCH_MODES: Final = frozenset({"dense", "hybrid"})
 
 TRUE_VALUES: Final = frozenset({"1", "true", "yes", "on"})
 FALSE_VALUES: Final = frozenset({"0", "false", "no", "off"})
@@ -228,6 +233,10 @@ class QdrantCollectionSettings:
     vector_size: int | None
     distance: str
     vector_name: str | None
+    search_mode: str = "dense"
+    sparse_vector_name: str | None = None
+    sparse_model: str | None = None
+    hybrid_prefetch_limit: int = TEAM_HYBRID_PREFETCH_LIMIT
 
     @classmethod
     def from_env(
@@ -239,6 +248,10 @@ class QdrantCollectionSettings:
         distance = (
             _optional_env("QDRANT_DISTANCE") or DEFAULT_DISTANCE
         ).lower()
+        search_mode = (
+            _optional_env("SEARCH_MODE") or TEAM_SEARCH_MODE
+        ).lower()
+        hybrid_enabled = search_mode == "hybrid"
 
         collection_name = (
             api_profile.collection
@@ -261,6 +274,14 @@ class QdrantCollectionSettings:
                 _optional_env("QDRANT_VECTOR_NAME")
                 or TEAM_QDRANT_VECTOR_NAME
             ),
+            search_mode=search_mode,
+            sparse_vector_name=(
+                TEAM_QDRANT_SPARSE_VECTOR_NAME if hybrid_enabled else None
+            ),
+            sparse_model=(
+                TEAM_QDRANT_SPARSE_MODEL if hybrid_enabled else None
+            ),
+            hybrid_prefetch_limit=TEAM_HYBRID_PREFETCH_LIMIT,
         )
 
     def validate_for_creation(self) -> None:
@@ -278,6 +299,19 @@ class QdrantCollectionSettings:
                 "QDRANT_DISTANCE는 다음 중 하나여야 합니다: "
                 f"{supported_values}"
             )
+        if self.search_mode not in SUPPORTED_SEARCH_MODES:
+            supported_modes = ", ".join(sorted(SUPPORTED_SEARCH_MODES))
+            raise ValueError(
+                "SEARCH_MODE는 다음 중 하나여야 합니다: "
+                f"{supported_modes}"
+            )
+        if self.search_mode == "hybrid":
+            if not self.sparse_vector_name:
+                raise ValueError("Hybrid 검색에는 Sparse Vector 이름이 필요합니다.")
+            if not self.sparse_model:
+                raise ValueError("Hybrid 검색에는 Sparse 모델이 필요합니다.")
+            if self.hybrid_prefetch_limit < 1:
+                raise ValueError("Hybrid prefetch limit은 1 이상이어야 합니다.")
 
     def safe_summary(self) -> dict[str, object]:
         """컬렉션 설정 확인용 정보를 반환합니다."""
@@ -287,6 +321,10 @@ class QdrantCollectionSettings:
             "vector_size": self.vector_size,
             "distance": self.distance,
             "vector_name": self.vector_name,
+            "search_mode": self.search_mode,
+            "sparse_vector_name": self.sparse_vector_name,
+            "sparse_model": self.sparse_model,
+            "hybrid_prefetch_limit": self.hybrid_prefetch_limit,
         }
 
 

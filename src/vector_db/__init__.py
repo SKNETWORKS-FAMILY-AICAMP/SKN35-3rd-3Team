@@ -18,6 +18,12 @@ from src.vector_db.ingestion import (
     prepare_upsert_points,
 )
 from src.vector_db.qdrant_store import QdrantVectorStore, create_qdrant_client
+from src.vector_db.sparse_embedder import (
+    FastEmbedBm25,
+    SparseEmbedding,
+    SparseEmbeddingProvider,
+    create_sparse_embedding_provider,
+)
 from src.vector_db.payload_indexes import (
     CORE_PAYLOAD_INDEXES,
     PayloadIndexSpec,
@@ -38,14 +44,18 @@ __all__ = [
     "ChunkInputIssue",
     "ChunkInputReport",
     "DocumentEmbeddingProvider",
+    "FastEmbedBm25",
     "LoadedChunkSet",
     "PreparedPoint",
     "PayloadIndexSpec",
     "QdrantVectorStore",
+    "SparseEmbedding",
+    "SparseEmbeddingProvider",
     "IngestionValidationReport",
     "StoredPointSnapshot",
     "build_ingestion_validation_report",
     "create_qdrant_client",
+    "create_sparse_embedding_provider",
     "create_team_retriever",
     "expected_chunk_count",
     "generate_document_vectors",

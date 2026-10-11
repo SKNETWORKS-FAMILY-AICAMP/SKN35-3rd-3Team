@@ -17,6 +17,10 @@ TEAM_QDRANT_URL: Final = (
 TEAM_QDRANT_COLLECTION: Final = "team_documents_openai_dev"
 TEAM_QDRANT_VECTOR_NAME: Final[str | None] = None
 TEAM_QDRANT_DISTANCE: Final = "cosine"
+TEAM_SEARCH_MODE: Final = "hybrid"
+TEAM_QDRANT_SPARSE_VECTOR_NAME: Final = "bm25"
+TEAM_QDRANT_SPARSE_MODEL: Final = "Qdrant/bm25"
+TEAM_HYBRID_PREFETCH_LIMIT: Final = 100
 
 TEAM_EMBEDDING_PROVIDER: Final = "openai"
 TEAM_EMBEDDING_MODEL: Final = "text-embedding-3-small"

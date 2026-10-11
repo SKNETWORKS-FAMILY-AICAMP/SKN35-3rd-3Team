@@ -9,6 +9,7 @@ from typing import Literal, cast
 from src.mcp_tools.runtime import create_team_mcp_server
 
 Transport = Literal["stdio", "streamable-http"]
+LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -36,6 +37,11 @@ def _build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     args = _build_parser().parse_args()
     transport = cast(Transport, args.transport)
+    if transport == "streamable-http" and args.host not in LOOPBACK_HOSTS:
+        raise SystemExit(
+            "인증이 없는 MCP HTTP 서버는 로컬 호스트에만 바인딩할 수 있습니다. "
+            "외부 공개가 필요하면 인증·TLS를 제공하는 별도 게이트웨이를 구성하세요."
+        )
     mcp = create_team_mcp_server(args.env_file)
 
     if transport == "stdio":

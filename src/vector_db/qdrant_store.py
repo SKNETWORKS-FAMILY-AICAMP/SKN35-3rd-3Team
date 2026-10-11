@@ -36,6 +36,8 @@ class QdrantClientLike(Protocol):
 
     def create_collection(self, **kwargs: object) -> bool: ...
 
+    def create_vector_name(self, **kwargs: object) -> object: ...
+
     def create_payload_index(self, **kwargs: object) -> object: ...
 
     def query_points(self, **kwargs: object) -> object: ...
@@ -82,8 +84,35 @@ def _default_point_factory(
             "Qdrant Point 변환에는 qdrant-client 설치가 필요합니다."
         ) from error
 
+    sparse_values = (
+        point.sparse_indices,
+        point.sparse_values,
+        point.sparse_vector_name,
+    )
+    if any(value is not None for value in sparse_values) and not all(
+        value is not None for value in sparse_values
+    ):
+        raise ValueError("Sparse Point 설정이 일부만 지정되었습니다.")
+
     vector: object = list(point.vector)
-    if vector_name is not None:
+    if point.sparse_indices is not None:
+        try:
+            from qdrant_client.models import SparseVector
+        except ModuleNotFoundError as error:
+            raise RuntimeError(
+                "Sparse Point 변환에는 qdrant-client 설치가 필요합니다."
+            ) from error
+
+        assert point.sparse_values is not None
+        assert point.sparse_vector_name is not None
+        vector = {
+            vector_name or "": list(point.vector),
+            point.sparse_vector_name: SparseVector(
+                indices=list(point.sparse_indices),
+                values=list(point.sparse_values),
+            ),
+        }
+    elif vector_name is not None:
         vector = {vector_name: list(point.vector)}
 
     return PointStruct(
@@ -137,6 +166,40 @@ def _default_vector_params_factory(
     if vector_name is not None:
         return {vector_name: vector_params}
     return vector_params
+
+
+def _sparse_vectors_config(vector_name: str) -> object:
+    """새 컬렉션에 사용할 BM25 Sparse Vector 설정을 만듭니다."""
+
+    try:
+        from qdrant_client.models import Modifier, SparseVectorParams
+    except ModuleNotFoundError as error:
+        raise RuntimeError(
+            "Sparse Vector 설정에는 qdrant-client 설치가 필요합니다."
+        ) from error
+
+    return {
+        vector_name: SparseVectorParams(modifier=Modifier.IDF),
+    }
+
+
+def _sparse_vector_name_config() -> object:
+    """기존 컬렉션에 추가할 BM25 Sparse Vector 설정을 만듭니다."""
+
+    try:
+        from qdrant_client.models import (
+            Modifier,
+            SparseVectorConfig,
+            SparseVectorNameConfig,
+        )
+    except ModuleNotFoundError as error:
+        raise RuntimeError(
+            "Sparse Vector 설정에는 qdrant-client 설치가 필요합니다."
+        ) from error
+
+    return SparseVectorNameConfig(
+        sparse=SparseVectorConfig(modifier=Modifier.IDF),
+    )
 
 
 def _payload_schema_type(schema: str) -> object:
@@ -274,6 +337,7 @@ class QdrantVectorStore:
             ) from error
 
         if exists:
+            self._ensure_sparse_vector()
             return self.validate_collection_contract(), False
 
         vector_size = self.settings.collection.vector_size
@@ -283,10 +347,20 @@ class QdrantVectorStore:
             self.settings.collection.distance,
             self.settings.collection.vector_name,
         )
+        create_options: dict[str, object] = {
+            "collection_name": self.collection_name,
+            "vectors_config": vectors_config,
+        }
+        sparse_vector_name = self.settings.collection.sparse_vector_name
+        if self.settings.collection.search_mode == "hybrid":
+            assert sparse_vector_name is not None
+            create_options["sparse_vectors_config"] = _sparse_vectors_config(
+                sparse_vector_name
+            )
+
         try:
             self.client.create_collection(
-                collection_name=self.collection_name,
-                vectors_config=vectors_config,
+                **create_options,
             )
         except Exception as error:
             raise VectorStoreError(
@@ -295,6 +369,37 @@ class QdrantVectorStore:
             ) from error
 
         return self.validate_collection_contract(), True
+
+    def _ensure_sparse_vector(self) -> None:
+        """빈 기존 컬렉션에 누락된 BM25 Sparse Vector를 추가합니다."""
+
+        if self.settings.collection.search_mode != "hybrid":
+            return
+
+        info = self.get_collection_info()
+        sparse_vector_name = self.settings.collection.sparse_vector_name
+        assert sparse_vector_name is not None
+        if info.sparse_vector_name == sparse_vector_name:
+            return
+        if info.points_count:
+            raise VectorStoreError(
+                "invalid_schema",
+                "데이터가 있는 컬렉션에는 Sparse Vector를 자동 추가하지 않습니다. "
+                "입력과 재적재 계획을 먼저 확인하세요.",
+            )
+
+        try:
+            self.client.create_vector_name(
+                collection_name=self.collection_name,
+                vector_name=sparse_vector_name,
+                vector_name_config=_sparse_vector_name_config(),
+                wait=True,
+            )
+        except Exception as error:
+            raise VectorStoreError(
+                "connection_error",
+                "Qdrant BM25 Sparse Vector 설정에 실패했습니다.",
+            ) from error
 
     def payload_index_status(
         self,
@@ -399,6 +504,17 @@ class QdrantVectorStore:
             ) from error
 
         vector_params, vector_name = self._vector_params(collection)
+        sparse_vectors = _read_path(
+            collection,
+            "config",
+            "params",
+            "sparse_vectors",
+        )
+        sparse_vector_name = self.settings.collection.sparse_vector_name
+        if not isinstance(sparse_vectors, Mapping) or (
+            sparse_vector_name not in sparse_vectors
+        ):
+            sparse_vector_name = None
         vector_size = _read_value(vector_params, "size")
         distance = _read_value(vector_params, "distance")
         if isinstance(vector_size, bool) or not isinstance(vector_size, int):
@@ -418,6 +534,8 @@ class QdrantVectorStore:
             points_count=points_count,
             status=_enum_text(_read_value(collection, "status", "unknown")),
             vector_name=vector_name,
+            search_mode=self.settings.collection.search_mode,
+            sparse_vector_name=sparse_vector_name,
         )
 
     def validate_collection_contract(self) -> VectorCollectionInfo:
@@ -436,31 +554,117 @@ class QdrantVectorStore:
                 "distance_mismatch",
                 "Qdrant 컬렉션과 설정의 거리 함수가 다릅니다.",
             )
+        if (
+            self.settings.collection.search_mode == "hybrid"
+            and info.sparse_vector_name
+            != self.settings.collection.sparse_vector_name
+        ):
+            raise VectorStoreError(
+                "invalid_schema",
+                "Qdrant 컬렉션에 설정한 BM25 Sparse Vector가 없습니다.",
+            )
         return info
 
-    def search(
+    def _dense_query_options(
         self,
         request: VectorSearchRequest,
-    ) -> Sequence[VectorSearchHit]:
-        """Qdrant ``query_points``로 유사 문서를 한 번 검색합니다."""
+        query_filter: object | None,
+    ) -> dict[str, object]:
+        """Dense 단독 ``query_points`` 인자를 만듭니다."""
 
-        query_filter = None
-        if request.filters:
-            query_filter = self.filter_factory(request.filters)
-
-        query_kwargs: dict[str, object] = {
+        options: dict[str, object] = {
             "collection_name": self.collection_name,
             "query": list(request.query_vector),
             "limit": request.top_k,
             "with_payload": True,
             "with_vectors": False,
         }
-        if self.settings.collection.vector_name is not None:
-            query_kwargs["using"] = self.settings.collection.vector_name
+        vector_name = self.settings.collection.vector_name
+        if vector_name is not None:
+            options["using"] = vector_name
         if request.score_threshold is not None:
-            query_kwargs["score_threshold"] = request.score_threshold
+            options["score_threshold"] = request.score_threshold
         if query_filter is not None:
-            query_kwargs["query_filter"] = query_filter
+            options["query_filter"] = query_filter
+        return options
+
+    def _hybrid_query_options(
+        self,
+        request: VectorSearchRequest,
+        query_filter: object | None,
+    ) -> dict[str, object]:
+        """Dense·BM25 Prefetch와 RRF 결합 인자를 만듭니다."""
+
+        if not request.query_text:
+            raise ValueError("Hybrid 검색에는 원문 질문이 필요합니다.")
+        if request.sparse_indices is None or request.sparse_values is None:
+            raise ValueError("Hybrid 검색에는 Sparse 질문 벡터가 필요합니다.")
+        sparse_vector_name = self.settings.collection.sparse_vector_name
+        assert sparse_vector_name is not None
+
+        try:
+            from qdrant_client.models import (
+                Fusion,
+                FusionQuery,
+                Prefetch,
+                SparseVector,
+            )
+        except ModuleNotFoundError as error:
+            raise RuntimeError(
+                "Hybrid 검색에는 qdrant-client 설치가 필요합니다."
+            ) from error
+
+        prefetch_limit = max(
+            request.top_k,
+            self.settings.collection.hybrid_prefetch_limit,
+        )
+        dense_options: dict[str, object] = {
+            "query": list(request.query_vector),
+            "limit": prefetch_limit,
+        }
+        vector_name = self.settings.collection.vector_name
+        if vector_name is not None:
+            dense_options["using"] = vector_name
+        if request.score_threshold is not None:
+            dense_options["score_threshold"] = request.score_threshold
+
+        sparse_options: dict[str, object] = {
+            "query": SparseVector(
+                indices=list(request.sparse_indices),
+                values=list(request.sparse_values),
+            ),
+            "using": sparse_vector_name,
+            "limit": prefetch_limit,
+        }
+        if query_filter is not None:
+            dense_options["filter"] = query_filter
+            sparse_options["filter"] = query_filter
+
+        return {
+            "collection_name": self.collection_name,
+            "prefetch": [
+                Prefetch(**dense_options),
+                Prefetch(**sparse_options),
+            ],
+            "query": FusionQuery(fusion=Fusion.RRF),
+            "limit": request.top_k,
+            "with_payload": True,
+            "with_vectors": False,
+        }
+
+    def search(
+        self,
+        request: VectorSearchRequest,
+    ) -> Sequence[VectorSearchHit]:
+        """설정에 따라 Dense 또는 RRF Hybrid 검색을 수행합니다."""
+
+        query_filter = (
+            self.filter_factory(request.filters) if request.filters else None
+        )
+        if self.settings.collection.search_mode == "hybrid":
+            query_kwargs = self._hybrid_query_options(request, query_filter)
+        else:
+            query_kwargs = self._dense_query_options(request, query_filter)
 
         try:
             response = self.client.query_points(**query_kwargs)

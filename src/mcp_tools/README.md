@@ -5,7 +5,7 @@
 
 ## 제공 Tool
 
-- `search_documents`: Dense 검색 1회
+- `search_documents`: Dense + BM25 결과를 RRF로 결합한 Hybrid 검색
 - `lookup_document`: 임베딩 없이 `document_id`가 같은 청크 정확 조회
 - `health_check`: Qdrant 연결 확인
 - `get_collection_info`: 민감정보를 제외한 컬렉션 상태 확인
@@ -42,7 +42,9 @@ uv run python -m src.scripts.mcp_server `
 ```
 
 클라이언트 URL은 `http://127.0.0.1:8000/mcp`입니다. 원격에 공개할 때는
-인증과 TLS를 별도 구성해야 하므로 기본값은 로컬 주소로 제한합니다.
+인증과 TLS를 별도 구성해야 하므로 현재 실행기는 `127.0.0.1`, `localhost`,
+`::1` 이외의 주소 바인딩을 거부합니다. 팀 공유는 기본 `stdio`를 사용하고,
+원격 HTTP가 필요하면 인증·TLS 게이트웨이를 먼저 구성합니다.
 
 실제 MCP Client가 `stdio` 하위 프로세스를 실행해 Tool 목록과 Qdrant 상태를
 읽을 수 있는지는 다음 명령으로 확인합니다. Point를 생성·수정·삭제하지 않는
@@ -63,3 +65,7 @@ uv run python -m src.scripts.mcp_probe `
 지연합니다. 따라서 Qdrant가 일시적으로 응답하지 않아도 MCP 서버와 Tool은
 시작되며, 실제 연결 상태는 `health_check`로 확인합니다. 실제 청크가 아직
 적재되지 않았다면 `search_documents` 결과는 `empty_result`가 됩니다.
+
+MCP Tool의 입력·출력 형식은 Dense에서 Hybrid로 전환해도 바뀌지 않습니다.
+검색 구현은 `src.vector_db`와 `src.retriever`에 있으며, MCP는 같은
+`search_documents` Tool로 결과를 전달합니다.

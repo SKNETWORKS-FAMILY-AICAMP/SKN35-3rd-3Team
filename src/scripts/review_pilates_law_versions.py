@@ -1,7 +1,7 @@
 """필라테스 사례의 계약·해지 시점별 공식 법령 대조. 과거 원문은 기본 검색에서 제외.
 
-uv run python -m src.Scripts.review_pilates_law_versions --collect
-uv run python -m src.Scripts.review_pilates_law_versions
+uv run python -m src.scripts.review_pilates_law_versions --collect
+uv run python -m src.scripts.review_pilates_law_versions
 두 번째 명령은 네트워크 없이 수집본으로 비교 기록을 재생성한다.
 """
 import argparse

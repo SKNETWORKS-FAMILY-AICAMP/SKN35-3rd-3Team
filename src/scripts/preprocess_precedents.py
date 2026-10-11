@@ -1,6 +1,6 @@
 """검토 결과의 포함/부분 사용 판례를 정제한다.
 
-uv run python src/Scripts/preprocess_precedents.py
+uv run python src/scripts/preprocess_precedents.py
 원본은 보존하고 data/processed/precedents에 결과를 저장한다.
 """
 

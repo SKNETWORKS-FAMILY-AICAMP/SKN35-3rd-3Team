@@ -1,7 +1,7 @@
 """설정한 현행 법령를 국가법령정보센터에서 버전별 원본 JSON으로 수집한다.
 
-uv run python src/Scripts/collect_laws.py
-uv run python src/Scripts/collect_laws.py --name 민법
+uv run python src/scripts/collect_laws.py
+uv run python src/scripts/collect_laws.py --name 민법
 """
 
 import argparse

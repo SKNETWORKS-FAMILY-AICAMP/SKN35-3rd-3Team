@@ -5,8 +5,8 @@ import tempfile
 from pathlib import Path
 from collections import Counter
 
-from src.Scripts.chunk_guides import INPUT_DIR, OUTPUT_DIR, make_chunks, run
-from src.Scripts.preprocess_guides import sha256, ROOT
+from src.scripts.chunk_guides import INPUT_DIR, OUTPUT_DIR, make_chunks, run
+from src.scripts.preprocess_guides import sha256, ROOT
 
 
 class GuideChunkTests(unittest.TestCase):

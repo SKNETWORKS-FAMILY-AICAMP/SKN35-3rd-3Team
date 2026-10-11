@@ -2178,27 +2178,27 @@
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard.json",
       "bytes": 183198,
-      "sha256": "6af595f2e332da6d15d9d24138a7db94b04d1d1f9ad264c5d516c159fdb154de"
+      "sha256": "dd92168a03108ed3f8d2d5cc028741705dbd1d69990dc384ecb34f82bc0fc836"
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_0.json",
       "bytes": 913,
-      "sha256": "a990208ce7d7b8b54952ae24ff83c270093078f012aaafdddcbec258817ad9ea"
+      "sha256": "7a27f0302bb4b5519bc1cb4cee574348324fd5b3c31ff334ea8f30dd7a5baf64"
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_1.json",
       "bytes": 923,
-      "sha256": "10a3e654967402802a8360fa0a5f95be37851584ad6c2a8285c602542ec10f96"
+      "sha256": "b3a73cd9bc9a0db4e65a0071c34d6a7f044f402dd369ea05a5b2d912ccd0cbf1"
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_2.json",
       "bytes": 952,
-      "sha256": "e8f75b915c021c0e43310961895c15bc4195cecfec1809ae5542a84041f7dfcc"
+      "sha256": "0f5006676e0851742a4af418afe1a7d2bfdefd13d3696d2a35f80d2830ed11cf"
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_3.json",
       "bytes": 926,
-      "sha256": "3754eeade24f9f95f2c138c2ead17ac654602670fcca36aa47838472a3104978"
+      "sha256": "e0647e2e0f29324fb40b81e4c22b8e6cb9021e3509adedd67ea5174843d7a172"
     },
     {
       "path": "data/processed/consumer_sources/consumer_preprocessing_report.json",
@@ -2208,7 +2208,7 @@
     {
       "path": "data/processed/consumer_sources/continual_contract_refund.json",
       "bytes": 16031,
-      "sha256": "cbcc54f6c509b123fc91be296aae6d8ae644ba39ee418d1b9a89ac886bf7aec3"
+      "sha256": "25918dc05e76ca539e4f34306324be80d65cab5c00bdfab7f27c3aa08e50b5b5"
     },
     {
       "path": "data/processed/consumer_sources/converted/ftc_parcel_terms_14786.conversion.json",
@@ -2233,267 +2233,267 @@
     {
       "path": "data/processed/consumer_sources/easylaw_civil_enforcement.json",
       "bytes": 7917,
-      "sha256": "13b8544a1fd3abe5640cff759a9a756cd5185463c3d3719e339a4e4776774b37"
+      "sha256": "9cd124a715c97e7dda05388cec1b3ccc2f53febc4d34d16a77501129b2157add"
     },
     {
       "path": "data/processed/consumer_sources/easylaw_consumer_payment_order.json",
       "bytes": 7713,
-      "sha256": "8fd83403b39aa521dd833cc21c330fa48fb253f1673594358a8ca232c54372e4"
+      "sha256": "78963eb3c7219514705b6f13b7ba90d0523326fffd1f3781bc8b4b2da23437bb"
     },
     {
       "path": "data/processed/consumer_sources/easylaw_consumer_small_claim.json",
       "bytes": 6727,
-      "sha256": "67f308e1dcabf069475e4a6ed249b6a9c445bc866e70c26d8e3ce56a56499573"
+      "sha256": "17b2557317b87dcd0119749985906c548e4358d80f9e217c0a5175c42709e481"
     },
     {
       "path": "data/processed/consumer_sources/easylaw_housing_distribution.json",
       "bytes": 23328,
-      "sha256": "29958fd0ee15e753b53c5ea4bb6c1f9ad604d8f398c03c89be8ea55a84ab2976"
+      "sha256": "dff8b3ad0efb4ec390946e9633db0388191f22d40b165d746cf457e7ece6a2bb"
     },
     {
       "path": "data/processed/consumer_sources/easylaw_housing_restoration.json",
       "bytes": 6395,
-      "sha256": "198b30cb99be876200bbaa0f4c5ba9f05042c373aadfeb438fe91822969b644e"
+      "sha256": "398c2c618b75a530b7cbce83ed38033fd5fe7793d8ff6db14137845aaa0313e8"
     },
     {
       "path": "data/processed/consumer_sources/easylaw_housing_termination.json",
       "bytes": 7532,
-      "sha256": "e7e3cdccdf1b6c506598eff50abf1be47039c95926e2856071deb2970bdb7f71"
+      "sha256": "8461c920f83bd9880749e22b3f7776926c32da296dd2a949178b91a11126d0e8"
     },
     {
       "path": "data/processed/consumer_sources/easylaw_payment_order_application.json",
       "bytes": 10602,
-      "sha256": "1a06c408c9fc8f70b63e69fb9a2f55f3677f8a9094d47d6f444b9321fb9bfcd7"
+      "sha256": "3f5632284f44f189d8c871d9cbb6905efa1b6f67e90d71bce239abe9fb73e596"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_11125.json",
       "bytes": 1088,
-      "sha256": "933225f4088b0eff4e9811a0d7a1a8e08e3806134141afd84ff039a60df06f39"
+      "sha256": "af07c599e4d319484b2364412fe1acd0b0324409be1684270fb34e90483d88ed"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_11125_file_e27d5f98.json",
       "bytes": 71440,
-      "sha256": "66e3be22edbd990808b4bc1a25ac927f0e049610c79df0014dc85a24544f895f"
+      "sha256": "a0a47fcc0623c8f70d5137fc4e788375b46493fda36a8a1857638dc1f3328d5c"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_11185.json",
       "bytes": 1082,
-      "sha256": "279b54548a7bf8e674fddd655a236fcfb80b509fc112a4c044b454211b31ab6e"
+      "sha256": "8431ff1bdf74e4b8c76ab619f7b5660b6d24ce8fb60f57dc48450d29d54897f7"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_11185_file_a321590d.json",
       "bytes": 87814,
-      "sha256": "0cde95bd4a72757771a9901a9128ad915037d222816e03991e652f5c386b9794"
+      "sha256": "61bf9ea47646deca1d90608e71b387c039b45f470024c1473763382fe7edcb0e"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_46118.json",
       "bytes": 1055,
-      "sha256": "0ba1af1e6f4ae4103068f02d3ad4c046f7177d7332dda57043f5efd78855c0d9"
+      "sha256": "c63a72e3df9d8c74f4d5f8ae49d18a8fddaae7d8ecaa3f434e1359ae9ecee64f"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_46118_file_5b139f26.json",
       "bytes": 76211,
-      "sha256": "e2b7cf9676be09609339c7e5d0fdec41e5bbf403ce2975118ff1ffe5adc15df1"
+      "sha256": "f17cccc2b49e2d1daa6b34ef1ebe594522c14a72701975bbfa72d921407853f4"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_47762.json",
       "bytes": 1066,
-      "sha256": "f26d3bc7bb36cbd05c29cb5a132d42ddbdd3582179826600ed5d95c237bc21fe"
+      "sha256": "e85faf64141fee7eec40bc12f132d624ff7bbc22c5e27ec7a7df696e7503452b"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_47762_file_05d51a47.json",
       "bytes": 88787,
-      "sha256": "1cd28c0b6e92b2f05f2b7ef78c68ed3aede9c4572643eb6d5a23a2180fcc099c"
+      "sha256": "535504f4bbc62811a1fc95ed3fc832bd163d18bc94d92c787f262291b6e72785"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_discovery.json",
       "bytes": 923,
-      "sha256": "ff057ffb823047641fb97bf76272afaab80958fe77bc39a8042be061574a88db"
+      "sha256": "a4efb107d3e772e4c6a2fbb888bc7d6e42b8c83214cdf78eb7af3f8f4cc3fe74"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_discovery_parcel.json",
       "bytes": 1013,
-      "sha256": "d95fbc17e23c4cfe3fc447545bc1084c84b39ba2cb959c0c473acc18fd8f4553"
+      "sha256": "5fa171c20acf999ff415092cd44db6244d2cd54b3eda0cef2fcc60e71cf08138"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1001243565.json",
       "bytes": 4880,
-      "sha256": "762127fb0a5fc853406f0b0c320d94f641d8ba15811f549326be1aa9ab0fb735"
+      "sha256": "6e28633b5d3b79f1203e7c5436d8c34e34d4a9c466d577c373d157bb4ddc4ef5"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1001329664.json",
       "bytes": 11141,
-      "sha256": "ad77a564a55d8abf0755649510a5750497e4bee0f85ddf2e9a220df0425740b8"
+      "sha256": "552bb47ca4c31d8ca18a20636267779f6db2e8a24de32003113ae189f75699c6"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1002730975.json",
       "bytes": 6313,
-      "sha256": "6fe74fc5aecbe9f99dd7b404d98c3c089c55772a6e5b44bc9e569cdacc120240"
+      "sha256": "ee2929e2cb5d7284ba1ffd4fdfb675975e6a98a2d3443af037226bb4cfe25ebe"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003148978.json",
       "bytes": 6582,
-      "sha256": "cf15da62d7bb880df5c81678d146edaab53fc50788e0cb8fa07f0cb627951a39"
+      "sha256": "e45d7edd1bba270fc42c9d574fc3d8eddb18ba6e67016037ad9b80ba99f4ee61"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003164054.json",
       "bytes": 8722,
-      "sha256": "728af3f2e2a1f611017530309a913d1f2f64ac234562630e18774d4fcf2a8a29"
+      "sha256": "3805b11005f866eacc706041306c47adb7a3c7eb3b99cbdeab52a6646beed13d"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003475989.json",
       "bytes": 8622,
-      "sha256": "7a0ef6571a050fd3bdba5f4f749b40167893dd946dc9225c592f74726856a797"
+      "sha256": "c9394652fc6b00e8d7b7d3a6e38991c5b56deb628904dadf241658887b48cc3d"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003604873.json",
       "bytes": 6286,
-      "sha256": "098c1633f0eb2411f52f2bf7a75fb4eea53da369af079c3e164269e6724eb874"
+      "sha256": "478986e3ba062252f45503ce15cc19516ce92bf9a9f5b456ded6ec3d9edb22f3"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003640779.json",
       "bytes": 15474,
-      "sha256": "346c7e2792e2213db8910d5d2d94022c664fb1416fece1224f442307072d47d7"
+      "sha256": "e580793da8de012567faa52cc16b76ab7f6bb5b90001216037412fa4f0206c57"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003641375.json",
       "bytes": 6262,
-      "sha256": "1d5723d75cc5611c1860674f495e048916d5b4f550b207191c9b3b5de5fa7eab"
+      "sha256": "888cc35ce83b69a1e51a429274262e9536727056203adbe66c3b33eeb6540223"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003641715.json",
       "bytes": 6775,
-      "sha256": "b3bac70a5c54fb0781b7fca545a15e0a059565a3df13a461df318b6743983603"
+      "sha256": "190db81be5836af6b046bc8c14fdeab9ff6b0a2ed910ed47b5bee99218550dbb"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003739114.json",
       "bytes": 18625,
-      "sha256": "b3458e8cb87e4ada65275517d362bdb9a05aee3783470c3a0a856be564194eb6"
+      "sha256": "e86483fe6c397d8d33390b1ae6895074c15282ddeb76aaa3b44f0af498c77af0"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003817065.json",
       "bytes": 3892,
-      "sha256": "60db2feee234c260d48c6ad205ac71142ba820342c97bb2b51a4f9164d6bfc5e"
+      "sha256": "41be653d5047844bbb1ee6b862cc7d9fab07b72699626dd33fcbfe920194ff9f"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003890245.json",
       "bytes": 5747,
-      "sha256": "6a99db3a581db64a11192008d8db79721876b456d493259ef306f70020c151ec"
+      "sha256": "8b173e551d99c740872d78d8ef5a4223ccd7da1ad5154f02d2e20f6fccabd9bb"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003892039.json",
       "bytes": 5747,
-      "sha256": "f047fb6f1747bd76fbaf1fc9f494deadbed8d556b8b315f0ca0253ab44c03efa"
+      "sha256": "279386a5076b4391dc1233a5a3d5ac56234b9fda77feb5be4e4c7ee3388531d5"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003892170.json",
       "bytes": 6807,
-      "sha256": "07de344df618157dc0fcfb60b289217a4516ebfb2db502e85035656c91d65dec"
+      "sha256": "ebbc7cb128a12f0d312e6c81b2298c777888a2a7730bbf4359398eb52a06dbb1"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003940398.json",
       "bytes": 5392,
-      "sha256": "efec6d07b587ffd5b2ab774c6dc7eb8e91f145e572e293fc300d4ef04aeaa7d0"
+      "sha256": "a0a4269d40d14f44c9143796735772b2db51a1a235834f84cad62d3871bcb3d1"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003941875.json",
       "bytes": 5672,
-      "sha256": "aae70e1dd2031295e07ccc2d8ffd5d0642a016a1914aa3b99a97afe03acc673f"
+      "sha256": "ecf4e8d34a01ca82f2452b8cdcd3864803a9890d48d83f76d8ab5bd1f1fb06d6"
     },
     {
       "path": "data/processed/consumer_sources/kca_damage_redress_procedure.json",
       "bytes": 6457,
-      "sha256": "e0325d7893e39f290e66231c2bbacaae7a5144269e362978718a2a7c67cacbcf"
+      "sha256": "0d95cbdec2af1495d4a3d0b89a60bfa36324f09b9fb58073be56e859be661846"
     },
     {
       "path": "data/processed/consumer_sources/kca_discovery_fitness.json",
       "bytes": 958,
-      "sha256": "c1b9e80a0bdbc36bf3315df127977c1e753f87d800e0aa71d3799c20a00890d8"
+      "sha256": "7f60e9cfee7d8c5cee6ef771d732ce50f42004211c95c51cb271ed21da65636e"
     },
     {
       "path": "data/processed/consumer_sources/kca_discovery_parcel.json",
       "bytes": 974,
-      "sha256": "16a03d27c3f4a5bf5f4d69ff1175936be7b14c86a15ee21b36bc9f690d0684ed"
+      "sha256": "0295774dbde7e0783a32d892a59ef5dfcb0a093d067185414b070e4ea221c1d2"
     },
     {
       "path": "data/processed/consumer_sources/kca_discovery_shopping.json",
       "bytes": 982,
-      "sha256": "f29a86fe9fd95cf9f5dee6140365c62c47ed50bcca32e45a46bfc1dec8210402"
+      "sha256": "8333805497d28616dd9b257edd07aac659652d8afc00556e33821b7fa752b9bb"
     },
     {
       "path": "data/processed/consumer_sources/kca_fitness_closure_gym.json",
       "bytes": 7734,
-      "sha256": "face3dcc685128d17578797722dc4e7a0243814f051d956eb44b570ac89143b9"
+      "sha256": "78d5dfc2a336b3d72390b803c5b72397511bc5b63d7738ce7bc7302df638eaf6"
     },
     {
       "path": "data/processed/consumer_sources/kca_fitness_closure_pilates.json",
       "bytes": 16286,
-      "sha256": "3ae521b3472d4d16e62c8c80914cc128aec57789b80afd3dfc17ec49713a5061"
+      "sha256": "14e68725b6479d56d2d530a511e333b684bd525e07b69449fa58ffe66c3a6fe8"
     },
     {
       "path": "data/processed/consumer_sources/kca_mediation_procedure.json",
       "bytes": 10759,
-      "sha256": "d95728f15d163f4ca7226555be78d2bc8003a6a42f336f648e1c57179eeacb2b"
+      "sha256": "439cc2e46cf90fd6ccace1e3177b872d48692e4033ae74e4e42aa0a996e248cc"
     },
     {
       "path": "data/processed/consumer_sources/kca_overseas_checklist.json",
       "bytes": 6923,
-      "sha256": "857d1f43213efa043a09f19be6ea61366f44a388e011a969b1cfcbcb8d4e0f81"
+      "sha256": "fc5f6d3104343474ac218814a3cc779990dc45be80599cce2cbdd0eaaa26278b"
     },
     {
       "path": "data/processed/consumer_sources/kca_overseas_returns.json",
       "bytes": 4492,
-      "sha256": "600d2f8da8d5a970e6217de0b9e187b4011fb2dbc1c3823deb591c882e19859f"
+      "sha256": "a286c3c2609052396dff681b027aab46500505fcb6dc6c74bd529825ae8bce9b"
     },
     {
       "path": "data/processed/consumer_sources/kca_overseas_types.json",
       "bytes": 9742,
-      "sha256": "01de55ae8b5ef207b54a80845597c86722b23dadfcb44f9e23fe9b3695183f69"
+      "sha256": "bffec775d0d8c5448dfaaeb78a829c3350273ce1499a94ba47291875c4127036"
     },
     {
       "path": "data/processed/consumer_sources/kca_parcel_1003817349.json",
       "bytes": 4315,
-      "sha256": "24be291276eac2c61de476a2b5bff66a6bb77a3f38ede39556f515119d7b27c3"
+      "sha256": "e430334f87a63f8134dc6e4b5921bbc6671c380e259a9c4882b694d8bd03d542"
     },
     {
       "path": "data/processed/consumer_sources/kca_pilates_1003941650.json",
       "bytes": 5624,
-      "sha256": "fec6f746428859d9f7aac3d21ec5b3f76b69304c5a3b61abdddd5e213c837ae9"
+      "sha256": "873663500b46ed4a7cf04d7068f79c2e567cd3be1ad95957b701043c4a83e2d4"
     },
     {
       "path": "data/processed/consumer_sources/kca_redress_requirements.json",
       "bytes": 4786,
-      "sha256": "47df7564e40a9a3f8ad737aa0f6c31f70bedc36a89288eb029b007f906d975ce"
+      "sha256": "44e3c0700576ae4f3e88b24c4858d852cd2d8eac24f6e6bfab9ce959a35ea39b"
     },
     {
       "path": "data/processed/consumer_sources/kca_redress_submission.json",
       "bytes": 7364,
-      "sha256": "fbb74d14bdd3f521b8928dcba61404ad03eec9860098494d2ddb21a50afc3ab0"
+      "sha256": "0fa5b8ed2c04e7a40bbcd02fe2a13d78fb0ae46c5503cff98d2bdcdfa4ebc638"
     },
     {
       "path": "data/processed/consumer_sources/minimum_wage_2026.json",
       "bytes": 5146,
-      "sha256": "81edddc75cfb91d21b627444065ff4f4293ae885a36e75b0a0fde58a642d199e"
+      "sha256": "0e6c43aad02739f1e6e32adcfdf301fe93f177517a52f9ce2af49392b7d04739"
     },
     {
       "path": "data/processed/consumer_sources/minimum_wage_2026_attachment_body.json",
       "bytes": 995,
-      "sha256": "8baa41933e62331faeb1bb6ec00cfbef21d1595a40e6f4ae7ef959d4ad37367e"
+      "sha256": "d2dacf3dbb78c4bede827c38d6242305c49debd10174381eb8899c1779793f7a"
     },
     {
       "path": "data/processed/consumer_sources/minimum_wage_simple_labor.json",
       "bytes": 4853,
-      "sha256": "230071e040ac1a926c0ff4bace74d347221625ab97f4dfcd2415b7c4976fd3a3"
+      "sha256": "8db80ccb1392f875993d148f3676be527da517d36ed27479685e1941c95754e0"
     },
     {
       "path": "data/processed/consumer_sources/moel_wage_evidence_1000323154.json",
       "bytes": 4201,
-      "sha256": "fb54bd318d849e372caec215dbd55d927af7e619324428fe046f1b4879aec43d"
+      "sha256": "38be7e13adff2bf97a25d34bd325697ba72b183e13a1bda46ec4dc250bdfee38"
     },
     {
       "path": "data/processed/consumer_sources/moel_wage_procedure.json",
       "bytes": 5040,
-      "sha256": "3a4ba2a3d25f1323481d3b4328231bf2c64f9fdbecde983c80e50b8ffd86b809"
+      "sha256": "03686b9dd898edff52ff1ae37f7a8b5be8c69486522747eb38e95d1caa98de78"
     },
     {
       "path": "data/processed/consumer_sources/parcel_terms_revision_comparison.json",
@@ -2518,32 +2518,32 @@
     {
       "path": "data/processed/guides/guide_23ffe4c8fd5715cb.json",
       "bytes": 899277,
-      "sha256": "419c019fc91359b3f07aff804e2028c2439b439a6caac1fd3342271ca0d4b480"
+      "sha256": "0f80950df14f56a5cbc47d41d5659378a7dcac458361f29374807786fa00da81"
     },
     {
       "path": "data/processed/guides/guide_246eabd0676d5957.json",
       "bytes": 283474,
-      "sha256": "7f7e54cedff11dd89986157fe51bd52f7ed62663ac423982cb241a299a5c8348"
+      "sha256": "cc2ae270ff775a1bf461a737e12b44fb7b7212b1822018ab590790713b3dfe0d"
     },
     {
       "path": "data/processed/guides/guide_383b62bce56bf1ce.json",
       "bytes": 334717,
-      "sha256": "0bc269c4a8c41e22d7ce287f433560aeccec3829f368703f92f51f787fed8d58"
+      "sha256": "ac27b7f5c8f1cd8185b21927231c7cf4e786bc8cb12849faf0ea6992b959a63b"
     },
     {
       "path": "data/processed/guides/guide_94e9d4bd30eadf0b.json",
       "bytes": 317528,
-      "sha256": "e8dd9ff635383f194fec1cf1be26867826500ed0ed37f37ac00438470af6eaad"
+      "sha256": "e30f84abdf468e8ef7c2cf8c932caf1f395966fcde84dc95a9f6df4b8b04ea44"
     },
     {
       "path": "data/processed/guides/guide_cad7b1de1e4dc64c.json",
       "bytes": 971573,
-      "sha256": "8eb5e808629ac4f3609e5a7e3668b12477315440e8529c1710dfbb589e9654b9"
+      "sha256": "cf797398cf33934e1c4165888bb26abf50d23271067715d7f23576107e5e65d6"
     },
     {
       "path": "data/processed/guides/guide_preprocessing_report.json",
       "bytes": 3197,
-      "sha256": "d364ce149972e534ad37797d1d2c91b7a3f06dad907323d7de91243c2d281ef5"
+      "sha256": "a3cbe0acd89703177e2aa65664bd20fe66f3106da8655e19580cecfc683c67e2"
     },
     {
       "path": "data/processed/guides/guide_visual_review.json",
@@ -2658,122 +2658,122 @@
     {
       "path": "data/processed/laws/000129_218303_20200526.json",
       "bytes": 200240,
-      "sha256": "9dc3282a653690f209a25039f63c8ef643e856f610a5f403d006af953378c6a9"
+      "sha256": "1e8cb1187cc53fb7f745bde026582ad8e6ef23d68eeb81201f7800548b6b2bce"
     },
     {
       "path": "data/processed/laws/000354_290239_20261002.json",
       "bytes": 637192,
-      "sha256": "83e297c4a3651ea95229fbcb421eb4417b51b320359f3f136c3ac44a78166b9b"
+      "sha256": "722a3221f60dac0f5131161af6de361bdef684d715e0f411ae56d621d0b11dc8"
     },
     {
       "path": "data/processed/laws/000355_289407_20260908.json",
       "bytes": 564731,
-      "sha256": "0693586062a0515ab5439fa20d910cef27d1c15e4817cd6dc9583546d4f75f90"
+      "sha256": "51e75e471ae8be0792d77aec93ae794bd8fcaccb67c368fe2b696978e087c5d9"
     },
     {
       "path": "data/processed/laws/001215_286417_20260602.json",
       "bytes": 273600,
-      "sha256": "5d4cc24b74f31f902164f4a01bb3ba58b612a33c595e0773f6eaa4d14505bf04"
+      "sha256": "09707855b732ec3dca7ea9ef9ab3a27caa62d8fbe39a3fadf41566d4d42eea4d"
     },
     {
       "path": "data/processed/laws/001248_276291_20260102.json",
       "bytes": 338719,
-      "sha256": "5e7aa0fd82edfadd6e56f1643486434976cd526f54e631b36383bf7ec3055e2a"
+      "sha256": "a0f55b530b11aef462c175c75c834da46095351b8655a9ea3f9b9001f5f17f55"
     },
     {
       "path": "data/processed/laws/001589_283837_20260911.json",
       "bytes": 693879,
-      "sha256": "d58327ad6e29a05382abe78e2a0e2066c2aa1e3e13a478938ffa669de9abf98b"
+      "sha256": "fe924d45a70144395c2f055a05de3e74c37358ac3aa603b09e8f765377b9d0c1"
     },
     {
       "path": "data/processed/laws/001654_283713_20260828.json",
       "bytes": 592701,
-      "sha256": "8cac0e0994ecc8d3d27addab9bda3c852a980746ceac8909a63a4b5a0984b1c0"
+      "sha256": "2a163ea9f9ca07ee7414489f8a7b4b62a176e013b29f80255ec41396f20be4c1"
     },
     {
       "path": "data/processed/laws/001692_290185_20261002.json",
       "bytes": 1193955,
-      "sha256": "937e00fa41d8bb13bb6fec6f45488f3ef0d6fbc2dafb866c292b453b6a3e4a1b"
+      "sha256": "5d866ecafc4200d2e79b15ad3aeb8e8e9878b31f9af2df4fb9998c4906e860a5"
     },
     {
       "path": "data/processed/laws/001706_284415_20260317.json",
       "bytes": 3332001,
-      "sha256": "0f0ca8a89945c055787b5ca9dd99858f95496a038d2c5a4b8734ea781e57ef32"
+      "sha256": "d57cba537a2153f72efe9652056f3b8050207b17ca6907d8f53f9a9155168a5f"
     },
     {
       "path": "data/processed/laws/001872_285279_20261008.json",
       "bytes": 818067,
-      "sha256": "135a62c2460d493bcd263c7e5454ea367b65b53c01d8d5c3b4b8ce7ed54069c1"
+      "sha256": "b72cf94ba3d0a06b3d44cde51c31bb03c6a284a1b6e5ffb0b8b07016e303a28b"
     },
     {
       "path": "data/processed/laws/003058_270551_20251023.json",
       "bytes": 1051880,
-      "sha256": "dd0f959e2a1f5b2c4ca47bbbec4b0deca0ab0232b3672970c558291af5bddba7"
+      "sha256": "3f0e8367f12ced763f1191556fd204742fd440472748b22fd9b51cfc54643735"
     },
     {
       "path": "data/processed/laws/003572_286997_20260701.json",
       "bytes": 799289,
-      "sha256": "15c553b2a4b52ad16f56a7a3800568e288da8c60f81684013225a5ccd706675f"
+      "sha256": "973ac6e10b48227a1cb9a04561f810243219c917dcdba8aaf35029fec581104d"
     },
     {
       "path": "data/processed/laws/003979_289451_20260911.json",
       "bytes": 832064,
-      "sha256": "dd8e729b8a794b923fff68939bd6ed6a816e90b3eb348afbf3ff43bc72ec90d6"
+      "sha256": "e0a62f4ee064522a587c780d3d27ec25976b10983b4d3c6dd6eabe4c5161a0d3"
     },
     {
       "path": "data/processed/laws/003984_208701_20190601.json",
       "bytes": 15722,
-      "sha256": "eb6818461e62de176a2b19eb126e3f6f7183e9faf38829c6a16a937da3ab5ce6"
+      "sha256": "a3d50486c7e0aabd07cd867f895ae7919956b6d7404d4d4c7f241bbd7f433ba1"
     },
     {
       "path": "data/processed/laws/004950_287183_20260701.json",
       "bytes": 354386,
-      "sha256": "367125edeb4ead5d96ab4d9b722b46909bca69bdcb09157129b15b266f3260b0"
+      "sha256": "c134788efd552e1fb5c77b9073dc7b3e848a5b87bc4ff951ed3924ba554e3229"
     },
     {
       "path": "data/processed/laws/005247_206564_20190101.json",
       "bytes": 176719,
-      "sha256": "2cd15a19e04294ced6392c83799208267e8276b459039c0ba1c204770be216e7"
+      "sha256": "5b7eef263575182a49f7d048a132cfe2d60e6e42576912b450f674bcd1b9d9db"
     },
     {
       "path": "data/processed/laws/005498_287001_20260701.json",
       "bytes": 526523,
-      "sha256": "88ed06d7ec97c925193fc59c9b0814ada9ea04ec0d62d9ddeb16ab95a928ba53"
+      "sha256": "d958ed6988502370dc5a295f413707b7518b6a71e660b0c50349adfad6a2192c"
     },
     {
       "path": "data/processed/laws/007196_284567_20260317.json",
       "bytes": 896350,
-      "sha256": "ac4c51f0d3a3694d17c716fe6e1a161b83a18876f12c1a410b089d5667cb0065"
+      "sha256": "0b454be92cf975ee9e57fa2fea3c5bd5fb5ac611884e6eb3d975b9c1aaed25b7"
     },
     {
       "path": "data/processed/laws/008480_282351_20260102.json",
       "bytes": 249046,
-      "sha256": "2be38833e668a0bc0354a4b35ee02eb9eb3f6af380672e17bef2f9f9ba10aa19"
+      "sha256": "b5f1bf65fabe562fa5ca61120bf5f16d385ee80c6eddd563073ca51d6f1a4a8f"
     },
     {
       "path": "data/processed/laws/009290_268837_20260201.json",
       "bytes": 1295074,
-      "sha256": "41e1bbbfcefcc339e8c6eede2f57f189e0098bd8acf9dfb46f5b6c74d05480e4"
+      "sha256": "c443f17c1aa07d85280c71e7ca1f1910f5e137c650ffc10a87e7b9419793988c"
     },
     {
       "path": "data/processed/laws/009318_282793_20260721.json",
       "bytes": 553777,
-      "sha256": "1501b29e452051021090ac9f67324dd48527111383c9141940cdc7662dacc4bb"
+      "sha256": "a3d72093c30c8fdbaa5e9831d9bf915c1f1ea7cec541735217e377b34afd6d11"
     },
     {
       "path": "data/processed/laws/009325_272631_20250712.json",
       "bytes": 1142946,
-      "sha256": "53d980d676e141d6a317ab42df512f89729359aff0294c5ada211ec26608e130"
+      "sha256": "a7c7c516614e665a266664e3c408a913e0ecfa91fb79be54304fe9a37fb126c6"
     },
     {
       "path": "data/processed/laws/009338_288143_20260721.json",
       "bytes": 829820,
-      "sha256": "a437c2e1315744faae9f41d1081b03a0334a151be3b31b7762d610dc8f34f1f2"
+      "sha256": "effbc25dae9399e0835a3b58d2352671af9ecb616c14687298c54a82eeb521f2"
     },
     {
       "path": "data/processed/laws/009883_284455_20260918.json",
       "bytes": 475467,
-      "sha256": "12bb686f8dba15e50298255098f49d46df0536b45f9c6a2750c8f63c273adcf4"
+      "sha256": "c9fca7949c1cba03e06c5b7972bb0b10a19746344f3cb79e204e09f3a0c6c6ee"
     },
     {
       "path": "data/processed/laws/__init__.py",
@@ -2783,12 +2783,12 @@
     {
       "path": "data/processed/laws/law_preprocessing_report.json",
       "bytes": 14734,
-      "sha256": "2a61e586dcdfb7b5d467a31c3a206ccf79ebe53c38d83d40dcd0a84e228d16e5"
+      "sha256": "ce496ab82bde12ac8bd277c8179728eb077572ae11dfaa2a2cf510cfbdbc6755"
     },
     {
       "path": "data/processed/precedent_preprocessing_report.json",
       "bytes": 3803,
-      "sha256": "85a415184535817aa609f474918aa10f86f362337f83b67066d86787bdb310cf"
+      "sha256": "66440884c1b22739a28b4751e5b7203f733f275c5367626954df2990ddf267dd"
     },
     {
       "path": "data/processed/precedent_relevance_review.json",
@@ -2978,12 +2978,12 @@
     {
       "path": "data/processed/retrieval_evaluation/domain_coverage_report_pmh.json",
       "bytes": 1539906,
-      "sha256": "9ed5b30150e57441c810774ae184c3fb336ff6aaaf2714b9e2e5c8209aeff2e6"
+      "sha256": "8b3eecb19ac0cb9bffff88011513b78f48fa11301529683fe9fa8c812763676b"
     },
     {
       "path": "data/processed/retrieval_evaluation/domain_coverage_report_pmh.md",
       "bytes": 457637,
-      "sha256": "9d77d0e08d4788b2f7878cb40b5243fd00d605ef99b9af318114225c3f8f4d3d"
+      "sha256": "dd6bb5c629f2ca50b112154ec29c2bdc365e2f3b968d8325609f7065ee4fd4ae"
     },
     {
       "path": "data/chunk/__init__.py",
@@ -3003,7 +3003,7 @@
     {
       "path": "data/chunk/consumer_sources/consumer_chunking_report.json",
       "bytes": 11242,
-      "sha256": "4cbf16fe76492d8836433c550cc91916be15e92834b9d9420f7d5a4c0273a263"
+      "sha256": "3545d4f5448d8c4ee3dad131908419196bb943398365646d42ba24580dbd60c4"
     },
     {
       "path": "data/chunk/guides/__init__.py",
@@ -3038,7 +3038,7 @@
     {
       "path": "data/chunk/guides/guide_chunking_report.json",
       "bytes": 10266,
-      "sha256": "f180cf4bbfef684fb19e89e51dd3ffd8541f4bbca6ceef32c5cc47946c593375"
+      "sha256": "eae38aeb39022da2ee5a6c750a0df783e0fd5fd94222a446af171921d869c3de"
     },
     {
       "path": "data/chunk/laws/__init__.py",
@@ -3053,7 +3053,7 @@
     {
       "path": "data/chunk/laws/law_chunking_report.json",
       "bytes": 14498,
-      "sha256": "781f9dda95db3bc959895e3acb1e2e1dce6f14442618995c1add7959b9e3ad23"
+      "sha256": "e340c270ae7da22af14589fac9175939e5c51c03a7602dd26062e562e8b0a5b6"
     },
     {
       "path": "data/chunk/precedents/__init__.py",
@@ -3066,14 +3066,14 @@
       "sha256": "bcde044c4869f50feada1cead23474dace126c89416bb4f76e717ac41898a921"
     }
   ],
-  "inventory_sha256": "c612be7b37b63229948ab97aa6acf2104ac898a00f28d62e2b70ed9d89fedbe1",
+  "inventory_sha256": "70946d842d425d45fdddb2facf8cff4a1c1fb8012355a8efe1319295863f0d16",
   "remaining_limits": [
     "분야 내용 검토 상태: {\"supported\": 37, \"partial\": 7, \"restricted\": 1}",
     "자료 추가·개정 후 분야별 내용 검토와 평가 보고서를 다시 갱신해야 함",
     "PDF 모든 이미지/원문 시각 요소 및 신규 현행 개정의 전수 검증은 아님",
     "공통 서비스 로더·임베딩·Qdrant 저장/검색·LLM 답변·MCP 연결은 미구현"
   ],
-  "validated_at": "2026-10-11T07:29:04.005852+00:00",
+  "validated_at": "2026-10-11T12:56:05.904904+00:00",
   "test_suite": {
     "tests_run": 163,
     "successful": true,

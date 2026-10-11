@@ -4,7 +4,7 @@ import unittest
 import tempfile
 from pathlib import Path
 
-from src.Scripts.preprocess_guides import (
+from src.scripts.preprocess_guides import (
     INPUT_DIR, OUTPUT_DIR, ROOT, clean_page, headings, page_kind, run, sha256, apply_visual_review, outside_tables, validate_source_coverage,
 )
 
@@ -103,7 +103,7 @@ class GuidePreprocessingTests(unittest.TestCase):
     def test_exported_images_match_review_source_hashes(self):
         import hashlib
         import pdfplumber
-        from src.Scripts.preprocess_guides import ROOT
+        from src.scripts.preprocess_guides import ROOT
         report = json.loads((OUTPUT_DIR / 'guide_preprocessing_report.json').read_text(encoding='utf-8'))
         total = 0
         for entry in report['saved']:

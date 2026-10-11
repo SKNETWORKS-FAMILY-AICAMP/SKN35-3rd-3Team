@@ -1,6 +1,6 @@
 """안내 PDF를 원본 보존하며 페이지별 JSON으로 정제한다.
 
-실행: uv run python src/Scripts/preprocess_guides.py
+실행: uv run python src/scripts/preprocess_guides.py
 필요 라이브러리: pdfplumber. OCR과 청크 생성은 수행하지 않는다.
 """
 

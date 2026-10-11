@@ -1,6 +1,6 @@
 """최종 구조 검증·전체 테스트·인계 문서 생성.
 
-uv run python -m src.Scripts.tests.test_data_handoff_pmh
+uv run python -m src.scripts.tests.test_data_handoff_pmh
 raw/기존 processed/청크는 읽기만 한다. 작성 대상은 최종 보고서와 인계서뿐이다.
 unittest 발견 실행에서는 생성/전체 테스트 재귀 실행 없이 검증만 수행한다.
 """
@@ -11,9 +11,9 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.Scripts.chunk_metadata import validate_chunk
-from src.Scripts.preprocess_guides import validate_source_coverage
-from src.Scripts.tests.test_chunk_metadata_pmh import corpus
+from src.scripts.chunk_metadata import validate_chunk
+from src.scripts.preprocess_guides import validate_source_coverage
+from src.scripts.tests.test_chunk_metadata_pmh import corpus
 
 ROOT = Path(__file__).resolve().parents[3]
 REPORT_PATH = ROOT / "data/processed/retrieval_evaluation/data_validation_report_pmh.json"
@@ -160,7 +160,7 @@ def audit():
     check('consumer_appendix_pdf_review', consumer_appendix_review)
 
     def pilates_law_versions():
-        from src.Scripts.review_pilates_law_versions import REPORT, build_report
+        from src.scripts.review_pilates_law_versions import REPORT, build_report
         comparison=read(REPORT.relative_to(ROOT))
         require(comparison==build_report(),'필라테스 시점 대조 기록 불일치')
         for relative,sha in comparison['inputs'].items():
@@ -445,28 +445,28 @@ def render_handoff(report):
               "국가법령정보센터 API로 새 법령·판례·행정규칙을 수집할 때는 프로젝트 루트의 로컬 `.env`에 아래 항목을 설정하거나 같은 이름의 환경변수를 설정합니다. 예시의 자리표시자는 실제 발급받은 OC 값으로 바꿉니다. 실제 인증값은 커밋하거나 인계 문서에 기록하지 않습니다.","",
               "```dotenv", "LAW_API_OC=<발급받은_OC_값>", "```", "",
               "이미 인계받은 파일로 아래 검증을 실행할 때는 `LAW_API_OC`가 필요하지 않으며 수집 API를 호출하지 않습니다. uv 의존성을 처음 설치할 때는 네트워크가 필요할 수 있습니다.","",
-              "```bash", 'uv run python -m unittest discover -s src/Scripts/tests -t . -p "test*_pmh.py"', "```", "",
+              "```bash", 'uv run python -m unittest discover -s src/scripts/tests -t . -p "test*_pmh.py"', "```", "",
               "## 재현 실행 순서", "", "다음 명령은 정제·청크·평가 보고서를 다시 생성하므로, 처음 인계받을 때는 위 테스트로 현재 스냅샷을 먼저 확인합니다. 데이터 갱신이 필요한 경우 아래 순서로 실행합니다.", "", "```bash",
               "# 원본 및 관련성/시각 검토 기록을 준비한 후 정제",
-              "uv run python src/Scripts/preprocess_laws.py",
+              "uv run python src/scripts/preprocess_laws.py",
               "# 소비자 안내가 연결할 최신 법령 청크를 먼저 생성",
-              "uv run python src/Scripts/chunk_laws.py",
-              "uv run python src/Scripts/preprocess_precedents.py",
-              "uv run python src/Scripts/preprocess_guides.py",
+              "uv run python src/scripts/chunk_laws.py",
+              "uv run python src/scripts/preprocess_precedents.py",
+              "uv run python src/scripts/preprocess_guides.py",
               "# 필라테스 시점 비교: 기존 원본으로 오프라인 기록 재생성",
-              "uv run python -m src.Scripts.review_pilates_law_versions",
-              "uv run python src/Scripts/preprocess_consumer_sources.py",
+              "uv run python -m src.scripts.review_pilates_law_versions",
+              "uv run python src/scripts/preprocess_consumer_sources.py",
               "# 나머지 청크 생성",
-              "uv run python src/Scripts/chunk_guides.py",
-              "uv run python src/Scripts/chunk_consumer_sources.py",
-              "uv run python -m src.Scripts.tests.test_precedent_retrieval_pmh",
+              "uv run python src/scripts/chunk_guides.py",
+              "uv run python src/scripts/chunk_consumer_sources.py",
+              "uv run python -m src.scripts.tests.test_precedent_retrieval_pmh",
               "# 검색/분야 평가",
-              "uv run python -m src.Scripts.tests.test_consumer_coverage_pmh",
-              "uv run python -m src.Scripts.tests.test_domain_coverage_pmh",
+              "uv run python -m src.scripts.tests.test_consumer_coverage_pmh",
+              "uv run python -m src.scripts.tests.test_domain_coverage_pmh",
               "# 최종 감사·전체 테스트·인계서 갱신",
-              "uv run python -m src.Scripts.tests.test_data_handoff_pmh",
+              "uv run python -m src.scripts.tests.test_data_handoff_pmh",
               "# 보고서 생성 없이 전체 테스트만 실행",
-              'uv run python -m unittest discover -s src/Scripts/tests -t . -p "test*_pmh.py"', "```", "",
+              'uv run python -m unittest discover -s src/scripts/tests -t . -p "test*_pmh.py"', "```", "",
               "분야 검토 코드는 선정 근거의 본문 지문이 바뀌면 추가 검토로 표시합니다. 질문·근거 메모와 지문을 내용 확인 없이 갱신하지 않습니다. 원본 추가 시 수집 목록·검토표·보고서에 반영한 뒤 위 순서로 재생성합니다.","",
               "## 자료 보강 재개 현황", "",
               "사용자의 재개 요청으로 부족한 근거 정리 → 필요한 원문 수집 → 정제·청크 반영 → 누락·검색 재검증 → 인계 문서 갱신을 진행했습니다. 첫 보강으로 위임 규정·직종 고시 4종을 반영했으며 나머지 분야의 자료 보강까지 완료한 상태는 아닙니다.","",
@@ -480,7 +480,7 @@ def render_handoff(report):
               "5. 미사용 질문으로 실제 RAG 답변·계산·시점·출처 정확성을 평가합니다. 단위 테스트 통과를 답변 정확성으로 해석하지 않습니다.","",
               "## 검증 산출물", "",
               "- [최종 검증 JSON](../data/processed/retrieval_evaluation/data_validation_report_pmh.json): 항목별 결과·파일 크기/해시·테스트 결과·제외 기록.",
-              "- [검증 실행 파일](../src/Scripts/tests/test_data_handoff_pmh.py): 직접 실행 시 보고서와 이 문서를 작성하고 전체 테스트를 실행합니다.",
+              "- [검증 실행 파일](../src/scripts/tests/test_data_handoff_pmh.py): 직접 실행 시 보고서와 이 문서를 작성하고 전체 테스트를 실행합니다.",
               "- 기존 수집·정제·청크 파일은 최종 감사에서 변경하지 않습니다. 생성 코드·검토 기록·보고서는 재현을 위해 함께 인계합니다."]
     return "\n".join(lines)+"\n"
 
@@ -499,7 +499,7 @@ def evaluate():
     write_outputs(report)
     # 기존 검증 파일이 이 위치에 TemporaryDirectory를 만들므로 빈 작업 폴더를 준비한다.
     (ROOT / "tmp").mkdir(exist_ok=True)
-    suite=unittest.defaultTestLoader.discover(str(ROOT/"src/Scripts/tests"),pattern="test*_pmh.py",top_level_dir=str(ROOT))
+    suite=unittest.defaultTestLoader.discover(str(ROOT/"src/scripts/tests"),pattern="test*_pmh.py",top_level_dir=str(ROOT))
     result=unittest.TextTestRunner(verbosity=1).run(suite)
     report["test_suite"]={"tests_run":result.testsRun,"successful":result.wasSuccessful(),
                           "failures":[str(t) for t,_ in result.failures],"errors":[str(t) for t,_ in result.errors],
@@ -512,7 +512,7 @@ def evaluate():
 
 class HandoffTests(unittest.TestCase):
     def test_simple_labor_notice_reprocesses_as_binding_notice_not_dispute_guideline(self):
-        from src.Scripts.preprocess_consumer_sources import preprocess
+        from src.scripts.preprocess_consumer_sources import preprocess
         collected=read('data/processed/consumer_sources/consumer_collection_report.json')
         source=next(s for s in collected['saved'] if s['source_id']=='minimum_wage_simple_labor')
         doc=preprocess(source)

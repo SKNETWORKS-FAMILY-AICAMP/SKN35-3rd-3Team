@@ -5,12 +5,12 @@ from collections import defaultdict
 from pathlib import Path
 from unittest.mock import Mock
 
-from src.Scripts.preprocess_laws import (
+from src.scripts.preprocess_laws import (
     INPUT_DIR, OUTPUT_DIR, REPORT_NAME, body_segments, clean_text,
     ensure_output, preprocess, sha256, xml_to_data, parse_box_tables,
     preprocess_supplements, content_inventory, ROOT, as_list,
 )
-from src.Scripts.chunk_laws import OUTPUT_DIR as CHUNK_DIR, make_chunks, make_aux_chunks
+from src.scripts.chunk_laws import OUTPUT_DIR as CHUNK_DIR, make_chunks, make_aux_chunks
 
 
 def fixture_path(article_xml):
@@ -106,7 +106,7 @@ class LawPreprocessingTests(unittest.TestCase):
     def test_saved_laws_preserve_every_source_unit_and_nested_body(self):
         report = json.loads((OUTPUT_DIR / REPORT_NAME).read_text(encoding='utf-8'))
         self.assertEqual(report['failures'], [])
-        from src.Scripts.collect_laws import LAW_NAMES
+        from src.scripts.collect_laws import LAW_NAMES
         self.assertEqual({e['source_file'] for e in report['saved']},{p.name for p in INPUT_DIR.glob('[0-9]*.json')})
         self.assertTrue(set(LAW_NAMES).issubset({e['law_name'] for e in report['saved']}))
         for entry in report['saved']:

@@ -2,14 +2,14 @@
 보관경로 : data/raw/precedents
 
 실행: 
-uv run python src/Scripts/collect_precedents.py --query 보증금반환 --limit 20
-uv run python src/Scripts/collect_precedents.py --query "부당해고" --limit 20
-uv run python src/Scripts/collect_precedents.py --query "중고거래" --limit 20
-uv run python src/Scripts/collect_precedents.py --query "물품대금 사기" --limit 20
-uv run python src/Scripts/collect_precedents.py --query "청약철회" --limit 20
-uv run python src/Scripts/collect_precedents.py --query "전자상거래" --limit 20
-uv run python src/Scripts/collect_precedents.py --query "임금체불" --limit 20
-uv run python src/Scripts/collect_precedents.py --id 147076
+uv run python src/scripts/collect_precedents.py --query 보증금반환 --limit 20
+uv run python src/scripts/collect_precedents.py --query "부당해고" --limit 20
+uv run python src/scripts/collect_precedents.py --query "중고거래" --limit 20
+uv run python src/scripts/collect_precedents.py --query "물품대금 사기" --limit 20
+uv run python src/scripts/collect_precedents.py --query "청약철회" --limit 20
+uv run python src/scripts/collect_precedents.py --query "전자상거래" --limit 20
+uv run python src/scripts/collect_precedents.py --query "임금체불" --limit 20
+uv run python src/scripts/collect_precedents.py --id 147076
 
 인증키 : .env의 LAW_API_OC
 """

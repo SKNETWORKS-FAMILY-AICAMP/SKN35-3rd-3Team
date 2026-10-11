@@ -2177,5 +2177,5 @@
 
 ## 재실행 및 삭제
 
-`uv run python -m src.Scripts.tests.test_domain_coverage_pmh`로 보고서만 갱신합니다.
+`uv run python -m src.scripts.tests.test_domain_coverage_pmh`로 보고서만 갱신합니다.
 이 파일과 두 보고서는 기존 수집·정제·청크 생성 코드의 의존성이 아닙니다. 삭제해도 데이터 생성에는 영향이 없지만 질문·검토 기록과 재검증 기능은 사라집니다.

@@ -10,13 +10,13 @@ import xml.etree.ElementTree as ET
 from collections import Counter
 from pathlib import Path
 
-from src.Scripts.collect_consumer_sources import ROOT, MANIFEST, digest, preserve, safe_url, collect_admin, fetch
-from src.Scripts.preprocess_consumer_sources import (OUTPUT_DIR, PARCEL_VERSIONS, extract_case,
+from src.scripts.collect_consumer_sources import ROOT, MANIFEST, digest, preserve, safe_url, collect_admin, fetch
+from src.scripts.preprocess_consumer_sources import (OUTPUT_DIR, PARCEL_VERSIONS, extract_case,
     extract_admin, preprocess, hwp_paragraph_text, compare_parcel_versions, refund_table_rows, extract_labor_guide, extract_overseas_guide, extract_fitness_closure_guide, installment_context,
     CIVIL_RECOVERY_GUIDES, HOUSING_GUIDES, extract_civil_recovery_guide,
     CONSUMER_REDRESS_GUIDES, extract_consumer_redress_guide,
     APPENDIX_REVIEW_FILE, reviewed_pdf_table, apply_reviewed_consumer_appendices)
-from src.Scripts.chunk_consumer_sources import OUTPUT_DIR as CHUNK_DIR, make_chunks
+from src.scripts.chunk_consumer_sources import OUTPUT_DIR as CHUNK_DIR, make_chunks
 
 
 class ConsumerSourceTests(unittest.TestCase):
@@ -86,7 +86,7 @@ class ConsumerSourceTests(unittest.TestCase):
         self.assertIn('수락한 것으로 본다',actual[0]['text'])
 
     def test_consumer_redress_missing_conditions_and_block_pages_fail_closed(self):
-        from src.Scripts.collect_consumer_sources import decode_html
+        from src.scripts.collect_consumer_sources import decode_html
         for identifier,phrase in [('kca_redress_requirements','일반분야를 제외한'),
                                   ('kca_redress_submission','6개월 이내'),
                                   ('kca_mediation_procedure','의사표시가 없는')]:
@@ -112,7 +112,7 @@ class ConsumerSourceTests(unittest.TestCase):
         self.assertTrue(any('판매일자를' in c['text'] for c in selected))
 
     def test_housing_guides_keep_conditions_exceptions_provenance_and_law_links(self):
-        from src.Scripts.collect_consumer_sources import HTMLTree,decode_html
+        from src.scripts.collect_consumer_sources import HTMLTree,decode_html
         docs={d['source_id']:d for d in self.documents}
         law_ids={json.loads(line)['chunk_id'] for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()}
         for identifier,scope in HOUSING_GUIDES.items():
@@ -147,7 +147,7 @@ class ConsumerSourceTests(unittest.TestCase):
             self.assertIn('제148조 제3호',c['embedding_text'])
 
     def test_housing_missing_exception_or_block_page_cannot_be_indexed(self):
-        from src.Scripts.collect_consumer_sources import decode_html
+        from src.scripts.collect_consumer_sources import decode_html
         d=next(d for d in self.documents if d['source_id']=='easylaw_housing_distribution')
         html=decode_html((ROOT/d['raw_file']).read_bytes())
         html=re.sub(r'(?i)(charset\s*=\s*[\"\']?)[\w-]+',r'\1utf-8',html)
@@ -188,7 +188,7 @@ class ConsumerSourceTests(unittest.TestCase):
                 self.assertIn('3개월',c['text'])
 
     def test_civil_recovery_conditions_original_nodes_dates_and_update_notices_are_preserved(self):
-        from src.Scripts.collect_consumer_sources import HTMLTree, decode_html
+        from src.scripts.collect_consumer_sources import HTMLTree, decode_html
         docs={d['source_id']:d for d in self.documents}
         for identifier,scope in CIVIL_RECOVERY_GUIDES.items():
             doc=docs[identifier]
@@ -219,7 +219,7 @@ class ConsumerSourceTests(unittest.TestCase):
             self.assertIn(phrase,execution['text'])
 
     def test_civil_recovery_missing_condition_duplicate_heading_and_block_page_fail_closed(self):
-        from src.Scripts.collect_consumer_sources import decode_html
+        from src.scripts.collect_consumer_sources import decode_html
         docs={d['source_id']:d for d in self.documents}
         for identifier,phrase in [('easylaw_consumer_small_claim','분할'),
                                   ('easylaw_consumer_payment_order','이의신청한 범위'),
@@ -263,7 +263,7 @@ class ConsumerSourceTests(unittest.TestCase):
         next(c for c in mixed if c.get('law_name')=='할부거래에 관한 법률' and c.get('article_label')=='제16조')['document_id']='law:other_version'
         for damaged in [missing,mixed]:
             encoded='\n'.join(json.dumps(c,ensure_ascii=False) for c in damaged)
-            with patch('src.Scripts.preprocess_consumer_sources.Path.read_text',return_value=encoded),self.assertRaises(ValueError):
+            with patch('src.scripts.preprocess_consumer_sources.Path.read_text',return_value=encoded),self.assertRaises(ValueError):
                 installment_context()
 
     def test_fitness_closure_guides_preserve_conditions_evidence_limits_and_dates(self):
@@ -292,7 +292,7 @@ class ConsumerSourceTests(unittest.TestCase):
             self.assertNotIn('공지사항',' '.join(u['text'] for u in doc['units']))
 
     def test_fitness_closure_missing_card_conditions_and_redress_exclusion_fail_closed(self):
-        from src.Scripts.collect_consumer_sources import decode_html
+        from src.scripts.collect_consumer_sources import decode_html
         report=json.loads((OUTPUT_DIR/'consumer_collection_report.json').read_text(encoding='utf-8'))
         for source in [s for s in report['saved'] if s['source_id'] in {'kca_fitness_closure_gym','kca_fitness_closure_pilates','kca_damage_redress_procedure'}]:
             html=decode_html((ROOT/source['raw_file']).read_bytes())
@@ -351,7 +351,7 @@ class ConsumerSourceTests(unittest.TestCase):
                 self.assertNotIn('서비스 접근 대기',c['text'])
 
     def test_overseas_html_missing_conditions_or_changed_table_fail_closed(self):
-        from src.Scripts.collect_consumer_sources import decode_html
+        from src.scripts.collect_consumer_sources import decode_html
         report=json.loads((OUTPUT_DIR/'consumer_collection_report.json').read_text(encoding='utf-8'))
         for source in [s for s in report['saved'] if s['source_id'].startswith('kca_overseas_')]:
             html=decode_html((ROOT/source['raw_file']).read_bytes())
@@ -412,7 +412,7 @@ class ConsumerSourceTests(unittest.TestCase):
     def test_changed_labor_html_fails_instead_of_indexing_navigation_or_partial_evidence(self):
         report=json.loads((OUTPUT_DIR/'consumer_collection_report.json').read_text(encoding='utf-8'))
         for source in [s for s in report['saved'] if s['source_id'].startswith('moel_wage')]:
-            from src.Scripts.collect_consumer_sources import decode_html
+            from src.scripts.collect_consumer_sources import decode_html
             html=decode_html((ROOT/source['raw_file']).read_bytes())
             html=re.sub(r'(?i)(charset\s*=\s*[\"\']?)[\w-]+',r'\1utf-8',html)
             mutations=(html.replace('tabpanel01','unknown-panel'),html.replace('처리절차','changed-heading')) if source['source_id']=='moel_wage_procedure' else (html.replace('별도 증빙이 어려운 경우',''),html.replace('답변일','unknown-date'))
@@ -738,9 +738,9 @@ class ConsumerSourceTests(unittest.TestCase):
             xml=('<행정규칙><행정규칙기본정보><행정규칙명>'+title+'</행정규칙명>'
                  '<행정규칙일련번호>'+identifier+'</행정규칙일련번호><시행일자>'+effective+
                  '</시행일자></행정규칙기본정보></행정규칙>').encode()
-            with patch('src.Scripts.collect_consumer_sources.load_dotenv'), patch.dict('os.environ',{'LAW_API_OC':'test_pmh'}), \
-                 patch('src.Scripts.collect_consumer_sources.fetch',return_value=SimpleNamespace(content=xml)), \
-                 patch('src.Scripts.collect_consumer_sources.preserve') as saving:
+            with patch('src.scripts.collect_consumer_sources.load_dotenv'), patch.dict('os.environ',{'LAW_API_OC':'test_pmh'}), \
+                 patch('src.scripts.collect_consumer_sources.fetch',return_value=SimpleNamespace(content=xml)), \
+                 patch('src.scripts.collect_consumer_sources.preserve') as saving:
                 with self.assertRaises(ValueError):collect_admin(object(),source)
                 saving.assert_not_called()
 

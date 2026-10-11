@@ -4,7 +4,7 @@ import json
 import unittest
 from unittest.mock import patch
 
-from src.Scripts.review_pilates_law_versions import (
+from src.scripts.review_pilates_law_versions import (
     ROOT, RAW, REPORT, LAW, DECREE, RULE, TERMS, HISTORY_IDS,
     article, build_report, checked, digest, history_rows, read, select_at, validate_body, verified_case, sanitize_response,
 )
@@ -81,7 +81,7 @@ class PilatesLawVersionTests(unittest.TestCase):
         doc=read(ROOT/'data/processed/consumer_sources/kca_case_1003640779.json')
         changed=copy.deepcopy(doc);changed['units'][0]['text']+='changed'
         with self.assertRaisesRegex(ValueError,'본문 변경'):verified_case(changed)
-        with patch('src.Scripts.review_pilates_law_versions.build_report',return_value={}):
+        with patch('src.scripts.review_pilates_law_versions.build_report',return_value={}):
             with self.assertRaisesRegex(ValueError,'현재 입력 불일치'):verified_case(doc)
         with self.assertRaises(ValueError):checked('../outside.json')
         with self.assertRaises(ValueError):checked('data/raw/law_history/225063_20211230.json','bad')

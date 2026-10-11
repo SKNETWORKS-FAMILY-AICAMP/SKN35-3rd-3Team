@@ -1,14 +1,14 @@
 """기존 법령·안내서·판례와 보강 소비자 자료의 로컬 BM25 비교.
 
-uv run python -m src.Scripts.tests.test_consumer_coverage_pmh
+uv run python -m src.scripts.tests.test_consumer_coverage_pmh
 LLM 답변 정확도 또는 벡터 검색 평가가 아니다.
 """
 import json
 import unittest
 from pathlib import Path
 
-from src.Scripts.collect_consumer_sources import ROOT, write_json
-from src.Scripts.tests.test_precedent_retrieval_pmh import BM25
+from src.scripts.collect_consumer_sources import ROOT, write_json
+from src.scripts.tests.test_precedent_retrieval_pmh import BM25
 
 SEARCH_OPTIONS={'max_per_document':2,'repeat_penalty':1.0}
 SEARCH_POLICY={'evidence_mode':True,**SEARCH_OPTIONS,'claim_weight':0.6,'header_weight':0.5,'search_representation_version':3,

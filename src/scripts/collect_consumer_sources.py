@@ -1,6 +1,6 @@
 """공식 소비자 자료를 내용 해시 기반 파일로 보존한다. HTTPS 검증 유지.
 
-uv run python src/Scripts/collect_consumer_sources.py
+uv run python src/scripts/collect_consumer_sources.py
 """
 import argparse
 import hashlib

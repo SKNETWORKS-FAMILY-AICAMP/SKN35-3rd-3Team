@@ -1,6 +1,6 @@
 """법령 원본 JSON을 조문별로 정제한다. 원본 파일을 수정하지 않는다.
 
-uv run python src/Scripts/preprocess_laws.py
+uv run python src/scripts/preprocess_laws.py
 본칙·부칙·별표를 정제한다. 별표 PDF 최초 수집: --download-appendices
 """
 

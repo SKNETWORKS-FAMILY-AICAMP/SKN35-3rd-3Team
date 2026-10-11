@@ -1,6 +1,6 @@
 """27건 판례의 로컬 문자 n-gram BM25 검색 기준 평가. 임베딩/LLM RAG는 아님.
 
-uv run python -m src.Scripts.tests.test_precedent_retrieval_pmh
+uv run python -m src.scripts.tests.test_precedent_retrieval_pmh
 """
 
 import json
@@ -10,7 +10,7 @@ import unittest
 from collections import Counter
 from pathlib import Path
 
-from src.Scripts.chunk_metadata import normalize_chunk
+from src.scripts.chunk_metadata import normalize_chunk
 
 
 ROOT = Path(__file__).resolve().parents[3]

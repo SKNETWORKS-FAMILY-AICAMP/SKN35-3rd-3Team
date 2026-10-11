@@ -7,8 +7,8 @@ import json
 import unittest
 from pathlib import Path
 
-from src.Scripts.collect_consumer_sources import ROOT, write_json
-from src.Scripts.tests.test_precedent_retrieval_pmh import BM25
+from src.scripts.collect_consumer_sources import ROOT, write_json
+from src.scripts.tests.test_precedent_retrieval_pmh import BM25
 
 SEARCH_OPTIONS={'max_per_document':2,'repeat_penalty':1.0}
 SEARCH_POLICY={'evidence_mode':True,**SEARCH_OPTIONS,'claim_weight':0.6,'header_weight':0.5,'search_representation_version':3,

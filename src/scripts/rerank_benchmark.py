@@ -1,6 +1,6 @@
 """무료 BGE 모델의 CPU 속도를 측정합니다. 검색 품질 평가는 아닙니다.
 
-uv run --extra rerank python -B -m src.Scripts.rerank_benchmark
+uv run --extra rerank python -B -m src.scripts.rerank_benchmark
 모델 최초 다운로드 후 캐시를 재사용합니다. 유료 API/원격 Qdrant는 호출하지 않습니다.
 """
 import ctypes

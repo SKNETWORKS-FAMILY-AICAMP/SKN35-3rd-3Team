@@ -1,6 +1,6 @@
 """안내서 본문·표·검토된 이미지 요약을 페이지 출처와 함께 청크로 저장한다.
 
-uv run python src/Scripts/chunk_guides.py
+uv run python src/scripts/chunk_guides.py
 """
 import argparse
 import hashlib

@@ -1,6 +1,6 @@
 """검색 연결 확인 및 정답 데이터 기반 비교 실행.
 
-사용: uv run python -B -m src.Scripts.search_evaluate --check
+사용: uv run python -B -m src.scripts.search_evaluate --check
 평가: --evaluation-file <JSON 경로> --multi-query-model <사용 가능한 Gemini 모델>
 정답 JSON: [{"query":"질문", "relevant_ids":["document_id::chunk_id"], "filters":{}}]
 """

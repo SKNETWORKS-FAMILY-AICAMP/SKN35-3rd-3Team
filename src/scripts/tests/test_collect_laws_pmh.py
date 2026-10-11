@@ -4,7 +4,7 @@ from datetime import date
 from unittest.mock import patch
 from datetime import datetime, timezone
 
-from src.Scripts.collect_laws import select_law, validate_body, xml_to_data, korea_today, LAW_NAMES
+from src.scripts.collect_laws import select_law, validate_body, xml_to_data, korea_today, LAW_NAMES
 
 
 class LawCollectionTests(unittest.TestCase):
@@ -17,7 +17,7 @@ class LawCollectionTests(unittest.TestCase):
                          '민사집행법','민사집행규칙','소비자기본법','소비자기본법 시행령'}.issubset(LAW_NAMES))
 
     def test_default_date_tracks_today_in_korea(self):
-        with patch('src.Scripts.collect_laws.datetime') as clock:
+        with patch('src.scripts.collect_laws.datetime') as clock:
             clock.now.side_effect = lambda tz: datetime(2030, 1, 1, 16, tzinfo=timezone.utc).astimezone(tz)
             self.assertEqual(korea_today(), date(2030, 1, 2))
 

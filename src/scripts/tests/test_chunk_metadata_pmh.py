@@ -4,9 +4,9 @@ import json
 import unittest
 from pathlib import Path
 
-from src.Scripts.chunk_metadata import normalize_chunk, validate_chunk, normalize_date
-from src.Scripts import chunk_laws, chunk_guides, chunk_consumer_sources
-from src.Scripts.tests.test_precedent_retrieval_pmh import make_chunks as precedent_chunks
+from src.scripts.chunk_metadata import normalize_chunk, validate_chunk, normalize_date
+from src.scripts import chunk_laws, chunk_guides, chunk_consumer_sources
+from src.scripts.tests.test_precedent_retrieval_pmh import make_chunks as precedent_chunks
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -58,7 +58,7 @@ class MetadataTests(unittest.TestCase):
         self.assertEqual(saved[0]['text'],u['body_text'])
 
     def test_housing_procedure_laws_are_mapped_as_general_civil_sources(self):
-        from src.Scripts.chunk_metadata import LAW_DOMAINS
+        from src.scripts.chunk_metadata import LAW_DOMAINS
         for name in ['소송촉진 등에 관한 특례법','소송촉진 등에 관한 특례법 제3조제1항 본문의 법정이율에 관한 규정','민사집행법','민사집행규칙']:
             self.assertEqual(LAW_DOMAINS[name],['civil_general'])
         chunks=[c for c in corpus() if c.get('law_name')=='소송촉진 등에 관한 특례법 제3조제1항 본문의 법정이율에 관한 규정' and c.get('article_label')=='전문']

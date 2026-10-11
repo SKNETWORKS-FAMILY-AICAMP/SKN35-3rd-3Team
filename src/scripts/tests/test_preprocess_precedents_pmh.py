@@ -1,10 +1,10 @@
-"""실행: uv run python -m unittest src.Scripts.tests.test_preprocess_precedents_pmh"""
+"""실행: uv run python -m unittest src.scripts.tests.test_preprocess_precedents_pmh"""
 
 import hashlib
 import json
 import unittest
 
-from src.Scripts.preprocess_precedents import (
+from src.scripts.preprocess_precedents import (
     ROOT, TEXT_FIELDS, clean_text, get_sections, partial_spans, preprocess, text_digest,
 )
 
@@ -20,7 +20,7 @@ class PreprocessingTests(unittest.TestCase):
         warnings=' '.join(d['warnings'])
         for phrase in ['하급심','주택','현재','일반 공제율']:
             self.assertIn(phrase,warnings)
-        from src.Scripts.tests.test_precedent_retrieval_pmh import make_chunks
+        from src.scripts.tests.test_precedent_retrieval_pmh import make_chunks
         for c in make_chunks(d):
             for warning in d['warnings']:
                 self.assertIn(warning,c['embedding_text'])

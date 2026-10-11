@@ -1,6 +1,6 @@
 """9대 분야 45문항의 자료 근거 검토와 BM25 검색 진단.
 
-uv run python -m src.Scripts.tests.test_domain_coverage_pmh
+uv run python -m src.scripts.tests.test_domain_coverage_pmh
 직접 실행은 보고서만 작성한다. unittest 실행은 데이터에 쓰지 않는다.
 검색/키워드 적중으로 충분성을 판정하지 않으며 검토한 근거와 메모를 사용한다.
 """
@@ -11,8 +11,8 @@ from collections import Counter
 from pathlib import Path
 from unittest.mock import patch
 
-from src.Scripts.tests.test_consumer_coverage_pmh import load_chunks, SEARCH_OPTIONS, SEARCH_POLICY
-from src.Scripts.tests.test_precedent_retrieval_pmh import BM25
+from src.scripts.tests.test_consumer_coverage_pmh import load_chunks, SEARCH_OPTIONS, SEARCH_POLICY
+from src.scripts.tests.test_precedent_retrieval_pmh import BM25
 
 ROOT = Path(__file__).resolve().parents[3]
 OUTPUT = ROOT / "data/processed/retrieval_evaluation"
@@ -527,7 +527,7 @@ def render(report):
             lines.append(f"- {h['rank']}. `{h['chunk_id']}` · {h['title']} · BM25 {h['score']}")
         lines.append('- 기존 검색 청크 적중: '+str(q['legacy_chunk_hit_at_5']))
     lines += ["", "## 검증 범위의 한계", ""] + ["- " + x for x in report["limitations"]]
-    lines += ["", "## 재실행 및 삭제", "", "`uv run python -m src.Scripts.tests.test_domain_coverage_pmh`로 보고서만 갱신합니다.",
+    lines += ["", "## 재실행 및 삭제", "", "`uv run python -m src.scripts.tests.test_domain_coverage_pmh`로 보고서만 갱신합니다.",
               "이 파일과 두 보고서는 기존 수집·정제·청크 생성 코드의 의존성이 아닙니다. 삭제해도 데이터 생성에는 영향이 없지만 질문·검토 기록과 재검증 기능은 사라집니다."]
     return "\n".join(lines) + "\n"
 

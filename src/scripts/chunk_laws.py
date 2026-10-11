@@ -1,6 +1,6 @@
 """정제 법령의 본칙·부칙·별표 검색 후보를 청크로 분할한다.
 
-uv run python src/Scripts/chunk_laws.py
+uv run python src/scripts/chunk_laws.py
 항·호·목 경계를 우선하며 긴 단일 본문만 문자 기준 겹침을 사용한다.
 """
 

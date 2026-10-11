@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 from urllib.parse import parse_qs, urlsplit
 
-from src.Scripts.collect_precedents import sanitize_listing, valid_saved, collect
+from src.scripts.collect_precedents import sanitize_listing, valid_saved, collect
 
 
 class PrecedentCollectionTests(unittest.TestCase):
@@ -14,9 +14,9 @@ class PrecedentCollectionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             folder=Path(directory)
             detail=ET.fromstring('<PrecService><판례정보일련번호>123</판례정보일련번호><판례내용>본문</판례내용></PrecService>')
-            with patch('src.Scripts.collect_precedents.OUTPUT_DIR',folder), patch.dict('os.environ',{'LAW_API_OC':'test'}), \
-                 patch('src.Scripts.collect_precedents.load_dotenv'), patch('src.Scripts.collect_precedents.requests.Session'), \
-                 patch('src.Scripts.collect_precedents.time.sleep'), patch('src.Scripts.collect_precedents.request_xml',return_value=detail) as request:
+            with patch('src.scripts.collect_precedents.OUTPUT_DIR',folder), patch.dict('os.environ',{'LAW_API_OC':'test'}), \
+                 patch('src.scripts.collect_precedents.load_dotenv'), patch('src.scripts.collect_precedents.requests.Session'), \
+                 patch('src.scripts.collect_precedents.time.sleep'), patch('src.scripts.collect_precedents.request_xml',return_value=detail) as request:
                 self.assertEqual(collect('unused',20,0,['123','123']),0)
                 self.assertEqual(request.call_count,1)
                 self.assertEqual(request.call_args.args[1],'lawService.do')

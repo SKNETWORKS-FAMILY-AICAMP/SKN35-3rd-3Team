@@ -20,6 +20,7 @@ from src.vector_db.payload_indexes import (
 from src.vector_db.validation import StoredPointSnapshot
 from src.vectorstore import (
     VectorCollectionInfo,
+    VectorDocument,
     VectorSearchHit,
     VectorSearchRequest,
     VectorStoreError,
@@ -176,6 +177,25 @@ def _read_path(target: object, *names: str) -> object:
 def _enum_text(value: object) -> str:
     raw_value = getattr(value, "value", value)
     return str(raw_value).lower()
+
+
+def _document_from_point(point: object) -> VectorDocument:
+    """Qdrant Point의 Payload를 점수 없는 문서 청크로 변환합니다."""
+
+    payload = _read_value(point, "payload", {})
+    if not isinstance(payload, Mapping):
+        payload = {}
+    text = payload.get("text")
+    if not isinstance(text, str) or not text.strip():
+        raise VectorStoreError(
+            "invalid_response",
+            "Qdrant 조회 결과에 text Payload가 없습니다.",
+        )
+    return VectorDocument(
+        point_id=str(_read_value(point, "id", "")),
+        text=text,
+        metadata={key: value for key, value in payload.items() if key != "text"},
+    )
 
 
 def _payload_index_data_type(schema_info: object) -> str | None:
@@ -462,28 +482,59 @@ class QdrantVectorStore:
 
         hits: list[VectorSearchHit] = []
         for point in result_points:
-            payload = _read_value(point, "payload", {})
-            if not isinstance(payload, Mapping):
-                payload = {}
-            text = payload.get("text")
-            if not isinstance(text, str) or not text.strip():
-                raise VectorStoreError(
-                    "invalid_response",
-                    "Qdrant 검색 결과에 text Payload가 없습니다.",
-                )
+            document = _document_from_point(point)
             hits.append(
                 VectorSearchHit(
-                    point_id=str(_read_value(point, "id", "")),
+                    point_id=document.point_id,
                     score=float(_read_value(point, "score", 0.0)),
-                    text=text,
-                    metadata={
-                        key: value
-                        for key, value in payload.items()
-                        if key != "text"
-                    },
+                    text=document.text,
+                    metadata=document.metadata,
                 )
             )
         return tuple(hits)
+
+    def lookup(
+        self,
+        filters: Mapping[str, object],
+        *,
+        limit: int = 20,
+    ) -> Sequence[VectorDocument]:
+        """임베딩 없이 Payload가 정확히 일치하는 문서 청크를 조회합니다."""
+
+        if not filters:
+            raise ValueError("정확 조회에는 하나 이상의 필터가 필요합니다.")
+        if isinstance(limit, bool) or not isinstance(limit, int):
+            raise TypeError("limit은 정수여야 합니다.")
+        if not 1 <= limit <= 100:
+            raise ValueError("limit은 1 이상 100 이하여야 합니다.")
+
+        scroll_filter = self.filter_factory(filters)
+        try:
+            response = self.client.scroll(
+                collection_name=self.collection_name,
+                scroll_filter=scroll_filter,
+                limit=limit,
+                with_payload=True,
+                with_vectors=False,
+            )
+        except Exception as error:
+            raise VectorStoreError(
+                "connection_error",
+                "Qdrant 문서 정확 조회에 실패했습니다.",
+            ) from error
+
+        if not isinstance(response, tuple) or len(response) != 2:
+            raise VectorStoreError(
+                "invalid_response",
+                "Qdrant 정확 조회 결과 형식이 올바르지 않습니다.",
+            )
+        records, _ = response
+        if not isinstance(records, Sequence) or isinstance(records, (str, bytes)):
+            raise VectorStoreError(
+                "invalid_response",
+                "Qdrant 정확 조회 문서 목록 형식이 올바르지 않습니다.",
+            )
+        return tuple(_document_from_point(record) for record in records)
 
     def upsert_points(
         self,

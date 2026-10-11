@@ -120,6 +120,30 @@ class VectorSearchHit:
 
 
 @dataclass(frozen=True)
+class VectorDocument:
+    """점수 계산 없이 Payload 조건으로 정확 조회한 문서 청크."""
+
+    point_id: str
+    text: str
+    metadata: Mapping[str, object] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if not self.point_id.strip():
+            raise ValueError("point_id는 비어 있을 수 없습니다.")
+        if not self.text.strip():
+            raise ValueError("조회 결과 text는 비어 있을 수 없습니다.")
+
+    def to_document(self) -> dict[str, object]:
+        """MCP 응답에서 사용할 구조화 문서로 변환합니다."""
+
+        return {
+            "point_id": self.point_id,
+            "text": self.text,
+            "metadata": dict(self.metadata),
+        }
+
+
+@dataclass(frozen=True)
 class VectorCollectionInfo:
     """외부 비밀값을 포함하지 않는 컬렉션 정보."""
 
@@ -153,4 +177,12 @@ class VectorStore(Protocol):
 
     def search(self, request: VectorSearchRequest) -> Sequence[VectorSearchHit]:
         """벡터 검색 한 번을 수행합니다."""
+
+    def lookup(
+        self,
+        filters: Mapping[str, object],
+        *,
+        limit: int,
+    ) -> Sequence[VectorDocument]:
+        """임베딩 없이 Payload 조건과 정확히 일치하는 청크를 조회합니다."""
 

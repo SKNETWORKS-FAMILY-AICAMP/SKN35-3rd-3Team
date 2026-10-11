@@ -12,6 +12,7 @@ from typing import Protocol, runtime_checkable
 
 from src.vectorstore import (
     VectorCollectionInfo,
+    VectorDocument,
     VectorSearchHit,
     VectorSearchRequest,
     VectorStore,
@@ -45,6 +46,14 @@ class SearchBackend(Protocol):
         filters: Mapping[str, object],
     ) -> Sequence[VectorSearchHit]:
         """질문을 임베딩하고 Vector DB 검색 한 번을 수행합니다."""
+
+    def lookup_document(
+        self,
+        document_id: str,
+        *,
+        limit: int,
+    ) -> Sequence[VectorDocument]:
+        """질문 임베딩 없이 문서 ID가 같은 청크를 정확 조회합니다."""
 
 
 @dataclass
@@ -91,6 +100,21 @@ class DocumentRetriever:
             expected_dimension=self.expected_dimension,
         )
         return self.vector_store.search(request)
+
+    def lookup_document(
+        self,
+        document_id: str,
+        *,
+        limit: int = 20,
+    ) -> Sequence[VectorDocument]:
+        """질문 임베딩 없이 document_id가 같은 청크를 정확 조회합니다."""
+
+        if not isinstance(document_id, str) or not document_id.strip():
+            raise ValueError("document_id는 비어 있지 않은 문자열이어야 합니다.")
+        return self.vector_store.lookup(
+            {"document_id": document_id.strip()},
+            limit=limit,
+        )
 
 
 def retriever(state: object) -> dict[str, object]:

@@ -10,12 +10,12 @@
 | 항목 | 상태 |
 | --- | --- |
 | Qdrant | Cloud 연결 정상 |
-| 활성 개발 컬렉션 | `team_documents_nvidia_dev` |
-| 활성 임베딩 | `nvidia/nemotron-3-embed-1b`, 2048차원 |
+| 활성 개발 컬렉션 | `team_documents_openai_dev` |
+| 활성 임베딩 | OpenAI `text-embedding-3-small`, 1536차원 |
 | 거리 방식 | Cosine |
 | 컬렉션 상태 | green |
 | Point 수 | 0 |
-| Payload 인덱스 | 코드 구현 완료, Cloud 적용 전 |
+| Payload 인덱스 | Cloud 적용 완료 (`document_id`, `document_type`, `source_name`) |
 
 실제 Qdrant URL과 API 키는 `.env`에서 관리하며 Git에 올리지 않습니다.
 
@@ -152,6 +152,21 @@ API 방식은 개인 키를 입력하면 팀 고정 모델·차원·컬렉션을
 세 방식의 벡터는 같은 컬렉션에 섞지 않습니다. 모델을 바꾸면 문서를 다시
 임베딩하고 해당 모델 전용 컬렉션에 적재해야 합니다.
 
+세 질문 임베딩 프로필의 실제 준비 상태는 다음 명령으로 한 번에 확인합니다.
+API 키 값이나 벡터 원문은 출력하지 않습니다.
+
+```powershell
+uv run python -m src.scripts.embedding_probe --provider all
+```
+
+현재 검증 상태:
+
+| 프로필 | 상태 | 확인 내용 |
+| --- | --- | --- |
+| NVIDIA | 실제 검증 완료 | 2048차원, 정규화 벡터 길이 1.0 |
+| OpenAI | 실제 호출 대기 | `OPENAI_API_KEY` 필요 |
+| 개인 GPU | 실제 호출 대기 | 고정 모델·차원 및 `torch`, `sentence-transformers` 필요 |
+
 ### OpenAI API
 
 ```dotenv
@@ -200,14 +215,35 @@ HF_TOKEN=개인_Hugging_Face_토큰
 - Dense Vector Top-K 검색
 - 선택적 점수 임계값
 - 문자열·정수·불리언 정확 일치 필터
+- `document_id` 기반 임베딩 없는 정확 조회
 - 검색 결과의 본문·점수·Payload 반환
+- 공식 MCP Python SDK v2 기반 `MCPServer`
+- `search_documents`, `lookup_document`, `health_check`, `get_collection_info` Tool
+- 로컬 `stdio` Transport와 선택적 Streamable HTTP 실행
+- 실제 MCP Client의 Tool 조회 및 원격 Qdrant 상태 확인
 
 아직 구현하지 않은 항목:
 
 - BM25·Sparse Vector·RRF Hybrid 검색
 - Datetime 범위 검색
 - 실제 3,793건 적재와 검색 품질 평가
-- 실제 MCP SDK Server·Transport 연결
+- 별도 `article_label`·`case_number` 필드 기반 정확 조회
+
+MCP 로컬 서버와 연결 상태 점검은 다음 명령으로 실행합니다.
+
+```powershell
+uv run python -m src.scripts.mcp_server
+uv run python -m src.scripts.mcp_probe --transport stdio
+uv run python -m src.scripts.mcp_probe --transport stdio `
+  --query "주택 임대차보호법에서 계약 갱신은 어떻게 하나요?" `
+  --document-type law
+uv run python -m src.scripts.mcp_probe --transport stdio `
+  --document-id "precedent:240967"
+```
+
+질문 검색 명령은 선택한 provider의 질문 임베딩과 Qdrant 검색을 호출합니다.
+`document_id` 조회는 임베딩 API를 호출하지 않고 Payload 인덱스를 사용합니다.
+Point가 없는 상태에서는 `empty_result`가 정상입니다.
 
 ## 안전 원칙
 

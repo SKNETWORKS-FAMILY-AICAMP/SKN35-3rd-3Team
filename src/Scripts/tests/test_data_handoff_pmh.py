@@ -219,7 +219,7 @@ def audit():
     return {"validation_scope":"수집본의 구조·출처·처리 기록·청크 일관성. 법률 답변 품질/현행 적용 검증 아님",
             "structural_passed":all(c["passed"] for c in checks),"checks":checks,"details":details,
             "inventory":inventory,"inventory_sha256":hashlib.sha256(json.dumps(inventory,sort_keys=True).encode()).hexdigest(),
-            "remaining_limits":["분야 검토: 기본 근거 28문항, 자료 보완 15문항, 추가 내용 검토 1문항, 원문 적용 보류 1문항인 현재 스냅샷",
+            "remaining_limits":["분야 내용 검토 상태: "+json.dumps(dict(Counter(q["review_status"] for q in coverage["questions"])),ensure_ascii=False),
                                 "자료 추가·개정 후 분야별 내용 검토와 평가 보고서를 다시 갱신해야 함",
                                 "PDF 모든 이미지/원문 시각 요소 및 신규 현행 개정의 전수 검증은 아님",
                                 "공통 서비스 로더·임베딩·Qdrant 저장/검색·LLM 답변·MCP 연결은 미구현"]}
@@ -246,6 +246,9 @@ def render_handoff(report):
            f"소비자 청크는 행정규칙 {counts.get('administrative_rule',0)}개, 조정사례 {counts.get('mediation_case',0)}개, 표준약관 {counts.get('standard_terms',0)}개입니다. 파일 수·문서 수·청크 수는 서로 다른 집계입니다.","",
            "소비자분쟁해결기준 별표 Ⅲ(품질보증기간·부품보유기간)과 별표 Ⅳ(내용연수표)를 추가 정제했습니다. 각 표는 조건·비고·병합 관계의 손실을 막기 위해 원문 전체를 한 청크로 보존합니다. 문자 이상·표 셀 관계는 공식 별표 대조 필요 경고를 유지하며 임베딩 전 토큰 제한을 확인해야 합니다.","",
            "45문항 분야 검토 중 품질보증 질문은 별표 Ⅲ·Ⅳ의 확보 내용을 근거 목록에 추가했습니다. 영수증 없는 구매일 판단과 표 대조는 남아 있으므로 부분 확보 상태를 유지합니다. 검색 비교는 양쪽 모두 현재 선정 근거를 사용합니다.","",
+           "별표 Ⅱ는 귀금속·보석 및 전자제품·사무용기기 품목을 추가했습니다. 전자제품의 연속 표 2개와 비고를 함께 보존하며 모든 품목이나 개인 간 중고거래에 일괄 적용하지 않습니다. 민법 제140·141조와 근로기준법 시행령 제7조의2의 수집본을 선정 근거에 연결했습니다.","",
+           "헬스장·필라테스 HWPX 환급 표 3개는 셀 좌표·병합 범위를 검증해 해지 주체, 이용 전후 조건, 원문 수식, 공통 정의를 행별로 연결합니다. 원문 본문은 보존하고 생활 표현 별칭은 검색 점수에만 사용합니다. 법률 적용과 환급액 계산은 검증 범위가 아닙니다.","",
+           f"전처리 전후 고정 근거 비교: 45문항 선정 청크 {coverage['preprocessing_comparison']['before_chunk_hits']} → {coverage['preprocessing_comparison']['after_chunk_hits']}건. 하락 질문: {', '.join(coverage['preprocessing_comparison']['regressed']) or '없음'}. 수정 전 근거 ID를 고정하여 새 근거 추가에 따른 평가 변화와 구분합니다.","",
            "## 폴더와 원본 보존 정책", "",
            "| 위치 | 역할 |", "|---|---|",
            "| `data/raw/laws` | 법령 8종의 수집 API 응답 JSON과 수집 기록 |",
@@ -289,7 +292,7 @@ def render_handoff(report):
            f"- 소비자 12문항: 동일 데이터의 기존 검색 Hit@5={consumer_eval['legacy_after']['expected_source_hit_at_5']:.1%} → 개선 검색 Hit@5={consumer_eval['after']['expected_source_hit_at_5']:.1%}, 개선 Hit@3={consumer_eval['after']['expected_source_hit_at_3']:.1%}.",
            "- 개선 BM25는 본문 구간·HWPX 셀 문자로 점수를 계산하고 생활 표현을 검색 용어로 확장합니다. 당사자 주장 점수는 0.6배, 문서 버전당 최대 2개 청크로 제한하며 원문 전체·역할·경고를 반환합니다. 설정은 로컬 평가용이며 서비스 검색·답변 제한은 별도 구현이 필요합니다.",
            f"- 45문항 동일 자료·선정 근거 비교: 출처 {coverage['search_comparison']['legacy_source_hits']} → {coverage['search_comparison']['improved_source_hits']}건, 선정 청크 {coverage['search_comparison']['legacy_chunk_hits']} → {coverage['search_comparison']['improved_chunk_hits']}건. 청크 적중 하락 질문: {', '.join(coverage['search_comparison']['chunk_regressed']) or '없음'}.",
-           f"- 출처 적중 하락 질문: {', '.join(coverage['search_comparison']['source_regressed']) or '없음'}. 헬스장 일반 환불·필라테스 개시 전 환불의 선정 환급 기준 청크는 여전히 Top 5 밖에 있으므로 추가 검색 개선이 필요합니다. 이번 설정을 전체 서비스의 최종 검색 정책으로 확정한 것은 아닙니다.",
+           f"- 출처 적중 하락 질문: {', '.join(coverage['search_comparison']['source_regressed']) or '없음'}. 선정 근거가 Top 5 밖에 있는 질문은 분야 검토 보고서에 기록합니다. 이번 설정을 전체 서비스의 최종 검색 정책으로 확정한 것은 아닙니다.",
            "- 분야 검토: 선정 질문 45개. 자료 내용 검토와 검색 진단을 분리합니다. 키워드 적중만으로 충분하다고 판정하지 않습니다.", "",
            "| 분야 | 기본 근거 | 보완 | 추가 검토 | 적용 보류 |", "|---|---:|---:|---:|---:|"]
     for item in coverage["summary"]:

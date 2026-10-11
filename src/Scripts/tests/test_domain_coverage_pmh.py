@@ -68,7 +68,7 @@ def question_bank(chunks):
     add(used,"used_report","중고거래 사기 신고는 어디서 하고 어떤 증거를 준비해야 하나요?",
         "신고 경로;방문 절차;거래 증거","supported","ECRM 접수·방문 안내와 선정 판례의 이체내역·문자·판매글 증거를 확인. 판례 증거 목록은 필수 서류 전부를 뜻하지 않음.",["guide_246eabd0676d5957_p0018_body_0000","guide_246eabd0676d5957_p0019_image_summary_0000","605583_0001"])
     add(used,"used_minor","미성년 자녀가 개인에게 산 중고물건의 계약을 취소할 수 있나요?",
-        "법정대리인 동의;처분허락 재산;속임수 예외;취소 후 반환","partial","동의·예외 조문은 확보. 반환 범위와 플랫폼 개인거래 기준의 연결 검토는 미완료.",law("민법","제5조")+law("민법","제6조")+law("민법","제17조"),"민법 취소 효과 조문과 개인 간 거래 분쟁해결기준 원문을 연결 검토")
+        "법정대리인 동의;처분허락 재산;속임수 예외;취소권자;취소 후 반환","supported","기존 제5·6·17조에 제140조(취소권자)·제141조(취소 효과)를 연결해 기본 요건·예외·반환 범위 근거를 확인. 실제 동의·속임수·현존 이익과 플랫폼 약정은 개별 사실 검토 대상이며 개인거래에 사업자 환불 기준을 일괄 적용하지 않음.",law("민법","제5조")+law("민법","제6조")+law("민법","제17조")+law("민법","제140조")+law("민법","제141조"))
     shopping = "온라인 쇼핑 환불"
     add(shopping,"shopping_cost","인터넷 쇼핑몰에서 단순변심으로 반품하면 배송비는 누가 부담하나요?",
         "단순변심과 하자 구분;반환 비용 부담;위약금 금지","supported","제18조의 비용 부담과 제17조의 사유 구분을 함께 확인.",law("전자상거래 등에서의 소비자보호에 관한 법률","제17조")+law("전자상거래 등에서의 소비자보호에 관한 법률","제18조"))
@@ -110,7 +110,7 @@ def question_bank(chunks):
     add(dismissal,"dismissal_remedy","부당해고 구제는 어디에 언제까지 신청하나요?",
         "노동위원회;신청 기한;사업장 적용 범위","supported","제28조의 기관·기한과 안내서의 적용 범위 사례 확보.",law("근로기준법","제28조")+["guide_cad7b1de1e4dc64c_p0014_table_0000"])
     add(dismissal,"dismissal_small","직원 4명인 가게에서도 해고예고와 부당해고 구제를 똑같이 적용하나요?",
-        "법 제11조;시행령 별표1;근로자 수 산정","needs_review","법과 별표1은 수집되어 있어 무조건 자료 부족은 아님. 상시근로자 수 산정·별표 적용의 조합 검토를 보류.",law("근로기준법","제11조")+law("근로기준법 시행령","제7조")+[c["chunk_id"] for c in chunks if c.get("law_name")=="근로기준법 시행령" and c.get("content_type")=="appendix" and "appendix_000100" in c["chunk_id"]],"시행령 근로자 수 산정 조문과 별표1을 대조 검토")
+        "법 제11조;시행령 제7·7조의2;별표1;제26·27·28조 구분","supported","상시근로자 수 산정 제7조의2를 추가 연결하고 제11조·시행령 제7조·별표1과 제26·27·28조를 대조. 수집본 별표1에는 제26조가 기재되고 제27·28조는 기재되지 않아 예고와 구제 적용 범위를 구분하는 기본 근거 확보. 직원 명부상 4명만으로 상시인원을 확정하지 않으며 실제 근로자 수·계속근로기간·예외 적용은 별도 검증.",law("근로기준법","제11조")+law("근로기준법 시행령","제7조")+law("근로기준법 시행령","제7조의2")+law("근로기준법","제26조")+law("근로기준법","제27조")+law("근로기준법","제28조")+[c["chunk_id"] for c in chunks if c.get("law_name")=="근로기준법 시행령" and c.get("content_type")=="appendix" and "appendix_000100" in c["chunk_id"]])
     add(dismissal,"dismissal_probation","수습 중이라는 이유만으로 해고예고 없이 해고할 수 있나요?",
         "계속근로기간과 수습 구분;정당한 이유;예고 예외","supported","제26조의 계속근로기간 예외와 제23조 기본 원칙 확보. 수습이라는 명칭만으로 예외를 단정하지 않음.",law("근로기준법","제26조")+law("근로기준법","제23조"))
     deposit = "보증금 반환"
@@ -142,7 +142,7 @@ def question_bank(chunks):
     add(consumer,"consumer_mediation","소비자 피해구제와 분쟁조정은 어디에 신청하고 어떻게 진행되나요?",
         "접수 창구;합의 권고와 조정;필요 자료·절차","partial","안내서에 소비자24·한국소비자원과 합의·조정 설명 있음. 소비자기본법 원문·신청서류·현행 절차 전체는 검토 부족.",["guide_383b62bce56bf1ce_p0035_body_0000"],"소비자기본법과 KCA 피해구제·조정 신청 공식 안내 보강")
     add(consumer,"consumer_repeat","수리를 반복해도 같은 하자가 생기는 제품은 모두 환불받을 수 있나요?",
-        "품목별 기준;수리 횟수·보증기간;교환·환급 구분","partial","반지 사례는 재제작 조정이며 일반 제품 모두 환불이라는 근거가 아님. 소비자 기준은 3개 업종만 선별.",["kca_case_1003604873_case_reasoning_0000"],"우선 대상 품목을 정하고 해당 품목별 소비자분쟁해결기준 보강")
+        "품목별 기준;수리 횟수·보증기간;교환·환급 구분","partial","기존 반지 사례에 별표Ⅱ 전자제품·사무용기기 및 귀금속·보석 표를 추가 연결. 전자제품의 반복 하자·보증기간 조건과 귀금속의 분쟁 유형을 구분해 보존. 모든 품목의 기준을 확보한 것은 아니며 XML 표의 문자·병합 관계 대조 필요.",["kca_case_1003604873_case_reasoning_0000","consumer_dispute_standard_product_electronics_office_0000","consumer_dispute_standard_product_jewelry_0000"],"서비스 대상 품목 확정 후 나머지 품목의 원본 정제 확대 및 공식 별표 대조")
     add(consumer,"consumer_warranty","영수증이 없으면 제품 품질보증기간과 구매일을 어떻게 판단하나요?",
         "품목별 보증기간;구매일 증명;영수증 없는 경우","partial","제3조와 추가 정제한 별표Ⅲ의 품목별 품질보증·부품보유기간, 별표Ⅳ의 내용연수 기준 확보. 영수증 없는 구매일 판단 근거는 이 표에 없으며 문자 이상·병합 관계의 공식 파일 대조도 필요. 질문 전체는 여전히 부분 확보.",["consumer_dispute_standard_article_2_0000","consumer_dispute_standard_appendix_0003_0000","consumer_dispute_standard_appendix_0004_0000"],"일반적 해결기준·구매일 증빙 안내 보강 및 별표 문자·병합 관계 대조")
     add(consumer,"consumer_criteria","소비자분쟁해결기준은 바로 강제되는 법적 배상 기준인가요?",
@@ -152,6 +152,12 @@ def question_bank(chunks):
 
 # 최초 내용 검토 시 선정된 근거 본문 해시. 이후 변경 시 자동으로 재검토 표시.
 REVIEWED_HASHES = {
+    "001706_284415_20260317_art_140_0_chunk_0000": "e625b80f84ad1e2713a7205637a40c4969480cd81d4afa2b658f4875ce25f351",
+    "001706_284415_20260317_art_141_0_chunk_0000": "fde13942b75b9a3d69476764322eac59b45f1687306fc19ee91e9625a5abacc6",
+    "003058_270551_20251023_art_7_2_chunk_0000": "5ba43af3594ff65d53f1b262b7432e7950da66f3dca00b5713e6f7bafbedd0ab",
+    "003058_270551_20251023_art_7_2_chunk_0001": "4c69a0fa29f1bc2b22ddc359d335adcd832cc04904668894f2b0657ad1926ea9",
+    "consumer_dispute_standard_product_jewelry_0000": "46fde5d4a269104195acb57a13d345d5be5a34889577ed8c031603c162ac667c",
+    "consumer_dispute_standard_product_electronics_office_0000": "21f18c3101e528e7be10912b0224df8d8cf6fb1ed15bb7d30488cffa8f1ea906",
     "consumer_dispute_standard_appendix_0003_0000": "34815ef7afae0e6874c166295c92fe4c34f3a692b75dc84828fc1bf75679067b",
     "consumer_dispute_standard_appendix_0004_0000": "ac434a2eab42e0eef204f3e4f6c31bab2618d7aad9ba2186eb7de2cc8ecb0279",
     "001248_276291_20260102_art_3_0_chunk_0000": "555073c96bf2234af3a99dfe47d671b6d40b6a063a8e55e393772c860acf096d",
@@ -235,6 +241,13 @@ def audit():
     bank = question_bank(chunks)
     index = BM25(chunks,evidence_mode=True)
     legacy = BM25(chunks)
+    previous=json.loads(REPORT_JSON.read_text(encoding='utf-8')) if REPORT_JSON.exists() else {}
+    baseline=previous.get('preprocessing_baseline')
+    if baseline is None and previous.get('questions'):
+        baseline={'input_fingerprint':previous['input_fingerprint'],'chunk_count':previous['chunk_count'],
+                  'questions':[{'question_id':q['question_id'],'reviewed_chunk_ids':q['reviewed_chunk_ids'],
+                                'review_status':q['review_status'],'chunk_hit':q['reviewed_chunk_hit_at_5']}
+                               for q in previous['questions']]}
     records = []
     for item in bank:
         row = dict(item)
@@ -287,10 +300,22 @@ def audit():
                           "reviewed_source_hits": sum(r["reviewed_source_hit_at_5"] is True for r in group),
                           "reviewed_chunk_hits": sum(r["reviewed_chunk_hit_at_5"] is True for r in group),
                           "questions_with_evidence": sum(bool(r["evidence"]) for r in group)})
+    current={r['question_id']:r for r in records}
+    prior_rows=baseline['questions'] if baseline else []
+    comparison_rows=[{'question_id':q['question_id'],'before':q['chunk_hit'],
+                      'after':any(h['chunk_id'] in q['reviewed_chunk_ids'] for h in current[q['question_id']]['search_results']) if q['reviewed_chunk_ids'] else None}
+                     for q in prior_rows]
     return {"evaluation_type": "reviewed_evidence_and_offline_bm25_domain_audit",
             "reviewer": "Codex의 수집 자료 내용 검토. 전문가 법률 검증 아님",
             "chunk_count": len(chunks), "question_count": len(records),
             "input_fingerprint": source_fingerprint(), "search_policy":SEARCH_POLICY,"summary": summaries, "questions": records,
+            "preprocessing_baseline":baseline,
+            "preprocessing_comparison":{'basis':'수정 전 선정 청크 목록을 고정. 근거 목록 확대에 따른 자동 적중 증가와 분리.',
+                                        'before_chunk_hits':sum(r['before'] is True for r in comparison_rows),
+                                        'after_chunk_hits':sum(r['after'] is True for r in comparison_rows),
+                                        'improved':[r['question_id'] for r in comparison_rows if r['before'] is False and r['after'] is True],
+                                        'regressed':[r['question_id'] for r in comparison_rows if r['before'] is True and r['after'] is False],
+                                        'questions':comparison_rows},
             "search_comparison":{'legacy_source_hits':sum(r['legacy_source_hit_at_5'] is True for r in records),
                                  'legacy_chunk_hits':sum(r['legacy_chunk_hit_at_5'] is True for r in records),
                                  'improved_source_hits':sum(r['reviewed_source_hit_at_5'] is True for r in records),
@@ -322,6 +347,12 @@ def render(report):
               '- 청크 적중 하락: '+(', '.join(comparison['chunk_regressed']) or '없음'),
               '- 출처 적중 하락: '+(', '.join(comparison['source_regressed']) or '없음'),
               '- 품질보증 질문의 선정 근거에는 추가 검토한 별표 Ⅲ·Ⅳ를 포함하므로 이전 보고서의 근거 목록과 다릅니다. 검색 개선 비교는 양쪽 모두 현재 근거 목록을 사용합니다.']
+    change=report['preprocessing_comparison']
+    lines += ['', '## 이번 전처리 수정 전후 비교', '',
+              f"- 수정 전 근거 청크 목록을 고정한 비교: {change['before_chunk_hits']} → {change['after_chunk_hits']}건.",
+              '- 개선 질문: '+(', '.join(change['improved']) or '없음'),
+              '- 하락 질문: '+(', '.join(change['regressed']) or '없음'),
+              '- 미성년자 취소·소규모 사업장 해고의 검토 상태 변경은 실제 근거 연결·내용 대조 결과이며 검색 적중만으로 판정하지 않습니다.']
     lines += ["", "## 자료 보강·대조 목록", ""]
     for q in report["questions"]:
         if q["review_status"] != "supported":
@@ -430,6 +461,17 @@ class DomainCoverageTests(unittest.TestCase):
         warranty=next(r for r in rows if r['question_id']=='consumer_warranty')
         self.assertEqual(warranty['review_status'],'partial')
         self.assertTrue({'consumer_dispute_standard_appendix_0003_0000','consumer_dispute_standard_appendix_0004_0000'}.issubset(warranty['reviewed_chunk_ids']))
+
+    def test_existing_law_connections_are_complete_and_product_scope_stays_partial(self):
+        rows={r['question_id']:r for r in self.report['questions']}
+        self.assertEqual(rows['used_minor']['review_status'],'supported')
+        self.assertIn('001706_284415_20260317_art_141_0_chunk_0000',rows['used_minor']['reviewed_chunk_ids'])
+        self.assertIn('001706_284415_20260317_art_140_0_chunk_0000',rows['used_minor']['reviewed_chunk_ids'])
+        self.assertEqual(rows['dismissal_small']['review_status'],'supported')
+        self.assertTrue({'003058_270551_20251023_art_7_2_chunk_0000','003058_270551_20251023_art_7_2_chunk_0001'}.issubset(rows['dismissal_small']['reviewed_chunk_ids']))
+        self.assertEqual(rows['consumer_repeat']['review_status'],'partial')
+        fixed=self.report['preprocessing_baseline']['questions']
+        self.assertNotIn('001706_284415_20260317_art_141_0_chunk_0000',next(q for q in fixed if q['question_id']=='used_minor')['reviewed_chunk_ids'])
 
 
 if __name__ == "__main__":

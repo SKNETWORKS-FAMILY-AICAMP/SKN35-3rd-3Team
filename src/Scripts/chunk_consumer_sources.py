@@ -72,6 +72,10 @@ def make_chunks(doc,size=1200,overlap=120):
                 **({'appendix_number':source['appendix_number'], 'appendix_title':source['appendix_title'],
                     'source_offset_basis':source['offset_basis'], 'source_start':source['start'], 'source_end':source['end']}
                    if source['role']=='appendix_table' else {}),
+                **({'product_scope':source['product_scope'],'appendix_number':source['appendix_number'],
+                    'source_start':source['start'],'source_end':source['end'],'source_offset_basis':source['offset_basis']}
+                   if source['role']=='product_table' else {}),
+                **({'refund_tables':source['refund_tables']} if source.get('refund_tables') else {}),
                 'context_header':header,'embedding_text':header+caution+('\n[사건개요 문맥]\n'+context if context else '')+'\n'+text[start:end],
                 'atomic':source.get('atomic',False),'oversize_atomic_unit':source.get('atomic',False) and len(text)>size,
                 'embedding_candidate':True,'warnings':doc['warnings']+source.get('warnings',[])})
@@ -94,7 +98,21 @@ def make_chunks(doc,size=1200,overlap=120):
                 'search_text':'\n'.join(c['text'] for c in cells),
                 'derivation':'table_cell_texts_in_source_order_no_merge_inference'})
             cursor=end
-        chunk['search_representation_version']=1
+        for table_index,table in enumerate(chunk.get('refund_tables',[])):
+            for row in table['rows']:
+                aliases=['계약해제','계약해지','중도해지','환불']
+                stage=''.join(row['condition_texts']).replace('\n','').replace(' ','')
+                if '개시일이전' in stage:
+                    aliases+=['이용 시작 전','수업 시작 전']
+                elif '개시일이후' in stage:
+                    aliases+=['이용 시작 후','수업 시작 후']
+                row_text='\n'.join([chunk['text'].splitlines()[0],*row['condition_texts'],row['refund_text'],*row['common_texts']])
+                chunk['search_passages'].append({'start':table['start'],'end':table['end'],
+                    'text':chunk['text'][table['start']:table['end']],
+                    'search_text':row_text+'\n[검색용 별칭] '+' '.join(aliases),
+                    'search_aliases':aliases,'table_index':table_index,'row_index':row['row_index'],
+                    'derivation':'validated_refund_row_with_common_notes_and_retrieval_aliases'})
+        chunk['search_representation_version']=2
         chunk['search_passages_usage']='본문 위치 기반 BM25 점수용. 셀·조건의 독립 근거가 아니며 반환·임베딩은 전체 원문 청크 사용.'
         chunk['evidence_role']='party_claim' if chunk['role']=='party_claims' else ('case_reasoning' if chunk['role']=='reasoning' else chunk['role'])
     return [normalize_chunk(c, doc) for c in chunks]

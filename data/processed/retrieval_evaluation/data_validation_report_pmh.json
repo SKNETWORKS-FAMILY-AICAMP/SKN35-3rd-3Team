@@ -85,7 +85,7 @@
       "consumer_documents": 37
     },
     "chunk_metadata_and_duplicates": {
-      "chunk_count": 3239,
+      "chunk_count": 3241,
       "duplicate_chunk_ids": 0,
       "empty_text_or_header": 0,
       "unmapped_domains": 0,
@@ -112,7 +112,7 @@
       "by_document_type": {
         "law": 2231,
         "precedent": 349,
-        "administrative_rule": 9,
+        "administrative_rule": 11,
         "mediation_case": 98,
         "standard_terms": 64,
         "official_guide": 488
@@ -124,7 +124,7 @@
         "guide_94e9d4bd30eadf0b_chunks.json",
         "guide_cad7b1de1e4dc64c_chunks.json"
       ],
-      "total": 3239
+      "total": 3241
     },
     "eligibility_and_exclusion_records": {
       "precedent_ready": 27,
@@ -213,9 +213,8 @@
     "domain_review_snapshot": {
       "question_count": 45,
       "review_statuses": {
-        "supported": 28,
-        "partial": 15,
-        "needs_review": 1,
+        "supported": 30,
+        "partial": 14,
         "restricted": 1
       }
     }
@@ -1183,8 +1182,8 @@
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard.json",
-      "bytes": 55638,
-      "sha256": "ffba21d90f5c6eafc475f33a0f80999f075774e15cb76518eab4de960410b285"
+      "bytes": 71179,
+      "sha256": "21ef060313cd8ab189c7d268aa5f278cb93acf9504aea25028446eedbfeffb30"
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_0.json",
@@ -1208,8 +1207,8 @@
     },
     {
       "path": "data/processed/consumer_sources/consumer_preprocessing_report.json",
-      "bytes": 14042,
-      "sha256": "11e6bd5c1682a645c64a70a2acbd15863b904697dce4dafdfc43d08671f675f7"
+      "bytes": 14043,
+      "sha256": "412a16bd50aef7eedcd50ad4284deae69e69810321a7087ad74c68e5cfc0c10e"
     },
     {
       "path": "data/processed/consumer_sources/converted/ftc_parcel_terms_14786.conversion.json",
@@ -1258,8 +1257,8 @@
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_46118_file_5b139f26.json",
-      "bytes": 51039,
-      "sha256": "9f6c39e44cf51d4901ee0ac754df0b239e5033c96867535b1119265a1069601a"
+      "bytes": 76211,
+      "sha256": "d980b6b9a7762434fd883859c87bbc94294881c45888a6dda31cf68ed4232251"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_47762.json",
@@ -1268,8 +1267,8 @@
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_47762_file_05d51a47.json",
-      "bytes": 77803,
-      "sha256": "0f2752791645bae5a43bf2cf7914e0ca13e8635ee0457c22c47e6b889afab94e"
+      "bytes": 88787,
+      "sha256": "cbc6509c55c5f14686b61ab7d3eb207760a7e2102295148798fc01e5743ee73a"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_discovery.json",
@@ -1778,18 +1777,18 @@
     },
     {
       "path": "data/processed/retrieval_evaluation/consumer_coverage_report.json",
-      "bytes": 266224,
-      "sha256": "2ead9cd1ad1bd001925b2f7381b47f340536c27e2108406969fc27ecf96255ef"
+      "bytes": 274324,
+      "sha256": "66cab0f47c2adfe28aa52640db4560031ea905da8ece12e6cf758c3302e0f113"
     },
     {
       "path": "data/processed/retrieval_evaluation/domain_coverage_report_pmh.json",
-      "bytes": 1016366,
-      "sha256": "1bbf836a4027eda5d64620bd6a9fb84b062a1edbec73e4686646eb35aa9e1b1c"
+      "bytes": 1056654,
+      "sha256": "aa6a5ad03f3f1ac2f1c63515372ae2f01f5998f8ffc975ede60e8418f543c873"
     },
     {
       "path": "data/processed/retrieval_evaluation/domain_coverage_report_pmh.md",
-      "bytes": 197545,
-      "sha256": "dc889e3046fe839a7cca7dcf88470d6224e00008b41e4f92ffe61ae4c727342e"
+      "bytes": 207956,
+      "sha256": "be874c55125486f6403c0d1ed9bee20f6fb892531525828bf139131b27c6a6a8"
     },
     {
       "path": "data/chunk/__init__.py",
@@ -1803,13 +1802,13 @@
     },
     {
       "path": "data/chunk/consumer_sources/chunks.jsonl",
-      "bytes": 1204091,
-      "sha256": "b9272a4030d7405de4adbfdf04b96bc4eddfc2450307c49f8b807f7f2fbf5214"
+      "bytes": 1335738,
+      "sha256": "790a02d263cfcfa26d96a1533361f75fd10da4066e33e21e794d76d865e63144"
     },
     {
       "path": "data/chunk/consumer_sources/consumer_chunking_report.json",
       "bytes": 7657,
-      "sha256": "6ef60b554b1fb0d2b25d69da50eff7b5f2d59aee666e77b051802b0569f454a0"
+      "sha256": "79bc1a2a4ff64479b248a1126c762ae66c807e4c07cd19416ed65ed3eec5f9fd"
     },
     {
       "path": "data/chunk/guides/__init__.py",
@@ -1872,16 +1871,16 @@
       "sha256": "6865ac36d296ababb4c657c2eb087727ba1f623db3723a8cc08cacac2534610d"
     }
   ],
-  "inventory_sha256": "e03c99d22045bfbc8c96eb8f4e6182f2cdcce5033cb1d9224080ceb1988b03fc",
+  "inventory_sha256": "ee03228b6946f05cd2b709e1d3b10299c27e6332b4331bf3addcd54943264b22",
   "remaining_limits": [
-    "분야 검토: 기본 근거 28문항, 자료 보완 15문항, 추가 내용 검토 1문항, 원문 적용 보류 1문항인 현재 스냅샷",
+    "분야 내용 검토 상태: {\"supported\": 30, \"partial\": 14, \"restricted\": 1}",
     "자료 추가·개정 후 분야별 내용 검토와 평가 보고서를 다시 갱신해야 함",
     "PDF 모든 이미지/원문 시각 요소 및 신규 현행 개정의 전수 검증은 아님",
     "공통 서비스 로더·임베딩·Qdrant 저장/검색·LLM 답변·MCP 연결은 미구현"
   ],
-  "validated_at": "2026-10-11T00:01:12.372589+00:00",
+  "validated_at": "2026-10-11T01:03:33.154718+00:00",
   "test_suite": {
-    "tests_run": 102,
+    "tests_run": 105,
     "successful": true,
     "failures": [],
     "errors": [],

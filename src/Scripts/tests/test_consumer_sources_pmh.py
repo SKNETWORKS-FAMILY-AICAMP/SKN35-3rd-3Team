@@ -9,7 +9,7 @@ from pathlib import Path
 
 from src.Scripts.collect_consumer_sources import ROOT, MANIFEST, digest, preserve, safe_url
 from src.Scripts.preprocess_consumer_sources import (OUTPUT_DIR, PARCEL_VERSIONS, extract_case,
-    extract_admin, preprocess, hwp_paragraph_text, compare_parcel_versions)
+    extract_admin, preprocess, hwp_paragraph_text, compare_parcel_versions, refund_table_rows)
 from src.Scripts.chunk_consumer_sources import OUTPUT_DIR as CHUNK_DIR, make_chunks
 
 
@@ -92,6 +92,70 @@ class ConsumerSourceTests(unittest.TestCase):
             self.assertTrue(c['atomic'])
             self.assertTrue(c['oversize_atomic_unit'])
             self.assertTrue(c['warnings'])
+
+    def test_product_tables_keep_continuations_notes_and_exact_official_offsets(self):
+        doc=next(d for d in self.documents if d['document_type']=='administrative_rule')
+        root=ET.fromstring((ROOT/doc['raw_file']).read_bytes())
+        text=root.find('.//별표단위[별표번호="0002"]/별표내용').text
+        units={u['unit_id']:u for u in doc['units'] if u['role']=='product_table'}
+        self.assertEqual(set(units),{'product_jewelry','product_electronics_office'})
+        for u in units.values():
+            self.assertEqual(u['text'],text[u['start']:u['end']])
+            self.assertTrue(u['text'].startswith('┏'))
+            self.assertIn('┛',u['text'])
+            self.assertIn('비',u['text'])
+            chunks=[c for c in self.chunks if c['unit_id']==u['unit_id']]
+            self.assertEqual(len(chunks),1)
+            self.assertEqual(chunks[0]['text'],u['text'])
+            self.assertEqual(chunks[0]['product_scope'],u['product_scope'])
+            self.assertEqual(chunks[0]['source_start'],u['start'])
+            self.assertIn('consumer_general',chunks[0]['domains'])
+        electronics=units['product_electronics_office']['text']
+        self.assertIn('(2 - 1)',electronics)
+        self.assertIn('(2 - 2)',electronics)
+        self.assertIn('동일하자',electronics)
+        self.assertNotIn('②전기통신기자재',electronics)
+        self.assertNotIn('②악',units['product_jewelry']['text'])
+        for label in ['귀금속','전자제품']:
+            changed=copy.deepcopy(root)
+            appendix=changed.find('.//별표단위[별표번호="0002"]/별표내용')
+            appendix.text=appendix.text.replace(label,'누락된품목')
+            with self.assertRaises(ValueError):
+                extract_admin(ET.tostring(changed,encoding='utf-8'))
+
+    def test_refund_rows_resolve_only_source_merges_and_keep_common_conditions(self):
+        count=0
+        for doc in self.documents:
+            for u in doc['units']:
+                for table in u.get('refund_tables',[]):
+                    count+=1
+                    cells=table['cells']
+                    self.assertEqual(cells,json.loads(u['text'][table['start']:table['end']]))
+                    rows=table['rows']
+                    self.assertEqual([r['row_index'] for r in rows],[1,2,3,4])
+                    for row in rows:
+                        for col,index in enumerate(row['column_cell_indices']):
+                            cell=cells[index]
+                            self.assertLessEqual(int(cell['address']['rowAddr']),row['row_index'])
+                            self.assertLess(row['row_index'],int(cell['address']['rowAddr'])+int(cell['span']['rowSpan']))
+                            self.assertLessEqual(int(cell['address']['colAddr']),col)
+                            self.assertLess(col,int(cell['address']['colAddr'])+int(cell['span']['colSpan']))
+                        self.assertEqual(row['condition_texts'],[cells[i]['text'] for i in row['column_cell_indices'][:2]])
+                        self.assertEqual(row['refund_text'],cells[row['column_cell_indices'][2]]['text'])
+                        self.assertEqual(row['common_texts'],[cells[i]['text'] for i in row['common_cell_indices']])
+                        self.assertTrue(any('위약금' in s and '이용료' in s for s in row['common_texts']))
+                    self.assertEqual(rows[0]['condition_texts'][0],rows[1]['condition_texts'][0])
+                    self.assertEqual(rows[2]['condition_texts'][0],rows[3]['condition_texts'][0])
+                    self.assertIn('이전',rows[0]['condition_texts'][1])
+                    self.assertIn('이후',rows[1]['condition_texts'][1])
+                    for problem in ['overlap','missing','invalid_span']:
+                        bad=copy.deepcopy(cells)
+                        if problem=='overlap':bad.append(copy.deepcopy(cells[0]))
+                        elif problem=='missing':bad.pop(rows[1]['column_cell_indices'][1])
+                        else:bad[0]['span']['rowSpan']='0'
+                        with self.subTest(problem=problem), self.assertRaises(ValueError):
+                            refund_table_rows(bad)
+        self.assertEqual(count,3)
 
     def test_additional_appendices_reject_missing_empty_duplicate_and_wrong_title(self):
         doc=next(d for d in self.documents if d['document_type']=='administrative_rule')
@@ -181,8 +245,15 @@ class ConsumerSourceTests(unittest.TestCase):
                 self.assertTrue(0<=p['start']<p['end']<=len(c['text']))
                 if 'search_text' in p:
                     cells=json.loads(p['text'])
-                    self.assertEqual(p['search_text'],'\n'.join(cell['text'] for cell in cells))
-                    self.assertEqual(p['derivation'],'table_cell_texts_in_source_order_no_merge_inference')
+                    if p['derivation']=='table_cell_texts_in_source_order_no_merge_inference':
+                        self.assertEqual(p['search_text'],'\n'.join(cell['text'] for cell in cells))
+                    else:
+                        self.assertEqual(p['derivation'],'validated_refund_row_with_common_notes_and_retrieval_aliases')
+                        table=c['refund_tables'][p['table_index']]
+                        row=next(r for r in table['rows'] if r['row_index']==p['row_index'])
+                        expected='\n'.join([c['text'].splitlines()[0],*row['condition_texts'],row['refund_text'],*row['common_texts']])
+                        self.assertEqual(p['search_text'],expected+'\n[검색용 별칭] '+' '.join(p['search_aliases']))
+                        self.assertEqual(cells,table['cells'])
                 else:
                     covered.update(range(p['start'],p['end']))
             self.assertEqual(len(covered),len(c['text']))

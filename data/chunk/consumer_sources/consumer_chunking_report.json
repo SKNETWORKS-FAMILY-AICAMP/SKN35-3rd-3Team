@@ -1,14 +1,14 @@
 {
   "metadata_version": 1,
   "document_count": 23,
-  "chunk_count": 171,
+  "chunk_count": 173,
   "size": 1200,
   "overlap": 120,
-  "chunks_sha256": "b9272a4030d7405de4adbfdf04b96bc4eddfc2450307c49f8b807f7f2fbf5214",
+  "chunks_sha256": "790a02d263cfcfa26d96a1533361f75fd10da4066e33e21e794d76d865e63144",
   "inputs": [
     {
       "file": "consumer_dispute_standard.json",
-      "processed_sha256": "ffba21d90f5c6eafc475f33a0f80999f075774e15cb76518eab4de960410b285"
+      "processed_sha256": "21ef060313cd8ab189c7d268aa5f278cb93acf9504aea25028446eedbfeffb30"
     },
     {
       "file": "consumer_dispute_standard_appendix_0.json",
@@ -140,11 +140,11 @@
     },
     {
       "file": "ftc_terms_47762_file_05d51a47.json",
-      "processed_sha256": "0f2752791645bae5a43bf2cf7914e0ca13e8635ee0457c22c47e6b889afab94e"
+      "processed_sha256": "cbc6509c55c5f14686b61ab7d3eb207760a7e2102295148798fc01e5743ee73a"
     },
     {
       "file": "ftc_terms_46118_file_5b139f26.json",
-      "processed_sha256": "9f6c39e44cf51d4901ee0ac754df0b239e5033c96867535b1119265a1069601a"
+      "processed_sha256": "d980b6b9a7762434fd883859c87bbc94294881c45888a6dda31cf68ed4232251"
     },
     {
       "file": "ftc_terms_11185_file_a321590d.json",
@@ -155,7 +155,7 @@
       "processed_sha256": "e0a82fef8eb7decb85793a967edcdc512146c794605b9c75a92a5ac159589132"
     }
   ],
-  "oversize_atomic_count": 10,
+  "oversize_atomic_count": 12,
   "usage": "embedding_text 사용. 표·약관 조문은 원자 단위 유지. 실제 임베딩 전 모델 토큰 제한 확인.",
   "excluded": [
     {

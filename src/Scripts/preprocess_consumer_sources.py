@@ -313,6 +313,25 @@ def extract_admin(data):
             domains.add(domain)
     if domains != set(targets.values()):
         raise ValueError('필수 업종 별표 구간 누락')
+    # 이 품목들은 <업종>이 아니라 문자 표 안의 원형 번호 제목으로 구분된다.
+    product_headings=list(re.finditer(r'(?m)^┃[ \t]*[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳][^│\n]*┃[ \t]*$',text))
+    for identifier,key,title in [('jewelry','귀금속','귀금속·보석'),
+                                  ('electronics_office','전자제품','전자제품·사무용기기')]:
+        selected=[i for i,h in enumerate(product_headings) if key in h.group()]
+        if not selected or selected != list(range(selected[0],selected[-1]+1)):
+            raise ValueError(f'{title} 표 제목 누락 또는 비연속 구간')
+        first,last=selected[0],selected[-1]
+        # 위·아래 표 테두리, 연속 페이지 표, 비고를 모두 포함한다.
+        start=text.rfind('┏',0,product_headings[first].start())
+        end=(text.rfind('┏',product_headings[last].end(),product_headings[last+1].start())
+             if last+1<len(product_headings) else len(text))
+        if start<0 or end<=product_headings[last].end() or '┛' not in text[start:end]:
+            raise ValueError(f'{title} 표 경계 불완전')
+        units.append(unit('product_'+identifier,'product_table',text[start:end],domain='consumer',
+            atomic=True,product_scope=title,appendix_number='0002',start=start,end=end,
+            offset_basis='별표단위[별표번호=0002].별표내용',source_locator='별표 Ⅱ 품목별 해결기준 / '+title,
+            warnings=['선정 품목에 한정된 기준. 다른 품목·개인 간 거래에 일괄 적용하지 않음.',
+                      '공식 XML 문자 표의 조건·비고·연속 표 전체 보존. 문자 이상·병합 관계는 공식 별표 대조 필요.']))
     # 문자 표의 병합 열·공통 조건을 추정하거나 중간에서 잘라내지 않는다.
     for number, title in [('0003', '품목별 품질보증기간 및 부품보유기간'),
                           ('0004', '품목별 내용연수표')]:
@@ -333,6 +352,65 @@ def extract_admin(data):
                       '표 전체를 하나의 청크로 보존하므로 임베딩 모델 토큰 제한 확인 필요.']))
     meta = {n.tag:n.text for n in info}
     return units, meta
+
+
+def refund_table_rows(cells):
+    """환급 표의 실제 주소·병합 범위만 펼친다. 수식이나 법률 조건을 계산하지 않는다."""
+    grid={}
+    for index,cell in enumerate(cells):
+        try:
+            row,col=int(cell['address']['rowAddr']),int(cell['address']['colAddr'])
+            height,width=int(cell['span']['rowSpan']),int(cell['span']['colSpan'])
+        except (KeyError,TypeError,ValueError) as exc:
+            raise ValueError('환급 표 셀 주소·병합 범위 누락') from exc
+        if row<0 or col<0 or height<=0 or width<=0 or row+height>1000 or col+width>3:
+            raise ValueError('환급 표 셀 범위 불일치')
+        for r in range(row,row+height):
+            for c in range(col,col+width):
+                if (r,c) in grid:
+                    raise ValueError('환급 표 셀 범위 중복')
+                grid[r,c]=index
+    if not grid or any((0,c) not in grid for c in range(3)):
+        raise ValueError('환급 표 제목 행 누락')
+    if '환급' not in cells[grid[0,2]]['text']:
+        raise ValueError('환급 기준 열 확인 불가')
+    common=[i for i,c in enumerate(cells) if int(c['span']['colSpan'])==3]
+    rows=[]
+    for r in sorted({r for r,_ in grid if r>0}):
+        if any((r,c) not in grid for c in range(3)):
+            raise ValueError('환급 표 조건·기준 셀 누락')
+        indices=[grid[r,c] for c in range(3)]
+        if len(set(indices))==1:
+            continue
+        if len(set(indices))!=3:
+            raise ValueError('지원하지 않는 환급 표 행 구조')
+        rows.append({'row_index':r,'column_cell_indices':indices,
+                     'condition_texts':[cells[i]['text'] for i in indices[:2]],
+                     'refund_text':cells[indices[2]]['text'],
+                     'common_cell_indices':common,'common_texts':[cells[i]['text'] for i in common]})
+    if not rows:
+        raise ValueError('환급 표 데이터 행 누락')
+    return rows
+
+
+def attach_refund_tables(units):
+    marker='[표 셀: address는 행·열, span은 병합 범위]\n'
+    for u in units:
+        cursor=0;tables=[]
+        while marker in u['text'][cursor:]:
+            start=u['text'].index(marker,cursor)+len(marker)
+            cells,length=json.JSONDecoder().raw_decode(u['text'][start:]);end=start+length
+            # 환급 표만 대상으로 하며 다른 표는 원래 구조를 그대로 보존한다.
+            headers=[c['text'] for c in cells if c.get('address',{}).get('rowAddr')=='0']
+            if any('환급' in h for h in headers):
+                tables.append({'start':start,'end':end,'offset_basis':'unit.text',
+                               'cells':cells,'rows':refund_table_rows(cells),
+                               'derivation':'hwpx_cell_addresses_and_spans',
+                               'context_before':u['text'][:start],'context_after':u['text'][end:]})
+            cursor=end
+        if tables:
+            u['refund_tables']=tables
+    return units
 
 
 def extract_hwpx(data_path):
@@ -387,7 +465,7 @@ def extract_hwpx(data_path):
         end=boundaries[i+1].start() if i+1<len(boundaries) else len(text)
         units.append(unit(f'terms_article_{i}','standard_terms_article',text[match.start():end],
                           atomic=True,start=match.start(),end=end,offset_basis='hwpx_extracted_text'))
-    return text,units,tables
+    return text,attach_refund_tables(units),tables
 
 
 def preprocess(source):

@@ -21,9 +21,15 @@ EMBEDDING_API_KEY=개인별_임베딩_API_키
 
 ```powershell
 uv sync --locked
-Copy-Item .env.example .env
+uv run python -m src.scripts.environment_setup
 uv run python -m src.scripts.qdrant_setup check
 ```
+
+`uv sync --locked`는 Python 패키지와 `.venv`만 맞추며 `.env`와 비밀 키는
+가져오지 않습니다. 환경 초기화 명령은 `.env`가 없을 때만 예제 파일을
+복사하고, 기존 `.env`는 유지한 채 입력이 필요한 키 이름만 표시합니다. 값을
+입력한 뒤 `uv run python -m src.scripts.environment_setup --check`로 다시
+확인할 수 있습니다.
 
 컬렉션이 없고 생성 권한이 있는 사용자만 아래 명령을 한 번 실행합니다.
 

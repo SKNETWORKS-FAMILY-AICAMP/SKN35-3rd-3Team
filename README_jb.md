@@ -16,7 +16,7 @@
 | Sparse 모델 | FastEmbed `Qdrant/bm25` |
 | 거리 방식 | Cosine |
 | 컬렉션 상태 | green |
-| Point 수 | 0 |
+| Point 수 | 12 (문서 유형별 샘플 적재·검증 완료) |
 | Payload 인덱스 | Cloud 적용 완료 (`document_id`, `document_type`, `source_name`) |
 
 실제 Qdrant URL과 API 키는 `.env`에서 관리하며 Git에 올리지 않습니다.
@@ -43,7 +43,17 @@ MCP/RAG 전달
 
 ```powershell
 uv sync --locked
-Copy-Item .env.example .env
+uv run python -m src.scripts.environment_setup
+```
+
+`uv sync --locked`는 `.python-version`의 Python 3.12와 `uv.lock`에 고정된
+패키지만 설치합니다. `.env`와 API 키는 동기화하지 않습니다. 위 초기화 명령은
+`.env`가 없을 때만 `.env.example`을 복사하며 기존 파일은 덮어쓰지 않습니다.
+명령이 표시한 누락 키를 `.env`에 입력한 뒤 아래 상태 확인을 실행합니다.
+
+```powershell
+uv run python -m src.scripts.environment_setup --check
+uv run python -m src.scripts.qdrant_setup check
 ```
 
 Qdrant Cloud 주소는 코드에 팀 공용값으로 설정되어 있습니다. 팀원은 개인 키만
@@ -166,7 +176,7 @@ uv run python -m src.scripts.embedding_probe --provider all
 | 프로필 | 상태 | 확인 내용 |
 | --- | --- | --- |
 | NVIDIA | 실제 검증 완료 | 2048차원, 정규화 벡터 길이 1.0 |
-| OpenAI | 실제 호출 대기 | `OPENAI_API_KEY` 필요 |
+| OpenAI | 실제 검증 완료 | 1536차원 문서 샘플 12건 적재 및 Hybrid 검색 확인 |
 | 개인 GPU | 실제 호출 대기 | 고정 모델·차원 및 `torch`, `sentence-transformers` 필요 |
 
 ### OpenAI API

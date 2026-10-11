@@ -70,8 +70,9 @@ uv run python -m src.scripts.qdrant_setup init
 | `precedents` | `precedent` |
 | `consumer_sources` | `consumer_source` |
 
-전처리 담당자가 확인한 전체 청크 수는 **3,793건**입니다. 폴더별 수량은
-참고값으로 보고서에 표시하고, 전체 수량만 3,793건인지 검사합니다.
+전처리 담당자가 확인한 전체 청크 수는 **4,932건**입니다. 최신 폴더별
+수량은 아직 제공되지 않아 보고서에는 실제 발견 수량을 표시하고, 전체
+수량만 4,932건인지 검사합니다.
 
 각 폴더의 `.json`과 `.jsonl`을 하위 경로까지 자동 탐색합니다. JSON은 청크
 객체 한 건, 청크 배열 또는 `chunks`·`records`·`items`·`data` 배열을 지원하고,
@@ -112,7 +113,7 @@ Vector DB 계층은 아래 형식을 검증한 뒤 임베딩과 Qdrant Payload�
 ### 실제 파일을 받기 전·후 사전 점검
 
 다음 명령은 임베딩 API와 Qdrant를 호출하지 않습니다. 폴더 존재 여부, 파일
-파싱, 필수 필드, 중복 `document_id/chunk_id`, 전체 3,793건 여부를 확인합니다.
+파싱, 필수 필드, 중복 `document_id/chunk_id`, 전체 4,932건 여부를 확인합니다.
 
 ```powershell
 uv run python -m src.scripts.qdrant_ingest check-input

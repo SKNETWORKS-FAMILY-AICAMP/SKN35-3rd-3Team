@@ -7,9 +7,9 @@ MCP SDK나 LangGraph를 import하지 않습니다. Qdrant Client도 실제 연�
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, TypeVar
 
 from src.const.qdrant_config import QdrantSettings
 from src.vector_db.ingestion import PreparedPoint
@@ -50,6 +50,44 @@ class QdrantClientLike(Protocol):
 PointFactory = Callable[[PreparedPoint, str | None], object]
 FilterFactory = Callable[[Mapping[str, object]], object]
 VectorParamsFactory = Callable[[int, str, str | None], object]
+_ClientResult = TypeVar("_ClientResult")
+
+
+def _call_qdrant(
+    operation: Callable[[], _ClientResult],
+    error_message: str,
+) -> _ClientResult:
+    """Qdrant Client 예외를 Vector Store 공통 오류로 변환합니다."""
+
+    try:
+        return operation()
+    except Exception as error:
+        raise VectorStoreError(
+            "connection_error",
+            error_message,
+        ) from error
+
+
+def _scroll_page(
+    response: object,
+    *,
+    invalid_response_message: str,
+    invalid_records_message: str,
+) -> tuple[Sequence[object], object]:
+    """Qdrant Scroll 응답 한 페이지를 검증해 레코드와 Offset을 반환합니다."""
+
+    if not isinstance(response, tuple) or len(response) != 2:
+        raise VectorStoreError(
+            "invalid_response",
+            invalid_response_message,
+        )
+    records, offset = response
+    if not isinstance(records, Sequence) or isinstance(records, (str, bytes)):
+        raise VectorStoreError(
+            "invalid_response",
+            invalid_records_message,
+        )
+    return records, offset
 
 
 def create_qdrant_client(settings: QdrantSettings) -> QdrantClientLike:
@@ -312,13 +350,33 @@ class QdrantVectorStore:
     def health_check(self) -> bool:
         """서버에 접속하여 대상 컬렉션의 존재 여부를 확인합니다."""
 
-        try:
-            return bool(self.client.collection_exists(self.collection_name))
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
+        return bool(
+            _call_qdrant(
+                lambda: self.client.collection_exists(self.collection_name),
                 "Qdrant 연결 또는 컬렉션 확인에 실패했습니다.",
-            ) from error
+            )
+        )
+
+    def _collection_create_options(self) -> dict[str, object]:
+        """현재 설정에서 컬렉션 생성 인자를 만듭니다."""
+
+        vector_size = self.settings.collection.vector_size
+        assert vector_size is not None
+        create_options: dict[str, object] = {
+            "collection_name": self.collection_name,
+            "vectors_config": self.vector_params_factory(
+                vector_size,
+                self.settings.collection.distance,
+                self.settings.collection.vector_name,
+            ),
+        }
+        sparse_vector_name = self.settings.collection.sparse_vector_name
+        if self.settings.collection.search_mode == "hybrid":
+            assert sparse_vector_name is not None
+            create_options["sparse_vectors_config"] = _sparse_vectors_config(
+                sparse_vector_name
+            )
+        return create_options
 
     def ensure_collection(self) -> tuple[VectorCollectionInfo, bool]:
         """컬렉션이 없으면 생성하고, 있으면 규격만 검사합니다.
@@ -328,45 +386,20 @@ class QdrantVectorStore:
         """
 
         self.settings.validate_for_vector_work()
-        try:
-            exists = self.client.collection_exists(self.collection_name)
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
-                "Qdrant 컬렉션 존재 여부를 확인하지 못했습니다.",
-            ) from error
+        exists = _call_qdrant(
+            lambda: self.client.collection_exists(self.collection_name),
+            "Qdrant 컬렉션 존재 여부를 확인하지 못했습니다.",
+        )
 
         if exists:
             self._ensure_sparse_vector()
             return self.validate_collection_contract(), False
 
-        vector_size = self.settings.collection.vector_size
-        assert vector_size is not None
-        vectors_config = self.vector_params_factory(
-            vector_size,
-            self.settings.collection.distance,
-            self.settings.collection.vector_name,
+        create_options = self._collection_create_options()
+        _call_qdrant(
+            lambda: self.client.create_collection(**create_options),
+            "Qdrant 컬렉션 생성에 실패했습니다.",
         )
-        create_options: dict[str, object] = {
-            "collection_name": self.collection_name,
-            "vectors_config": vectors_config,
-        }
-        sparse_vector_name = self.settings.collection.sparse_vector_name
-        if self.settings.collection.search_mode == "hybrid":
-            assert sparse_vector_name is not None
-            create_options["sparse_vectors_config"] = _sparse_vectors_config(
-                sparse_vector_name
-            )
-
-        try:
-            self.client.create_collection(
-                **create_options,
-            )
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
-                "Qdrant 컬렉션 생성에 실패했습니다.",
-            ) from error
 
         return self.validate_collection_contract(), True
 
@@ -388,18 +421,15 @@ class QdrantVectorStore:
                 "입력과 재적재 계획을 먼저 확인하세요.",
             )
 
-        try:
-            self.client.create_vector_name(
+        _call_qdrant(
+            lambda: self.client.create_vector_name(
                 collection_name=self.collection_name,
                 vector_name=sparse_vector_name,
                 vector_name_config=_sparse_vector_name_config(),
                 wait=True,
-            )
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
-                "Qdrant BM25 Sparse Vector 설정에 실패했습니다.",
-            ) from error
+            ),
+            "Qdrant BM25 Sparse Vector 설정에 실패했습니다.",
+        )
 
     def payload_index_status(
         self,
@@ -407,13 +437,10 @@ class QdrantVectorStore:
     ) -> dict[str, str | None]:
         """필수 Payload 인덱스의 현재 형식을 읽고 누락은 ``None``으로 표시합니다."""
 
-        try:
-            collection = self.client.get_collection(self.collection_name)
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
-                "Qdrant Payload 인덱스 정보를 읽지 못했습니다.",
-            ) from error
+        collection = _call_qdrant(
+            lambda: self.client.get_collection(self.collection_name),
+            "Qdrant Payload 인덱스 정보를 읽지 못했습니다.",
+        )
 
         payload_schema = _read_value(collection, "payload_schema", {})
         if not isinstance(payload_schema, Mapping):
@@ -429,19 +456,16 @@ class QdrantVectorStore:
     def _create_payload_index(self, index: PayloadIndexSpec) -> None:
         """Payload 인덱스 한 건을 만들고 완료될 때까지 기다립니다."""
 
-        try:
-            self.client.create_payload_index(
+        _call_qdrant(
+            lambda: self.client.create_payload_index(
                 collection_name=self.collection_name,
                 field_name=index.field_name,
                 field_schema=_payload_schema_type(index.schema),
                 wait=True,
-            )
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
-                "Qdrant Payload 인덱스 생성에 실패했습니다: "
-                f"{index.field_name}",
-            ) from error
+            ),
+            "Qdrant Payload 인덱스 생성에 실패했습니다: "
+            f"{index.field_name}",
+        )
 
     def ensure_payload_indexes(
         self,
@@ -495,13 +519,10 @@ class QdrantVectorStore:
     def get_collection_info(self) -> VectorCollectionInfo:
         """현재 컬렉션의 공개 가능한 상태와 벡터 규격을 반환합니다."""
 
-        try:
-            collection = self.client.get_collection(self.collection_name)
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
-                "Qdrant 컬렉션 정보를 읽지 못했습니다.",
-            ) from error
+        collection = _call_qdrant(
+            lambda: self.client.get_collection(self.collection_name),
+            "Qdrant 컬렉션 정보를 읽지 못했습니다.",
+        )
 
         vector_params, vector_name = self._vector_params(collection)
         sparse_vectors = _read_path(
@@ -652,27 +673,22 @@ class QdrantVectorStore:
             "with_vectors": False,
         }
 
-    def search(
+    def _search_query_options(
         self,
         request: VectorSearchRequest,
-    ) -> Sequence[VectorSearchHit]:
-        """설정에 따라 Dense 또는 RRF Hybrid 검색을 수행합니다."""
+    ) -> dict[str, object]:
+        """검색 모드에 맞는 Qdrant 요청 인자를 선택합니다."""
 
         query_filter = (
             self.filter_factory(request.filters) if request.filters else None
         )
         if self.settings.collection.search_mode == "hybrid":
-            query_kwargs = self._hybrid_query_options(request, query_filter)
-        else:
-            query_kwargs = self._dense_query_options(request, query_filter)
+            return self._hybrid_query_options(request, query_filter)
+        return self._dense_query_options(request, query_filter)
 
-        try:
-            response = self.client.query_points(**query_kwargs)
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
-                "Qdrant 문서 검색에 실패했습니다.",
-            ) from error
+    @staticmethod
+    def _search_hits(response: object) -> tuple[VectorSearchHit, ...]:
+        """Qdrant 응답 Point를 공개 검색 결과로 변환합니다."""
 
         result_points = _read_value(response, "points", response)
         if not isinstance(result_points, Sequence) or isinstance(
@@ -697,6 +713,71 @@ class QdrantVectorStore:
             )
         return tuple(hits)
 
+    def search(
+        self,
+        request: VectorSearchRequest,
+    ) -> Sequence[VectorSearchHit]:
+        """설정에 따라 Dense 또는 RRF Hybrid 검색을 수행합니다."""
+
+        query_kwargs = self._search_query_options(request)
+        response = _call_qdrant(
+            lambda: self.client.query_points(**query_kwargs),
+            "Qdrant 문서 검색에 실패했습니다.",
+        )
+        return self._search_hits(response)
+
+    def _scroll_records(
+        self,
+        scroll_filter: object,
+        *,
+        page_size: int,
+        max_records: int | None = None,
+        error_message: str,
+        invalid_response_message: str,
+        invalid_records_message: str,
+    ) -> Iterator[object]:
+        """공통 Scroll 페이지 반복기로 Payload 레코드만 반환합니다."""
+
+        offset: object = None
+        yielded_count = 0
+        while max_records is None or yielded_count < max_records:
+            request_limit = page_size
+            if max_records is not None:
+                request_limit = min(page_size, max_records - yielded_count)
+            scroll_kwargs: dict[str, object] = {
+                "collection_name": self.collection_name,
+                "scroll_filter": scroll_filter,
+                "limit": request_limit,
+                "with_payload": True,
+                "with_vectors": False,
+            }
+            if offset is not None:
+                scroll_kwargs["offset"] = offset
+
+            response = _call_qdrant(
+                lambda: self.client.scroll(**scroll_kwargs),
+                error_message,
+            )
+            records, next_offset = _scroll_page(
+                response,
+                invalid_response_message=invalid_response_message,
+                invalid_records_message=invalid_records_message,
+            )
+            for record in records:
+                if max_records is not None and yielded_count >= max_records:
+                    return
+                yield record
+                yielded_count += 1
+
+            if next_offset is None:
+                return
+            if next_offset == offset:
+                raise VectorStoreError(
+                    "invalid_response",
+                    f"{invalid_response_message} Offset이 반복되었습니다.",
+                )
+            offset = next_offset
+
     def lookup(
         self,
         filters: Mapping[str, object],
@@ -712,32 +793,16 @@ class QdrantVectorStore:
         if not 1 <= limit <= 100:
             raise ValueError("limit은 1 이상 100 이하여야 합니다.")
 
-        scroll_filter = self.filter_factory(filters)
-        try:
-            response = self.client.scroll(
-                collection_name=self.collection_name,
-                scroll_filter=scroll_filter,
-                limit=limit,
-                with_payload=True,
-                with_vectors=False,
-            )
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
-                "Qdrant 문서 정확 조회에 실패했습니다.",
-            ) from error
-
-        if not isinstance(response, tuple) or len(response) != 2:
-            raise VectorStoreError(
-                "invalid_response",
-                "Qdrant 정확 조회 결과 형식이 올바르지 않습니다.",
-            )
-        records, _ = response
-        if not isinstance(records, Sequence) or isinstance(records, (str, bytes)):
-            raise VectorStoreError(
-                "invalid_response",
-                "Qdrant 정확 조회 문서 목록 형식이 올바르지 않습니다.",
-            )
+        records = self._scroll_records(
+            self.filter_factory(filters),
+            page_size=limit,
+            max_records=limit,
+            error_message="Qdrant 문서 정확 조회에 실패했습니다.",
+            invalid_response_message="Qdrant 정확 조회 결과 형식이 올바르지 않습니다.",
+            invalid_records_message=(
+                "Qdrant 정확 조회 문서 목록 형식이 올바르지 않습니다."
+            ),
+        )
         return tuple(_document_from_point(record) for record in records)
 
     def upsert_points(
@@ -774,20 +839,17 @@ class QdrantVectorStore:
             self.point_factory(point, self.settings.collection.vector_name)
             for point in points
         )
-        try:
-            self.client.upload_points(
+        _call_qdrant(
+            lambda: self.client.upload_points(
                 collection_name=self.collection_name,
                 points=sdk_points,
                 batch_size=batch_size,
                 parallel=parallel,
                 max_retries=max_retries,
                 wait=True,
-            )
-        except Exception as error:
-            raise VectorStoreError(
-                "connection_error",
-                "Qdrant Point 적재에 실패했습니다.",
-            ) from error
+            ),
+            "Qdrant Point 적재에 실패했습니다.",
+        )
 
         return len(points)
 
@@ -817,52 +879,23 @@ class QdrantVectorStore:
         snapshots: list[StoredPointSnapshot] = []
         for document_id in normalized_ids:
             query_filter = self.filter_factory({"document_id": document_id})
-            offset: object = None
-            while True:
-                scroll_kwargs: dict[str, object] = {
-                    "collection_name": self.collection_name,
-                    "scroll_filter": query_filter,
-                    "limit": page_size,
-                    "with_payload": True,
-                    "with_vectors": False,
-                }
-                if offset is not None:
-                    scroll_kwargs["offset"] = offset
-
-                try:
-                    response = self.client.scroll(**scroll_kwargs)
-                except Exception as error:
-                    raise VectorStoreError(
-                        "connection_error",
-                        "Qdrant 적재 검증용 Point 조회에 실패했습니다.",
-                    ) from error
-
-                if not isinstance(response, tuple) or len(response) != 2:
-                    raise VectorStoreError(
-                        "invalid_response",
-                        "Qdrant Scroll 결과 형식이 올바르지 않습니다.",
+            for record in self._scroll_records(
+                query_filter,
+                page_size=page_size,
+                error_message="Qdrant 적재 검증용 Point 조회에 실패했습니다.",
+                invalid_response_message="Qdrant Scroll 결과 형식이 올바르지 않습니다.",
+                invalid_records_message=(
+                    "Qdrant Scroll Point 목록 형식이 올바르지 않습니다."
+                ),
+            ):
+                payload = _read_value(record, "payload", {})
+                if not isinstance(payload, Mapping):
+                    payload = {}
+                snapshots.append(
+                    StoredPointSnapshot(
+                        point_id=str(_read_value(record, "id", "")),
+                        payload=dict(payload),
                     )
-                records, offset = response
-                if not isinstance(records, Sequence) or isinstance(
-                    records,
-                    (str, bytes),
-                ):
-                    raise VectorStoreError(
-                        "invalid_response",
-                        "Qdrant Scroll Point 목록 형식이 올바르지 않습니다.",
-                    )
-
-                for record in records:
-                    payload = _read_value(record, "payload", {})
-                    if not isinstance(payload, Mapping):
-                        payload = {}
-                    snapshots.append(
-                        StoredPointSnapshot(
-                            point_id=str(_read_value(record, "id", "")),
-                            payload=dict(payload),
-                        )
-                    )
-                if offset is None:
-                    break
+                )
 
         return tuple(snapshots)

@@ -29,7 +29,7 @@ CHUNK_DIRECTORY_SPECS = (
     ChunkDirectorySpec("precedents", "precedent"),
     ChunkDirectorySpec("consumer_sources", "consumer_source"),
 )
-EXPECTED_TOTAL_COUNT = 3_793
+EXPECTED_TOTAL_COUNT = 4_932
 
 _SUPPORTED_SUFFIXES = frozenset({".json", ".jsonl"})
 _CONTAINER_KEYS = ("chunks", "records", "items", "data")
@@ -137,6 +137,17 @@ class LoadedChunkSet:
     report: ChunkInputReport
 
 
+@dataclass
+class _ChunkLoadState:
+    """청크 탐색·파싱·검증 단계에서 공유하는 내부 누적 상태."""
+
+    issues: list[ChunkInputIssue]
+    records: list[PreparedChunk]
+    counts: Counter[str]
+    discovered_count: int = 0
+    file_count: int = 0
+
+
 def _json_records(path: Path) -> Iterator[tuple[int, object]]:
     """JSON·JSONL 파일에서 레코드 번호와 값을 순서대로 반환합니다."""
 
@@ -218,116 +229,147 @@ def _relative_text(path: Path, root: Path) -> str:
         return str(path)
 
 
-def load_chunk_tree(root: str | Path) -> LoadedChunkSet:
-    """네 청크 폴더를 읽어 검증된 ``PreparedChunk``를 반환합니다."""
+def _discover_input_files(
+    chunk_root: Path,
+    spec: ChunkDirectorySpec,
+    state: _ChunkLoadState,
+) -> tuple[Path, ...]:
+    """규격 폴더 한 곳을 확인하고 지원하는 입력 파일을 찾습니다."""
 
-    chunk_root = Path(root).resolve()
-    issues: list[ChunkInputIssue] = []
-    records: list[PreparedChunk] = []
-    counts: Counter[str] = Counter()
-    discovered_count = 0
-    file_count = 0
-
-    if not chunk_root.is_dir():
-        issues.append(
-            ChunkInputIssue(str(chunk_root), "청크 루트 폴더가 없습니다.")
-        )
-
-    for spec in CHUNK_DIRECTORY_SPECS:
-        folder = chunk_root / spec.folder_name
-        if not folder.is_dir():
-            issues.append(
-                ChunkInputIssue(
-                    _relative_text(folder, chunk_root),
-                    "필수 하위 폴더가 없습니다.",
-                )
+    folder = chunk_root / spec.folder_name
+    if not folder.is_dir():
+        state.issues.append(
+            ChunkInputIssue(
+                _relative_text(folder, chunk_root),
+                "필수 하위 폴더가 없습니다.",
             )
-            continue
+        )
+        return ()
 
-        input_files = sorted(
+    input_files = tuple(
+        sorted(
             path
             for path in folder.rglob("*")
             if path.is_file() and path.suffix.lower() in _SUPPORTED_SUFFIXES
         )
-        file_count += len(input_files)
-        if not input_files:
-            issues.append(
-                ChunkInputIssue(
-                    _relative_text(folder, chunk_root),
-                    "JSON 또는 JSONL 입력 파일이 없습니다.",
-                )
+    )
+    state.file_count += len(input_files)
+    if not input_files:
+        state.issues.append(
+            ChunkInputIssue(
+                _relative_text(folder, chunk_root),
+                "JSON 또는 JSONL 입력 파일이 없습니다.",
             )
-            continue
+        )
+    return input_files
 
-        for input_path in input_files:
-            relative_path = _relative_text(input_path, chunk_root)
+
+def _prepare_chunk(
+    raw_record: object,
+    document_type: str,
+) -> PreparedChunk:
+    """입력 한 건을 표준화하고 PreparedChunk 규격으로 검증합니다."""
+
+    if not isinstance(raw_record, Mapping):
+        raise TypeError("청크 한 건은 JSON 객체여야 합니다.")
+    record = PreparedChunk.from_mapping(
+        _normalize_flattened_record(raw_record, document_type)
+    )
+    record.validate(require_vector=False)
+    return record
+
+
+def _load_input_file(
+    input_path: Path,
+    chunk_root: Path,
+    spec: ChunkDirectorySpec,
+    state: _ChunkLoadState,
+) -> None:
+    """입력 파일 한 개를 읽어 유효 청크와 문제를 상태에 누적합니다."""
+
+    relative_path = _relative_text(input_path, chunk_root)
+    try:
+        # 파일 전체 파싱이 성공한 경우에만 해당 파일의 수량을 반영합니다.
+        file_records = list(_json_records(input_path))
+        for record_number, raw_record in file_records:
+            state.discovered_count += 1
+            state.counts[spec.folder_name] += 1
             try:
-                file_records = list(_json_records(input_path))
-            except (OSError, UnicodeError, ValueError) as error:
-                issues.append(ChunkInputIssue(relative_path, str(error)))
-                continue
+                state.records.append(
+                    _prepare_chunk(raw_record, spec.document_type)
+                )
+            except (TypeError, ValueError) as error:
+                state.issues.append(
+                    ChunkInputIssue(
+                        relative_path,
+                        str(error),
+                        record_number,
+                    )
+                )
+    except (OSError, UnicodeError, ValueError) as error:
+        state.issues.append(ChunkInputIssue(relative_path, str(error)))
 
-            for record_number, raw_record in file_records:
-                discovered_count += 1
-                counts[spec.folder_name] += 1
-                if not isinstance(raw_record, Mapping):
-                    issues.append(
-                        ChunkInputIssue(
-                            relative_path,
-                            "청크 한 건은 JSON 객체여야 합니다.",
-                            record_number,
-                        )
-                    )
-                    continue
-                try:
-                    record = PreparedChunk.from_mapping(
-                        _normalize_flattened_record(
-                            raw_record,
-                            spec.document_type,
-                        )
-                    )
-                    record.validate(require_vector=False)
-                except (TypeError, ValueError) as error:
-                    issues.append(
-                        ChunkInputIssue(
-                            relative_path,
-                            str(error),
-                            record_number,
-                        )
-                    )
-                    continue
-                records.append(record)
 
-    if discovered_count != EXPECTED_TOTAL_COUNT:
-        issues.append(
+def _build_report(
+    chunk_root: Path,
+    state: _ChunkLoadState,
+) -> ChunkInputReport:
+    """누적된 탐색·검증 결과로 최종 보고서를 만듭니다."""
+
+    if state.discovered_count != EXPECTED_TOTAL_COUNT:
+        state.issues.append(
             ChunkInputIssue(
                 str(chunk_root),
                 "전체 예상 청크 수와 다릅니다: "
-                f"expected={EXPECTED_TOTAL_COUNT}, actual={discovered_count}",
+                f"expected={EXPECTED_TOTAL_COUNT}, "
+                f"actual={state.discovered_count}",
             )
         )
 
     key_counts = Counter(
-        f"{record.document_id}/{record.chunk_id}" for record in records
+        f"{record.document_id}/{record.chunk_id}" for record in state.records
     )
     duplicate_keys = tuple(
         sorted(key for key, count in key_counts.items() if count > 1)
     )
-
-    report = ChunkInputReport(
+    return ChunkInputReport(
         root=chunk_root,
-        file_count=file_count,
-        discovered_count=discovered_count,
-        valid_count=len(records),
+        file_count=state.file_count,
+        discovered_count=state.discovered_count,
+        valid_count=len(state.records),
         counts_by_folder={
-            spec.folder_name: counts[spec.folder_name]
+            spec.folder_name: state.counts[spec.folder_name]
             for spec in CHUNK_DIRECTORY_SPECS
         },
         expected_total_count=EXPECTED_TOTAL_COUNT,
         duplicate_keys=duplicate_keys,
-        issues=tuple(issues),
+        issues=tuple(state.issues),
     )
-    return LoadedChunkSet(records=tuple(records), report=report)
+
+
+def load_chunk_tree(root: str | Path) -> LoadedChunkSet:
+    """네 청크 폴더를 읽어 검증된 ``PreparedChunk``를 반환합니다."""
+
+    chunk_root = Path(root).resolve()
+    state = _ChunkLoadState(
+        issues=[],
+        records=[],
+        counts=Counter(),
+    )
+
+    if not chunk_root.is_dir():
+        state.issues.append(
+            ChunkInputIssue(str(chunk_root), "청크 루트 폴더가 없습니다.")
+        )
+
+    for spec in CHUNK_DIRECTORY_SPECS:
+        for input_path in _discover_input_files(chunk_root, spec, state):
+            _load_input_file(input_path, chunk_root, spec, state)
+
+    return LoadedChunkSet(
+        records=tuple(state.records),
+        report=_build_report(chunk_root, state),
+    )
 
 
 def expected_chunk_count() -> int:

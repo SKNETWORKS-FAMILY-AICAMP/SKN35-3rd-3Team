@@ -105,7 +105,7 @@ data/chunk/
 └─ consumer_sources/  # JSONL
 ```
 
-- 전체 예상 레코드: **3,793건**
+- 전체 예상 레코드: **4,932건**
 - 인코딩: UTF-8, BOM 없음 확인
 - JSONL: 한 줄에 청크 한 건
 - 안내서 JSON: `chunks` 배열 등 여러 청크 포함 가능
@@ -229,7 +229,7 @@ HF_TOKEN=개인_Hugging_Face_토큰
 실제 데이터 수령 후 검증할 항목:
 
 - Datetime 범위 검색
-- 실제 3,793건 적재와 검색 품질 평가
+- 실제 4,932건 적재와 검색 품질 평가
 - 별도 `article_label`·`case_number` 필드 기반 정확 조회
 
 MCP 로컬 서버와 연결 상태 점검은 다음 명령으로 실행합니다.

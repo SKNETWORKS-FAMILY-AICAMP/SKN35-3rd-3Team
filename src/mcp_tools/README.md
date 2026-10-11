@@ -20,7 +20,7 @@ Qdrant Keyword Payload 인덱스로 확정된 다음 필드만 사용할 수 있
 미지원 필드나 문자열·정수·불리언 이외의 값은 Qdrant 또는 임베딩 API를
 호출하기 전에 `invalid_request`로 반환합니다.
 
-전처리 데이터에서 3,793개 청크 모두 `document_id`가 확인되었으므로 정확
+전처리 데이터에서 4,932개 청크 모두 `document_id`가 확인되었으므로 정확
 조회는 이 값을 기준으로 제공합니다. `lookup_document`는 임베딩 API를 호출하지
 않고 Qdrant의 `document_id` Keyword 인덱스를 직접 사용합니다.
 

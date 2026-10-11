@@ -42,7 +42,7 @@ MCP/RAG 전달
 ### 1. 환경 준비
 
 ```powershell
-uv sync
+uv sync --locked
 Copy-Item .env.example .env
 ```
 
@@ -271,5 +271,7 @@ HTTP 429는 일반적으로 Qdrant 문제가 아니라 임베딩 API의 호출 �
 - `insufficient_quota`: 계정 크레딧·결제 설정·사용 한도를 확인합니다.
 - 모델명이나 엔드포인트 오류는 일반적으로 400 또는 404와 구분합니다.
 
-Vector DB 세부 설계와 구현 현황은 `qdrant_design_plan.md` 및
-`src/vector_db/README.md`를 참고합니다.
+Vector DB의 공유 실행 기준과 구현 현황은 추적되는
+`src/vector_db/README.md` 및 실제 코드를 참고합니다.
+`qdrant_design_plan.md`는 Git 미추적 로컬 작업 메모이므로 팀 공통 기준으로
+사용하지 않습니다.

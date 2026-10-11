@@ -20,7 +20,7 @@ EMBEDDING_API_KEY=개인별_임베딩_API_키
 ## 최초 준비
 
 ```powershell
-uv sync
+uv sync --locked
 Copy-Item .env.example .env
 uv run python -m src.scripts.qdrant_setup check
 ```

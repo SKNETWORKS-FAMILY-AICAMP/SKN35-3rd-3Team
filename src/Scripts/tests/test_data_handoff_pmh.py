@@ -120,6 +120,74 @@ def audit():
         return {"pdf_metadata_pairs": len(pdfs)}
     check("law_appendix_provenance", appendix_sources)
 
+    def consumer_appendix_review():
+        import xml.etree.ElementTree as ET
+        record_file='data/processed/consumer_sources/consumer_appendix_review_pmh.json'
+        record=read(record_file)
+        record_hash=checked_file(record_file)
+        checked_file(record['parent_raw_file'],record['parent_raw_sha256'])
+        xml=ET.parse(ROOT/record['parent_raw_file']).getroot()
+        doc=next(d for d in consumer_docs if d['source_id']==record['parent_source_id'])
+        require({a['appendix_number'] for a in record['appendices']}=={'0003','0004'},'별표 대조 기록 범위 오류')
+        pages=0
+        question_marks=0
+        for entry in record['appendices']:
+            unit=next(u for u in doc['units'] if u.get('appendix_number')==entry['appendix_number'])
+            node=next(n for n in xml.iter('별표단위') if n.findtext('별표번호')==entry['appendix_number'])
+            require(unit['source_xml_text']==node.findtext('별표내용'),'별표 XML 본문 보존 실패')
+            require(hashlib.sha256(unit['source_xml_text'].encode()).hexdigest()==unit['source_xml_text_sha256'],'XML 본문 지문 불일치')
+            checked_file(entry['pdf_file'],entry['pdf_sha256'])
+            require(doc['effective_date']==record['effective_date'],'대조 시행일 불일치')
+            require(unit['source_comparison']['status']=='reviewed_against_collected_official_pdf','PDF 대조 상태 누락')
+            require(unit['source_comparison']['source_effective_date']==record['effective_date'],'대조 시행일 누락')
+            require(len(unit['pdf_tables'])==len(entry['pages']),'별표 대조 페이지 누락')
+            require(all(t['character_inventory_match'] for t in unit['pdf_tables']),'PDF 문자 누락/중복')
+            related=[c for c in chunks if c.get('source_id')==doc['source_id'] and c.get('unit_id')==unit['unit_id']]
+            require(len(related)==1,'별표 단일 청크 정책 위반')
+            c=related[0]
+            require(c['text']==unit['text'] and c['pdf_tables']==unit['pdf_tables'],'별표 본문/좌표/병합 청크 불일치')
+            require(c['pdf_source_url']==entry['pdf_source_url']==c['body_source_url'],'PDF 출처 링크 불일치')
+            require(c['review_record_file']==record_file and c['review_record_sha256']==record_hash,'대조 기록 연결 오류')
+            require(c['source_xml_text_sha256']==unit['source_xml_text_sha256'],'청크 XML 지문 누락')
+            require(all(w in c['embedding_text'] for w in unit['warnings']),'별표 경고 임베딩 누락')
+            require(not any(x.get('source_id')==entry['pdf_source_id'] for x in chunks),'첨부 PDF 중복 임베딩')
+            if entry['appendix_number']=='0004':
+                require(c['required_context_chunk_ids']==['consumer_dispute_standard_appendix_0003_0000'],'내용연수의 별표Ⅲ 연결 누락')
+            pages+=len(entry['pages'])
+            question_marks+=unit['source_comparison']['xml_question_mark_count']
+        return {'reviewed_appendices':2,'reviewed_pdf_pages':pages,'preserved_xml_question_marks':question_marks,
+                'review_record_file':record_file,'review_record_sha256':record_hash,'effective_date':record['effective_date']}
+    check('consumer_appendix_pdf_review', consumer_appendix_review)
+
+    def pilates_law_versions():
+        from src.Scripts.review_pilates_law_versions import REPORT, build_report
+        comparison=read(REPORT.relative_to(ROOT))
+        require(comparison==build_report(),'필라테스 시점 대조 기록 불일치')
+        for relative,sha in comparison['inputs'].items():
+            checked_file(relative,sha)
+        historical={p.relative_to(ROOT).as_posix() for p in (ROOT/'data/raw/law_history').iterdir() if p.is_file()}
+        require(historical=={p for p in comparison['inputs'] if p.startswith('data/raw/law_history/')},'과거 원문 대조 처리 누락')
+        require(not any('law_history' in c['source_path'] for c in chunks),'과거 원문 기본 검색 편입')
+        record_hash=checked_file(REPORT.relative_to(ROOT))
+        for case in comparison['cases']:
+            doc=next(d for d in consumer_docs if d['source_id']==case['source_id'])
+            require(doc['law_version_review']['review_record_sha256']==record_hash,'사례 대조 기록 지문 누락')
+            require(doc['decision_date'] is None,'미확인 조정일 임의 생성')
+            selected=[c for c in chunks if c.get('source_id')==case['source_id']]
+            require(bool(selected),'대조 사례 청크 누락')
+            for c in selected:
+                require(c['law_version_review']==doc['law_version_review'],'시점 대조 청크 불일치')
+                require(all(w in c['embedding_text'] for w in doc['warnings']),'사례 적용 제한 임베딩 누락')
+                require(c['required_context_chunk_ids']==case['required_context_chunk_ids'],'사례 연결 조문 누락')
+                if c['role'] in {'reasoning','decision','cited_law'}:
+                    require(case['supporting_law_context'] in c['embedding_text'],'약관법 참고 원문 문맥 누락')
+        return {'cases':len(comparison['cases']),'historical_reference_files':len(historical),
+                'comparison_rows':len(comparison['comparisons']),
+                'identical_rows':sum(r['status']=='same_except_whitespace' for r in comparison['comparisons']),
+                'different_definition_rows':sum(r['status']!='same_except_whitespace' for r in comparison['comparisons']),
+                'review_record_file':REPORT.relative_to(ROOT).as_posix()}
+    check('pilates_case_law_version_comparison',pilates_law_versions)
+
     def processed_coverage():
         for folder, expected, pattern in [("laws", {e["file"] for e in laws["saved"]}, "[0-9]*.json"),
                 ("guides", {e["file"] for e in guides["saved"]}, "guide_*.json"),
@@ -127,7 +195,7 @@ def audit():
             controls = {"guide_preprocessing_report.json", "guide_visual_review.json"} if folder == "guides" else set()
             actual = {p.name for p in (ROOT/"data/processed"/folder).glob(pattern) if p.name not in controls}
             require(actual == expected, f"{folder} 정제 파일/보고서 불일치")
-        control = {"consumer_collection_report.json", "consumer_preprocessing_report.json", "source_manifest.json", "parcel_terms_revision_comparison.json"}
+        control = {"consumer_collection_report.json", "consumer_preprocessing_report.json", "source_manifest.json", "parcel_terms_revision_comparison.json", "consumer_appendix_review_pmh.json", "pilates_law_version_comparison_pmh.json"}
         actual = {p.name for p in (ROOT/"data/processed/consumer_sources").glob("*.json") if p.name not in control}
         require(actual == {e["file"] for e in consumer["saved"]}, "소비자 정제 파일/보고서 불일치")
         aliases = {e["source_id"] for e in consumer["duplicate_aliases"]}
@@ -289,13 +357,13 @@ def render_handoff(report):
            "- 이 인계는 초기 데이터 스냅샷에 대한 것입니다. 부족 자료 보강과 실제 RAG 서비스 검증까지 완료했다는 의미가 아닙니다.","",
            "## 데이터 수와 읽을 파일", "", "| 자료 | 정제 문서 / 검색 대상 | 청크 수 | 로딩 형식 |", "|---|---|---:|---|",
            f"| 법령 | {docs['laws']}종 | {counts.get('law',0)} | `data/chunk/laws/chunks.jsonl` |",
-           f"| 판례 | 정제 파일 29개 / 중복 제외 후보 27건 | {counts.get('precedent',0)} | `data/chunk/precedents/chunks.jsonl` |",
+           f"| 판례 | 정제 파일 {docs['precedent_files']}개 / 중복 제외 후보 {eligibility['precedent_ready']}건 | {counts.get('precedent',0)} | `data/chunk/precedents/chunks.jsonl` |",
            f"| 안내서 | PDF 5개 | {stored['guides']} | `data/chunk/guides/guide_chunking_report.json`의 `saved[].file` → 파일별 `chunks` 배열 |",
            f"| 소비자 자료 | 정제 문서 {docs['consumer_documents']}개 / 검색 대상 {eligibility['consumer_ready']}개 | {stored['consumer_sources']} | `data/chunk/consumer_sources/chunks.jsonl` |",
            f"| 합계 | 분야 간 공유 자료를 다시 합산하지 않음 | {sum(counts.values())} | JSONL 3개 + 안내서별 JSON 5개 |", "",
            f"소비자·공식 HTML 청크는 행정규칙 {counts.get('administrative_rule',0)}개, 조정사례 {counts.get('mediation_case',0)}개, 표준약관 {counts.get('standard_terms',0)}개, 공식 HTML 안내 {html_guides}개입니다. 파일 수·문서 수·청크 수는 서로 다른 집계입니다.","",
-           "소비자분쟁해결기준 별표 Ⅲ(품질보증기간·부품보유기간)과 별표 Ⅳ(내용연수표)를 추가 정제했습니다. 각 표는 조건·비고·병합 관계의 손실을 막기 위해 원문 전체를 한 청크로 보존합니다. 문자 이상·표 셀 관계는 공식 별표 대조 필요 경고를 유지하며 임베딩 전 토큰 제한을 확인해야 합니다.","",
-           "45문항 분야 검토 중 품질보증 질문에 소비자기본법 시행령 제8조·별표 1의 일반적 해결기준을 추가 연결했습니다. 구매일·인도일·교환일의 기산 원칙, 판매일 확인이 곤란한 경우 제조일/수입통관일 이후 3월 기준 및 그 날짜가 미표시된 경우 사업자의 판매일 입증 예외를 원문 그대로 보존합니다. 별표 1의 해당 PDF 페이지는 시각 대조했고, 기존 고시 별표 Ⅲ·Ⅳ의 문자 이상·병합 관계 대조는 남아 부분 확보를 유지합니다. 검색 비교는 양쪽 모두 현재 선정 근거를 사용합니다.","",
+           "소비자분쟁해결기준 별표 Ⅲ(품질보증기간·부품보유기간)과 별표 Ⅳ(내용연수표)를 추가 정제했습니다. 각 표는 조건·비고·병합 관계의 손실을 막기 위해 원문 전체를 한 청크로 보존합니다. 수집된 2025-12-18 시행본 공식 PDF 4페이지를 시각 대조했고, 표 셀 좌표·병합·공통 조건·빈 셀을 보존합니다. XML의 물음표 70개를 일괄 치환하지 않고 XML 본문은 source_xml_text에 보존하며 PDF 본문을 검색에 사용합니다. 대조 기록은 consumer_appendix_review_pmh.json이고 원본 PDF·XML 지문에 연결합니다. 별표Ⅳ는 required_context_chunk_ids로 별표Ⅲ에 연결하며 임베딩 전 토큰 제한을 확인해야 합니다.","",
+           "45문항 분야 검토 중 품질보증 질문에 소비자기본법 시행령 제8조·별표 1의 일반적 해결기준을 추가 연결했습니다. 구매일·인도일·교환일의 기산 원칙, 판매일 확인이 곤란한 경우 제조일/수입통관일 이후 3월 기준 및 그 날짜가 미표시된 경우 사업자의 판매일 입증 예외를 원문 그대로 보존합니다. 별표 1의 해당 PDF 페이지는 시각 대조했고, 기존 고시 별표 Ⅲ·Ⅳ도 대조하여 구매일 증명 질문의 기본 근거를 확보했습니다. 개별 제품·계약 적용과 최신 개정 전수 검증은 별도입니다. 검색 비교는 양쪽 모두 현재 선정 근거를 사용합니다.","",
            "한국소비자원의 피해구제 요건·신청서 양식 안내, 접수 방법·증빙서류 안내, 분쟁조정 절차·성립 효력 안내 HTML 3건을 추가해 14개 청크로 보존합니다. 소비자기본법·시행령 원문(2026-09-11 시행본)을 수집·정제하고 기존 피해구제 절차/제외 조건과 새 안내의 연결 법령을 함께 확인하도록 구성했습니다. 전문분야 필수제출 조건과 일반분야를 구분하고, 온라인 신청의 6개월 조건을 소멸시효로 해석하지 않도록 경고합니다. 특정 사건 팝업은 일반 안내에서 제외했고 첨부 HWP/DOC 양식·신청 기능·영상은 미검증 범위로 기록했습니다. 안내 작성일은 확인되지 않아 null로 보존하며 주소·접수 방식은 신청 전 재확인해야 합니다. 합의권고와 조정의 효력을 구분하고 법 제67조의 수락·수락 간주 및 불수락 조건을 연결합니다.","",
            "별표 Ⅱ는 귀금속·보석 및 전자제품·사무용기기 품목을 추가했습니다. 전자제품의 연속 표 2개와 비고를 함께 보존하며 모든 품목이나 개인 간 중고거래에 일괄 적용하지 않습니다. 민법 제140·141조와 근로기준법 시행령 제7조의2의 수집본을 선정 근거에 연결했습니다.","",
            "헬스장·필라테스 HWPX 환급 표 3개는 셀 좌표·병합 범위를 검증해 해지 주체, 이용 전후 조건, 원문 수식, 공통 정의를 행별로 연결합니다. 원문 본문은 보존하고 생활 표현 별칭은 검색 점수에만 사용합니다. 법률 적용과 환급액 계산은 검증 범위가 아닙니다.","",
@@ -305,12 +373,13 @@ def render_handoff(report):
            "헬스장·필라테스 폐업 대응 및 소비자원 피해구제 절차 공식 HTML 3건을 보강했습니다. 할부 조건·잔여금 지급 거절, 잔여 횟수·해지일·내용증명 증빙, 상담→신청→조사→합의권고→조정 절차를 보존합니다. 사업자 부도·폐업으로 연락 불가능하거나 소재파악이 안 되는 경우의 피해구제 제외 조건을 별도 청크로 보존하고 `required_context_chunk_ids` 및 임베딩 본문 경고에 연결합니다. 헬스장 게시일은 2024-12-11, 필라테스 웹진 발행 연월은 2025-05로 보존하며 법령 시행일로 대체하지 않습니다. `fitness_closed`는 기본 민사 회수 안내를 보강했으나 최근 개정 원문 대조·개별 계약·채무자 재산·도산 검토가 남아 부분 확보 상태를 유지합니다.", "",
            '법제처 공식 HTML 안내 4건(소액사건·소비자 지급명령·지급명령 신청 절차·강제집행)을 민사 회수 참고 자료로 추가했습니다. 원문 작성 기준일 2026-09-15를 보존하고, 소액사건 3,000만원 이하 및 분할 금지·송달/주소보정·2주 이의·소송 전환·집행문 예외·재산명시/조회 조건·채권집행을 소제목 단위로 정제했습니다. 폐업 안내의 위험/상담 청크에 18개 관련 청크를 연결합니다. 지급명령 신청 안내의 민사소송법 2026-10-02 개정 검토·향후 업데이트 공지를 임베딩 경고로 보존합니다. 강제집행 안내의 대여금 집행권원 종류/가압류 예시는 기본 검색에서 제외하고, 집행문 원칙과 예외는 같은 청크에 보존합니다. 법원 사이트는 접근 차단으로 수집하지 않고 법제처 공식 안내를 사용했습니다. 이는 기본 절차 근거 보강이며 환급 보장이나 현행 개정법 적용 확정이 아닙니다.', "",
            "할부거래법(시행 2026-09-08)·시행령(시행 2026-07-01) 원문을 추가 수집·정제·청크에 반영했습니다. 법 제2·3·4·16조와 시행령 제2·4·11조를 폐업 안내의 `required_context_chunk_ids`로 연결합니다. 안내의 ‘3개월’ 원문은 유지하고 법령의 ‘2개월 이상에 걸쳐 3회 이상 지급’ 정의·신용카드 20만원 조건·항변 사유·신용제공자 통지·미지급 잔여금·서면 효력 및 적용제외를 함께 확인하도록 경고에 명시합니다. 수집 시점 현행본이며 2024/2025 안내 당시 구법·개별 계약일 적용을 확정하지 않습니다. Vector DB/답변 단계에서 연결 근거를 함께 로딩하는 기능은 별도 구현 대상입니다.", "",
-           "## 폴더와 원본 보존 정책", "",
+           "공식 PDF 별표의 `pdf_tables`에는 페이지·셀 좌표·행/열 병합 범위·공통 조건 연결과 정제 본문 위치를 보존합니다. `source_comparison`은 대조 범위·시행일이며 `review_record_file/sha256`은 검토 기록입니다. `body_source_url`은 PDF 본문 출처입니다. `source_xml_*`은 XML 본문 지문·위치를 별도로 보존하고, 청크의 본문 위치는 XML이 아닌 정제 PDF 표 텍스트 기준입니다. 원본 PDF는 기존 참고 첨부로 남기고 별도 중복 청크를 만들지 않습니다.", "", "필라테스 폐강·양도 조정사례 2건의 계약·해지 시점을 공식 연혁 목록과 대조했습니다. 비교용 법령 원문 8개 및 연혁 HTML 4개는 data/raw/law_history에 참고용으로 보존하고 기본 법령 검색에는 편입하지 않습니다. 비교 26항목 중 25항목은 공백을 제외하면 동일하며, 2022년 시행본과 수집본의 제2조 전체 차이(2023년 개정)와 제10호 계속거래 정의의 동일성을 구분했습니다. 약관법 제9조 당시 본문은 reasoning/decision/cited_law 청크의 embedding_text 참고 문맥에 포함하고 출처·시행일을 표시합니다. 법 제52조·시행령 제13조 등 수집본 연결은 required_context_chunk_ids에 보존합니다. 정확한 조정일은 미상(null), 계약 월은 월 정밀도로 유지합니다. 조정의 위약금 면제·128,700원/386,100원·연15%는 사건별 조건이며 일반 계약에 자동 적용하지 않습니다. 대조 기록은 pilates_law_version_comparison_pmh.json이고 인계 대상입니다. 전체 법령의 동일성·최신 개정·개별 계약 적용을 확정한 것은 아닙니다.", "", "## 폴더와 원본 보존 정책", "",
            "| 위치 | 역할 |", "|---|---|",
            f"| `data/raw/laws` | 법령 {docs['laws']}종의 수집 API 응답 JSON과 수집 기록 |",
            f"| `data/raw/law_appendices` | 별표 PDF·원본 메타데이터 {report['details']['law_appendix_provenance']['pdf_metadata_pairs']}쌍. 정제 법령의 appendices와 연결 |",
-           "| `data/raw/precedents` | 판례 원본 95건과 수집 기록. 전체 관련성 검토 후 29개 정제 파일, 27건 검색 후보 |",
+           f"| `data/raw/precedents` | 원본 판례 {report['details']['raw_source_coverage_and_hashes']['precedent_originals']}건과 수집 기록. 정제 {docs['precedent_files']}개 / 검색 후보 {eligibility['precedent_ready']}건 |",
            "| `data/raw/guides` | 주택임대차·해고근로자·중고거래 피해자·인터넷 쇼핑·택배 PDF 5개 |",
+           "| `data/raw/law_history` | 필라테스 사례 시점 비교용 원문 JSON 8개·연혁 HTML 4개. 기본 검색 제외 |",
            "| `data/raw/consumer_sources` | 공정위 약관 HWP/HWPX·행정규칙 XML·KCA 및 고용노동부 HTML·참고 PDF·이전 스냅샷·수집 기록 |",
            "| `data/processed/{laws,precedents,guides,consumer_sources}` | 정제 본문·구조·검색 후보/제외·검토 정보 |",
            "| `data/processed/retrieval_evaluation` | 검색·분야 충분성·최종 검증 보고서. 원문 데이터와 구분 |",
@@ -369,7 +438,7 @@ def render_handoff(report):
         c=item["statuses"]
         lines.append(f"| {item['domain']} | {c.get('supported',0)} | {c.get('partial',0)} | {c.get('needs_review',0)} | {c.get('restricted',0)} |")
     lines += ["", "분야별 세부 질문·청크 ID·부족 자료는 [분야 검토 보고서](../data/processed/retrieval_evaluation/domain_coverage_report_pmh.md)를 참조합니다. 원문을 이미 수집했는지 먼저 확인한 후 필요한 발췌·정제 또는 추가 수집을 결정합니다.", "",
-              "우선 원문 보강 7종은 완료했습니다: 방문판매법, 전자상거래법 시행령, 최저임금법·시행령, 주택임대차보호법 시행령, 계속거래 환급 산정기준, 2026년 적용 최저임금 고시. 고시 API 본문이 빈 경우 공식 첨부 PDF를 본문으로 사용했고 원본·페이지·표·해시·적용 기간을 연결했습니다. 이후 보류 작업을 재개하여 방문판매법 시행령·시행규칙, 최저임금법 시행규칙·단순노무직종 지정 고시 4종을 추가 수집·정제·청크에 반영했습니다. 남은 자료·대조는 사례 당시 구법, 실제 급여 항목·업무의 직업분류, 주택임대차 시행령 과거 버전, 최근 민사소송법 개정·민사집행 관련 현행 원문 대조·구매일 증빙 안내 등입니다. 임금체불 신고 절차·준비자료는 공식 HTML 2건, 해외직구 유형별 안내는 공식 HTML 3건, 헬스장·필라테스 폐업·피해구제 절차는 공식 HTML 3건으로 보강했습니다.","",
+              "우선 원문 보강 7종은 완료했습니다: 방문판매법, 전자상거래법 시행령, 최저임금법·시행령, 주택임대차보호법 시행령, 계속거래 환급 산정기준, 2026년 적용 최저임금 고시. 고시 API 본문이 빈 경우 공식 첨부 PDF를 본문으로 사용했고 원본·페이지·표·해시·적용 기간을 연결했습니다. 이후 보류 작업을 재개하여 방문판매법 시행령·시행규칙, 최저임금법 시행규칙·단순노무직종 지정 고시 4종을 추가 수집·정제·청크에 반영했습니다. 필라테스 두 사례의 계약·해지 시점 대조는 완료했고, 남은 자료·대조는 다른 사례·안내 당시 구법, 실제 급여 항목·업무의 직업분류, 주택임대차 시행령 과거 버전, 최근 민사소송법 개정·민사집행 관련 현행 원문 대조 등입니다. 구매일 증빙 안내 보강과 별표Ⅲ·Ⅳ 수집본 대조는 완료했습니다. 임금체불 신고 절차·준비자료는 공식 HTML 2건, 해외직구 유형별 안내는 공식 HTML 3건, 헬스장·필라테스 폐업·피해구제 절차는 공식 HTML 3건으로 보강했습니다.","",
               "## 처음 실행할 때의 환경 설정", "",
               "Python 3.12 이상과 uv가 설치된 환경에서 프로젝트 루트를 작업 디렉터리로 사용합니다. `pyproject.toml`·`uv.lock`과 현재 원본·정제·청크·검토 기록을 함께 인계받아야 합니다.","",
               "```bash", "uv sync --locked", "```", "",
@@ -384,6 +453,8 @@ def render_handoff(report):
               "uv run python src/Scripts/chunk_laws.py",
               "uv run python src/Scripts/preprocess_precedents.py",
               "uv run python src/Scripts/preprocess_guides.py",
+              "# 필라테스 시점 비교: 기존 원본으로 오프라인 기록 재생성",
+              "uv run python -m src.Scripts.review_pilates_law_versions",
               "uv run python src/Scripts/preprocess_consumer_sources.py",
               "# 나머지 청크 생성",
               "uv run python src/Scripts/chunk_guides.py",

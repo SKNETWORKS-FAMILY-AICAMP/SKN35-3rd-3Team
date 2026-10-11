@@ -86,9 +86,9 @@ def question_bank(chunks):
     add(fitness,"fitness_before","필라테스 수업 시작 전에 개인 사정으로 해지하면 어떤 금액이 공제되나요?",
         "등록기간 개시 전;회원 귀책;이용료·위약금 정의","supported","필라테스 약관의 개시 전 회원 귀책 환급 표와 정의를 확인.",["ftc_terms_47762_file_05d51a47_terms_article_8_0000"])
     add(fitness,"fitness_cancelled","필라테스 수업이 폐강됐는데 정상가로 공제하고 환불한다면 어떻게 하나요?",
-        "사업자 귀책;할인가·정상가 공제;계속거래 적용","partial","폐강 사례에 방문판매법 제2·31·32조 및 산정기준의 정의·적용 범위·공제 조건·위약금 별표 원문을 연결. 사업자 귀책과 소비자 귀책 기준을 구분. 시행령 제40·41조와 시행규칙 제22조를 추가 연결해 해지 예외·환급 지연 기준을 확보. 수집본과 사례 당시 구법의 대조는 남음.",["kca_case_1003739114_case_reasoning_0000","kca_case_1003739114_case_reasoning_0001"]+law("방문판매 등에 관한 법률","제2조")+law("방문판매 등에 관한 법률","제31조")+law("방문판매 등에 관한 법률","제32조")+law("방문판매 등에 관한 법률 시행령","제40조")+law("방문판매 등에 관한 법률 시행령","제41조")+law("방문판매 등에 관한 법률 시행규칙","제22조")+[c["chunk_id"] for c in chunks if c.get("source_id")=="continual_contract_refund" and c.get("unit_id") in {"article_1","article_2","article_3","article_4","appendix_0"}],"사례 당시 구법과 수집한 시행령·시행규칙의 개정 시점 대조")
+        "사업자 귀책;할인가·정상가 공제;계속거래 적용","supported","폐강 사례에 방문판매법 제2·31·32조 및 산정기준의 정의·적용 범위·공제 조건·위약금 별표 원문을 연결. 사업자 귀책과 소비자 귀책 기준을 구분. 시행령 제40·41조와 시행규칙 제22조를 추가 연결해 해지 예외·환급 지연 기준을 확보. 사례의 2023년 계약·해지 전후 법령 본문과 수집본을 대조. 법 제31·32·52조, 시행령 제13·40·41조, 시행규칙 제22조는 동일하고 제2조 전체 변경과 제10호 계속거래 정의의 동일성을 구분. 2019-9호 고시는 같은 버전이며 약관법 제9조 당시 원문을 사례 임베딩 문맥에 보존. 기본 근거 확보; 조정 취지에 따른 위약금 면제·실제 환급액은 일반화하지 않음.",["kca_case_1003739114_case_reasoning_0000","kca_case_1003739114_case_reasoning_0001"]+law("방문판매 등에 관한 법률","제2조")+law("방문판매 등에 관한 법률","제31조")+law("방문판매 등에 관한 법률","제32조")+law("방문판매 등에 관한 법률","제52조")+law("방문판매 등에 관한 법률 시행령","제13조")+law("방문판매 등에 관한 법률 시행령","제40조")+law("방문판매 등에 관한 법률 시행령","제41조")+law("방문판매 등에 관한 법률 시행규칙","제22조")+[c["chunk_id"] for c in chunks if c.get("source_id")=="continual_contract_refund" and c.get("unit_id") in {"article_1","article_2","article_3","article_4","appendix_0"}],"계약·해지 시점 대조 완료. 조정일 미상·개별 계약 약정·귀책사유·이용 증빙 검토")
     add(fitness,"fitness_transfer","양도받은 필라테스 이용권을 해지하면 환급받을 수 있나요?",
-        "양도 계약;회원 사정;환급 산정의 사건별 조건","partial","양도 사례에 방문판매법 제31·32조와 산정기준을 연결. 사례 금액을 일반화하지 않으며 시행령 제40·41조와 시행규칙 제22조를 추가 연결. 양도 약정·실제 지급액과 사례 당시 적용 시점은 추가 검토 필요.",["kca_case_1003640779_case_reasoning_0000","kca_case_1003640779_case_decision_0000"]+law("방문판매 등에 관한 법률","제31조")+law("방문판매 등에 관한 법률","제32조")+law("방문판매 등에 관한 법률 시행령","제40조")+law("방문판매 등에 관한 법률 시행령","제41조")+law("방문판매 등에 관한 법률 시행규칙","제22조")+["continual_contract_refund_article_2_0000","continual_contract_refund_article_4_0000","continual_contract_refund_appendix_0_0000"],"양도 약정·실제 지급액 및 사례 당시 구법 적용 조건 검토")
+        "양도 계약;회원 사정;환급 산정의 사건별 조건","partial","양도 사례에 방문판매법 제31·32조와 산정기준을 연결. 사례 금액을 일반화하지 않으며 시행령 제40·41조와 시행규칙 제22조를 추가 연결. 2023년 계약·해지 시점의 관련 조문과 수집본의 동일성 대조 완료. 약관법 제9조 당시 본문도 사례 문맥에 연결. 양도 약정·실제 지급액·채권 동일성과 사건별 이용 증빙은 추가 검토 필요.",["kca_case_1003640779_case_reasoning_0000","kca_case_1003640779_case_decision_0000"]+law("방문판매 등에 관한 법률","제31조")+law("방문판매 등에 관한 법률","제32조")+law("방문판매 등에 관한 법률","제52조")+law("방문판매 등에 관한 법률 시행령","제13조")+law("방문판매 등에 관한 법률 시행령","제40조")+law("방문판매 등에 관한 법률 시행령","제41조")+law("방문판매 등에 관한 법률 시행규칙","제22조")+["continual_contract_refund_article_2_0000","continual_contract_refund_article_4_0000","continual_contract_refund_appendix_0_0000"],"시점 대조 완료; 양도 약정·실제 지급액·채권 동일성 및 조정일 미상 유지")
     add(fitness,"fitness_closed","헬스장이 폐업하면 남은 이용료를 돌려받는 기준과 회수 방법은 무엇인가요?",
         "사업자 귀책 환급;해지·잔여 이용 증빙;할부 조건과 잔여금;상담·피해구제 절차와 제외 조건","partial","기존 환급 약관에 KCA 헬스장·필라테스 폐업 대응 안내와 소비자원 피해구제 절차를 연결. 잔여 횟수·해지일·내용증명 증빙, 사업자 해지 통지·카드사 잔여할부금 지급 거절 안내 및 조건을 확보. 사업자 부도·폐업 등으로 연락 불가능·소재 미확인 시 피해구제 제외 조건을 함께 보존. 할부거래법 제2·3·4·16조와 시행령 제2·4·11조를 연결해 기간·횟수·금액·통지·잔여금·적용제외 조건을 확보. 안내의 3개월 표현과 법령의 2개월 이상·3회 이상 요건을 구분. 수집 시점 현행본이며 안내 당시 구법·개별 계약 적용은 별도 검토. 현금·일시불·기지급 환급금의 기본 민사 회수 안내 4건을 추가: 소액사건 청구범위·분할 금지, 지급명령 신청·송달·주소보정·2주 이의·소송 전환, 집행문 예외·재산명시·조회·채권집행. 원문 안내 기준일 2026-09-15와 민사소송법 2026-10-02 개정 검토 공지를 보존. 현행 조문 대조와 개별 채무자·재산·도산 검토가 남아 부분 확보 유지.",["ftc_terms_46118_file_5b139f26_terms_article_7_0000"]+[c['chunk_id'] for c in chunks if c.get('source_id') in {'kca_fitness_closure_gym','kca_fitness_closure_pilates','kca_damage_redress_procedure','easylaw_consumer_small_claim','easylaw_consumer_payment_order','easylaw_payment_order_application','easylaw_civil_enforcement'}]+law('할부거래에 관한 법률','제2조')+law('할부거래에 관한 법률','제3조')+law('할부거래에 관한 법률','제4조')+law('할부거래에 관한 법률','제16조')+law('할부거래에 관한 법률 시행령','제2조')+law('할부거래에 관한 법률 시행령','제4조')+law('할부거래에 관한 법률 시행령','제11조'),"기본 민사 회수 안내 보강 완료; 2026-10-02 민사소송법 개정·관련 현행 조문 대조; 안내·계약 당시 적용 법령 및 개별 채무자·재산·도산 검토")
     wage = "아르바이트 임금체불"
@@ -154,11 +154,11 @@ def question_bank(chunks):
     add(consumer,"consumer_repeat","수리를 반복해도 같은 하자가 생기는 제품은 모두 환불받을 수 있나요?",
         "품목별 기준;수리 횟수·보증기간;교환·환급 구분","partial","기존 반지 사례에 별표Ⅱ 전자제품·사무용기기 및 귀금속·보석 표를 추가 연결. 전자제품의 반복 하자·보증기간 조건과 귀금속의 분쟁 유형을 구분해 보존. 모든 품목의 기준을 확보한 것은 아니며 XML 표의 문자·병합 관계 대조 필요.",["kca_case_1003604873_case_reasoning_0000","consumer_dispute_standard_product_electronics_office_0000","consumer_dispute_standard_product_jewelry_0000"],"서비스 대상 품목 확정 후 나머지 품목의 원본 정제 확대 및 공식 별표 대조")
     add(consumer,"consumer_warranty","영수증이 없으면 제품 품질보증기간과 구매일을 어떻게 판단하나요?",
-        "품목별 보증기간;구매일 증명;영수증 없는 경우","partial","기존 고시 제3조·별표Ⅲ·Ⅳ에 소비자기본법 제16조와 시행령 제8조·별표1 일반적 기준을 연결. 구매/인도/교환일부터의 기산 원칙, 판매일 확인 곤란 시 제조일/수입통관일 이후 3월 기준 및 제조/통관일 미표시 시 사업자의 판매일 입증 예외 확보. 시행령 별표1의 해당 PDF 페이지는 시각 대조했고 기준 전체를 단일 청크로 보존. 기존 고시 별표Ⅲ·Ⅳ의 문자 이상·병합 관계 대조는 남아 부분 확보 유지.",
+        "품목별 보증기간;구매일 증명;영수증 없는 경우","supported","기존 고시 제3조·별표Ⅲ·Ⅳ에 소비자기본법 제16조와 시행령 제8조·별표1 일반적 기준을 연결. 구매/인도/교환일부터의 기산 원칙, 판매일 확인 곤란 시 제조일/수입통관일 이후 3월 기준 및 제조/통관일 미표시 시 사업자의 판매일 입증 예외 확보. 시행령 별표1의 해당 PDF 페이지는 시각 대조했고 기준 전체를 단일 청크로 보존. 고시 별표Ⅲ·Ⅳ의 공식 PDF 4페이지를 시각 대조하고 품목·기간·공통 조건·빈 셀과 병합 관계를 보존. XML 원문은 별도로 보존하며 구매일 증명 질문의 기본 근거를 확보. 계약별 적용·최신 개정 전수 검증은 별도.",
         ["consumer_dispute_standard_article_2_0000","consumer_dispute_standard_appendix_0003_0000","consumer_dispute_standard_appendix_0004_0000"]+
         law('소비자기본법','제16조')+law('소비자기본법 시행령','제8조')+
         [c['chunk_id'] for c in chunks if c.get('law_name')=='소비자기본법 시행령' and c.get('unit_title','').startswith('일반적 소비자분쟁해결기준')],
-        "품목별 고시 별표Ⅲ·Ⅳ의 문자 이상·병합 관계 공식 파일 대조 및 개별 제품의 보증 조건 확인")
+        "별표Ⅲ·Ⅳ 수집본 대조 완료. 개별 제품의 보증 조건·계약 및 적용 시점·최신 개정 확인")
     add(consumer,"consumer_criteria","소비자분쟁해결기준은 바로 강제되는 법적 배상 기준인가요?",
         "합의·권고 기준 성격;별도 약정과 적용","supported","고시 목적 조문과 택배 안내서의 별도 약정·합의 권고 설명 확보. 실제 집행력·소송 효력 전반은 별도 검토.",["consumer_dispute_standard_article_0_0000","guide_94e9d4bd30eadf0b_p0005_body_0000"])
     return bank
@@ -239,8 +239,8 @@ REVIEWED_HASHES = {
     "003058_270551_20251023_art_7_2_chunk_0001": "4c69a0fa29f1bc2b22ddc359d335adcd832cc04904668894f2b0657ad1926ea9",
     "consumer_dispute_standard_product_jewelry_0000": "46fde5d4a269104195acb57a13d345d5be5a34889577ed8c031603c162ac667c",
     "consumer_dispute_standard_product_electronics_office_0000": "21f18c3101e528e7be10912b0224df8d8cf6fb1ed15bb7d30488cffa8f1ea906",
-    "consumer_dispute_standard_appendix_0003_0000": "34815ef7afae0e6874c166295c92fe4c34f3a692b75dc84828fc1bf75679067b",
-    "consumer_dispute_standard_appendix_0004_0000": "ac434a2eab42e0eef204f3e4f6c31bab2618d7aad9ba2186eb7de2cc8ecb0279",
+    "consumer_dispute_standard_appendix_0003_0000": "c818b0e0c7a7ac2e2617bd90cb2f281f27283b57195d3c48a1f44664f92c8a27",
+    "consumer_dispute_standard_appendix_0004_0000": "c4c21728f3f61770a307416c222013b30a85f81fedcf963ea5774b8a2821991b",
     "001248_276291_20260102_art_3_0_chunk_0000": "555073c96bf2234af3a99dfe47d671b6d40b6a063a8e55e393772c860acf096d",
     "001248_276291_20260102_art_3_2_chunk_0000": "47104f5ec1ef5f77aab693f9f3528b58e88221b07eaa039a6a0fdb3f063cef2a",
     "001248_276291_20260102_art_3_2_chunk_0001": "01477b22897898489a2cde4a63010bcebdd04dcb8480bbb5b83f391e76de8cdb",
@@ -616,13 +616,23 @@ class DomainCoverageTests(unittest.TestCase):
         self.assertEqual(saved, self.report)
         self.assertEqual(REPORT_MD.read_text(encoding="utf-8"), render(self.report))
 
-    def test_comparison_counts_and_new_appendix_review_do_not_upgrade_sufficiency(self):
+    def test_pilates_comparison_supports_cancelled_class_but_keeps_assignment_conditions(self):
+        rows={r['question_id']:r for r in self.report['questions']}
+        self.assertEqual(rows['fitness_cancelled']['review_status'],'supported')
+        self.assertEqual(rows['fitness_transfer']['review_status'],'partial')
+        for key in ['fitness_cancelled','fitness_transfer']:
+            self.assertTrue(rows[key]['evidence_snapshot_valid'])
+            self.assertIn('000354_290239_20261002_art_52_0_chunk_0000',rows[key]['reviewed_chunk_ids'])
+            self.assertIn('003572_286997_20260701_art_13_0_chunk_0000',rows[key]['reviewed_chunk_ids'])
+            self.assertIn('조정일 미상',rows[key]['follow_up'])
+
+    def test_comparison_counts_and_reviewed_appendices_support_warranty_basics(self):
         rows=self.report['questions']
         comparison=self.report['search_comparison']
         self.assertEqual(comparison['legacy_chunk_hits'],sum(r['legacy_chunk_hit_at_5'] is True for r in rows))
         self.assertEqual(comparison['improved_chunk_hits'],sum(r['reviewed_chunk_hit_at_5'] is True for r in rows))
         warranty=next(r for r in rows if r['question_id']=='consumer_warranty')
-        self.assertEqual(warranty['review_status'],'partial')
+        self.assertEqual(warranty['review_status'],'supported')
         self.assertTrue({'consumer_dispute_standard_appendix_0003_0000','consumer_dispute_standard_appendix_0004_0000'}.issubset(warranty['reviewed_chunk_ids']))
 
     def test_redress_review_reuses_existing_procedure_and_new_guides_and_warranty_keeps_limits(self):
@@ -635,7 +645,7 @@ class DomainCoverageTests(unittest.TestCase):
                            'kca_redress_submission_online_0000','kca_mediation_procedure_acceptance_0000']:
             self.assertIn(identifier,mediation['reviewed_chunk_ids'])
         warranty=rows['consumer_warranty']
-        self.assertEqual(warranty['review_status'],'partial')
+        self.assertEqual(warranty['review_status'],'supported')
         self.assertTrue(warranty['evidence_snapshot_valid'])
         self.assertIn('003979_289451_20260911_appendix_000100E_chunk_0000',warranty['reviewed_chunk_ids'])
         self.assertIn('별표Ⅲ·Ⅳ',warranty['follow_up'])
@@ -672,7 +682,10 @@ class DomainCoverageTests(unittest.TestCase):
     def test_collected_new_sources_do_not_hide_remaining_scope_limits(self):
         rows={r['question_id']:r for r in self.report['questions']}
         self.assertEqual(rows['shopping_custom']['review_status'],'supported')
-        for identifier in ['wage_minimum','deposit_small','fitness_cancelled','fitness_transfer']:
+        self.assertEqual(rows['fitness_cancelled']['review_status'],'supported')
+        self.assertTrue(rows['fitness_cancelled']['evidence_snapshot_valid'])
+        self.assertIn('조정일 미상',rows['fitness_cancelled']['follow_up'])
+        for identifier in ['wage_minimum','deposit_small','fitness_transfer']:
             self.assertEqual(rows[identifier]['review_status'],'partial')
             self.assertTrue(rows[identifier]['evidence_snapshot_valid'])
             self.assertTrue(rows[identifier]['evidence'])
@@ -709,6 +722,8 @@ REVIEWED_HASHES.update({'001248_276291_20260102_art_3_5_chunk_0000': 'c4d86ff7ea
 # 2026-10-11 소비자 절차 및 일반적 품질보증 기준의 원문 내용 검토 스냅샷.
 REVIEWED_HASHES.update({'001589_283837_20260911_art_16_0_chunk_0000': '1b56f92edbb823a377f5ef785fdd67fed13886be29d80deac94b50e7f6b916a2', '001589_283837_20260911_art_55_0_chunk_0000': '435121988478120e7730ee7356016d75c1454afe453b2bd634d12a0a981eaa44', '001589_283837_20260911_art_57_0_chunk_0000': '6428feb24a65bfb94d0b82a6d7c24dd3c677f39dfdf2bedab4432f99eddc42c4', '001589_283837_20260911_art_58_0_chunk_0000': '67f02bd55d4a4721c55de49bafad6187a098a7765732a9d0760a2630907e75bc', '001589_283837_20260911_art_65_0_chunk_0000': '9b053079ef2c72b406bbd271e35e1307644d238800190df3f7ade7a9bfb3fca5', '001589_283837_20260911_art_66_0_chunk_0000': '2f2c0082749ea1bdbd7c7f6089e9f290e820f7d3cb90d158ea1b80a7e73a155f', '001589_283837_20260911_art_67_0_chunk_0000': '020c16cf4ebc260455b65a8444d4d3ef01326b98fe29bb442faf0841e3e34f9f', '003979_289451_20260911_appendix_000100E_chunk_0000': '15ba4474849198d527dd0cb5ab2b938655546340c8550d1f1147843e98c82a2a', '003979_289451_20260911_art_44_0_chunk_0000': 'dfa470518f49ab6eed139b417c1def696cec7ac2ab2be49fe4eb746e8b61e896', '003979_289451_20260911_art_8_0_chunk_0000': '936df6cd25cf11f9d203706226f41bdb53a696b5f81d22deb3df47b6abe121c6', 'kca_mediation_procedure_acceptance_0000': 'c7ab7b7662419f19f4996438b37961d17451e9ddd45463aa215b2ae8348b4451', 'kca_mediation_procedure_completion_0000': 'e6a3b188db5c3fab1e086ee6b6f9173f5198967b9305990ddf2bb18775823c0c', 'kca_mediation_procedure_definition_0000': 'd1c87b0aa1b8679b875ca02aaeb62d462b9a85dba3d00086a03d64701080657c', 'kca_mediation_procedure_request_0000': '5512f50db36e0250f6fc053cf574eb49f9821d16e5771dc300721daef1c878b3', 'kca_redress_requirements_eligibility_0000': 'b2f57f0fa2269f8a037b88c199024cea1904244b674759d0d501e3a6c771a62b', 'kca_redress_requirements_specialized_forms_0000': '2bbb13eaa2ff25ba333882e3ea2e138bfcd7736996af493723540e8863970a22', 'kca_redress_submission_evidence_0000': 'c44e6879a26ee0d3c5760abe6b0330f5df21bfeb733b6dce9e5cc33a4c525b41', 'kca_redress_submission_online_0000': '993c74b45d4940f2f5480c7f23e14dd949adb853fb7af2ecdcabe43493f60ea7', 'kca_redress_submission_postal_0000': '1409fdd23f27a9a399bfc9cfc47f7b7b920d77b455ead0535104e883f7af92e9', 'kca_redress_submission_postal_address_0000': 'cf2609d7a78ca8e9afd0d322b17a1c3ff041e6a5ba6f8f19383822dd932388c3', 'kca_redress_submission_visit_0000': '88e82ec6fe3998a397a13d246966aed185c3fae29d9a352cbae9f9566c881899'})
 
+
+REVIEWED_HASHES.update({'000354_290239_20261002_art_52_0_chunk_0000':'52660a7113f580f7da90995d9e82b9b4366690c948808afcfabbf3be2fbaaf6d', '003572_286997_20260701_art_13_0_chunk_0000':'6bdbffb43e02c3f9a9d04ebfea8fea84ced76168e886889a9adb9b11bdbe316c'})
 
 if __name__ == "__main__":
     evaluate()

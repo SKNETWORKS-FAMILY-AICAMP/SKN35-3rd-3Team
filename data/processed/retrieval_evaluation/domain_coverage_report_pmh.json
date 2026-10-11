@@ -1956,7 +1956,7 @@
   "reviewer": "Codex의 수집 자료 내용 검토. 전문가 법률 검증 아님",
   "chunk_count": 4932,
   "question_count": 45,
-  "input_fingerprint": "3f0a8862a9a7b12c1c3697688913f54a77083f9c73683f0a7135d8307baa1360",
+  "input_fingerprint": "0761d86a568f0182de6e5ea00b371c1c020978068538d2fd0583be0ecdc0ba5b",
   "search_policy": {
     "evidence_mode": true,
     "max_per_document": 2,
@@ -2011,8 +2011,8 @@
       "domain": "헬스장·필라테스 환불",
       "question_count": 5,
       "statuses": {
-        "supported": 2,
-        "partial": 3
+        "supported": 3,
+        "partial": 2
       },
       "reviewed_source_hits": 5,
       "reviewed_chunk_hits": 5,
@@ -2065,8 +2065,8 @@
       "domain": "소비자 피해",
       "question_count": 5,
       "statuses": {
-        "supported": 3,
-        "partial": 2
+        "supported": 4,
+        "partial": 1
       },
       "reviewed_source_hits": 4,
       "reviewed_chunk_hits": 4,
@@ -2156,7 +2156,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0047_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 73.67759,
+          "score": 73.68457,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2176,7 +2176,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0024_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 38.98025,
+          "score": 38.98263,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2196,7 +2196,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 34.98931,
+          "score": 34.9916,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2216,7 +2216,7 @@
           "chunk_id": "easylaw_housing_restoration_restoration_0000",
           "document_id": "official_guide:easylaw_housing_restoration",
           "title": "임차인의 권리·의무: 반환·원상회복",
-          "score": 32.03098,
+          "score": 32.03321,
           "role": "housing_restoration",
           "matched_span": {
             "start": 0,
@@ -2238,7 +2238,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0024_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 28.85458,
+          "score": 28.85688,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2258,27 +2258,27 @@
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0047_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 78.51548
+          "score": 78.67568
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 35.83065
+          "score": 35.86852
         },
         {
           "chunk_id": "easylaw_housing_restoration_restoration_0000",
           "document_id": "official_guide:easylaw_housing_restoration",
-          "score": 30.60301
+          "score": 30.67666
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0024_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 29.79853
+          "score": 29.83789
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0009_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 23.94798
+          "score": 23.99848
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -2400,7 +2400,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0057_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 124.83873,
+          "score": 124.84944,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2418,7 +2418,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0058_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 104.64323,
+          "score": 104.65031,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2436,7 +2436,7 @@
           "chunk_id": "001248_276291_20260102_art_6_3_chunk_0000",
           "document_id": "law:001248_276291_20260102",
           "title": "주택임대차보호법",
-          "score": 99.38913,
+          "score": 99.39852,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2456,7 +2456,7 @@
           "chunk_id": "001248_276291_20260102_supplement_2020073117470_chunk_0000",
           "document_id": "law:001248_276291_20260102",
           "title": "주택임대차보호법",
-          "score": 80.6267,
+          "score": 80.63286,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2478,7 +2478,7 @@
           "chunk_id": "004950_287183_20260701_art_22_0_chunk_0000",
           "document_id": "law:004950_287183_20260701",
           "title": "주택임대차보호법 시행령",
-          "score": 73.67378,
+          "score": 73.67852,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2498,27 +2498,27 @@
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0057_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 133.71318
+          "score": 133.75582
         },
         {
           "chunk_id": "001248_276291_20260102_art_6_3_chunk_0000",
           "document_id": "law:001248_276291_20260102",
-          "score": 110.79662
+          "score": 110.81514
         },
         {
           "chunk_id": "004950_287183_20260701_art_22_0_chunk_0000",
           "document_id": "law:004950_287183_20260701",
-          "score": 77.5315
+          "score": 77.5302
         },
         {
           "chunk_id": "easylaw_housing_termination_return_0000",
           "document_id": "official_guide:easylaw_housing_termination",
-          "score": 57.90578
+          "score": 57.99921
         },
         {
           "chunk_id": "621911_0009",
           "document_id": "precedent:621911",
-          "score": 52.26764
+          "score": 52.34088
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -2580,7 +2580,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0025_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 34.04351,
+          "score": 34.0457,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2600,7 +2600,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0042_body_0001",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 26.90529,
+          "score": 26.90741,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2618,7 +2618,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0014_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 25.2489,
+          "score": 25.25115,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2638,7 +2638,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0048_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 24.12066,
+          "score": 24.12212,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2658,7 +2658,7 @@
           "chunk_id": "227759_0008",
           "document_id": "precedent:227759",
           "title": "특정경제범죄가중처벌등에관한법률위반(사기)·자본시장과금융투자업에관한법률위반·근로기준법위반·근로자퇴직급여보장법위반·위계공무집행방해",
-          "score": 22.03762,
+          "score": 22.03982,
           "role": "court_discussion_with_arguments",
           "matched_span": {
             "start": 0,
@@ -2680,27 +2680,27 @@
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0025_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 35.23297
+          "score": 35.28905
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0014_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 26.64788
+          "score": 26.70713
         },
         {
           "chunk_id": "227759_0008",
           "document_id": "precedent:227759",
-          "score": 21.25404
+          "score": 21.31228
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0005_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 20.65554
+          "score": 20.7051
         },
         {
           "chunk_id": "009290_268837_20260201_art_6_0_chunk_0000",
           "document_id": "law:009290_268837_20260201",
-          "score": 20.62707
+          "score": 20.6585
         }
       ],
       "legacy_source_hit_at_5": false,
@@ -2791,7 +2791,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0056_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 123.06348,
+          "score": 123.07264,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2811,7 +2811,7 @@
           "chunk_id": "001248_276291_20260102_art_6_2_chunk_0000",
           "document_id": "law:001248_276291_20260102",
           "title": "주택임대차보호법",
-          "score": 91.35354,
+          "score": 91.35803,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2831,7 +2831,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0058_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 78.6312,
+          "score": 78.63881,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2849,7 +2849,7 @@
           "chunk_id": "623979_0002",
           "document_id": "precedent:623979",
           "title": "보증금반환",
-          "score": 53.76132,
+          "score": 53.76677,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -2869,7 +2869,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0006_body_0001",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 52.37005,
+          "score": 52.37354,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -2889,27 +2889,27 @@
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0056_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 130.6735
+          "score": 128.85133
         },
         {
           "chunk_id": "001248_276291_20260102_art_6_2_chunk_0000",
           "document_id": "law:001248_276291_20260102",
-          "score": 95.08353
+          "score": 93.30799
         },
         {
           "chunk_id": "623979_0002",
           "document_id": "precedent:623979",
-          "score": 54.52259
+          "score": 53.7153
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0006_body_0001",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 53.63549
+          "score": 53.21791
         },
         {
           "chunk_id": "001706_284415_20260317_art_698_0_chunk_0000",
           "document_id": "law:001706_284415_20260317",
-          "score": 50.80507
+          "score": 50.85884
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -3059,7 +3059,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0028_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 111.95272,
+          "score": 111.96209,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3079,7 +3079,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0031_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 106.84433,
+          "score": 106.85378,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3097,7 +3097,7 @@
           "chunk_id": "easylaw_housing_distribution_maintain_priority_0000",
           "document_id": "official_guide:easylaw_housing_distribution",
           "title": "보증금 회수: 배당요구",
-          "score": 90.62923,
+          "score": 90.63585,
           "role": "housing_maintain_priority",
           "matched_span": {
             "start": 0,
@@ -3120,7 +3120,7 @@
           "chunk_id": "easylaw_housing_distribution_tenant_share_exceptions_0000",
           "document_id": "official_guide:easylaw_housing_distribution",
           "title": "보증금 회수: 배당요구",
-          "score": 76.64361,
+          "score": 76.64978,
           "role": "housing_tenant_share_exceptions",
           "matched_span": {
             "start": 0,
@@ -3144,7 +3144,7 @@
           "chunk_id": "616251_0001",
           "document_id": "precedent:616251",
           "title": "배당이의",
-          "score": 73.56511,
+          "score": 73.57143,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -3162,27 +3162,27 @@
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0028_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 118.66691
+          "score": 118.69032
         },
         {
           "chunk_id": "easylaw_housing_distribution_maintain_priority_0000",
           "document_id": "official_guide:easylaw_housing_distribution",
-          "score": 79.7608
+          "score": 79.72862
         },
         {
           "chunk_id": "616251_0001",
           "document_id": "precedent:616251",
-          "score": 76.67721
+          "score": 76.64866
         },
         {
           "chunk_id": "001248_276291_20260102_art_3_2_chunk_0000",
           "document_id": "law:001248_276291_20260102",
-          "score": 72.03707
+          "score": 72.00464
         },
         {
           "chunk_id": "623049_0003",
           "document_id": "precedent:623049",
-          "score": 58.43703
+          "score": 58.45904
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -3273,7 +3273,7 @@
           "chunk_id": "623961_0001",
           "document_id": "precedent:623961",
           "title": "환급금청구기각처분취소청구의소",
-          "score": 88.51338,
+          "score": 88.521,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -3291,7 +3291,7 @@
           "chunk_id": "605583_0000",
           "document_id": "precedent:605583",
           "title": "업무상횡령·사기·컴퓨터등사용사기·배상명령신청",
-          "score": 81.06768,
+          "score": 81.0743,
           "role": "court_recorded_criminal_facts",
           "matched_span": {
             "start": 0,
@@ -3313,7 +3313,7 @@
           "chunk_id": "623961_0000",
           "document_id": "precedent:623961",
           "title": "환급금청구기각처분취소청구의소",
-          "score": 72.59743,
+          "score": 72.60245,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -3331,7 +3331,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0007_table_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 71.5034,
+          "score": 71.50931,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3351,7 +3351,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0028_table_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 67.22031,
+          "score": 67.22627,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3371,27 +3371,27 @@
         {
           "chunk_id": "623961_0001",
           "document_id": "precedent:623961",
-          "score": 92.42366
+          "score": 92.62039
         },
         {
           "chunk_id": "guide_246eabd0676d5957_p0007_table_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
-          "score": 76.79226
+          "score": 76.89231
         },
         {
           "chunk_id": "605583_0000",
           "document_id": "precedent:605583",
-          "score": 76.17079
+          "score": 76.32055
         },
         {
           "chunk_id": "240967_0002",
           "document_id": "precedent:240967",
-          "score": 37.30172
+          "score": 37.40563
         },
         {
           "chunk_id": "009318_282793_20260721_art_7_0_chunk_0000",
           "document_id": "law:009318_282793_20260721",
-          "score": 34.06886
+          "score": 34.11832
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -3543,7 +3543,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0008_table_0001",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 73.15545,
+          "score": 73.16042,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3563,7 +3563,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0010_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 57.36223,
+          "score": 57.36781,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3583,7 +3583,7 @@
           "chunk_id": "001706_284415_20260317_art_667_0_chunk_0000",
           "document_id": "law:001706_284415_20260317",
           "title": "민법",
-          "score": 45.18277,
+          "score": 45.18522,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3603,7 +3603,7 @@
           "chunk_id": "001706_284415_20260317_art_674_7_chunk_0000",
           "document_id": "law:001706_284415_20260317",
           "title": "민법",
-          "score": 44.70926,
+          "score": 44.71289,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3623,7 +3623,7 @@
           "chunk_id": "kca_case_1003604873_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003604873",
           "title": "하자가 지속 발생하는 반지의 반품 및 구입대금 환급 요구",
-          "score": 44.4786,
+          "score": 44.48219,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -3644,27 +3644,27 @@
         {
           "chunk_id": "guide_246eabd0676d5957_p0008_table_0001",
           "document_id": "official_guide:guide_246eabd0676d5957",
-          "score": 76.63803
+          "score": 76.74803
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0017_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 47.77337
+          "score": 47.9097
         },
         {
           "chunk_id": "001706_284415_20260317_art_674_7_chunk_0000",
           "document_id": "law:001706_284415_20260317",
-          "score": 46.07231
+          "score": 46.14833
         },
         {
           "chunk_id": "kca_case_1003604873_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003604873",
-          "score": 42.56744
+          "score": 42.65037
         },
         {
           "chunk_id": "004950_287183_20260701_art_31_0_chunk_0000",
           "document_id": "law:004950_287183_20260701",
-          "score": 39.10431
+          "score": 39.17546
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -3752,7 +3752,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0022_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 146.00127,
+          "score": 146.01609,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3770,7 +3770,7 @@
           "chunk_id": "240967_0002",
           "document_id": "precedent:240967",
           "title": "부당이득금[보이스피싱 범죄자가 피해자 계좌에서 보이스피싱 범죄자의 채권자 계좌로 송금한 금원이 부당이득인지 여부가 문제된 사건]",
-          "score": 121.54495,
+          "score": 121.55592,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -3788,7 +3788,7 @@
           "chunk_id": "240967_0000",
           "document_id": "precedent:240967",
           "title": "부당이득금[보이스피싱 범죄자가 피해자 계좌에서 보이스피싱 범죄자의 채권자 계좌로 송금한 금원이 부당이득인지 여부가 문제된 사건]",
-          "score": 109.21209,
+          "score": 109.22263,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -3806,7 +3806,7 @@
           "chunk_id": "623961_0010",
           "document_id": "precedent:623961",
           "title": "환급금청구기각처분취소청구의소",
-          "score": 100.6163,
+          "score": 100.62614,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -3824,7 +3824,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0009_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 56.83822,
+          "score": 56.84235,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -3842,27 +3842,27 @@
         {
           "chunk_id": "guide_246eabd0676d5957_p0022_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
-          "score": 159.41982
+          "score": 159.81606
         },
         {
           "chunk_id": "240967_0002",
           "document_id": "precedent:240967",
-          "score": 129.65756
+          "score": 129.94318
         },
         {
           "chunk_id": "623961_0010",
           "document_id": "precedent:623961",
-          "score": 105.49579
+          "score": 105.75636
         },
         {
           "chunk_id": "241143_0001",
           "document_id": "precedent:241143",
-          "score": 54.89432
+          "score": 55.03627
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0019_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 46.12909
+          "score": 46.26389
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -3986,7 +3986,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0013_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 76.5401,
+          "score": 76.54364,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4006,7 +4006,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0007_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 57.70847,
+          "score": 57.71232,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4026,7 +4026,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0024_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 52.12397,
+          "score": 52.13007,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4046,7 +4046,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0024_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 43.6975,
+          "score": 43.70001,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4066,7 +4066,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 34.98931,
+          "score": 34.9916,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4086,27 +4086,27 @@
         {
           "chunk_id": "guide_246eabd0676d5957_p0013_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
-          "score": 78.29735
+          "score": 78.38175
         },
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0024_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 57.58738
+          "score": 57.74721
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 35.83065
+          "score": 35.86852
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0024_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 35.68657
+          "score": 35.73166
         },
         {
           "chunk_id": "623961_0001",
           "document_id": "precedent:623961",
-          "score": 30.02591
+          "score": 30.08451
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -4290,7 +4290,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0015_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 71.26542,
+          "score": 71.27119,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4310,7 +4310,7 @@
           "chunk_id": "001706_284415_20260317_art_7_0_chunk_0000",
           "document_id": "law:001706_284415_20260317",
           "title": "민법",
-          "score": 70.59948,
+          "score": 70.60191,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4330,7 +4330,7 @@
           "chunk_id": "001706_284415_20260317_art_5_0_chunk_0000",
           "document_id": "law:001706_284415_20260317",
           "title": "민법",
-          "score": 64.04942,
+          "score": 64.05166,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4350,7 +4350,7 @@
           "chunk_id": "009318_282793_20260721_art_13_0_chunk_0001",
           "document_id": "law:009318_282793_20260721",
           "title": "전자상거래 등에서의 소비자보호에 관한 법률",
-          "score": 58.95321,
+          "score": 58.95914,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4370,7 +4370,7 @@
           "chunk_id": "000354_290239_20261002_art_7_0_chunk_0000",
           "document_id": "law:000354_290239_20261002",
           "title": "방문판매 등에 관한 법률",
-          "score": 52.68742,
+          "score": 52.69332,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4390,27 +4390,27 @@
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0015_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 74.90567
+          "score": 75.04913
         },
         {
           "chunk_id": "001706_284415_20260317_art_7_0_chunk_0000",
           "document_id": "law:001706_284415_20260317",
-          "score": 69.16801
+          "score": 69.23704
         },
         {
           "chunk_id": "000354_290239_20261002_art_7_0_chunk_0000",
           "document_id": "law:000354_290239_20261002",
-          "score": 56.42314
+          "score": 56.57663
         },
         {
           "chunk_id": "009318_282793_20260721_art_13_0_chunk_0001",
           "document_id": "law:009318_282793_20260721",
-          "score": 56.36823
+          "score": 56.5138
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0008_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 55.02372
+          "score": 55.16756
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -4562,7 +4562,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 150.02769,
+          "score": 150.04091,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4582,7 +4582,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0031_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 131.22229,
+          "score": 131.23605,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4602,7 +4602,7 @@
           "chunk_id": "kca_overseas_returns_return_conditions_0000",
           "document_id": "official_guide:kca_overseas_returns",
           "title": "해외직구 수령·반품 단계 유의사항",
-          "score": 107.29868,
+          "score": 107.30829,
           "role": "return_conditions",
           "matched_span": {
             "start": 0,
@@ -4624,7 +4624,7 @@
           "chunk_id": "kca_case_1003641715_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003641715",
           "title": "해외직구 가방의 과도한 반품 배송비 조정 요구",
-          "score": 70.66331,
+          "score": 70.66824,
           "role": "facts",
           "matched_span": {
             "start": 319,
@@ -4645,7 +4645,7 @@
           "chunk_id": "consumer_dispute_standard_industry_shopping_return_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
           "title": "소비자분쟁해결기준",
-          "score": 69.81795,
+          "score": 69.8202,
           "role": "industry_table",
           "matched_span": {
             "start": 1531,
@@ -4666,27 +4666,27 @@
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 167.85029
+          "score": 168.19109
         },
         {
           "chunk_id": "kca_overseas_returns_return_conditions_0000",
           "document_id": "official_guide:kca_overseas_returns",
-          "score": 117.35001
+          "score": 117.61055
         },
         {
           "chunk_id": "consumer_dispute_standard_industry_shopping_return_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
-          "score": 71.52543
+          "score": 71.61511
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0022_body_0001",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 70.4421
+          "score": 70.56959
         },
         {
           "chunk_id": "kca_case_1003641715_case_party_claims_0000",
           "document_id": "mediation_case:kca_case_1003641715",
-          "score": 68.33967
+          "score": 68.45242
         }
       ],
       "legacy_source_hit_at_5": false,
@@ -4778,7 +4778,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 102.02447,
+          "score": 102.03279,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4798,7 +4798,7 @@
           "chunk_id": "kca_overseas_returns_return_conditions_0000",
           "document_id": "official_guide:kca_overseas_returns",
           "title": "해외직구 수령·반품 단계 유의사항",
-          "score": 71.23458,
+          "score": 71.23943,
           "role": "return_conditions",
           "matched_span": {
             "start": 580,
@@ -4820,7 +4820,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0029_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 65.73254,
+          "score": 65.73759,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4840,7 +4840,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0008_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 55.60534,
+          "score": 55.61013,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -4858,7 +4858,7 @@
           "chunk_id": "kca_case_1003641375_case_reasoning_0001",
           "document_id": "mediation_case:kca_case_1003641375",
           "title": "안내와 다르게 판매한 새우젓의 반품 및 환급 요구",
-          "score": 49.09837,
+          "score": 49.10164,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -4879,27 +4879,27 @@
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 111.66212
+          "score": 111.88316
         },
         {
           "chunk_id": "kca_overseas_returns_return_conditions_0000",
           "document_id": "official_guide:kca_overseas_returns",
-          "score": 65.04046
+          "score": 65.19802
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0008_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 59.81972
+          "score": 59.94411
         },
         {
           "chunk_id": "kca_case_1003641375_case_reasoning_0001",
           "document_id": "mediation_case:kca_case_1003641375",
-          "score": 40.07936
+          "score": 40.18064
         },
         {
           "chunk_id": "001692_290185_20261002_art_79_0_chunk_0000",
           "document_id": "law:001692_290185_20261002",
-          "score": 36.43214
+          "score": 36.46669
         }
       ],
       "legacy_source_hit_at_5": false,
@@ -5052,7 +5052,7 @@
           "chunk_id": "kca_case_1003164054_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003164054",
           "title": "맞춤제작을 이유로 반품을 거절당한 한복의 청약철회 요구",
-          "score": 60.26634,
+          "score": 60.26979,
           "role": "facts",
           "matched_span": {
             "start": 0,
@@ -5073,7 +5073,7 @@
           "chunk_id": "kca_case_1003164054_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003164054",
           "title": "맞춤제작을 이유로 반품을 거절당한 한복의 청약철회 요구",
-          "score": 55.28208,
+          "score": 55.28811,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -5094,7 +5094,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0016_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 52.14089,
+          "score": 52.1466,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -5112,7 +5112,7 @@
           "chunk_id": "kca_fitness_closure_pilates_card_objection_0000",
           "document_id": "official_guide:kca_fitness_closure_pilates",
           "title": "필라테스 폐업 피해예방 및 대응 안내",
-          "score": 47.02199,
+          "score": 47.02418,
           "role": "card_objection",
           "matched_span": {
             "start": 0,
@@ -5135,7 +5135,7 @@
           "chunk_id": "000355_289407_20260908_art_16_0_chunk_0000",
           "document_id": "law:000355_289407_20260908",
           "title": "할부거래에 관한 법률",
-          "score": 45.04445,
+          "score": 45.04832,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -5155,27 +5155,27 @@
         {
           "chunk_id": "kca_case_1003164054_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003164054",
-          "score": 73.50477
+          "score": 73.70359
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0016_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 56.8797
+          "score": 57.03375
         },
         {
           "chunk_id": "000355_289407_20260908_art_16_0_chunk_0000",
           "document_id": "law:000355_289407_20260908",
-          "score": 47.7233
+          "score": 47.81076
         },
         {
           "chunk_id": "001706_284415_20260317_art_435_0_chunk_0000",
           "document_id": "law:001706_284415_20260317",
-          "score": 40.79974
+          "score": 40.85615
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0007_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 40.16065
+          "score": 40.29063
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -5326,7 +5326,7 @@
           "chunk_id": "kca_overseas_returns_return_conditions_0000",
           "document_id": "official_guide:kca_overseas_returns",
           "title": "해외직구 수령·반품 단계 유의사항",
-          "score": 79.90502,
+          "score": 79.91259,
           "role": "return_conditions",
           "matched_span": {
             "start": 0,
@@ -5348,7 +5348,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 64.06066,
+          "score": 64.06728,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -5368,7 +5368,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0067_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 59.93629,
+          "score": 59.94061,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -5388,7 +5388,7 @@
           "chunk_id": "kca_case_1003641715_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003641715",
           "title": "해외직구 가방의 과도한 반품 배송비 조정 요구",
-          "score": 59.66784,
+          "score": 59.67173,
           "role": "facts",
           "matched_span": {
             "start": 319,
@@ -5409,7 +5409,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0055_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 58.66295,
+          "score": 58.66894,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -5429,27 +5429,27 @@
         {
           "chunk_id": "kca_overseas_returns_return_conditions_0000",
           "document_id": "official_guide:kca_overseas_returns",
-          "score": 86.30238
+          "score": 86.50374
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 69.02744
+          "score": 69.19217
         },
         {
           "chunk_id": "kca_case_1003641715_case_party_claims_0000",
           "document_id": "mediation_case:kca_case_1003641715",
-          "score": 65.30015
+          "score": 65.40128
         },
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0055_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 62.76897
+          "score": 62.92277
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0067_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 61.83185
+          "score": 61.94387
         }
       ],
       "legacy_source_hit_at_5": false,
@@ -5913,7 +5913,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 99.15154,
+          "score": 99.15973,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -5933,7 +5933,7 @@
           "chunk_id": "kca_overseas_returns_return_conditions_0000",
           "document_id": "official_guide:kca_overseas_returns",
           "title": "해외직구 수령·반품 단계 유의사항",
-          "score": 92.63519,
+          "score": 92.64034,
           "role": "return_conditions",
           "matched_span": {
             "start": 580,
@@ -5955,7 +5955,7 @@
           "chunk_id": "kca_overseas_checklist_direct_delivery_0000",
           "document_id": "official_guide:kca_overseas_checklist",
           "title": "해외직구 체크리스트",
-          "score": 81.50098,
+          "score": 81.50429,
           "role": "trade_conditions",
           "matched_span": {
             "start": 0,
@@ -5976,7 +5976,7 @@
           "chunk_id": "kca_overseas_types_definition_0000",
           "document_id": "official_guide:kca_overseas_types",
           "title": "해외직구 유형 및 과정",
-          "score": 74.0129,
+          "score": 74.01519,
           "role": "trade_definition",
           "matched_span": {
             "start": 0,
@@ -5997,7 +5997,7 @@
           "chunk_id": "kca_overseas_checklist_purchase_agent_0000",
           "document_id": "official_guide:kca_overseas_checklist",
           "title": "해외직구 체크리스트",
-          "score": 73.57187,
+          "score": 73.5764,
           "role": "trade_conditions",
           "matched_span": {
             "start": 0,
@@ -6019,27 +6019,27 @@
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 103.77533
+          "score": 103.98192
         },
         {
           "chunk_id": "kca_overseas_returns_return_conditions_0000",
           "document_id": "official_guide:kca_overseas_returns",
-          "score": 97.43853
+          "score": 97.61863
         },
         {
           "chunk_id": "kca_overseas_checklist_direct_delivery_0000",
           "document_id": "official_guide:kca_overseas_checklist",
-          "score": 84.36044
+          "score": 84.44454
         },
         {
           "chunk_id": "kca_overseas_types_definition_0000",
           "document_id": "official_guide:kca_overseas_types",
-          "score": 76.51439
+          "score": 76.5752
         },
         {
           "chunk_id": "kca_case_1003641715_case_cited_law_0000",
           "document_id": "mediation_case:kca_case_1003641715",
-          "score": 66.21068
+          "score": 66.27724
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -6102,7 +6102,7 @@
           "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_10_0000",
           "document_id": "standard_terms:ftc_terms_46118_file_5b139f26",
           "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
-          "score": 116.67927,
+          "score": 116.68708,
           "role": "standard_terms_article",
           "matched_span": {
             "start": 0,
@@ -6123,7 +6123,7 @@
           "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_7_0000",
           "document_id": "standard_terms:ftc_terms_46118_file_5b139f26",
           "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
-          "score": 112.54156,
+          "score": 112.54814,
           "role": "standard_terms_article",
           "matched_span": {
             "start": 465,
@@ -6158,7 +6158,7 @@
           "chunk_id": "kca_case_1003817065_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003817065",
           "title": "헬스장 이용 계약의 중도해지 및 잔여대금 환급 요구",
-          "score": 83.60018,
+          "score": 83.60504,
           "role": "facts",
           "matched_span": {
             "start": 0,
@@ -6179,7 +6179,7 @@
           "chunk_id": "613301_0005",
           "document_id": "precedent:613301",
           "title": "시정명령및과징금납부명령취소",
-          "score": 83.15992,
+          "score": 83.16431,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -6199,7 +6199,7 @@
           "chunk_id": "613301_0016",
           "document_id": "precedent:613301",
           "title": "시정명령및과징금납부명령취소",
-          "score": 79.67909,
+          "score": 79.68435,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -6219,27 +6219,27 @@
         {
           "chunk_id": "kca_case_1003941875_case_party_claims_0000",
           "document_id": "mediation_case:kca_case_1003941875",
-          "score": 89.83743
+          "score": 90.00464
         },
         {
           "chunk_id": "kca_case_1003817065_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003817065",
-          "score": 87.92378
+          "score": 88.04073
         },
         {
           "chunk_id": "613301_0005",
           "document_id": "precedent:613301",
-          "score": 84.2808
+          "score": 84.36097
         },
         {
           "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_10_0000",
           "document_id": "standard_terms:ftc_terms_46118_file_5b139f26",
-          "score": 71.98184
+          "score": 72.10537
         },
         {
-          "chunk_id": "kca_case_1003640779_case_reasoning_0000",
-          "document_id": "mediation_case:kca_case_1003640779",
-          "score": 57.54506
+          "chunk_id": "kca_case_1003892170_case_reasoning_0000",
+          "document_id": "mediation_case:kca_case_1003892170",
+          "score": 50.78042
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -6302,7 +6302,7 @@
           "chunk_id": "kca_case_1003739114_case_reasoning_0001",
           "document_id": "mediation_case:kca_case_1003739114",
           "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
-          "score": 109.05747,
+          "score": 109.06387,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -6312,7 +6312,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -6323,7 +6326,7 @@
           "chunk_id": "ftc_terms_47762_file_05d51a47_terms_article_8_0000",
           "document_id": "standard_terms:ftc_terms_47762_file_05d51a47",
           "title": "[제10083호]요가·필라테스 표준약관 (2026. 7. 16. 제정)",
-          "score": 91.73394,
+          "score": 91.73841,
           "role": "standard_terms_article",
           "matched_span": {
             "start": 108,
@@ -6358,7 +6361,7 @@
           "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_7_0000",
           "document_id": "standard_terms:ftc_terms_46118_file_5b139f26",
           "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
-          "score": 82.82662,
+          "score": 82.83034,
           "role": "standard_terms_article",
           "matched_span": {
             "start": 465,
@@ -6393,7 +6396,7 @@
           "chunk_id": "kca_case_1003739114_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003739114",
           "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
-          "score": 81.80796,
+          "score": 81.81201,
           "role": "facts",
           "matched_span": {
             "start": 577,
@@ -6403,7 +6406,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -6414,7 +6420,7 @@
           "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_15_0000",
           "document_id": "standard_terms:ftc_terms_46118_file_5b139f26",
           "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
-          "score": 78.39628,
+          "score": 78.40041,
           "role": "standard_terms_article",
           "matched_span": {
             "start": 466,
@@ -6447,29 +6453,29 @@
       ],
       "legacy_search_results": [
         {
-          "chunk_id": "kca_case_1003739114_case_reasoning_0001",
+          "chunk_id": "kca_case_1003739114_case_party_claims_0000",
           "document_id": "mediation_case:kca_case_1003739114",
-          "score": 100.37425
-        },
-        {
-          "chunk_id": "kca_case_1003640779_case_reasoning_0000",
-          "document_id": "mediation_case:kca_case_1003640779",
-          "score": 86.84762
+          "score": 90.57531
         },
         {
           "chunk_id": "kca_pilates_1003941650_case_party_claims_0000",
           "document_id": "mediation_case:kca_pilates_1003941650",
-          "score": 74.49303
+          "score": 74.65011
+        },
+        {
+          "chunk_id": "kca_case_1003640779_case_reasoning_0000",
+          "document_id": "mediation_case:kca_case_1003640779",
+          "score": 66.06803
         },
         {
           "chunk_id": "ftc_terms_47762_file_05d51a47_terms_article_6_0000",
           "document_id": "standard_terms:ftc_terms_47762_file_05d51a47",
-          "score": 63.40302
+          "score": 63.52729
         },
         {
           "chunk_id": "consumer_dispute_standard_industry_fitness_refund_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
-          "score": 42.56697
+          "score": 42.67936
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -6487,8 +6493,8 @@
         "할인가·정상가 공제",
         "계속거래 적용"
       ],
-      "review_status": "partial",
-      "review_note": "폐강 사례에 방문판매법 제2·31·32조 및 산정기준의 정의·적용 범위·공제 조건·위약금 별표 원문을 연결. 사업자 귀책과 소비자 귀책 기준을 구분. 시행령 제40·41조와 시행규칙 제22조를 추가 연결해 해지 예외·환급 지연 기준을 확보. 수집본과 사례 당시 구법의 대조는 남음.",
+      "review_status": "supported",
+      "review_note": "폐강 사례에 방문판매법 제2·31·32조 및 산정기준의 정의·적용 범위·공제 조건·위약금 별표 원문을 연결. 사업자 귀책과 소비자 귀책 기준을 구분. 시행령 제40·41조와 시행규칙 제22조를 추가 연결해 해지 예외·환급 지연 기준을 확보. 사례의 2023년 계약·해지 전후 법령 본문과 수집본을 대조. 법 제31·32·52조, 시행령 제13·40·41조, 시행규칙 제22조는 동일하고 제2조 전체 변경과 제10호 계속거래 정의의 동일성을 구분. 2019-9호 고시는 같은 버전이며 약관법 제9조 당시 원문을 사례 임베딩 문맥에 보존. 기본 근거 확보; 조정 취지에 따른 위약금 면제·실제 환급액은 일반화하지 않음.",
       "reviewed_chunk_ids": [
         "kca_case_1003739114_case_reasoning_0000",
         "kca_case_1003739114_case_reasoning_0001",
@@ -6497,6 +6503,8 @@
         "000354_290239_20261002_art_2_0_chunk_0002",
         "000354_290239_20261002_art_31_0_chunk_0000",
         "000354_290239_20261002_art_32_0_chunk_0000",
+        "000354_290239_20261002_art_52_0_chunk_0000",
+        "003572_286997_20260701_art_13_0_chunk_0000",
         "003572_286997_20260701_art_40_0_chunk_0000",
         "003572_286997_20260701_art_41_0_chunk_0000",
         "007196_284567_20260317_art_22_0_chunk_0000",
@@ -6506,7 +6514,7 @@
         "continual_contract_refund_article_4_0000",
         "continual_contract_refund_appendix_0_0000"
       ],
-      "follow_up": "사례 당시 구법과 수집한 시행령·시행규칙의 개정 시점 대조",
+      "follow_up": "계약·해지 시점 대조 완료. 조정일 미상·개별 계약 약정·귀책사유·이용 증빙 검토",
       "evidence": [
         {
           "chunk_id": "kca_case_1003739114_case_reasoning_0000",
@@ -6533,7 +6541,10 @@
           "text_sha256": "226c58ba0bee5a25587b7f3e10497bedc40ecec8230f0fe7a60532d83fef486b",
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null
@@ -6563,7 +6574,10 @@
           "text_sha256": "411e844d4a7ce6f1edcecc2a0efb1cb7202e2a66fcabd32b7829320bbc52ad2d",
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null
@@ -6707,6 +6721,64 @@
           },
           "excerpt": "제32조(계약 해지 또는 해제의 효과와 위약금 등)\n① 계속거래업자등은 자신의 책임이 없는 사유로 계속거래등의 계약이 해지 또는 해제된 경우 소비자에게 해지 또는 해제로 발생하는 손실을 현저하게 초과하는 위약금을 청구하여서는 아니 되고, 가입비나 그 밖에 명칭에 상관없이 실제 공급된 재화등의 대가를 초과하여 수령한 대금의 환급을 부당하게 거부하여서는 아니 된다.\n② 계속거래등의 계약이 해지 또는 해제된 경우 소비자는 반환할 수 있는 재화등을 계속거래업자등에게 반환할 수 있으며, 계속거래업자등은 대통령령으로 정하는 바에 따라 대금 환급 또는 위약금 경감 등의 조치를 하여야 한다.\n③ 계속거래업자등은 자신의 책임이 없는 사유로 계약이 해지 또는 해제된 경우 소비자로부터 받은 재화등의 대금(재화등이 반환된 경우 환급하여야 할 금액을 포함한다)이 이미 공급한 재화등의 대금에 위약금을 더한 금액보다 많으면 그 차액을 소비자에게 환급하여야 한다. 이 경우 환급이 지연되는 경우에는 총리령으로 정하는 지연기간에 대한 지연배상금을 함께 환급하여야 한다.\n④ 공정거래위원회는 제1항에 따른 위약금 청구와 제2항에 따른 대금 환급 또는 위약금 경감과 관련된 분쟁을 방지하기 위하여 필요한 경우 위약금 및 대금의 환급에 관한 산정기준을 정하여 고시할 수 있다.",
           "text_sha256": "dfd03a04aa7380b773cf45d303bd63a865e6acffb334f41ae9dbca91790157d9",
+          "warnings": [
+            "수집 당시 현행 버전. 과거 사건에 적용할 구법 버전은 별도 확인 필요"
+          ],
+          "source_anomaly": null,
+          "calculation_restricted_clause": null
+        },
+        {
+          "chunk_id": "000354_290239_20261002_art_52_0_chunk_0000",
+          "document_id": "law:000354_290239_20261002",
+          "evaluation_source_id": "law_000354",
+          "title": "방문판매 등에 관한 법률",
+          "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=290239",
+          "source_path": "data/raw/laws/000354_290239_20261002.json",
+          "source_locator": "제52조",
+          "page_number": null,
+          "dates": {
+            "effective_date": "2026-10-02",
+            "article_effective_date": "2026-10-02",
+            "unit_effective_date": null,
+            "promulgation_date": null,
+            "judgment_date": null,
+            "decision_date": null,
+            "updated_date": null,
+            "terms_revision_date": null,
+            "information_as_of": null,
+            "as_of": "2026-10-11"
+          },
+          "excerpt": "제52조(소비자 등에게 불리한 계약의 금지) 제7조, 제7조의2, 제8조부터 제10조까지, 제16조부터 제19조까지, 제30조부터 제32조까지의 규정 중 어느 하나를 위반한 계약으로서 소비자에게 불리한 것은 효력이 없다. <개정 2018.6.12>",
+          "text_sha256": "52660a7113f580f7da90995d9e82b9b4366690c948808afcfabbf3be2fbaaf6d",
+          "warnings": [
+            "수집 당시 현행 버전. 과거 사건에 적용할 구법 버전은 별도 확인 필요"
+          ],
+          "source_anomaly": null,
+          "calculation_restricted_clause": null
+        },
+        {
+          "chunk_id": "003572_286997_20260701_art_13_0_chunk_0000",
+          "document_id": "law:003572_286997_20260701",
+          "evaluation_source_id": "law_003572",
+          "title": "방문판매 등에 관한 법률 시행령",
+          "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=286997",
+          "source_path": "data/raw/laws/003572_286997_20260701.json",
+          "source_locator": "제13조",
+          "page_number": null,
+          "dates": {
+            "effective_date": "2026-07-01",
+            "article_effective_date": "2026-07-01",
+            "unit_effective_date": null,
+            "promulgation_date": null,
+            "judgment_date": null,
+            "decision_date": null,
+            "updated_date": null,
+            "terms_revision_date": null,
+            "information_as_of": null,
+            "as_of": "2026-10-11"
+          },
+          "excerpt": "제13조(지연배상금의 이율) 법 제9조제2항 후단에서 \"대통령령으로 정하는 이율\"이란 연 100분의 15를 말한다. <개정 2016.11.22>",
+          "text_sha256": "6bdbffb43e02c3f9a9d04ebfea8fea84ced76168e886889a9adb9b11bdbe316c",
           "warnings": [
             "수집 당시 현행 버전. 과거 사건에 적용할 구법 버전은 별도 확인 필요"
           ],
@@ -6954,7 +7026,7 @@
           "chunk_id": "kca_case_1003739114_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003739114",
           "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
-          "score": 111.80341,
+          "score": 111.80963,
           "role": "facts",
           "matched_span": {
             "start": 577,
@@ -6964,7 +7036,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -6975,7 +7050,7 @@
           "chunk_id": "kca_case_1003739114_case_reasoning_0001",
           "document_id": "mediation_case:kca_case_1003739114",
           "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
-          "score": 99.57129,
+          "score": 99.57723,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -6985,7 +7060,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -6996,7 +7074,7 @@
           "chunk_id": "kca_case_1003640779_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003640779",
           "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
-          "score": 66.86901,
+          "score": 66.87328,
           "role": "facts",
           "matched_span": {
             "start": 0,
@@ -7006,7 +7084,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -7017,7 +7098,7 @@
           "chunk_id": "kca_pilates_1003941650_case_reasoning_0000",
           "document_id": "mediation_case:kca_pilates_1003941650",
           "title": "필라테스 계약 중도해지에 따른 환급 요구",
-          "score": 58.57941,
+          "score": 58.58581,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -7038,7 +7119,7 @@
           "chunk_id": "kca_pilates_1003941650_case_facts_0000",
           "document_id": "mediation_case:kca_pilates_1003941650",
           "title": "필라테스 계약 중도해지에 따른 환급 요구",
-          "score": 52.88945,
+          "score": 52.89281,
           "role": "facts",
           "matched_span": {
             "start": 0,
@@ -7059,34 +7140,34 @@
         {
           "chunk_id": "kca_case_1003739114_case_party_claims_0000",
           "document_id": "mediation_case:kca_case_1003739114",
-          "score": 120.28751
+          "score": 112.69183
         },
         {
           "chunk_id": "kca_pilates_1003941650_case_reasoning_0000",
           "document_id": "mediation_case:kca_pilates_1003941650",
-          "score": 63.67101
+          "score": 63.86364
         },
         {
           "chunk_id": "kca_case_1003640779_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003640779",
-          "score": 62.18873
+          "score": 60.10305
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0028_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 46.65161
+          "score": 46.76126
         },
         {
           "chunk_id": "ftc_terms_47762_file_05d51a47_terms_article_4_0000",
           "document_id": "standard_terms:ftc_terms_47762_file_05d51a47",
-          "score": 38.64049
+          "score": 38.7095
         }
       ],
       "legacy_source_hit_at_5": true,
       "legacy_chunk_hit_at_5": false,
       "reviewed_source_hit_at_5": true,
       "reviewed_chunk_hit_at_5": true,
-      "next_step": "사례 당시 구법과 수집한 시행령·시행규칙의 개정 시점 대조"
+      "next_step": "현재 질문 범위의 기본 근거 유지"
     },
     {
       "domain": "헬스장·필라테스 환불",
@@ -7098,12 +7179,14 @@
         "환급 산정의 사건별 조건"
       ],
       "review_status": "partial",
-      "review_note": "양도 사례에 방문판매법 제31·32조와 산정기준을 연결. 사례 금액을 일반화하지 않으며 시행령 제40·41조와 시행규칙 제22조를 추가 연결. 양도 약정·실제 지급액과 사례 당시 적용 시점은 추가 검토 필요.",
+      "review_note": "양도 사례에 방문판매법 제31·32조와 산정기준을 연결. 사례 금액을 일반화하지 않으며 시행령 제40·41조와 시행규칙 제22조를 추가 연결. 2023년 계약·해지 시점의 관련 조문과 수집본의 동일성 대조 완료. 약관법 제9조 당시 본문도 사례 문맥에 연결. 양도 약정·실제 지급액·채권 동일성과 사건별 이용 증빙은 추가 검토 필요.",
       "reviewed_chunk_ids": [
         "kca_case_1003640779_case_reasoning_0000",
         "kca_case_1003640779_case_decision_0000",
         "000354_290239_20261002_art_31_0_chunk_0000",
         "000354_290239_20261002_art_32_0_chunk_0000",
+        "000354_290239_20261002_art_52_0_chunk_0000",
+        "003572_286997_20260701_art_13_0_chunk_0000",
         "003572_286997_20260701_art_40_0_chunk_0000",
         "003572_286997_20260701_art_41_0_chunk_0000",
         "007196_284567_20260317_art_22_0_chunk_0000",
@@ -7111,7 +7194,7 @@
         "continual_contract_refund_article_4_0000",
         "continual_contract_refund_appendix_0_0000"
       ],
-      "follow_up": "양도 약정·실제 지급액 및 사례 당시 구법 적용 조건 검토",
+      "follow_up": "시점 대조 완료; 양도 약정·실제 지급액·채권 동일성 및 조정일 미상 유지",
       "evidence": [
         {
           "chunk_id": "kca_case_1003640779_case_reasoning_0000",
@@ -7138,7 +7221,10 @@
           "text_sha256": "97aedb04aa339c2f967124841febd3874e29b5a04eaece10be62910a4bbb79e0",
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null
@@ -7168,7 +7254,10 @@
           "text_sha256": "e3f61c0f686e108808a356eac88194c2bd3998e5c6e8e9cbf8192a62ad6caf3a",
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null
@@ -7225,6 +7314,64 @@
           },
           "excerpt": "제32조(계약 해지 또는 해제의 효과와 위약금 등)\n① 계속거래업자등은 자신의 책임이 없는 사유로 계속거래등의 계약이 해지 또는 해제된 경우 소비자에게 해지 또는 해제로 발생하는 손실을 현저하게 초과하는 위약금을 청구하여서는 아니 되고, 가입비나 그 밖에 명칭에 상관없이 실제 공급된 재화등의 대가를 초과하여 수령한 대금의 환급을 부당하게 거부하여서는 아니 된다.\n② 계속거래등의 계약이 해지 또는 해제된 경우 소비자는 반환할 수 있는 재화등을 계속거래업자등에게 반환할 수 있으며, 계속거래업자등은 대통령령으로 정하는 바에 따라 대금 환급 또는 위약금 경감 등의 조치를 하여야 한다.\n③ 계속거래업자등은 자신의 책임이 없는 사유로 계약이 해지 또는 해제된 경우 소비자로부터 받은 재화등의 대금(재화등이 반환된 경우 환급하여야 할 금액을 포함한다)이 이미 공급한 재화등의 대금에 위약금을 더한 금액보다 많으면 그 차액을 소비자에게 환급하여야 한다. 이 경우 환급이 지연되는 경우에는 총리령으로 정하는 지연기간에 대한 지연배상금을 함께 환급하여야 한다.\n④ 공정거래위원회는 제1항에 따른 위약금 청구와 제2항에 따른 대금 환급 또는 위약금 경감과 관련된 분쟁을 방지하기 위하여 필요한 경우 위약금 및 대금의 환급에 관한 산정기준을 정하여 고시할 수 있다.",
           "text_sha256": "dfd03a04aa7380b773cf45d303bd63a865e6acffb334f41ae9dbca91790157d9",
+          "warnings": [
+            "수집 당시 현행 버전. 과거 사건에 적용할 구법 버전은 별도 확인 필요"
+          ],
+          "source_anomaly": null,
+          "calculation_restricted_clause": null
+        },
+        {
+          "chunk_id": "000354_290239_20261002_art_52_0_chunk_0000",
+          "document_id": "law:000354_290239_20261002",
+          "evaluation_source_id": "law_000354",
+          "title": "방문판매 등에 관한 법률",
+          "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=290239",
+          "source_path": "data/raw/laws/000354_290239_20261002.json",
+          "source_locator": "제52조",
+          "page_number": null,
+          "dates": {
+            "effective_date": "2026-10-02",
+            "article_effective_date": "2026-10-02",
+            "unit_effective_date": null,
+            "promulgation_date": null,
+            "judgment_date": null,
+            "decision_date": null,
+            "updated_date": null,
+            "terms_revision_date": null,
+            "information_as_of": null,
+            "as_of": "2026-10-11"
+          },
+          "excerpt": "제52조(소비자 등에게 불리한 계약의 금지) 제7조, 제7조의2, 제8조부터 제10조까지, 제16조부터 제19조까지, 제30조부터 제32조까지의 규정 중 어느 하나를 위반한 계약으로서 소비자에게 불리한 것은 효력이 없다. <개정 2018.6.12>",
+          "text_sha256": "52660a7113f580f7da90995d9e82b9b4366690c948808afcfabbf3be2fbaaf6d",
+          "warnings": [
+            "수집 당시 현행 버전. 과거 사건에 적용할 구법 버전은 별도 확인 필요"
+          ],
+          "source_anomaly": null,
+          "calculation_restricted_clause": null
+        },
+        {
+          "chunk_id": "003572_286997_20260701_art_13_0_chunk_0000",
+          "document_id": "law:003572_286997_20260701",
+          "evaluation_source_id": "law_003572",
+          "title": "방문판매 등에 관한 법률 시행령",
+          "source_url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=286997",
+          "source_path": "data/raw/laws/003572_286997_20260701.json",
+          "source_locator": "제13조",
+          "page_number": null,
+          "dates": {
+            "effective_date": "2026-07-01",
+            "article_effective_date": "2026-07-01",
+            "unit_effective_date": null,
+            "promulgation_date": null,
+            "judgment_date": null,
+            "decision_date": null,
+            "updated_date": null,
+            "terms_revision_date": null,
+            "information_as_of": null,
+            "as_of": "2026-10-11"
+          },
+          "excerpt": "제13조(지연배상금의 이율) 법 제9조제2항 후단에서 \"대통령령으로 정하는 이율\"이란 연 100분의 15를 말한다. <개정 2016.11.22>",
+          "text_sha256": "6bdbffb43e02c3f9a9d04ebfea8fea84ced76168e886889a9adb9b11bdbe316c",
           "warnings": [
             "수집 당시 현행 버전. 과거 사건에 적용할 구법 버전은 별도 확인 필요"
           ],
@@ -7414,7 +7561,7 @@
           "chunk_id": "kca_case_1003640779_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003640779",
           "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
-          "score": 90.90932,
+          "score": 90.91756,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -7424,7 +7571,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -7435,7 +7585,7 @@
           "chunk_id": "kca_case_1003739114_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003739114",
           "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
-          "score": 81.56778,
+          "score": 81.57364,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -7445,7 +7595,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -7456,7 +7609,7 @@
           "chunk_id": "kca_case_1003640779_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003640779",
           "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
-          "score": 80.47833,
+          "score": 80.48418,
           "role": "facts",
           "matched_span": {
             "start": 0,
@@ -7466,7 +7619,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -7477,7 +7633,7 @@
           "chunk_id": "613301_0005",
           "document_id": "precedent:613301",
           "title": "시정명령및과징금납부명령취소",
-          "score": 72.45883,
+          "score": 72.46371,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -7497,7 +7653,7 @@
           "chunk_id": "kca_case_1003739114_case_reasoning_0001",
           "document_id": "mediation_case:kca_case_1003739114",
           "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
-          "score": 63.32691,
+          "score": 63.33031,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -7507,7 +7663,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -7518,34 +7677,34 @@
         {
           "chunk_id": "kca_case_1003640779_case_party_claims_0000",
           "document_id": "mediation_case:kca_case_1003640779",
-          "score": 109.74775
+          "score": 99.18412
         },
         {
           "chunk_id": "613301_0005",
           "document_id": "precedent:613301",
-          "score": 73.24854
+          "score": 73.34311
         },
         {
           "chunk_id": "kca_case_1003739114_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003739114",
-          "score": 72.34731
+          "score": 67.24091
         },
         {
           "chunk_id": "ftc_terms_47762_file_05d51a47_terms_article_10_0000",
           "document_id": "standard_terms:ftc_terms_47762_file_05d51a47",
-          "score": 56.30057
+          "score": 56.40908
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0007_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 50.94289
+          "score": 51.02454
         }
       ],
       "legacy_source_hit_at_5": true,
       "legacy_chunk_hit_at_5": false,
       "reviewed_source_hit_at_5": true,
       "reviewed_chunk_hit_at_5": true,
-      "next_step": "양도 약정·실제 지급액 및 사례 당시 구법 적용 조건 검토"
+      "next_step": "시점 대조 완료; 양도 약정·실제 지급액·채권 동일성 및 조정일 미상 유지"
     },
     {
       "domain": "헬스장·필라테스 환불",
@@ -8696,7 +8855,7 @@
           "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_2_0000",
           "document_id": "standard_terms:ftc_terms_46118_file_5b139f26",
           "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
-          "score": 120.71913,
+          "score": 120.72553,
           "role": "standard_terms_article",
           "matched_span": {
             "start": 0,
@@ -8717,7 +8876,7 @@
           "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_11_0000",
           "document_id": "standard_terms:ftc_terms_46118_file_5b139f26",
           "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
-          "score": 119.59362,
+          "score": 119.59934,
           "role": "standard_terms_article",
           "matched_span": {
             "start": 0,
@@ -8738,7 +8897,7 @@
           "chunk_id": "consumer_dispute_standard_industry_fitness_refund_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
           "title": "소비자분쟁해결기준",
-          "score": 66.25893,
+          "score": 66.2612,
           "role": "industry_table",
           "matched_span": {
             "start": 5845,
@@ -8759,7 +8918,7 @@
           "chunk_id": "kca_fitness_closure_gym_closure_risk_0000",
           "document_id": "official_guide:kca_fitness_closure_gym",
           "title": "헬스장 계약·폐업 피해예방 안내",
-          "score": 65.58418,
+          "score": 65.58682,
           "role": "closure_risk",
           "matched_span": {
             "start": 0,
@@ -8781,7 +8940,7 @@
           "chunk_id": "kca_case_1003892170_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003892170",
           "title": "PT 수강 계약해지에 따른 잔여 대금 환급 및 배상 요구",
-          "score": 61.23174,
+          "score": 61.2358,
           "role": "reasoning",
           "matched_span": {
             "start": 536,
@@ -8802,27 +8961,27 @@
         {
           "chunk_id": "kca_fitness_closure_gym_closure_risk_0000",
           "document_id": "official_guide:kca_fitness_closure_gym",
-          "score": 68.02095
+          "score": 68.1032
         },
         {
           "chunk_id": "ftc_terms_46118_file_5b139f26_terms_article_2_0000",
           "document_id": "standard_terms:ftc_terms_46118_file_5b139f26",
-          "score": 60.10729
+          "score": 60.20507
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0011_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 52.08142
+          "score": 52.11468
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0055_table_0001",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 51.81294
+          "score": 51.89659
         },
         {
           "chunk_id": "kca_case_1003892170_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003892170",
-          "score": 44.59328
+          "score": 44.70116
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -8883,7 +9042,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 122.59685,
+          "score": 122.60396,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -8903,7 +9062,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0075_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 47.50082,
+          "score": 47.50537,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -8921,7 +9080,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0024_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 35.96177,
+          "score": 35.964,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -8941,7 +9100,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 34.03197,
+          "score": 34.03527,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -8961,7 +9120,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0023_table_0001",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 33.83154,
+          "score": 33.83369,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -8981,27 +9140,27 @@
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 125.61189
+          "score": 125.76847
         },
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0024_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 36.73716
+          "score": 36.7735
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 36.17036
+          "score": 36.25388
         },
         {
           "chunk_id": "622247_0008",
           "document_id": "precedent:622247",
-          "score": 33.21564
+          "score": 33.30003
         },
         {
           "chunk_id": "001872_285279_20261008_art_37_0_chunk_0000",
           "document_id": "law:001872_285279_20261008",
-          "score": 31.29867
+          "score": 31.35181
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -9489,7 +9648,7 @@
           "chunk_id": "000129_218303_20200526_supplement_2005053107563_chunk_0000",
           "document_id": "law:000129_218303_20200526",
           "title": "최저임금법",
-          "score": 59.07393,
+          "score": 59.07801,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -9511,7 +9670,7 @@
           "chunk_id": "000129_218303_20200526_art_7_0_chunk_0000",
           "document_id": "law:000129_218303_20200526",
           "title": "최저임금법",
-          "score": 42.67356,
+          "score": 42.67526,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -9531,7 +9690,7 @@
           "chunk_id": "005247_206564_20190101_art_11_0_chunk_0000",
           "document_id": "law:005247_206564_20190101",
           "title": "최저임금법 시행령",
-          "score": 36.72751,
+          "score": 36.7282,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -9551,7 +9710,7 @@
           "chunk_id": "005247_206564_20190101_art_3_0_chunk_0000",
           "document_id": "law:005247_206564_20190101",
           "title": "최저임금법 시행령",
-          "score": 35.72536,
+          "score": 35.72612,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -9571,7 +9730,7 @@
           "chunk_id": "minimum_wage_2026_notice_body_0000",
           "document_id": "administrative_rule:minimum_wage_2026",
           "title": "2026년 적용 최저임금 고시",
-          "score": 34.78168,
+          "score": 34.78261,
           "role": "notice_body",
           "matched_span": {
             "start": 0,
@@ -9591,27 +9750,27 @@
         {
           "chunk_id": "000129_218303_20200526_supplement_2005053107563_chunk_0000",
           "document_id": "law:000129_218303_20200526",
-          "score": 58.50211
+          "score": 58.60574
         },
         {
           "chunk_id": "008480_282351_20260102_appendix_000300E_chunk_0001",
           "document_id": "law:008480_282351_20260102",
-          "score": 37.88503
+          "score": 37.93074
         },
         {
           "chunk_id": "005247_206564_20190101_art_11_0_chunk_0000",
           "document_id": "law:005247_206564_20190101",
-          "score": 37.36612
+          "score": 37.38222
         },
         {
           "chunk_id": "minimum_wage_2026_notice_body_0000",
           "document_id": "administrative_rule:minimum_wage_2026",
-          "score": 35.69951
+          "score": 35.72135
         },
         {
           "chunk_id": "623049_0004",
           "document_id": "precedent:623049",
-          "score": 32.11475
+          "score": 32.19503
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -9733,7 +9892,7 @@
           "chunk_id": "622355_0040",
           "document_id": "precedent:622355",
           "title": "임금(본소)·임금 등 청구(반소)",
-          "score": 64.84613,
+          "score": 64.84836,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -9753,7 +9912,7 @@
           "chunk_id": "622355_0033",
           "document_id": "precedent:622355",
           "title": "임금(본소)·임금 등 청구(반소)",
-          "score": 60.24094,
+          "score": 60.24464,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -9773,7 +9932,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0055_table_0001",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 50.50328,
+          "score": 50.50614,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -9793,7 +9952,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0055_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 50.03437,
+          "score": 50.03729,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -9813,7 +9972,7 @@
           "chunk_id": "001872_285279_20261008_art_18_0_chunk_0000",
           "document_id": "law:001872_285279_20261008",
           "title": "근로기준법",
-          "score": 47.77321,
+          "score": 47.77533,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -9833,27 +9992,27 @@
         {
           "chunk_id": "622355_0040",
           "document_id": "precedent:622355",
-          "score": 65.5577
+          "score": 65.61419
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0055_table_0001",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 52.57962
+          "score": 52.66005
         },
         {
           "chunk_id": "001872_285279_20261008_art_18_0_chunk_0000",
           "document_id": "law:001872_285279_20261008",
-          "score": 48.98026
+          "score": 48.94078
         },
         {
           "chunk_id": "613301_0005",
           "document_id": "precedent:613301",
-          "score": 32.36459
+          "score": 32.46663
         },
         {
           "chunk_id": "609505_0007",
           "document_id": "precedent:609505",
-          "score": 32.36439
+          "score": 32.33393
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -10101,7 +10260,7 @@
           "chunk_id": "moel_wage_procedure_procedure_0_0000",
           "document_id": "official_guide:moel_wage_procedure",
           "title": "임금체불 진정·고소 신고 및 처리 절차",
-          "score": 56.83136,
+          "score": 56.83339,
           "role": "procedure",
           "matched_span": {
             "start": 0,
@@ -10122,7 +10281,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0024_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 41.68028,
+          "score": 41.6836,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10142,7 +10301,7 @@
           "chunk_id": "moel_wage_procedure_procedure_1_0000",
           "document_id": "official_guide:moel_wage_procedure",
           "title": "임금체불 진정·고소 신고 및 처리 절차",
-          "score": 39.48536,
+          "score": 39.48684,
           "role": "procedure",
           "matched_span": {
             "start": 0,
@@ -10163,7 +10322,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0078_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 38.19344,
+          "score": 38.1965,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10181,7 +10340,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 34.23861,
+          "score": 34.24055,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10201,27 +10360,27 @@
         {
           "chunk_id": "moel_wage_procedure_procedure_0_0000",
           "document_id": "official_guide:moel_wage_procedure",
-          "score": 56.63165
+          "score": 56.63993
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0024_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 43.09474
+          "score": 43.16057
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0078_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 40.5785
+          "score": 40.64391
         },
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0024_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 29.48077
+          "score": 29.56235
         },
         {
           "chunk_id": "009883_284455_20260918_art_4_0_chunk_0000",
           "document_id": "law:009883_284455_20260918",
-          "score": 24.11414
+          "score": 24.09914
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -10283,7 +10442,7 @@
           "chunk_id": "009883_284455_20260918_art_10_0_chunk_0000",
           "document_id": "law:009883_284455_20260918",
           "title": "근로자퇴직급여 보장법",
-          "score": 56.94916,
+          "score": 56.95071,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10303,7 +10462,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0076_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 56.71058,
+          "score": 56.7148,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10321,7 +10480,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0077_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 43.77108,
+          "score": 43.77552,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10341,7 +10500,7 @@
           "chunk_id": "009883_284455_20260918_art_8_0_chunk_0000",
           "document_id": "law:009883_284455_20260918",
           "title": "근로자퇴직급여 보장법",
-          "score": 38.2114,
+          "score": 38.21287,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10361,7 +10520,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0008_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 38.13048,
+          "score": 38.13375,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10381,27 +10540,27 @@
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0076_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 59.87029
+          "score": 59.98259
         },
         {
           "chunk_id": "009883_284455_20260918_art_10_0_chunk_0000",
           "document_id": "law:009883_284455_20260918",
-          "score": 56.69365
+          "score": 56.73768
         },
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0008_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 40.54816
+          "score": 40.63401
         },
         {
           "chunk_id": "001706_284415_20260317_art_150_0_chunk_0000",
           "document_id": "law:001706_284415_20260317",
-          "score": 37.67511
+          "score": 37.59012
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0015_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 35.9662
+          "score": 36.07692
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -10493,7 +10652,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0035_body_0001",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 84.49909,
+          "score": 84.50371,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10511,7 +10670,7 @@
           "chunk_id": "234477_0001",
           "document_id": "precedent:234477",
           "title": "자본시장과금융투자업에관한법률위반·근로기준법위반·근로자퇴직급여보장법위반·위계공무집행방해",
-          "score": 68.41392,
+          "score": 68.41987,
           "role": "court_recorded_criminal_facts",
           "matched_span": {
             "start": 0,
@@ -10533,7 +10692,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0034_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 64.79862,
+          "score": 64.80349,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10551,7 +10710,7 @@
           "chunk_id": "234477_0000",
           "document_id": "precedent:234477",
           "title": "자본시장과금융투자업에관한법률위반·근로기준법위반·근로자퇴직급여보장법위반·위계공무집행방해",
-          "score": 57.4839,
+          "score": 57.48898,
           "role": "court_recorded_criminal_facts",
           "matched_span": {
             "start": 0,
@@ -10573,7 +10732,7 @@
           "chunk_id": "easylaw_housing_distribution_deadline_exceptions_0000",
           "document_id": "official_guide:easylaw_housing_distribution",
           "title": "보증금 회수: 배당요구",
-          "score": 43.32952,
+          "score": 43.33256,
           "role": "housing_deadline_exceptions",
           "matched_span": {
             "start": 0,
@@ -10597,27 +10756,27 @@
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0035_body_0001",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 87.16546
+          "score": 87.28349
         },
         {
           "chunk_id": "234477_0001",
           "document_id": "precedent:234477",
-          "score": 71.33559
+          "score": 71.49511
         },
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0008_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 41.57007
+          "score": 41.65869
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0021_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 40.21496
+          "score": 40.32583
         },
         {
           "chunk_id": "guide_246eabd0676d5957_p0032_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
-          "score": 36.54022
+          "score": 36.64605
         }
       ],
       "legacy_source_hit_at_5": false,
@@ -10707,7 +10866,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0037_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 43.60783,
+          "score": 43.61229,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10725,7 +10884,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0036_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 39.40551,
+          "score": 39.40828,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10745,7 +10904,7 @@
           "chunk_id": "004950_287183_20260701_art_30_0_chunk_0000",
           "document_id": "law:004950_287183_20260701",
           "title": "주택임대차보호법 시행령",
-          "score": 31.46541,
+          "score": 31.46733,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10765,7 +10924,7 @@
           "chunk_id": "009325_272631_20250712_art_216_0_chunk_0000",
           "document_id": "law:009325_272631_20250712",
           "title": "민사집행규칙",
-          "score": 30.61419,
+          "score": 30.61529,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10785,7 +10944,7 @@
           "chunk_id": "kca_case_1003640779_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003640779",
           "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
-          "score": 30.52949,
+          "score": 30.53263,
           "role": "facts",
           "matched_span": {
             "start": 0,
@@ -10795,7 +10954,10 @@
           },
           "warnings": [
             "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+            "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+            "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+            "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+            "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null,
@@ -10806,27 +10968,27 @@
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0037_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 47.52303
+          "score": 47.64474
         },
         {
           "chunk_id": "004950_287183_20260701_art_30_0_chunk_0000",
           "document_id": "law:004950_287183_20260701",
-          "score": 32.43722
+          "score": 32.48604
         },
         {
           "chunk_id": "622837_0010",
           "document_id": "precedent:622837",
-          "score": 31.11346
+          "score": 31.20449
         },
         {
           "chunk_id": "003979_289451_20260911_art_64_0_chunk_0000",
           "document_id": "law:003979_289451_20260911",
-          "score": 31.05794
+          "score": 31.11315
         },
         {
-          "chunk_id": "kca_case_1003640779_case_facts_0000",
-          "document_id": "mediation_case:kca_case_1003640779",
-          "score": 30.6036
+          "chunk_id": "009325_272631_20250712_art_216_0_chunk_0000",
+          "document_id": "law:009325_272631_20250712",
+          "score": 29.99263
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -10918,7 +11080,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 88.80566,
+          "score": 88.81113,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10938,7 +11100,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0044_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 75.06361,
+          "score": 75.06734,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -10958,7 +11120,7 @@
           "chunk_id": "605067_0000",
           "document_id": "precedent:605067",
           "title": "부당해고구제재심판정취소[금전보상명령신청의 구제이익 존부가 문제된 사건]",
-          "score": 60.82494,
+          "score": 60.82874,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -10976,7 +11138,7 @@
           "chunk_id": "612851_0002",
           "document_id": "precedent:612851",
           "title": "부당해고구제재심판정취소",
-          "score": 57.60407,
+          "score": 57.60799,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -10994,7 +11156,7 @@
           "chunk_id": "605067_0003",
           "document_id": "precedent:605067",
           "title": "부당해고구제재심판정취소[금전보상명령신청의 구제이익 존부가 문제된 사건]",
-          "score": 53.10068,
+          "score": 53.10523,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -11012,27 +11174,27 @@
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 91.89492
+          "score": 92.01497
         },
         {
           "chunk_id": "605067_0000",
           "document_id": "precedent:605067",
-          "score": 64.73808
+          "score": 64.76018
         },
         {
           "chunk_id": "612851_0002",
           "document_id": "precedent:612851",
-          "score": 62.06256
+          "score": 62.09046
         },
         {
           "chunk_id": "001872_285279_20261008_art_28_0_chunk_0000",
           "document_id": "law:001872_285279_20261008",
-          "score": 50.90672
+          "score": 50.84333
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0024_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 38.46947
+          "score": 38.5261
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -11339,7 +11501,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0013_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 97.00324,
+          "score": 97.01157,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11357,7 +11519,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0014_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 83.42182,
+          "score": 83.42595,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11377,7 +11539,7 @@
           "chunk_id": "612851_0002",
           "document_id": "precedent:612851",
           "title": "부당해고구제재심판정취소",
-          "score": 63.45213,
+          "score": 63.45688,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -11395,7 +11557,7 @@
           "chunk_id": "605067_0000",
           "document_id": "precedent:605067",
           "title": "부당해고구제재심판정취소[금전보상명령신청의 구제이익 존부가 문제된 사건]",
-          "score": 58.63209,
+          "score": 58.63568,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -11413,7 +11575,7 @@
           "chunk_id": "001872_285279_20261008_art_28_0_chunk_0000",
           "document_id": "law:001872_285279_20261008",
           "title": "근로기준법",
-          "score": 58.09002,
+          "score": 58.09153,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11433,27 +11595,27 @@
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0013_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 103.82545
+          "score": 103.92664
         },
         {
           "chunk_id": "612851_0002",
           "document_id": "precedent:612851",
-          "score": 68.29963
+          "score": 68.34758
         },
         {
           "chunk_id": "605067_0000",
           "document_id": "precedent:605067",
-          "score": 62.22538
+          "score": 62.24192
         },
         {
           "chunk_id": "001872_285279_20261008_art_28_0_chunk_0000",
           "document_id": "law:001872_285279_20261008",
-          "score": 58.93178
+          "score": 58.88208
         },
         {
           "chunk_id": "234477_0001",
           "document_id": "precedent:234477",
-          "score": 37.7035
+          "score": 37.78066
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -11545,7 +11707,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0048_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 89.97988,
+          "score": 89.98441,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11565,7 +11727,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0034_body_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 66.45359,
+          "score": 66.45834,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11583,7 +11745,7 @@
           "chunk_id": "234477_0001",
           "document_id": "precedent:234477",
           "title": "자본시장과금융투자업에관한법률위반·근로기준법위반·근로자퇴직급여보장법위반·위계공무집행방해",
-          "score": 51.66636,
+          "score": 51.67112,
           "role": "court_recorded_criminal_facts",
           "matched_span": {
             "start": 0,
@@ -11605,7 +11767,7 @@
           "chunk_id": "005247_206564_20190101_art_3_0_chunk_0000",
           "document_id": "law:005247_206564_20190101",
           "title": "최저임금법 시행령",
-          "score": 40.57737,
+          "score": 40.57905,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11625,7 +11787,7 @@
           "chunk_id": "622247_0001",
           "document_id": "precedent:622247",
           "title": "기타(금전)[원고가 전세보증금반환보증계약에 기하여 주택도시보증공사를 상대로 보증채무 이행금에 대한 지연손해금의 지급을 구하는 사건]",
-          "score": 37.46233,
+          "score": 37.4662,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -11643,27 +11805,27 @@
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0048_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 91.21231
+          "score": 91.31751
         },
         {
           "chunk_id": "234477_0001",
           "document_id": "precedent:234477",
-          "score": 52.58836
+          "score": 52.69688
         },
         {
           "chunk_id": "005247_206564_20190101_art_3_0_chunk_0000",
           "document_id": "law:005247_206564_20190101",
-          "score": 42.77229
+          "score": 42.81196
         },
         {
           "chunk_id": "622247_0001",
           "document_id": "precedent:622247",
-          "score": 39.04562
+          "score": 39.13876
         },
         {
           "chunk_id": "001872_285279_20261008_supplement_2014032412527_chunk_0000",
           "document_id": "law:001872_285279_20261008",
-          "score": 35.56502
+          "score": 35.64761
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -11754,7 +11916,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0012_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 54.80492,
+          "score": 54.8096,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11774,7 +11936,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0015_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 50.86067,
+          "score": 50.86685,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11792,7 +11954,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0011_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 50.48018,
+          "score": 50.48536,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11810,7 +11972,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0009_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 50.26495,
+          "score": 50.27053,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -11830,7 +11992,7 @@
           "chunk_id": "621921_0003",
           "document_id": "precedent:621921",
           "title": "사기·업무상배임·민간임대주택에관한특별법위반·사문서위조·위조사문서행사·공인중개사법위반·자격모용사문서작성·자격모용작성사문서행사·횡령·사기방조",
-          "score": 43.49422,
+          "score": 43.49749,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -11848,27 +12010,27 @@
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0012_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 57.42965
+          "score": 57.51124
         },
         {
           "chunk_id": "guide_246eabd0676d5957_p0015_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
-          "score": 55.64506
+          "score": 55.79153
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0009_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 54.39663
+          "score": 54.52324
         },
         {
           "chunk_id": "622247_0009",
           "document_id": "precedent:622247",
-          "score": 44.90725
+          "score": 44.9865
         },
         {
           "chunk_id": "621921_0003",
           "document_id": "precedent:621921",
-          "score": 44.71755
+          "score": 44.79446
         }
       ],
       "legacy_source_hit_at_5": false,
@@ -12338,7 +12500,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0067_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 87.45594,
+          "score": 87.46451,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -12356,7 +12518,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0066_body_0001",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 80.648,
+          "score": 80.65247,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -12374,7 +12536,7 @@
           "chunk_id": "004950_287183_20260701_art_11_0_chunk_0000",
           "document_id": "law:004950_287183_20260701",
           "title": "주택임대차보호법 시행령",
-          "score": 60.73703,
+          "score": 60.74112,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -12394,7 +12556,7 @@
           "chunk_id": "004950_287183_20260701_art_10_0_chunk_0000",
           "document_id": "law:004950_287183_20260701",
           "title": "주택임대차보호법 시행령",
-          "score": 56.42366,
+          "score": 56.42813,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -12414,7 +12576,7 @@
           "chunk_id": "616251_0009",
           "document_id": "precedent:616251",
           "title": "배당이의",
-          "score": 52.47875,
+          "score": 52.4825,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -12432,27 +12594,27 @@
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0067_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 95.131
+          "score": 95.36381
         },
         {
           "chunk_id": "004950_287183_20260701_art_11_0_chunk_0000",
           "document_id": "law:004950_287183_20260701",
-          "score": 64.59713
+          "score": 64.70044
         },
         {
           "chunk_id": "easylaw_housing_distribution_maintain_priority_0000",
           "document_id": "official_guide:easylaw_housing_distribution",
-          "score": 62.70969
+          "score": 62.77808
         },
         {
           "chunk_id": "easylaw_housing_termination_registration_move_0000",
           "document_id": "official_guide:easylaw_housing_termination",
-          "score": 59.83774
+          "score": 59.86907
         },
         {
           "chunk_id": "616251_0009",
           "document_id": "precedent:616251",
-          "score": 54.69709
+          "score": 54.79005
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -12792,7 +12954,7 @@
           "chunk_id": "622247_0009",
           "document_id": "precedent:622247",
           "title": "기타(금전)[원고가 전세보증금반환보증계약에 기하여 주택도시보증공사를 상대로 보증채무 이행금에 대한 지연손해금의 지급을 구하는 사건]",
-          "score": 93.99048,
+          "score": 93.99786,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -12810,7 +12972,7 @@
           "chunk_id": "622247_0000",
           "document_id": "precedent:622247",
           "title": "기타(금전)[원고가 전세보증금반환보증계약에 기하여 주택도시보증공사를 상대로 보증채무 이행금에 대한 지연손해금의 지급을 구하는 사건]",
-          "score": 82.25847,
+          "score": 82.26544,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -12828,7 +12990,7 @@
           "chunk_id": "147076_0009",
           "document_id": "precedent:147076",
           "title": "건물명도등·임대차보증금반환등",
-          "score": 82.05174,
+          "score": 82.05739,
           "role": "civil_historical_interest",
           "matched_span": {
             "start": 0,
@@ -12850,7 +13012,7 @@
           "chunk_id": "kca_case_1001329664_case_reasoning_0003",
           "document_id": "mediation_case:kca_case_1001329664",
           "title": "택배 배송 중 파손된 컴퓨터 배상 요구",
-          "score": 64.98288,
+          "score": 64.98736,
           "role": "reasoning",
           "matched_span": {
             "start": 471,
@@ -12871,7 +13033,7 @@
           "chunk_id": "622971_0000",
           "document_id": "precedent:622971",
           "title": "보증금반환",
-          "score": 63.71492,
+          "score": 63.7204,
           "role": "full_document",
           "matched_span": {
             "start": 0,
@@ -12889,27 +13051,27 @@
         {
           "chunk_id": "622247_0009",
           "document_id": "precedent:622247",
-          "score": 99.48038
+          "score": 99.6355
         },
         {
           "chunk_id": "147076_0009",
           "document_id": "precedent:147076",
-          "score": 80.54281
+          "score": 80.68698
         },
         {
           "chunk_id": "easylaw_housing_termination_registration_move_0000",
           "document_id": "official_guide:easylaw_housing_termination",
-          "score": 70.72361
+          "score": 70.84773
         },
         {
           "chunk_id": "623979_0009",
           "document_id": "precedent:623979",
-          "score": 68.8356
+          "score": 68.98509
         },
         {
           "chunk_id": "622971_0000",
           "document_id": "precedent:622971",
-          "score": 67.2988
+          "score": 67.41846
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -13474,7 +13636,7 @@
           "chunk_id": "147076_0003",
           "document_id": "precedent:147076",
           "title": "건물명도등·임대차보증금반환등",
-          "score": 86.42948,
+          "score": 86.43654,
           "role": "civil_court_discussion",
           "matched_span": {
             "start": 0,
@@ -13496,7 +13658,7 @@
           "chunk_id": "147076_0004",
           "document_id": "precedent:147076",
           "title": "건물명도등·임대차보증금반환등",
-          "score": 69.35997,
+          "score": 69.36646,
           "role": "civil_court_discussion",
           "matched_span": {
             "start": 0,
@@ -13518,7 +13680,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0030_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 54.85825,
+          "score": 54.86158,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -13538,7 +13700,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0031_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 53.27327,
+          "score": 53.27904,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -13558,7 +13720,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0085_body_0001",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 41.72672,
+          "score": 41.73106,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -13576,27 +13738,27 @@
         {
           "chunk_id": "147076_0003",
           "document_id": "precedent:147076",
-          "score": 89.86013
+          "score": 89.84386
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0031_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 57.7427
+          "score": 57.85903
         },
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0085_body_0001",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 44.65051
+          "score": 44.64705
         },
         {
           "chunk_id": "kca_case_1003940398_case_party_claims_0000",
           "document_id": "mediation_case:kca_case_1003940398",
-          "score": 42.1209
+          "score": 42.20413
         },
         {
           "chunk_id": "621921_0003",
           "document_id": "precedent:621921",
-          "score": 40.66671
+          "score": 40.7242
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -14258,7 +14420,7 @@
           "chunk_id": "easylaw_housing_distribution_application_0000",
           "document_id": "official_guide:easylaw_housing_distribution",
           "title": "보증금 회수: 배당요구",
-          "score": 102.89977,
+          "score": 102.90517,
           "role": "housing_application",
           "matched_span": {
             "start": 0,
@@ -14281,7 +14443,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0076_body_0001",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 101.93315,
+          "score": 101.93933,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14299,7 +14461,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0080_body_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 89.43747,
+          "score": 89.44319,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14317,7 +14479,7 @@
           "chunk_id": "easylaw_housing_distribution_deadline_exceptions_0000",
           "document_id": "official_guide:easylaw_housing_distribution",
           "title": "보증금 회수: 배당요구",
-          "score": 80.47985,
+          "score": 80.48444,
           "role": "housing_deadline_exceptions",
           "matched_span": {
             "start": 0,
@@ -14341,7 +14503,7 @@
           "chunk_id": "009290_268837_20260201_art_88_0_chunk_0000",
           "document_id": "law:009290_268837_20260201",
           "title": "민사집행법",
-          "score": 58.47923,
+          "score": 58.4809,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14361,27 +14523,27 @@
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0076_body_0001",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 105.72883
+          "score": 105.88626
         },
         {
           "chunk_id": "easylaw_housing_distribution_application_0000",
           "document_id": "official_guide:easylaw_housing_distribution",
-          "score": 90.74963
+          "score": 90.91518
         },
         {
           "chunk_id": "009290_268837_20260201_art_88_0_chunk_0000",
           "document_id": "law:009290_268837_20260201",
-          "score": 58.8293
+          "score": 58.87231
         },
         {
           "chunk_id": "easylaw_housing_termination_return_0000",
           "document_id": "official_guide:easylaw_housing_termination",
-          "score": 47.1931
+          "score": 47.28565
         },
         {
           "chunk_id": "009325_272631_20250712_art_48_0_chunk_0000",
           "document_id": "law:009325_272631_20250712",
-          "score": 44.18378
+          "score": 44.2131
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -14445,7 +14607,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0023_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 84.84119,
+          "score": 84.84792,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14463,7 +14625,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0026_body_0001",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 78.76343,
+          "score": 78.76804,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14481,7 +14643,7 @@
           "chunk_id": "kca_parcel_1003817349_case_reasoning_0000",
           "document_id": "mediation_case:kca_parcel_1003817349",
           "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
-          "score": 71.9227,
+          "score": 71.92749,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -14502,7 +14664,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0023_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 70.45017,
+          "score": 70.45431,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14522,7 +14684,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 62.82496,
+          "score": 62.83006,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14540,27 +14702,27 @@
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0023_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 88.63117
+          "score": 88.52743
         },
         {
           "chunk_id": "ftc_terms_11185_file_a321590d_terms_article_22_0000",
           "document_id": "standard_terms:ftc_terms_11185_file_a321590d",
-          "score": 75.50362
+          "score": 75.41678
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0023_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 70.0609
+          "score": 69.79727
         },
         {
           "chunk_id": "kca_parcel_1003817349_case_party_claims_0000",
           "document_id": "mediation_case:kca_parcel_1003817349",
-          "score": 65.87652
+          "score": 65.79498
         },
         {
           "chunk_id": "kca_case_1001243565_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1001243565",
-          "score": 65.28841
+          "score": 65.13545
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -14624,7 +14786,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0023_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 109.17309,
+          "score": 109.18249,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14642,7 +14804,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0010_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 89.32346,
+          "score": 89.32878,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14662,7 +14824,7 @@
           "chunk_id": "ftc_terms_11185_file_a321590d_terms_article_2_0000",
           "document_id": "standard_terms:ftc_terms_11185_file_a321590d",
           "title": "[제10026호] 택배 표준약관",
-          "score": 77.20141,
+          "score": 77.20428,
           "role": "standard_terms_article",
           "matched_span": {
             "start": 546,
@@ -14683,7 +14845,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0001",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 68.95722,
+          "score": 68.96067,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14701,7 +14863,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0023_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 62.7372,
+          "score": 62.74107,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14721,27 +14883,27 @@
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0023_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 116.82988
+          "score": 117.05585
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0001",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 70.514
+          "score": 70.58251
         },
         {
           "chunk_id": "ftc_terms_11185_file_a321590d_terms_article_2_0000",
           "document_id": "standard_terms:ftc_terms_11185_file_a321590d",
-          "score": 68.82628
+          "score": 68.90773
         },
         {
           "chunk_id": "kca_parcel_1003817349_case_reasoning_0000",
           "document_id": "mediation_case:kca_parcel_1003817349",
-          "score": 61.88091
+          "score": 61.99621
         },
         {
           "chunk_id": "consumer_dispute_standard_industry_parcel_loss_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
-          "score": 59.52621
+          "score": 59.61033
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -14804,7 +14966,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0018_body_0001",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 46.4477,
+          "score": 46.45191,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14822,7 +14984,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 44.9775,
+          "score": 44.97988,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14842,7 +15004,7 @@
           "chunk_id": "kca_case_1001329664_case_facts_0000",
           "document_id": "mediation_case:kca_case_1001329664",
           "title": "택배 배송 중 파손된 컴퓨터 배상 요구",
-          "score": 44.87596,
+          "score": 44.87757,
           "role": "facts",
           "matched_span": {
             "start": 0,
@@ -14863,7 +15025,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0024_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 43.78029,
+          "score": 43.78457,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14881,7 +15043,7 @@
           "chunk_id": "001706_284415_20260317_art_766_0_chunk_0000",
           "document_id": "law:001706_284415_20260317",
           "title": "민법",
-          "score": 34.23268,
+          "score": 34.23418,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -14901,27 +15063,27 @@
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0018_body_0001",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 49.3674
+          "score": 49.46294
         },
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 46.00731
+          "score": 46.06055
         },
         {
           "chunk_id": "kca_case_1001329664_case_facts_0000",
           "document_id": "mediation_case:kca_case_1001329664",
-          "score": 42.03809
+          "score": 42.05462
         },
         {
           "chunk_id": "001706_284415_20260317_art_766_0_chunk_0000",
           "document_id": "law:001706_284415_20260317",
-          "score": 36.10898
+          "score": 36.11067
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0021_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 34.59716
+          "score": 34.65975
         }
       ],
       "legacy_source_hit_at_5": false,
@@ -14985,7 +15147,7 @@
           "chunk_id": "ftc_terms_11185_file_a321590d_terms_article_22_0000",
           "document_id": "standard_terms:ftc_terms_11185_file_a321590d",
           "title": "[제10026호] 택배 표준약관",
-          "score": 82.11384,
+          "score": 82.11929,
           "role": "standard_terms_article",
           "matched_span": {
             "start": 1105,
@@ -15007,7 +15169,7 @@
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
           "title": "찾기쉬운 생활법령 - 해고근로자",
-          "score": 77.8773,
+          "score": 77.88181,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15027,7 +15189,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0023_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 57.17912,
+          "score": 57.18251,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15047,7 +15209,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 53.31596,
+          "score": 53.32162,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15065,7 +15227,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0018_body_0001",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 52.35669,
+          "score": 52.36159,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15083,27 +15245,27 @@
         {
           "chunk_id": "guide_cad7b1de1e4dc64c_p0090_table_0000",
           "document_id": "official_guide:guide_cad7b1de1e4dc64c",
-          "score": 79.73962
+          "score": 79.83393
         },
         {
           "chunk_id": "ftc_terms_11185_file_a321590d_terms_article_22_0000",
           "document_id": "standard_terms:ftc_terms_11185_file_a321590d",
-          "score": 63.03983
+          "score": 63.1824
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 56.28735
+          "score": 56.41678
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0018_body_0001",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 56.01473
+          "score": 56.12972
         },
         {
           "chunk_id": "kca_parcel_1003817349_case_reasoning_0000",
           "document_id": "mediation_case:kca_parcel_1003817349",
-          "score": 43.74634
+          "score": 43.82452
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -15195,7 +15357,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0028_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 119.07151,
+          "score": 119.08212,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15213,7 +15375,7 @@
           "chunk_id": "consumer_dispute_standard_industry_parcel_loss_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
           "title": "소비자분쟁해결기준",
-          "score": 84.99827,
+          "score": 85.00195,
           "role": "industry_table",
           "matched_span": {
             "start": 1486,
@@ -15234,7 +15396,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0001",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 78.70145,
+          "score": 78.70605,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15252,7 +15414,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0023_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 70.33632,
+          "score": 70.34107,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15272,7 +15434,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0028_body_0001",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 69.47443,
+          "score": 69.47929,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15290,27 +15452,27 @@
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0028_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 127.24629
+          "score": 127.50332
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0022_body_0001",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 80.5982
+          "score": 80.69397
         },
         {
           "chunk_id": "consumer_dispute_standard_industry_parcel_loss_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
-          "score": 70.41401
+          "score": 70.53084
         },
         {
           "chunk_id": "ftc_terms_11185_file_a321590d_terms_article_22_0000",
           "document_id": "standard_terms:ftc_terms_11185_file_a321590d",
-          "score": 69.61993
+          "score": 69.76689
         },
         {
           "chunk_id": "kca_parcel_1003817349_case_party_claims_0000",
           "document_id": "mediation_case:kca_parcel_1003817349",
-          "score": 35.74553
+          "score": 35.78745
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -15462,7 +15624,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0024_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 54.16589,
+          "score": 54.17016,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15482,7 +15644,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0029_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 52.36614,
+          "score": 52.37236,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15502,7 +15664,7 @@
           "chunk_id": "kca_redress_submission_online_0000",
           "document_id": "official_guide:kca_redress_submission",
           "title": "한국소비자원 피해구제 접수 방법 및 증빙서류 안내",
-          "score": 48.29921,
+          "score": 48.30091,
           "role": "submission_method",
           "matched_span": {
             "start": 0,
@@ -15524,7 +15686,7 @@
           "chunk_id": "kca_overseas_checklist_direct_delivery_0000",
           "document_id": "official_guide:kca_overseas_checklist",
           "title": "해외직구 체크리스트",
-          "score": 46.42216,
+          "score": 46.42495,
           "role": "trade_conditions",
           "matched_span": {
             "start": 0,
@@ -15545,7 +15707,7 @@
           "chunk_id": "guide_246eabd0676d5957_p0014_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
           "title": "찾기쉬운 생활법령 - 중고거래 피해자",
-          "score": 45.18909,
+          "score": 45.19302,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -15565,27 +15727,27 @@
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0024_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 55.7889
+          "score": 55.85668
         },
         {
           "chunk_id": "kca_case_1003641715_case_party_claims_0000",
           "document_id": "mediation_case:kca_case_1003641715",
-          "score": 48.12621
+          "score": 48.19625
         },
         {
           "chunk_id": "guide_246eabd0676d5957_p0014_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
-          "score": 48.08305
+          "score": 48.17106
         },
         {
           "chunk_id": "kca_redress_submission_online_0000",
           "document_id": "official_guide:kca_redress_submission",
-          "score": 47.18828
+          "score": 47.24513
         },
         {
           "chunk_id": "kca_overseas_checklist_direct_delivery_0000",
           "document_id": "official_guide:kca_overseas_checklist",
-          "score": 45.98702
+          "score": 46.03594
         }
       ],
       "legacy_source_hit_at_5": false,
@@ -16297,7 +16459,7 @@
           "chunk_id": "009338_288143_20260721_art_11_3_chunk_0000",
           "document_id": "law:009338_288143_20260721",
           "title": "전자상거래 등에서의 소비자보호에 관한 법률 시행령",
-          "score": 98.95915,
+          "score": 98.96419,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -16317,7 +16479,7 @@
           "chunk_id": "guide_383b62bce56bf1ce_p0035_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
           "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
-          "score": 90.03057,
+          "score": 90.0364,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -16335,7 +16497,7 @@
           "chunk_id": "kca_mediation_procedure_definition_0000",
           "document_id": "official_guide:kca_mediation_procedure",
           "title": "한국소비자원 소비자분쟁조정 절차 및 성립 효력 안내",
-          "score": 88.1295,
+          "score": 88.13449,
           "role": "mediation_definition",
           "matched_span": {
             "start": 0,
@@ -16357,7 +16519,7 @@
           "chunk_id": "003572_286997_20260701_art_57_0_chunk_0000",
           "document_id": "law:003572_286997_20260701",
           "title": "방문판매 등에 관한 법률 시행령",
-          "score": 87.67335,
+          "score": 87.67666,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -16377,7 +16539,7 @@
           "chunk_id": "003979_289451_20260911_art_28_0_chunk_0000",
           "document_id": "law:003979_289451_20260911",
           "title": "소비자기본법 시행령",
-          "score": 85.4956,
+          "score": 85.49805,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -16397,27 +16559,27 @@
         {
           "chunk_id": "009338_288143_20260721_art_11_3_chunk_0000",
           "document_id": "law:009338_288143_20260721",
-          "score": 102.20247
+          "score": 101.8295
         },
         {
           "chunk_id": "kca_mediation_procedure_definition_0000",
           "document_id": "official_guide:kca_mediation_procedure",
-          "score": 95.35406
+          "score": 94.9113
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0035_body_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 93.87212
+          "score": 93.5139
         },
         {
           "chunk_id": "kca_redress_submission_online_0000",
           "document_id": "official_guide:kca_redress_submission",
-          "score": 92.61641
+          "score": 92.45116
         },
         {
           "chunk_id": "kca_redress_requirements_eligibility_0000",
           "document_id": "official_guide:kca_redress_requirements",
-          "score": 89.42689
+          "score": 89.0681
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -16544,7 +16706,7 @@
           "chunk_id": "kca_case_1003604873_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003604873",
           "title": "하자가 지속 발생하는 반지의 반품 및 구입대금 환급 요구",
-          "score": 66.81656,
+          "score": 66.82173,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -16565,7 +16727,7 @@
           "chunk_id": "kca_case_1003604873_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003604873",
           "title": "하자가 지속 발생하는 반지의 반품 및 구입대금 환급 요구",
-          "score": 63.86356,
+          "score": 63.86861,
           "role": "facts",
           "matched_span": {
             "start": 0,
@@ -16586,7 +16748,7 @@
           "chunk_id": "consumer_dispute_standard_product_electronics_office_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
           "title": "소비자분쟁해결기준",
-          "score": 54.91276,
+          "score": 54.91529,
           "role": "product_table",
           "matched_span": {
             "start": 1625,
@@ -16608,7 +16770,7 @@
           "chunk_id": "guide_23ffe4c8fd5715cb_p0008_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
           "title": "찾기쉬운 생활법령 - 주택임대차",
-          "score": 38.13048,
+          "score": 38.13375,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -16628,7 +16790,7 @@
           "chunk_id": "guide_94e9d4bd30eadf0b_p0017_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
           "title": "찾기쉬운 생활법령 - 택배",
-          "score": 37.75671,
+          "score": 37.76148,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -16646,27 +16808,27 @@
         {
           "chunk_id": "kca_case_1003604873_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003604873",
-          "score": 71.06819
+          "score": 71.19867
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0017_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 42.00343
+          "score": 42.12957
         },
         {
           "chunk_id": "consumer_dispute_standard_product_electronics_office_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
-          "score": 40.99304
+          "score": 41.04272
         },
         {
           "chunk_id": "guide_23ffe4c8fd5715cb_p0008_table_0000",
           "document_id": "official_guide:guide_23ffe4c8fd5715cb",
-          "score": 40.54816
+          "score": 40.63401
         },
         {
           "chunk_id": "guide_246eabd0676d5957_p0023_body_0000",
           "document_id": "official_guide:guide_246eabd0676d5957",
-          "score": 39.2374
+          "score": 39.31797
         }
       ],
       "legacy_source_hit_at_5": true,
@@ -16684,8 +16846,8 @@
         "구매일 증명",
         "영수증 없는 경우"
       ],
-      "review_status": "partial",
-      "review_note": "기존 고시 제3조·별표Ⅲ·Ⅳ에 소비자기본법 제16조와 시행령 제8조·별표1 일반적 기준을 연결. 구매/인도/교환일부터의 기산 원칙, 판매일 확인 곤란 시 제조일/수입통관일 이후 3월 기준 및 제조/통관일 미표시 시 사업자의 판매일 입증 예외 확보. 시행령 별표1의 해당 PDF 페이지는 시각 대조했고 기준 전체를 단일 청크로 보존. 기존 고시 별표Ⅲ·Ⅳ의 문자 이상·병합 관계 대조는 남아 부분 확보 유지.",
+      "review_status": "supported",
+      "review_note": "기존 고시 제3조·별표Ⅲ·Ⅳ에 소비자기본법 제16조와 시행령 제8조·별표1 일반적 기준을 연결. 구매/인도/교환일부터의 기산 원칙, 판매일 확인 곤란 시 제조일/수입통관일 이후 3월 기준 및 제조/통관일 미표시 시 사업자의 판매일 입증 예외 확보. 시행령 별표1의 해당 PDF 페이지는 시각 대조했고 기준 전체를 단일 청크로 보존. 고시 별표Ⅲ·Ⅳ의 공식 PDF 4페이지를 시각 대조하고 품목·기간·공통 조건·빈 셀과 병합 관계를 보존. XML 원문은 별도로 보존하며 구매일 증명 질문의 기본 근거를 확보. 계약별 적용·최신 개정 전수 검증은 별도.",
       "reviewed_chunk_ids": [
         "consumer_dispute_standard_article_2_0000",
         "consumer_dispute_standard_appendix_0003_0000",
@@ -16694,7 +16856,7 @@
         "003979_289451_20260911_art_8_0_chunk_0000",
         "003979_289451_20260911_appendix_000100E_chunk_0000"
       ],
-      "follow_up": "품목별 고시 별표Ⅲ·Ⅳ의 문자 이상·병합 관계 공식 파일 대조 및 개별 제품의 보증 조건 확인",
+      "follow_up": "별표Ⅲ·Ⅳ 수집본 대조 완료. 개별 제품의 보증 조건·계약 및 적용 시점·최신 개정 확인",
       "evidence": [
         {
           "chunk_id": "consumer_dispute_standard_article_2_0000",
@@ -16732,7 +16894,7 @@
           "title": "소비자분쟁해결기준",
           "source_url": "https://www.law.go.kr/행정규칙/소비자분쟁해결기준",
           "source_path": "data/raw/consumer_sources/consumer_dispute_standard_64e922b28e0d2e2b.xml",
-          "source_locator": "별표 0003 / 품목별 품질보증기간 및 부품보유기간",
+          "source_locator": "공식 PDF 별표 0003 / 검토 좌표·병합 범위 / 전체 3페이지",
           "page_number": null,
           "dates": {
             "effective_date": "2025-12-18",
@@ -16746,13 +16908,13 @@
             "information_as_of": null,
             "as_of": null
           },
-          "excerpt": "<별표 Ⅲ>\n\n품목별 품질보증기간 및 부품보유기간\n\n\n\n※ 부품보유기간의 기산：해당 제품의 제조일자(제조연도 또는 제조연월만 기재된 경우 제조연도 또는 제조월의 말일을 제조일자로 봄)를 기산점으로 한다. 다만, 자동차는 동일한 형식의 자동차를 최종 판매한 날부터 기산한다.\n\n┏━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━━━┓\n\n┃품      목        │품  질  보  증  기  간                                    │부품  보유  기간                  ┃\n\n┠─────────┼─────────────────────────────┼─────────────────┨\n\n┃1. 자동차         │? 차체 및 일반부품* :2년 이내. 다만, 주행거리가 4만㎞를  │? 동일한 형식의 자동차를 최종    ┃\n\n┃                  │초과한 경우에는 기간이 만료된 것으로 함.                  │판매한 날로부터 8년               ┃\n\n┃                  │ * 차량 출고 시 장착된 내장형 내비게이션을 포함함.        │   (단, 성능?품질 상 하자가 없   ┃\n\n┃                ",
-          "text_sha256": "34815ef7afae0e6874c166295c92fe4c34f3a692b75dc84828fc1bf75679067b",
+          "excerpt": "[공식 PDF 페이지 1 공통기준]\n<별표 Ⅲ>\n품목별 품질보증기간 및 부품보유기간\n※ 부품보유기간의 기산：해당 제품의 제조일자(제조연도 또는 제조연월만 기재된 경우 제조연도 또는\n제조월의 말일을 제조일자로 봄)를 기산점으로 한다. 다만, 자동차는 동일한\n형식의 자동차를 최종 판매한 날부터 기산한다.\n[페이지 1 / 행 0 / 열 품목 / 셀 p1_r0_c0 / 행 병합 1]\n품 목\n[페이지 1 / 행 0 / 열 품질보증기간 / 셀 p1_r0_c1 / 행 병합 1]\n품 질 보 증 기 간\n[페이지 1 / 행 0 / 열 부품보유기간 / 셀 p1_r0_c2 / 행 병합 1]\n부품 보유 기간\n[페이지 1 / 행 1 / 열 품목 / 셀 p1_r1_c0 / 행 병합 1]\n1. 자동차\n[페이지 1 / 행 1 / 열 품질보증기간 / 셀 p1_r1_c1 / 행 병합 1]\n◦ 차체 및 일반부품* :2년 이내. 다만, 주행거리가 4만㎞를\n초과한 경우에는 기간이 만료된 것으로 함.\n* 차량 출고 시 장착된 내장형 내비게이션을 포함함.\n◦ 원동기(엔진) 및 동력전달장치, 고전원전기장치*, 수소연\n료생산시스템** : 3년 이내. 다만, 주행거리가 6만㎞를\n초과한 경우에는 기간이 만료된 것으로 함.\n* 「자동차 및 자동차부품의 성능과 기준에 관한 규칙」에\n따른 자동차의 구",
+          "text_sha256": "c818b0e0c7a7ac2e2617bd90cb2f281f27283b57195d3c48a1f44664f92c8a27",
           "warnings": [
             "합의 또는 권고 기준. 법률·표준약관·개별 사례와 구분. 수집 당시 현행 버전.",
-            "공식 XML 문자 표 전체 보존. 품목·기간·비고·공통 조건을 분리하거나 셀 관계를 추정하지 않음.",
-            "XML의 물음표 등 문자 이상 가능성 및 표의 병합 관계는 공식 별표 파일과 대조 필요. 수치 자동 계산 근거로 사용하기 전 확인.",
-            "표 전체를 하나의 청크로 보존하므로 임베딩 모델 토큰 제한 확인 필요."
+            "수집된 공식 PDF의 문자·좌표·병합 관계를 대조한 별표. XML 원문은 별도로 보존하고 물음표를 일괄 치환하지 않음.",
+            "논리 행은 시각 대조한 좌표 기준이며 빈 셀은 미기재로 보존. 품질보증기간·부품보유기간·내용연수는 서로 다른 기준.",
+            "표 전체를 하나의 청크로 보존. 개별 계약·제품에 대한 적용과 최신 개정 여부 및 임베딩 모델 토큰 제한은 별도 확인."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null
@@ -16764,7 +16926,7 @@
           "title": "소비자분쟁해결기준",
           "source_url": "https://www.law.go.kr/행정규칙/소비자분쟁해결기준",
           "source_path": "data/raw/consumer_sources/consumer_dispute_standard_64e922b28e0d2e2b.xml",
-          "source_locator": "별표 0004 / 품목별 내용연수표",
+          "source_locator": "공식 PDF 별표 0004 / 검토 좌표·병합 범위 / 전체 1페이지",
           "page_number": null,
           "dates": {
             "effective_date": "2025-12-18",
@@ -16778,13 +16940,13 @@
             "information_as_of": null,
             "as_of": null
           },
-          "excerpt": "<별표 Ⅳ>\n\n품목별 내용연수표\n\n┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━┓\n\n┃품                 목                                                         │내  용  연 수               ┃\n\n┠───────────────────────────────────────┼──────────────┨\n\n┃농업용기기                                                                    │사업자가 품질보증서에 표시  ┃\n\n┠───────────────────────────────────────┤한 부품보유기간으로 함.     ┃\n\n┃침대, 책상, 장롱, 장식장, 책장                                                │다만, 그 기간이 [별표Ⅲ]의  ┃\n\n┠───────────────────────────────────────┤부품보유기간에 기재된       ┃\n\n┃보일러, 에어컨, TV, 전축, 냉장고, 정수기, 가습기/제습기, 전기청소기, 식탁,    │기간보다 짧거나 미기재한    ┃\n\n┃신발장, 문갑, 전자렌지               ",
-          "text_sha256": "ac434a2eab42e0eef204f3e4f6c31bab2618d7aad9ba2186eb7de2cc8ecb0279",
+          "excerpt": "[공식 PDF 페이지 1 공통기준]\n<별표 Ⅳ>\n품목별 내용연수표\n[페이지 1 / 행 0 / 열 품목 / 셀 p1_r0_c0 / 행 병합 1]\n품 목\n[페이지 1 / 행 0 / 열 내용연수 / 셀 p1_r0_c1 / 행 병합 1]\n내 용 연 수\n[페이지 1 / 행 1 / 열 품목 / 셀 p1_r1_c0 / 행 병합 1]\n농업용기기\n[페이지 1 / 행 1 / 열 내용연수 / 셀 p1_r1_c1 / 행 병합 8]\n사업자가 품질보증서에 표시\n한 부품보유기간으로 함.\n다만, 그 기간이 [별표Ⅲ]의\n부품보유기간에 기재된\n기간보다 짧거나 미기재한\n경우 [별표Ⅲ]의 부품보유\n기간으로 함\n[페이지 1 / 행 2 / 열 품목 / 셀 p1_r2_c0 / 행 병합 1]\n침대, 책상, 장롱, 장식장, 책장\n[페이지 1 / 행 3 / 열 품목 / 셀 p1_r3_c0 / 행 병합 1]\n보일러, 에어컨, TV, 전축, 냉장고, 정수기, 가습기/제습기, 전기청소기, 식탁,\n신발장, 문갑, 전자렌지\n[페이지 1 / 행 4 / 열 품목 / 셀 p1_r4_c0 / 행 병합 1]\n비디오플레이어, DVD 플레이어, 전기(가스)오븐, 비데, 전기압력밥솥, 가스레인\n지, 유․무선전화기, 믹서기, 전기온수기, 냉온수기, 캠코더, 홈시어터, 안마의자,\n족욕기, 망원경, 현미경, 자동차, 소",
+          "text_sha256": "c4c21728f3f61770a307416c222013b30a85f81fedcf963ea5774b8a2821991b",
           "warnings": [
             "합의 또는 권고 기준. 법률·표준약관·개별 사례와 구분. 수집 당시 현행 버전.",
-            "공식 XML 문자 표 전체 보존. 품목·기간·비고·공통 조건을 분리하거나 셀 관계를 추정하지 않음.",
-            "XML의 물음표 등 문자 이상 가능성 및 표의 병합 관계는 공식 별표 파일과 대조 필요. 수치 자동 계산 근거로 사용하기 전 확인.",
-            "표 전체를 하나의 청크로 보존하므로 임베딩 모델 토큰 제한 확인 필요."
+            "수집된 공식 PDF의 문자·좌표·병합 관계를 대조한 별표. XML 원문은 별도로 보존하고 물음표를 일괄 치환하지 않음.",
+            "논리 행은 시각 대조한 좌표 기준이며 빈 셀은 미기재로 보존. 품질보증기간·부품보유기간·내용연수는 서로 다른 기준.",
+            "표 전체를 하나의 청크로 보존. 개별 계약·제품에 대한 적용과 최신 개정 여부 및 임베딩 모델 토큰 제한은 별도 확인."
           ],
           "source_anomaly": null,
           "calculation_restricted_clause": null
@@ -16883,10 +17045,37 @@
       "search_results": [
         {
           "rank": 1,
+          "chunk_id": "consumer_dispute_standard_appendix_0003_0000",
+          "document_id": "administrative_rule:consumer_dispute_standard",
+          "title": "소비자분쟁해결기준",
+          "score": 124.98553,
+          "role": "appendix_table",
+          "matched_span": {
+            "start": 1991,
+            "end": 2175,
+            "text": "[페이지 2 / 행 1 / 열 품목 / 셀 p2_r1_c0 / 행 병합 1]\n5. 가전제품, 사무용기기, 전기통신기자재, 광학기기, 주\n방용품 등\n1) 완제품\n[페이지 2 / 행 1 / 열 품질보증기간 / 셀 p2_r1_c1 / 행 병합 1]\n\n[페이지 2 / 행 1 / 열 부품보유기간 / 셀 p2_r1_c2 / 행 병합 1]\n",
+            "search_text": "품목별 품질보증기간 및 부품보유기간\n\n품목: 5. 가전제품, 사무용기기, 전기통신기자재, 광학기기, 주\n방용품 등\n1) 완제품\n품질보증기간: \n부품보유기간: ",
+            "page_number": 2,
+            "row_index": 1,
+            "derivation": "reviewed_pdf_row_and_shared_cell_context",
+            "offset_basis": "chunk.text"
+          },
+          "warnings": [
+            "합의 또는 권고 기준. 법률·표준약관·개별 사례와 구분. 수집 당시 현행 버전.",
+            "수집된 공식 PDF의 문자·좌표·병합 관계를 대조한 별표. XML 원문은 별도로 보존하고 물음표를 일괄 치환하지 않음.",
+            "논리 행은 시각 대조한 좌표 기준이며 빈 셀은 미기재로 보존. 품질보증기간·부품보유기간·내용연수는 서로 다른 기준.",
+            "표 전체를 하나의 청크로 보존. 개별 계약·제품에 대한 적용과 최신 개정 여부 및 임베딩 모델 토큰 제한은 별도 확인."
+          ],
+          "source_anomaly": null,
+          "calculation_restricted_clause": null,
+          "excerpt": "[공식 PDF 페이지 1 공통기준]\n<별표 Ⅲ>\n품목별 품질보증기간 및 부품보유기간\n※ 부품보유기간의 기산：해당 제품의 제조일자(제조연도 또는 제조연월만 기재된 경우 제조연도 또는\n제조월의 말일을 제조일자로 봄)를 기산점으로 한다. 다만, 자동차는 동일한\n형식의 자동차를 최종 판매한 날부터 기산한다.\n[페이지 1 / 행 0 / 열 품목 / 셀 p1_r0_c0 / 행 병합 1]\n품 목\n[페이지 1 / 행 0 / 열 품질보증기간 / 셀 p1_r0_c1 / 행 병합 1]\n품 질 보 증 기 간\n[페이지 1 / 행 0 / 열 부품보유기간 / 셀 p1_r0_c2 / 행 병합 1]\n부품 보유 기간\n[페이지 1 / 행 1 / 열 품목 / 셀 p1_r1_c0 / 행 병합 1]\n1. 자동차\n[페이지 1 / 행 1 / 열 품질보증기간 / 셀 p1_r1_c1 / 행 병합 1]\n◦ 차체 및 일반부품* :2년 이내. 다"
+        },
+        {
+          "rank": 2,
           "chunk_id": "003979_289451_20260911_appendix_000100E_chunk_0000",
           "document_id": "law:003979_289451_20260911",
           "title": "소비자기본법 시행령",
-          "score": 108.88808,
+          "score": 108.89739,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -16904,11 +17093,11 @@
           "excerpt": "■ 소비자기본법 시행령 [별표 1] <개정 2018. 4. 30.>                             \n\n  일반적 소비자분쟁해결기준(제8조제2항 관련)                                      \n\n                                                                                  \n\n  1. 사업자는 물품등의 하자·채무불이행 등으로 인한 소비자의 피해에 대하여 다     \n\n  음 각 목의 기준에 따라 수리·교환·환급 또는 배상을 하거나, 계약의 해제·해     \n\n  지 및 이행 등을 하여야 한다.                                                    \n\n   가. 품질보증기간 동안의 수리·교환·환급에 드는 비용은 사업자가 부담한다. 다   \n\n  만,"
         },
         {
-          "rank": 2,
+          "rank": 3,
           "chunk_id": "consumer_dispute_standard_product_electronics_office_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
           "title": "소비자분쟁해결기준",
-          "score": 102.05853,
+          "score": 102.06284,
           "role": "product_table",
           "matched_span": {
             "start": 3144,
@@ -16926,34 +17115,11 @@
           "excerpt": "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n\n┃① 전자제품, 사무용기기 (2 - 1)                                                                                         ┃\n\n┠───────────────────────────┬─────────────┬──────────────────┨\n\n┃분      쟁      유      형                            │해  결  기  준            │비          고                      ┃\n\n┣━━━━━━━━━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━┫\n\n┃1) 구입 후 10일 이내에 정상적인 사용 상태에서 발생"
         },
         {
-          "rank": 3,
-          "chunk_id": "consumer_dispute_standard_appendix_0003_0000",
-          "document_id": "administrative_rule:consumer_dispute_standard",
-          "title": "소비자분쟁해결기준",
-          "score": 98.85982,
-          "role": "appendix_table",
-          "matched_span": {
-            "start": 8950,
-            "end": 9607,
-            "text": "? 6개월                                      │? 제조일로부터 1년 ┃\n\n┠──────────────────────┼───────────────────────┼──────────┨\n\n┃  - 완구                                    │? 6개월                                      │? 제조일로부터 1년 ┃\n\n┠──────────────────────┼───────────────────────┼──────────┨\n\n┃  - 가발                                    │? 6개월(인모)                                │                    ┃\n\n┃                                            │? 1년(인공모)                                │                    ┃\n\n┠──────────────────────┼───────────────────────┼──────────┨\n\n┃2) 핵심부품                                 │? 핵심부품 품질보증기간내 정상적인 사용상태  │                    ┃\n\n",
-            "offset_basis": "chunk.text"
-          },
-          "warnings": [
-            "합의 또는 권고 기준. 법률·표준약관·개별 사례와 구분. 수집 당시 현행 버전.",
-            "공식 XML 문자 표 전체 보존. 품목·기간·비고·공통 조건을 분리하거나 셀 관계를 추정하지 않음.",
-            "XML의 물음표 등 문자 이상 가능성 및 표의 병합 관계는 공식 별표 파일과 대조 필요. 수치 자동 계산 근거로 사용하기 전 확인.",
-            "표 전체를 하나의 청크로 보존하므로 임베딩 모델 토큰 제한 확인 필요."
-          ],
-          "source_anomaly": null,
-          "calculation_restricted_clause": null,
-          "excerpt": "<별표 Ⅲ>\n\n품목별 품질보증기간 및 부품보유기간\n\n\n\n※ 부품보유기간의 기산：해당 제품의 제조일자(제조연도 또는 제조연월만 기재된 경우 제조연도 또는 제조월의 말일을 제조일자로 봄)를 기산점으로 한다. 다만, 자동차는 동일한 형식의 자동차를 최종 판매한 날부터 기산한다.\n\n┏━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━━━┓\n\n┃품      목        │품  질  보  증  기  간                                    │부품  보유  기간                  ┃\n\n┠─────────┼─────────────────────────────┼─────────────────┨\n\n┃1. 자동차         │? 차체 및 일반부품* :2년 이내. 다만, 주행거리가 4만㎞를  │? 동일한 형식의 자동차를 최종"
-        },
-        {
           "rank": 4,
           "chunk_id": "kca_case_1003604873_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003604873",
           "title": "하자가 지속 발생하는 반지의 반품 및 구입대금 환급 요구",
-          "score": 90.20876,
+          "score": 90.21365,
           "role": "reasoning",
           "matched_span": {
             "start": 0,
@@ -16974,7 +17140,7 @@
           "chunk_id": "kca_case_1003604873_case_facts_0000",
           "document_id": "mediation_case:kca_case_1003604873",
           "title": "하자가 지속 발생하는 반지의 반품 및 구입대금 환급 요구",
-          "score": 68.34142,
+          "score": 68.34692,
           "role": "facts",
           "matched_span": {
             "start": 0,
@@ -16995,34 +17161,34 @@
         {
           "chunk_id": "003979_289451_20260911_appendix_000100E_chunk_0000",
           "document_id": "law:003979_289451_20260911",
-          "score": 115.44729
+          "score": 115.32754
         },
         {
           "chunk_id": "consumer_dispute_standard_product_electronics_office_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
-          "score": 100.8507
+          "score": 100.59455
         },
         {
           "chunk_id": "kca_case_1003604873_case_reasoning_0000",
           "document_id": "mediation_case:kca_case_1003604873",
-          "score": 90.95252
+          "score": 90.75029
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0027_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 38.76243
+          "score": 38.82211
         },
         {
           "chunk_id": "guide_383b62bce56bf1ce_p0032_table_0000",
           "document_id": "official_guide:guide_383b62bce56bf1ce",
-          "score": 38.30002
+          "score": 38.37355
         }
       ],
       "legacy_source_hit_at_5": true,
       "legacy_chunk_hit_at_5": true,
       "reviewed_source_hit_at_5": true,
       "reviewed_chunk_hit_at_5": true,
-      "next_step": "품목별 고시 별표Ⅲ·Ⅳ의 문자 이상·병합 관계 공식 파일 대조 및 개별 제품의 보증 조건 확인"
+      "next_step": "현재 질문 범위의 기본 근거 유지"
     },
     {
       "domain": "소비자 피해",
@@ -17106,7 +17272,7 @@
           "chunk_id": "003979_289451_20260911_art_8_0_chunk_0000",
           "document_id": "law:003979_289451_20260911",
           "title": "소비자기본법 시행령",
-          "score": 119.00235,
+          "score": 119.00546,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -17126,7 +17292,7 @@
           "chunk_id": "kca_case_1003475989_case_cited_law_0000",
           "document_id": "mediation_case:kca_case_1003475989",
           "title": "반값택배 이용 중 분실된 제품의 배상 요구",
-          "score": 109.17784,
+          "score": 109.18268,
           "role": "cited_law",
           "matched_span": {
             "start": 0,
@@ -17147,7 +17313,7 @@
           "chunk_id": "003979_289451_20260911_art_9_0_chunk_0000",
           "document_id": "law:003979_289451_20260911",
           "title": "소비자기본법 시행령",
-          "score": 108.15772,
+          "score": 108.15978,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -17167,7 +17333,7 @@
           "chunk_id": "001589_283837_20260911_art_16_0_chunk_0000",
           "document_id": "law:001589_283837_20260911",
           "title": "소비자기본법",
-          "score": 99.17915,
+          "score": 99.18335,
           "role": null,
           "matched_span": {
             "start": 0,
@@ -17187,7 +17353,7 @@
           "chunk_id": "consumer_dispute_standard_article_0_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
           "title": "소비자분쟁해결기준",
-          "score": 91.77524,
+          "score": 91.77822,
           "role": "general_rule",
           "matched_span": {
             "start": 0,
@@ -17207,27 +17373,27 @@
         {
           "chunk_id": "003979_289451_20260911_art_8_0_chunk_0000",
           "document_id": "law:003979_289451_20260911",
-          "score": 119.83872
+          "score": 119.83677
         },
         {
           "chunk_id": "kca_case_1003475989_case_cited_law_0000",
           "document_id": "mediation_case:kca_case_1003475989",
-          "score": 111.63164
+          "score": 111.65812
         },
         {
           "chunk_id": "001589_283837_20260911_art_16_0_chunk_0000",
           "document_id": "law:001589_283837_20260911",
-          "score": 100.116
+          "score": 100.14753
         },
         {
           "chunk_id": "consumer_dispute_standard_article_2_0000",
           "document_id": "administrative_rule:consumer_dispute_standard",
-          "score": 99.22242
+          "score": 99.24347
         },
         {
           "chunk_id": "guide_94e9d4bd30eadf0b_p0029_body_0000",
           "document_id": "official_guide:guide_94e9d4bd30eadf0b",
-          "score": 95.49528
+          "score": 95.58574
         }
       ],
       "legacy_source_hit_at_5": true,

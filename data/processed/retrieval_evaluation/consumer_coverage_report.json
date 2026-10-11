@@ -143,7 +143,7 @@
             "title": "PT 수강 및 헬스장 이용계약 중도해지에 따른 대금 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 89.27613,
+            "score": 89.44212,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -162,7 +162,7 @@
             "title": "헬스장 이용 계약의 중도해지 및 잔여대금 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 83.91034,
+            "score": 84.02014,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -181,7 +181,7 @@
             "title": "시정명령및과징금납부명령취소",
             "role": "full_document",
             "unit_id": null,
-            "score": 83.82758,
+            "score": 83.90655,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -199,7 +199,7 @@
             "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_10",
-            "score": 64.86575,
+            "score": 64.97031,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -218,7 +218,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 45.32834,
+            "score": 45.40881,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -244,8 +244,8 @@
             "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_10",
-            "score": 109.38285,
-            "raw_score": 109.38285,
+            "score": 109.38993,
+            "raw_score": 109.38993,
             "matched_span": {
               "start": 0,
               "end": 239,
@@ -268,8 +268,8 @@
             "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_7",
-            "score": 106.43446,
-            "raw_score": 106.43446,
+            "score": 106.44081,
+            "raw_score": 106.44081,
             "matched_span": {
               "start": 465,
               "end": 2640,
@@ -306,8 +306,8 @@
             "title": "시정명령및과징금납부명령취소",
             "role": "full_document",
             "unit_id": null,
-            "score": 84.21549,
-            "raw_score": 84.21549,
+            "score": 84.22161,
+            "raw_score": 84.22161,
             "matched_span": {
               "start": 0,
               "end": 793,
@@ -329,8 +329,8 @@
             "title": "시정명령및과징금납부명령취소",
             "role": "full_document",
             "unit_id": null,
-            "score": 82.71695,
-            "raw_score": 82.71695,
+            "score": 82.72129,
+            "raw_score": 82.72129,
             "matched_span": {
               "start": 0,
               "end": 744,
@@ -352,8 +352,8 @@
             "title": "헬스장 이용 계약의 중도해지 및 잔여대금 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 79.61645,
-            "raw_score": 79.61645,
+            "score": 79.62103,
+            "raw_score": 79.62103,
             "matched_span": {
               "start": 0,
               "end": 231,
@@ -492,7 +492,7 @@
             "title": "[제10083호]요가·필라테스 표준약관 (2026. 7. 16. 제정)",
             "role": "standard_terms_article",
             "unit_id": "terms_article_8",
-            "score": 110.95742,
+            "score": 111.23574,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -511,7 +511,7 @@
             "title": "소비자분쟁해결기준",
             "role": "industry_table",
             "unit_id": "industry_fitness_refund",
-            "score": 106.14999,
+            "score": 106.36232,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -530,7 +530,7 @@
             "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_15",
-            "score": 77.18604,
+            "score": 77.34273,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -549,12 +549,15 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 75.88711,
+            "score": 72.60973,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -568,7 +571,7 @@
             "title": "필라테스 계약 중도해지에 따른 환급 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 68.91987,
+            "score": 69.06724,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -595,8 +598,8 @@
             "title": "[제10083호]요가·필라테스 표준약관 (2026. 7. 16. 제정)",
             "role": "standard_terms_article",
             "unit_id": "terms_article_8",
-            "score": 195.26145,
-            "raw_score": 195.26145,
+            "score": 195.27368,
+            "raw_score": 195.27368,
             "matched_span": {
               "start": 108,
               "end": 2131,
@@ -621,8 +624,8 @@
             "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_7",
-            "score": 103.08887,
-            "raw_score": 103.08887,
+            "score": 103.09433,
+            "raw_score": 103.09433,
             "matched_span": {
               "start": 465,
               "end": 2640,
@@ -647,8 +650,8 @@
             "title": "[10048호] 체력단련장(헬스장) 이용 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_15",
-            "score": 103.06591,
-            "raw_score": 103.06591,
+            "score": 103.07137,
+            "raw_score": 103.07137,
             "matched_span": {
               "start": 466,
               "end": 2641,
@@ -673,8 +676,8 @@
             "title": "소비자분쟁해결기준",
             "role": "industry_table",
             "unit_id": "industry_fitness_refund",
-            "score": 97.73507,
-            "raw_score": 97.73507,
+            "score": 97.7386,
+            "raw_score": 97.7386,
             "matched_span": {
               "start": 2628,
               "end": 3293,
@@ -697,8 +700,8 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 85.03669,
-            "raw_score": 85.03669,
+            "score": 85.04246,
+            "raw_score": 85.04246,
             "matched_span": {
               "start": 0,
               "end": 700,
@@ -707,7 +710,10 @@
             },
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -836,7 +842,7 @@
             "title": "필라테스 계약 중도해지에 따른 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 144.20221,
+            "score": 144.47145,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -855,12 +861,15 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 142.69238,
+            "score": 136.50387,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -874,7 +883,7 @@
             "title": "소비자분쟁해결: 소액사건심판 신청하기",
             "role": "civil_recovery_judgment",
             "unit_id": "judgment",
-            "score": 66.92011,
+            "score": 67.04736,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -893,7 +902,7 @@
             "title": "소비자분쟁해결: 지급명령 신청하기",
             "role": "civil_recovery_filing",
             "unit_id": "filing",
-            "score": 60.99045,
+            "score": 61.12125,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -912,7 +921,7 @@
             "title": "금전거래: 강제집행의 요건·집행문·재산명시·대상 재산",
             "role": "civil_recovery_property_disclosure",
             "unit_id": "property_disclosure",
-            "score": 58.98853,
+            "score": 59.13308,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -939,8 +948,8 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 148.75446,
-            "raw_score": 148.75446,
+            "score": 148.7623,
+            "raw_score": 148.7623,
             "matched_span": {
               "start": 577,
               "end": 839,
@@ -949,7 +958,10 @@
             },
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -963,8 +975,8 @@
             "title": "필라테스 계약 중도해지에 따른 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 134.15866,
-            "raw_score": 134.15866,
+            "score": 134.168,
+            "raw_score": 134.168,
             "matched_span": {
               "start": 0,
               "end": 256,
@@ -987,8 +999,8 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 128.89224,
-            "raw_score": 128.89224,
+            "score": 128.90068,
+            "raw_score": 128.90068,
             "matched_span": {
               "start": 0,
               "end": 700,
@@ -997,7 +1009,10 @@
             },
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -1011,8 +1026,8 @@
             "title": "필라테스 계약 중도해지에 따른 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 80.41747,
-            "raw_score": 80.41747,
+            "score": 80.42332,
+            "raw_score": 80.42332,
             "matched_span": {
               "start": 0,
               "end": 268,
@@ -1035,8 +1050,8 @@
             "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 56.42889,
-            "raw_score": 56.42889,
+            "score": 56.43211,
+            "raw_score": 56.43211,
             "matched_span": {
               "start": 0,
               "end": 493,
@@ -1045,7 +1060,10 @@
             },
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -1172,12 +1190,15 @@
             "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 182.60659,
+            "score": 165.8235,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -1191,12 +1212,15 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 83.72421,
+            "score": 82.18594,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -1210,7 +1234,7 @@
             "title": "[제10083호]요가·필라테스 표준약관 (2026. 7. 16. 제정)",
             "role": "standard_terms_article",
             "unit_id": "terms_article_10",
-            "score": 66.61774,
+            "score": 66.7428,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -1229,7 +1253,7 @@
             "title": "PT 강습 계약 해지에 따른 잔여 대금 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 57.98204,
+            "score": 58.09979,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -1248,7 +1272,7 @@
             "title": "필라테스 계약 중도해지에 따른 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 54.28466,
+            "score": 54.34886,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -1275,8 +1299,8 @@
             "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 150.51534,
-            "raw_score": 150.51534,
+            "score": 150.52533,
+            "raw_score": 150.52533,
             "matched_span": {
               "start": 0,
               "end": 493,
@@ -1285,7 +1309,10 @@
             },
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -1299,8 +1326,8 @@
             "title": "양도받은 필라테스 강습계약 해지에 따른 환급 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 120.10224,
-            "raw_score": 120.10224,
+            "score": 120.11267,
+            "raw_score": 120.11267,
             "matched_span": {
               "start": 0,
               "end": 415,
@@ -1309,7 +1336,10 @@
             },
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -1323,8 +1353,8 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 76.97492,
-            "raw_score": 76.97492,
+            "score": 76.98016,
+            "raw_score": 76.98016,
             "matched_span": {
               "start": 0,
               "end": 697,
@@ -1333,7 +1363,10 @@
             },
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -1347,8 +1380,8 @@
             "title": "그룹필라테스 폐강으로 인한 중도해지에 따른 잔여이용료 환급 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 76.34893,
-            "raw_score": 76.34893,
+            "score": 76.35434,
+            "raw_score": 76.35434,
             "matched_span": {
               "start": 0,
               "end": 569,
@@ -1357,7 +1390,10 @@
             },
             "warnings": [
               "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
-              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+              "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.",
+              "계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.",
+              "폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.",
+              "2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님."
             ],
             "source_anomaly": null,
             "calculation_restricted_clause": null
@@ -1371,8 +1407,8 @@
             "title": "[제10083호]요가·필라테스 표준약관 (2026. 7. 16. 제정)",
             "role": "standard_terms_article",
             "unit_id": "terms_article_10",
-            "score": 59.4603,
-            "raw_score": 59.4603,
+            "score": 59.46501,
+            "raw_score": 59.46501,
             "matched_span": {
               "start": 0,
               "end": 321,
@@ -1508,7 +1544,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 59.32415,
+            "score": 59.46254,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -1524,7 +1560,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 39.10887,
+            "score": 39.17984,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -1540,7 +1576,7 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 36.73716,
+            "score": 36.7735,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -1558,7 +1594,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 35.83065,
+            "score": 35.86852,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -1576,7 +1612,7 @@
             "title": "찾기쉬운 생활법령 - 중고거래 피해자",
             "role": null,
             "unit_id": null,
-            "score": 32.61497,
+            "score": 32.695,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -1600,8 +1636,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 54.59365,
-            "raw_score": 54.59365,
+            "score": 54.59937,
+            "raw_score": 54.59937,
             "matched_span": {
               "start": 0,
               "end": 1199,
@@ -1621,8 +1657,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 45.85255,
-            "raw_score": 45.85255,
+            "score": 45.85672,
+            "raw_score": 45.85672,
             "matched_span": {
               "start": 0,
               "end": 610,
@@ -1642,8 +1678,8 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 37.03349,
-            "raw_score": 37.03349,
+            "score": 37.03687,
+            "raw_score": 37.03687,
             "matched_span": {
               "start": 0,
               "end": 395,
@@ -1663,8 +1699,8 @@
             "title": "찾기쉬운 생활법령 - 주택임대차",
             "role": null,
             "unit_id": null,
-            "score": 35.96177,
-            "raw_score": 35.96177,
+            "score": 35.964,
+            "raw_score": 35.964,
             "matched_span": {
               "start": 0,
               "end": 260,
@@ -1686,8 +1722,8 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 34.98931,
-            "raw_score": 34.98931,
+            "score": 34.9916,
+            "raw_score": 34.9916,
             "matched_span": {
               "start": 0,
               "end": 266,
@@ -1819,7 +1855,7 @@
             "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 227.53626,
+            "score": 227.97888,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -1838,7 +1874,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 113.00728,
+            "score": 113.09981,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -1854,7 +1890,7 @@
             "title": "반값택배 이용 중 분실된 제품의 배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 84.43822,
+            "score": 84.6346,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -1873,7 +1909,7 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_22",
-            "score": 81.49896,
+            "score": 81.6623,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -1893,7 +1929,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 74.38499,
+            "score": 74.49641,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -1919,8 +1955,8 @@
             "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 187.44283,
-            "raw_score": 187.44283,
+            "score": 187.45382,
+            "raw_score": 187.45382,
             "matched_span": {
               "start": 0,
               "end": 342,
@@ -1943,8 +1979,8 @@
             "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 144.02352,
-            "raw_score": 144.02352,
+            "score": 144.03444,
+            "raw_score": 144.03444,
             "matched_span": {
               "start": 0,
               "end": 311,
@@ -1967,8 +2003,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 112.20193,
-            "raw_score": 112.20193,
+            "score": 112.20646,
+            "raw_score": 112.20646,
             "matched_span": {
               "start": 0,
               "end": 181,
@@ -1988,8 +2024,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 84.28545,
-            "raw_score": 84.28545,
+            "score": 84.29247,
+            "raw_score": 84.29247,
             "matched_span": {
               "start": 0,
               "end": 540,
@@ -2009,8 +2045,8 @@
             "title": "택배 의뢰 후 분실된 물품의 손해배상 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 79.28752,
-            "raw_score": 79.28752,
+            "score": 79.29388,
+            "raw_score": 79.29388,
             "matched_span": {
               "start": 320,
               "end": 991,
@@ -2145,7 +2181,7 @@
             "title": "반값택배 이용 중 분실된 제품의 배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 74.09955,
+            "score": 74.17702,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2164,7 +2200,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 62.81998,
+            "score": 62.96236,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -2180,7 +2216,7 @@
             "title": "택배 운송 과정에서 파손된 PC용 모니터에 대한 손해배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 51.12475,
+            "score": 50.98603,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2199,7 +2235,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 50.01618,
+            "score": 50.08854,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2217,7 +2253,7 @@
             "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 46.80355,
+            "score": 46.8546,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2244,8 +2280,8 @@
             "title": "반값택배 이용 중 분실된 제품의 배상 요구",
             "role": "decision",
             "unit_id": "case_decision",
-            "score": 66.82875,
-            "raw_score": 66.82875,
+            "score": 66.83348,
+            "raw_score": 66.83348,
             "matched_span": {
               "start": 0,
               "end": 136,
@@ -2268,8 +2304,8 @@
             "title": "반값택배 이용 중 분실된 제품의 배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 60.25383,
-            "raw_score": 60.25383,
+            "score": 60.26089,
+            "raw_score": 60.26089,
             "matched_span": {
               "start": 0,
               "end": 661,
@@ -2292,8 +2328,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 58.48531,
-            "raw_score": 58.48531,
+            "score": 58.49153,
+            "raw_score": 58.49153,
             "matched_span": {
               "start": 0,
               "end": 1164,
@@ -2313,8 +2349,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 54.43188,
-            "raw_score": 54.43188,
+            "score": 54.43664,
+            "raw_score": 54.43664,
             "matched_span": {
               "start": 0,
               "end": 538,
@@ -2336,8 +2372,8 @@
             "title": "택배 운송 과정에서 파손된 PC용 모니터에 대한 손해배상 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 51.03978,
-            "raw_score": 51.03978,
+            "score": 51.04319,
+            "raw_score": 51.04319,
             "matched_span": {
               "start": 0,
               "end": 335,
@@ -2473,7 +2509,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 134.10314,
+            "score": 134.38208,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2491,7 +2527,7 @@
             "title": "해외직구 수령·반품 단계 유의사항",
             "role": "return_conditions",
             "unit_id": "return_conditions",
-            "score": 97.07179,
+            "score": 97.27115,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2511,7 +2547,7 @@
             "title": "해외직구 가방의 과도한 반품 배송비 조정 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 85.08355,
+            "score": 85.22642,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2530,7 +2566,7 @@
             "title": "소비자분쟁해결기준",
             "role": "industry_table",
             "unit_id": "industry_shopping_return",
-            "score": 70.91412,
+            "score": 71.00261,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2549,7 +2585,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 69.6937,
+            "score": 69.82016,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -2573,8 +2609,8 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 117.58928,
-            "raw_score": 117.58928,
+            "score": 117.59998,
+            "raw_score": 117.59998,
             "matched_span": {
               "start": 0,
               "end": 710,
@@ -2596,8 +2632,8 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 99.5354,
-            "raw_score": 99.5354,
+            "score": 99.54604,
+            "raw_score": 99.54604,
             "matched_span": {
               "start": 0,
               "end": 812,
@@ -2619,8 +2655,8 @@
             "title": "해외직구 가방의 과도한 반품 배송비 조정 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 87.15856,
-            "raw_score": 87.15856,
+            "score": 87.16418,
+            "raw_score": 87.16418,
             "matched_span": {
               "start": 319,
               "end": 757,
@@ -2643,8 +2679,8 @@
             "title": "해외직구 수령·반품 단계 유의사항",
             "role": "return_conditions",
             "unit_id": "return_conditions",
-            "score": 85.4749,
-            "raw_score": 85.4749,
+            "score": 85.48213,
+            "raw_score": 85.48213,
             "matched_span": {
               "start": 0,
               "end": 700,
@@ -2668,8 +2704,8 @@
             "title": "소비자분쟁해결기준",
             "role": "industry_table",
             "unit_id": "industry_shopping_return",
-            "score": 68.95272,
-            "raw_score": 68.95272,
+            "score": 68.95492,
+            "raw_score": 68.95492,
             "matched_span": {
               "start": 1531,
               "end": 1966,
@@ -2806,7 +2842,7 @@
             "title": "맞춤제작을 이유로 반품을 거절당한 한복의 청약철회 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 158.09713,
+            "score": 158.34887,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2825,7 +2861,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 82.42569,
+            "score": 82.60278,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2843,7 +2879,7 @@
             "title": "해외직구 체크리스트",
             "role": "trade_conditions",
             "unit_id": "purchase_agent",
-            "score": 57.41167,
+            "score": 57.5071,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2863,7 +2899,7 @@
             "title": "할부거래에 관한 법률",
             "role": null,
             "unit_id": null,
-            "score": 55.66191,
+            "score": 55.75915,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2881,7 +2917,7 @@
             "title": "전자상거래 등에서의 소비자보호에 관한 법률",
             "role": null,
             "unit_id": null,
-            "score": 52.62781,
+            "score": 52.71019,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -2907,8 +2943,8 @@
             "title": "맞춤제작을 이유로 반품을 거절당한 한복의 청약철회 요구",
             "role": "facts",
             "unit_id": "case_facts",
-            "score": 118.41794,
-            "raw_score": 118.41794,
+            "score": 118.4255,
+            "raw_score": 118.4255,
             "matched_span": {
               "start": 0,
               "end": 174,
@@ -2931,8 +2967,8 @@
             "title": "맞춤제작을 이유로 반품을 거절당한 한복의 청약철회 요구",
             "role": "cited_law",
             "unit_id": "case_cited_law",
-            "score": 100.06607,
-            "raw_score": 100.06607,
+            "score": 100.07402,
+            "raw_score": 100.07402,
             "matched_span": {
               "start": 772,
               "end": 1145,
@@ -2955,8 +2991,8 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 75.39818,
-            "raw_score": 75.39818,
+            "score": 75.40512,
+            "raw_score": 75.40512,
             "matched_span": {
               "start": 0,
               "end": 553,
@@ -2978,8 +3014,8 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 68.49264,
-            "raw_score": 68.49264,
+            "score": 68.49999,
+            "raw_score": 68.49999,
             "matched_span": {
               "start": 0,
               "end": 812,
@@ -3001,8 +3037,8 @@
             "title": "할부거래에 관한 법률",
             "role": null,
             "unit_id": null,
-            "score": 52.80313,
-            "raw_score": 52.80313,
+            "score": 52.80688,
+            "raw_score": 52.80688,
             "matched_span": {
               "start": 0,
               "end": 885,
@@ -3136,7 +3172,7 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_22",
-            "score": 121.41894,
+            "score": 121.65231,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3156,7 +3192,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 68.85196,
+            "score": 68.891,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -3172,7 +3208,7 @@
             "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 68.47711,
+            "score": 68.5647,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3191,7 +3227,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 60.23489,
+            "score": 60.3366,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -3207,7 +3243,7 @@
             "title": "택배 의뢰 후 분실된 물품에 대한 손해배상 요구",
             "role": "party_claims",
             "unit_id": "case_party_claims",
-            "score": 55.01058,
+            "score": 55.01098,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3234,8 +3270,8 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_22",
-            "score": 197.7665,
-            "raw_score": 197.7665,
+            "score": 197.77959,
+            "raw_score": 197.77959,
             "matched_span": {
               "start": 1105,
               "end": 1377,
@@ -3259,8 +3295,8 @@
             "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
             "role": "reasoning",
             "unit_id": "case_reasoning",
-            "score": 68.46339,
-            "raw_score": 68.46339,
+            "score": 68.46853,
+            "raw_score": 68.46853,
             "matched_span": {
               "start": 0,
               "end": 311,
@@ -3283,8 +3319,8 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 65.00961,
-            "raw_score": 65.00961,
+            "score": 65.01551,
+            "raw_score": 65.01551,
             "matched_span": {
               "start": 0,
               "end": 1196,
@@ -3304,8 +3340,8 @@
             "title": "한국소비자원 소비자분쟁조정 절차 및 성립 효력 안내",
             "role": "mediation_step",
             "unit_id": "completion",
-            "score": 60.01185,
-            "raw_score": 60.01185,
+            "score": 60.01417,
+            "raw_score": 60.01417,
             "matched_span": {
               "start": 0,
               "end": 117,
@@ -3328,8 +3364,8 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 57.0506,
-            "raw_score": 57.0506,
+            "score": 57.05661,
+            "raw_score": 57.05661,
             "matched_span": {
               "start": 0,
               "end": 553,
@@ -3461,7 +3497,7 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_15",
-            "score": 203.30187,
+            "score": 203.31302,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3480,7 +3516,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 86.67976,
+            "score": 86.80751,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -3496,7 +3532,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 74.86424,
+            "score": 75.00802,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -3512,7 +3548,7 @@
             "title": "민법",
             "role": null,
             "unit_id": null,
-            "score": 44.71551,
+            "score": 44.76081,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3530,7 +3566,7 @@
             "title": "찾기쉬운 생활법령 - 해고근로자",
             "role": null,
             "unit_id": null,
-            "score": 41.03447,
+            "score": 41.11025,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3556,8 +3592,8 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_15",
-            "score": 199.98913,
-            "raw_score": 199.98913,
+            "score": 200.00007,
+            "raw_score": 200.00007,
             "matched_span": {
               "start": 0,
               "end": 311,
@@ -3580,8 +3616,8 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 80.49605,
-            "raw_score": 80.49605,
+            "score": 80.50365,
+            "raw_score": 80.50365,
             "matched_span": {
               "start": 0,
               "end": 1035,
@@ -3601,8 +3637,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 69.66266,
-            "raw_score": 69.66266,
+            "score": 69.6705,
+            "raw_score": 69.6705,
             "matched_span": {
               "start": 0,
               "end": 1191,
@@ -3622,8 +3658,8 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_2",
-            "score": 58.48255,
-            "raw_score": 58.48255,
+            "score": 58.48612,
+            "raw_score": 58.48612,
             "matched_span": {
               "start": 0,
               "end": 666,
@@ -3646,8 +3682,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 56.38882,
-            "raw_score": 56.38882,
+            "score": 56.39428,
+            "raw_score": 56.39428,
             "matched_span": {
               "start": 0,
               "end": 741,
@@ -3777,7 +3813,7 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_6",
-            "score": 278.50912,
+            "score": 278.8666,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3796,7 +3832,7 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 142.81683,
+            "score": 143.07494,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3814,7 +3850,7 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 93.45763,
+            "score": 93.59593,
             "raw_score": null,
             "matched_span": null,
             "warnings": [],
@@ -3830,7 +3866,7 @@
             "title": "소비자분쟁해결기준",
             "role": "industry_table",
             "unit_id": "industry_parcel_loss",
-            "score": 71.10114,
+            "score": 71.19622,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3849,7 +3885,7 @@
             "title": "방문판매 등에 관한 법률 시행규칙",
             "role": null,
             "unit_id": null,
-            "score": 69.79325,
+            "score": 69.91339,
             "raw_score": null,
             "matched_span": null,
             "warnings": [
@@ -3875,8 +3911,8 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_6",
-            "score": 275.41968,
-            "raw_score": 275.41968,
+            "score": 275.43541,
+            "raw_score": 275.43541,
             "matched_span": {
               "start": 0,
               "end": 198,
@@ -3899,8 +3935,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 134.74211,
-            "raw_score": 134.74211,
+            "score": 134.75345,
+            "raw_score": 134.75345,
             "matched_span": {
               "start": 0,
               "end": 804,
@@ -3922,8 +3958,8 @@
             "title": "[제10026호] 택배 표준약관",
             "role": "standard_terms_article",
             "unit_id": "terms_article_7",
-            "score": 133.13573,
-            "raw_score": 133.13573,
+            "score": 133.14389,
+            "raw_score": 133.14389,
             "matched_span": {
               "start": 0,
               "end": 668,
@@ -3946,8 +3982,8 @@
             "title": "찾기쉬운 생활법령 - 택배",
             "role": null,
             "unit_id": null,
-            "score": 122.50109,
-            "raw_score": 122.50109,
+            "score": 122.50647,
+            "raw_score": 122.50647,
             "matched_span": {
               "start": 0,
               "end": 143,
@@ -3969,8 +4005,8 @@
             "title": "찾기쉬운 생활법령 - 인터넷 쇼핑",
             "role": null,
             "unit_id": null,
-            "score": 88.51049,
-            "raw_score": 88.51049,
+            "score": 88.51686,
+            "raw_score": 88.51686,
             "matched_span": {
               "start": 0,
               "end": 1196,

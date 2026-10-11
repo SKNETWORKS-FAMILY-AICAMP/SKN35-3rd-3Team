@@ -1,0 +1,2654 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-11",
+  "reviewer": "Codex: 공식 PDF 4페이지 시각 대조",
+  "scope": "소비자분쟁해결기준 별표 Ⅲ·Ⅳ의 수집된 2025-12-18 시행본. 별표Ⅱ·개별 계약 적용·최신 개정 전수 확인은 범위 밖.",
+  "parent_source_id": "consumer_dispute_standard",
+  "parent_raw_file": "data/raw/consumer_sources/consumer_dispute_standard_64e922b28e0d2e2b.xml",
+  "parent_raw_sha256": "64e922b28e0d2e2b79c275cf1acec392e97d60975226d383201511e1a9e9a7f1",
+  "effective_date": "20251218",
+  "layout_policy": "logical_grid는 시각 대조한 논리 행·열 좌표. 원문에 없는 실물 테두리를 만들었다고 해석하지 않음. physical_cells도 별도로 보존. 빈 셀은 미기재로 보존하며 인접 값으로 채우지 않음.",
+  "appendices": [
+    {
+      "appendix_number": "0003",
+      "title": "품목별 품질보증기간 및 부품보유기간",
+      "pdf_source_id": "consumer_dispute_standard_appendix_2",
+      "pdf_file": "data/raw/consumer_sources/consumer_dispute_standard_appendix_2_efd94a7a06c489da.pdf",
+      "pdf_sha256": "efd94a7a06c489dab45e1160aa558be638af0176bec932f74fe0385616b11dd7",
+      "pdf_source_url": "https://www.law.go.kr/LSW/flDownload.do?flSeq=159470219",
+      "pages": [
+        {
+          "page_number": 1,
+          "table_bbox": [
+            58.049,
+            142.164,
+            551.463,
+            679.057
+          ],
+          "column_boundaries": [
+            58.049,
+            165.991,
+            415.337,
+            551.463
+          ],
+          "row_boundaries": [
+            142.164,
+            163.501,
+            440.998,
+            502.73,
+            535.574,
+            679.057
+          ],
+          "physical_cells": [
+            [
+              58.049,
+              142.164,
+              165.991,
+              163.501
+            ],
+            [
+              58.049,
+              163.501,
+              165.991,
+              440.998
+            ],
+            [
+              58.049,
+              440.998,
+              165.991,
+              502.73
+            ],
+            [
+              58.049,
+              502.73,
+              165.991,
+              535.574
+            ],
+            [
+              58.049,
+              535.574,
+              165.991,
+              679.057
+            ],
+            [
+              165.991,
+              142.164,
+              415.337,
+              163.501
+            ],
+            [
+              165.991,
+              163.501,
+              415.337,
+              440.998
+            ],
+            [
+              165.991,
+              440.998,
+              415.337,
+              502.73
+            ],
+            [
+              165.991,
+              502.73,
+              415.337,
+              535.574
+            ],
+            [
+              165.991,
+              535.574,
+              415.337,
+              679.057
+            ],
+            [
+              415.337,
+              142.164,
+              551.463,
+              163.501
+            ],
+            [
+              415.337,
+              163.501,
+              551.463,
+              440.998
+            ],
+            [
+              415.337,
+              440.998,
+              551.463,
+              502.73
+            ],
+            [
+              415.337,
+              502.73,
+              551.463,
+              535.574
+            ],
+            [
+              415.337,
+              535.574,
+              551.463,
+              679.057
+            ]
+          ],
+          "logical_cells": [
+            {
+              "cell_id": "p1_r0_c0",
+              "row_index": 0,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                142.164,
+                165.991,
+                163.501
+              ],
+              "reviewed_text": "품 목",
+              "text_sha256": "8c5ffc13068de21f2200f50b9a5cb46914bb7619c6bb5e9606dd643615430855"
+            },
+            {
+              "cell_id": "p1_r0_c1",
+              "row_index": 0,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                165.991,
+                142.164,
+                415.337,
+                163.501
+              ],
+              "reviewed_text": "품 질 보 증 기 간",
+              "text_sha256": "30972a0d0767f9e1d31597305d4d9d144e3d50f0351f475d4e741191cc84702e"
+            },
+            {
+              "cell_id": "p1_r0_c2",
+              "row_index": 0,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                415.337,
+                142.164,
+                551.463,
+                163.501
+              ],
+              "reviewed_text": "부품 보유 기간",
+              "text_sha256": "bdc729c62dd3a99b35cd9b39f9cd98b678d35bc7386acbb0a5d332fef3b010ae"
+            },
+            {
+              "cell_id": "p1_r1_c0",
+              "row_index": 1,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                163.501,
+                165.991,
+                440.998
+              ],
+              "reviewed_text": "1. 자동차",
+              "text_sha256": "38695dd62518b1a50218b8b5ad56294b20441070879fb086e3bb59d85b69a92d"
+            },
+            {
+              "cell_id": "p1_r1_c1",
+              "row_index": 1,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                165.991,
+                163.501,
+                415.337,
+                440.998
+              ],
+              "reviewed_text": "◦ 차체 및 일반부품* :2년 이내. 다만, 주행거리가 4만㎞를\n초과한 경우에는 기간이 만료된 것으로 함.\n* 차량 출고 시 장착된 내장형 내비게이션을 포함함.\n◦ 원동기(엔진) 및 동력전달장치, 고전원전기장치*, 수소연\n료생산시스템** : 3년 이내. 다만, 주행거리가 6만㎞를\n초과한 경우에는 기간이 만료된 것으로 함.\n* 「자동차 및 자동차부품의 성능과 기준에 관한 규칙」에\n따른 자동차의 구동을 목적으로 하는 구동축전지, 전력\n변환장치, 구동전동기, 연료전지 등 작동전압이 직류\n60볼트 초과 1,500볼트 이하이거나 교류(실효치를 말한\n다) 30볼트 초과 1,000볼트 이하의 전기장치\n** 연료탱크밸브, 연료전지제어장치(FCU), 연료압력조절기\n◦ 외판〔후드, 도어, 필러, 휀더, 트렁크리드(테일게이트),\n도어사이드실, 루프〕관통부식 : 5년",
+              "text_sha256": "b515d3b69872406b9dc6809b52eecc5f2958c557b54653b25e97a725d672f3e7"
+            },
+            {
+              "cell_id": "p1_r1_c2",
+              "row_index": 1,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                415.337,
+                163.501,
+                551.463,
+                440.998
+              ],
+              "reviewed_text": "◦ 동일한 형식의 자동차를 최종\n판매한 날로부터 8년\n(단, 성능‧품질 상 하자가 없\n는 범위내에서 유사부품 사\n용가능)",
+              "text_sha256": "06d96e50dfbae9c6c4e5fc70dc3a13d079d624230b64253bc14eee089eb5f701"
+            },
+            {
+              "cell_id": "p1_r2_c0",
+              "row_index": 2,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                440.998,
+                165.991,
+                502.73
+              ],
+              "reviewed_text": "2. 모터사이클",
+              "text_sha256": "1178f8227dd7bcf2ae37ed6675713819900b7801f2abbaf0b4c94c0373e29e36"
+            },
+            {
+              "cell_id": "p1_r2_c1",
+              "row_index": 2,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                165.991,
+                440.998,
+                415.337,
+                502.73
+              ],
+              "reviewed_text": "◦ 1년 이내. 다만, 주행거리가 1만㎞를 초과한 경우에는\n기간이 만료된 것으로 함.",
+              "text_sha256": "10d76293763e8fa1888c419b297b2aae239436fcedb29913a174343e1bb6f17b"
+            },
+            {
+              "cell_id": "p1_r2_c2",
+              "row_index": 2,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                415.337,
+                440.998,
+                551.463,
+                502.73
+              ],
+              "reviewed_text": "◦ 제조일로부터 7년\n(단, 성능‧품질상 하자가 없는\n범위에서 유사부품 사용가능)",
+              "text_sha256": "cc17c975d49efce2cdae7da74858462314d890cf35bea38901a57c95b3308ec8"
+            },
+            {
+              "cell_id": "p1_r3_c0",
+              "row_index": 3,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                502.73,
+                165.991,
+                535.574
+              ],
+              "reviewed_text": "3. 보일러",
+              "text_sha256": "078b61b4233e4967b60a0bd2c5918e538e292614d4d330a9b9c16ead53f72034"
+            },
+            {
+              "cell_id": "p1_r3_c1",
+              "row_index": 3,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                165.991,
+                502.73,
+                415.337,
+                535.574
+              ],
+              "reviewed_text": "◦ 2년",
+              "text_sha256": "0a557448c60832b0f6cb761310a88ffd8079cd1f0c88ef48f28a85bb1898ddb3"
+            },
+            {
+              "cell_id": "p1_r3_c2",
+              "row_index": 3,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                415.337,
+                502.73,
+                551.463,
+                535.574
+              ],
+              "reviewed_text": "◦ 제조일로부터 8년",
+              "text_sha256": "636ef0305b816b3f936e7303b671fcb7bfe3679af80d9992b83e6540212bb303"
+            },
+            {
+              "cell_id": "p1_r4_c0",
+              "row_index": 4,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                535.574,
+                165.991,
+                679.057
+              ],
+              "reviewed_text": "4. 농‧어업용기기\n1) 농업용기기\n2) 어업용기기",
+              "text_sha256": "a86c3f5d5840b0c561b12d26d53f7670cccdf102bb56d58bba2ba1a42f650e59"
+            },
+            {
+              "cell_id": "p1_r4_c1",
+              "row_index": 4,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                165.991,
+                535.574,
+                415.337,
+                679.057
+              ],
+              "reviewed_text": "◦ 원동기 및 동력전달장치 : 2년. 단, 주행거리가 5천㎞\n또는 사용시간이 총 1천 시간(콤바인의 경우에는 400시\n간)을 초과한 경우에는 기간이 만료된 것으로 함.\n◦ 기타 장치：1년 단, 주행거리가 2천500㎞ 또는 사용시\n간이 총 500시간(콤바인의 경우에는 200시간)을 초과한\n경우에는 기간이 만료된 것으로 함.\n◦ 1년",
+              "text_sha256": "561b7c974feb62b5ffdbc5beedc7fb9f605d7f849c78ffba5554820711db2a72"
+            },
+            {
+              "cell_id": "p1_r4_c2",
+              "row_index": 4,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                415.337,
+                535.574,
+                551.463,
+                679.057
+              ],
+              "reviewed_text": "◦ 제조일로부터 9∼14년(농업용\n기기에 따라 내용연수 포함\n하여 4년까지 생산ㆍ공급.\n다만, 성능 품질 상 하자가\n없는 범위 내 에서 유사부\n품 사용 가능)",
+              "text_sha256": "92559f8628b06a3b117a273257c0451b88bb6759b3b5ee76a9e113f70db72eb6"
+            }
+          ],
+          "outside_text": "<별표 Ⅲ>\n품목별 품질보증기간 및 부품보유기간\n※ 부품보유기간의 기산：해당 제품의 제조일자(제조연도 또는 제조연월만 기재된 경우 제조연도 또는\n제조월의 말일을 제조일자로 봄)를 기산점으로 한다. 다만, 자동차는 동일한\n형식의 자동차를 최종 판매한 날부터 기산한다.",
+          "outside_text_sha256": "ff221940ddf5fa33002a6a9e844b0c473bd0c912ff95b8744e348617881e8c2f",
+          "row_context_cell_ids": {}
+        },
+        {
+          "page_number": 2,
+          "table_bbox": [
+            58.049,
+            43.872,
+            548.585,
+            675.941
+          ],
+          "column_boundaries": [
+            58.049,
+            296.121,
+            449.278,
+            548.585
+          ],
+          "row_boundaries": [
+            43.872,
+            65.089,
+            127,
+            153,
+            178,
+            202,
+            226,
+            250,
+            274,
+            298,
+            371,
+            395,
+            435,
+            460,
+            515,
+            602,
+            675.941
+          ],
+          "physical_cells": [
+            [
+              58.049,
+              43.872,
+              296.121,
+              65.089
+            ],
+            [
+              58.049,
+              65.089,
+              296.121,
+              675.941
+            ],
+            [
+              296.121,
+              43.872,
+              449.278,
+              65.089
+            ],
+            [
+              296.121,
+              65.089,
+              449.278,
+              675.941
+            ],
+            [
+              449.278,
+              43.872,
+              548.585,
+              65.089
+            ],
+            [
+              449.278,
+              65.089,
+              548.585,
+              675.941
+            ]
+          ],
+          "logical_cells": [
+            {
+              "cell_id": "p2_r0_c0",
+              "row_index": 0,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                43.872,
+                296.121,
+                65.089
+              ],
+              "reviewed_text": "품 목",
+              "text_sha256": "8c5ffc13068de21f2200f50b9a5cb46914bb7619c6bb5e9606dd643615430855"
+            },
+            {
+              "cell_id": "p2_r0_c1",
+              "row_index": 0,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                43.872,
+                449.278,
+                65.089
+              ],
+              "reviewed_text": "품 질 보 증 기 간",
+              "text_sha256": "30972a0d0767f9e1d31597305d4d9d144e3d50f0351f475d4e741191cc84702e"
+            },
+            {
+              "cell_id": "p2_r0_c2",
+              "row_index": 0,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                43.872,
+                548.585,
+                65.089
+              ],
+              "reviewed_text": "부품 보유 기간",
+              "text_sha256": "bdc729c62dd3a99b35cd9b39f9cd98b678d35bc7386acbb0a5d332fef3b010ae"
+            },
+            {
+              "cell_id": "p2_r1_c0",
+              "row_index": 1,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                65.089,
+                296.121,
+                127
+              ],
+              "reviewed_text": "5. 가전제품, 사무용기기, 전기통신기자재, 광학기기, 주\n방용품 등\n1) 완제품",
+              "text_sha256": "c371401fdc98f65a11c2edfac9cf0dfb5ef25a93ee0af4efd01d23daf4db27d0"
+            },
+            {
+              "cell_id": "p2_r1_c1",
+              "row_index": 1,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                65.089,
+                449.278,
+                127
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p2_r1_c2",
+              "row_index": 1,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                65.089,
+                548.585,
+                127
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p2_r2_c0",
+              "row_index": 2,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                127,
+                296.121,
+                153
+              ],
+              "reviewed_text": "- 에어컨(냉방 전용)",
+              "text_sha256": "d7785264833bb17c6f7e3b2a5b960c00cfe23f0e082e16faf08d40e921c3c223"
+            },
+            {
+              "cell_id": "p2_r2_c1",
+              "row_index": 2,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                127,
+                449.278,
+                153
+              ],
+              "reviewed_text": "◦ 2년",
+              "text_sha256": "0a557448c60832b0f6cb761310a88ffd8079cd1f0c88ef48f28a85bb1898ddb3"
+            },
+            {
+              "cell_id": "p2_r2_c2",
+              "row_index": 2,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                127,
+                548.585,
+                153
+              ],
+              "reviewed_text": "◦ 제조일로부터 8년",
+              "text_sha256": "636ef0305b816b3f936e7303b671fcb7bfe3679af80d9992b83e6540212bb303"
+            },
+            {
+              "cell_id": "p2_r3_c0",
+              "row_index": 3,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                153,
+                296.121,
+                178
+              ],
+              "reviewed_text": "- 에어컨(냉난방 겸용)",
+              "text_sha256": "6de904a6e159185917aabd3cca6eea12ef7401ea06acf775e6183a8b3cde4f91"
+            },
+            {
+              "cell_id": "p2_r3_c1",
+              "row_index": 3,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                153,
+                449.278,
+                178
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p2_r3_c2",
+              "row_index": 3,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                153,
+                548.585,
+                178
+              ],
+              "reviewed_text": "◦ 제조일로부터 8년",
+              "text_sha256": "636ef0305b816b3f936e7303b671fcb7bfe3679af80d9992b83e6540212bb303"
+            },
+            {
+              "cell_id": "p2_r4_c0",
+              "row_index": 4,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                178,
+                296.121,
+                202
+              ],
+              "reviewed_text": "- 난로(전기, 가스, 기름), 선풍기, 냉풍기, 전기장판",
+              "text_sha256": "f4e8c3e237320110d5994c7ca28ca9beb8017f1c5a35f47043a1fe88bfeeb1c7"
+            },
+            {
+              "cell_id": "p2_r4_c1",
+              "row_index": 4,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                178,
+                449.278,
+                202
+              ],
+              "reviewed_text": "◦ 2년",
+              "text_sha256": "0a557448c60832b0f6cb761310a88ffd8079cd1f0c88ef48f28a85bb1898ddb3"
+            },
+            {
+              "cell_id": "p2_r4_c2",
+              "row_index": 4,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                178,
+                548.585,
+                202
+              ],
+              "reviewed_text": "◦ 제조일로부터 5년",
+              "text_sha256": "2decc7e36ac6e0d764d9d93789b7f070493544159f8c81b6bb98ea221fb2d5f0"
+            },
+            {
+              "cell_id": "p2_r5_c0",
+              "row_index": 5,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                202,
+                296.121,
+                226
+              ],
+              "reviewed_text": "- TV, 냉장고",
+              "text_sha256": "b59b08bec813fcb814ced5e9cd118efc167dc221e6a9786e396e9147f960ae37"
+            },
+            {
+              "cell_id": "p2_r5_c1",
+              "row_index": 5,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                202,
+                449.278,
+                226
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p2_r5_c2",
+              "row_index": 5,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                202,
+                548.585,
+                226
+              ],
+              "reviewed_text": "◦ 제조일로부터 9년",
+              "text_sha256": "f335fbfdd3b8dd7b3a7977f8c8e12d9cd2bcb3c7839b49e8b908543eddad7f28"
+            },
+            {
+              "cell_id": "p2_r6_c0",
+              "row_index": 6,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                226,
+                296.121,
+                250
+              ],
+              "reviewed_text": "- 전축, 전자레인지, 정수기, 가습기, 제습기, 전기청소기",
+              "text_sha256": "c48cc156cc436840c7544aedafdaa737fc886903a00cf78c0a2b35925d802eae"
+            },
+            {
+              "cell_id": "p2_r6_c1",
+              "row_index": 6,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                226,
+                449.278,
+                250
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p2_r6_c2",
+              "row_index": 6,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                226,
+                548.585,
+                250
+              ],
+              "reviewed_text": "◦ 제조일로부터 7년",
+              "text_sha256": "804be906aee261400c69d7784afe9cf9f71943a34d7d032ef58d85dffd6b52ab"
+            },
+            {
+              "cell_id": "p2_r7_c0",
+              "row_index": 7,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                250,
+                296.121,
+                274
+              ],
+              "reviewed_text": "- 세탁기",
+              "text_sha256": "b5ed2d3f13a333e3d7a8d156e0c675e6cc4a4f7aa59213c01334a6f47f181481"
+            },
+            {
+              "cell_id": "p2_r7_c1",
+              "row_index": 7,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                250,
+                449.278,
+                274
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p2_r7_c2",
+              "row_index": 7,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                250,
+                548.585,
+                274
+              ],
+              "reviewed_text": "◦ 제조일로부터 7년",
+              "text_sha256": "804be906aee261400c69d7784afe9cf9f71943a34d7d032ef58d85dffd6b52ab"
+            },
+            {
+              "cell_id": "p2_r8_c0",
+              "row_index": 8,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                274,
+                296.121,
+                298
+              ],
+              "reviewed_text": "- 의류건조기, 의류관리기",
+              "text_sha256": "c63cd29e698b25e09433430b83e6c1c3ec66e1a6b73427304d82ffb5b9f2b6ab"
+            },
+            {
+              "cell_id": "p2_r8_c1",
+              "row_index": 8,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                274,
+                449.278,
+                298
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p2_r8_c2",
+              "row_index": 8,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                274,
+                548.585,
+                298
+              ],
+              "reviewed_text": "◦ 제조일로부터 7년",
+              "text_sha256": "804be906aee261400c69d7784afe9cf9f71943a34d7d032ef58d85dffd6b52ab"
+            },
+            {
+              "cell_id": "p2_r9_c0",
+              "row_index": 9,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                298,
+                296.121,
+                371
+              ],
+              "reviewed_text": "- 비디오플레이어, DVD플레이어, 전기(가스)오븐, 비데,\n전기압력밥솥, 가스레인지, 유․무선전화기, 믹서기,\n전기온수기, 냉온수기, 캠코더,홈시어터, 안마의자,\n족욕기, 망원경 ,현미경",
+              "text_sha256": "6c2773ce9d2de24a81863965d1a2c892911594542cc26be750bbdd9697d6d964"
+            },
+            {
+              "cell_id": "p2_r9_c1",
+              "row_index": 9,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                298,
+                449.278,
+                371
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p2_r9_c2",
+              "row_index": 9,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                298,
+                548.585,
+                371
+              ],
+              "reviewed_text": "◦ 제조일로부터 6년",
+              "text_sha256": "c091b324211fe7678c77295fc384f63b77602b6bb876900d37adae62c79e3487"
+            },
+            {
+              "cell_id": "p2_r10_c0",
+              "row_index": 10,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                371,
+                296.121,
+                395
+              ],
+              "reviewed_text": "- 네비게이션, 카메라, 디지털피아노",
+              "text_sha256": "31361a50af0eb9016c183d2610af3c3874ee9ffc5ca8ef1564daf7fc3f5fe055"
+            },
+            {
+              "cell_id": "p2_r10_c1",
+              "row_index": 10,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                371,
+                449.278,
+                395
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p2_r10_c2",
+              "row_index": 10,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                371,
+                548.585,
+                395
+              ],
+              "reviewed_text": "◦ 제조일로부터 5년",
+              "text_sha256": "2decc7e36ac6e0d764d9d93789b7f070493544159f8c81b6bb98ea221fb2d5f0"
+            },
+            {
+              "cell_id": "p2_r11_c0",
+              "row_index": 11,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                395,
+                296.121,
+                435
+              ],
+              "reviewed_text": "- 데스크탑(완성품) 및 주변기기, 노트북, 태블릿, 휴대\n용 음향기기(MP3,카세트,CD플레이어)",
+              "text_sha256": "d8bd4c19f475ceef6ee287a759f3c4e6c11aa6de698adca4aba0ac0fb632c514"
+            },
+            {
+              "cell_id": "p2_r11_c1",
+              "row_index": 11,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                395,
+                449.278,
+                435
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p2_r11_c2",
+              "row_index": 11,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                395,
+                548.585,
+                435
+              ],
+              "reviewed_text": "◦ 제조일로부터 4년",
+              "text_sha256": "33174ebff01cb22da275be6a435fe198f9f4f6894a2811bfeef3610bdb86238a"
+            },
+            {
+              "cell_id": "p2_r12_c0",
+              "row_index": 12,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                435,
+                296.121,
+                460
+              ],
+              "reviewed_text": "- 스마트폰, 휴대폰",
+              "text_sha256": "02b2ca61d5a1a6473ef275ff3d4a902fff5b9ea2e1f9c4375635934d13ac2f6e"
+            },
+            {
+              "cell_id": "p2_r12_c1",
+              "row_index": 12,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                435,
+                449.278,
+                460
+              ],
+              "reviewed_text": "◦ 2년(단, 배터리는 1년)",
+              "text_sha256": "3dbe688659c24f8ea1d79a4467ff3a23673634a8455c811240c406739db83770"
+            },
+            {
+              "cell_id": "p2_r12_c2",
+              "row_index": 12,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                435,
+                548.585,
+                460
+              ],
+              "reviewed_text": "◦ 제조일로부터 4년",
+              "text_sha256": "33174ebff01cb22da275be6a435fe198f9f4f6894a2811bfeef3610bdb86238a"
+            },
+            {
+              "cell_id": "p2_r13_c0",
+              "row_index": 13,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                460,
+                296.121,
+                515
+              ],
+              "reviewed_text": "- 전기면도기, 전기조리기기 (멀티쿠커, 튀김기, 다용\n도식품조리기, 전기토스터, 전기냄비, 전기프라이팬\n등), 헤어드라이어",
+              "text_sha256": "50ce1258b4a00f8f8f0427bb10a385f3dd1c762b31c4f8ceb9d1fd96e39cd46e"
+            },
+            {
+              "cell_id": "p2_r13_c1",
+              "row_index": 13,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                460,
+                449.278,
+                515
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p2_r13_c2",
+              "row_index": 13,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                460,
+                548.585,
+                515
+              ],
+              "reviewed_text": "◦ 제조일로부터 3년",
+              "text_sha256": "6bc07e4072236cef3147eee610df4bd84c6a6c144747a672e4c2c58c524714da"
+            },
+            {
+              "cell_id": "p2_r14_c0",
+              "row_index": 14,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                515,
+                296.121,
+                602
+              ],
+              "reviewed_text": "- 복사기",
+              "text_sha256": "9804f310ce8e5780c3a42840b3b2be02fa7cc9ea57bd584a4ea4e3e7e9d0cdde"
+            },
+            {
+              "cell_id": "p2_r14_c1",
+              "row_index": 14,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                515,
+                449.278,
+                602
+              ],
+              "reviewed_text": "◦ 6개월 다만, 복사 매수가 복사기\n종에 따라 각각 3만매(소형), 6만\n매(중형), 9만매(대형)를 초과한\n경우에는 기간이 만료된 것으로\n함.",
+              "text_sha256": "02661bffeacd5436c399f74f24da15caa0462c43aa70946a8d8663e6e78d9543"
+            },
+            {
+              "cell_id": "p2_r14_c2",
+              "row_index": 14,
+              "column_index": 2,
+              "row_span": 2,
+              "column_span": 1,
+              "bbox": [
+                449.278,
+                515,
+                548.585,
+                675.941
+              ],
+              "reviewed_text": "◦ 제조일로부터 5년",
+              "text_sha256": "2decc7e36ac6e0d764d9d93789b7f070493544159f8c81b6bb98ea221fb2d5f0"
+            },
+            {
+              "cell_id": "p2_r15_c0",
+              "row_index": 15,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                602,
+                296.121,
+                675.941
+              ],
+              "reviewed_text": "- 신발",
+              "text_sha256": "1785b9fa80be410ba96192af0728856a2d5ef289dc81f1b17eccb93c5a3cde92"
+            },
+            {
+              "cell_id": "p2_r15_c1",
+              "row_index": 15,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                296.121,
+                602,
+                449.278,
+                675.941
+              ],
+              "reviewed_text": "◦ 가죽제품(가죽이 전체 재질의\n60% 이상): 1년\n◦ 천 등 그 외의 소재: 6개월",
+              "text_sha256": "6b6218a50b3b98170a4899b7dc1766aab7bf91fae8f7df41dd63360cb9941a1d"
+            }
+          ],
+          "outside_text": "",
+          "outside_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "row_context_cell_ids": {
+            "2": [
+              "p2_r1_c0"
+            ],
+            "3": [
+              "p2_r1_c0"
+            ],
+            "4": [
+              "p2_r1_c0"
+            ],
+            "5": [
+              "p2_r1_c0"
+            ],
+            "6": [
+              "p2_r1_c0"
+            ],
+            "7": [
+              "p2_r1_c0"
+            ],
+            "8": [
+              "p2_r1_c0"
+            ],
+            "9": [
+              "p2_r1_c0"
+            ],
+            "10": [
+              "p2_r1_c0"
+            ],
+            "11": [
+              "p2_r1_c0"
+            ],
+            "12": [
+              "p2_r1_c0"
+            ],
+            "13": [
+              "p2_r1_c0"
+            ],
+            "14": [
+              "p2_r1_c0"
+            ],
+            "15": [
+              "p2_r1_c0"
+            ]
+          }
+        },
+        {
+          "page_number": 3,
+          "table_bbox": [
+            58.049,
+            43.872,
+            552.663,
+            771.116
+          ],
+          "column_boundaries": [
+            58.049,
+            254.983,
+            461.872,
+            552.663
+          ],
+          "row_boundaries": [
+            43.872,
+            62.332,
+            100.57,
+            122.866,
+            145.281,
+            184,
+            207,
+            230,
+            268.506,
+            350,
+            385,
+            441.597,
+            497.935,
+            554.154,
+            634.466,
+            674.742,
+            701.832,
+            725,
+            744,
+            771.116
+          ],
+          "physical_cells": [
+            [
+              58.049,
+              43.872,
+              254.983,
+              62.332
+            ],
+            [
+              58.049,
+              62.332,
+              254.983,
+              100.57
+            ],
+            [
+              58.049,
+              100.57,
+              254.983,
+              122.866
+            ],
+            [
+              58.049,
+              122.866,
+              254.983,
+              145.281
+            ],
+            [
+              58.049,
+              145.281,
+              254.983,
+              268.506
+            ],
+            [
+              58.049,
+              268.506,
+              254.983,
+              441.597
+            ],
+            [
+              58.049,
+              441.597,
+              254.983,
+              497.935
+            ],
+            [
+              58.049,
+              497.935,
+              254.983,
+              554.154
+            ],
+            [
+              58.049,
+              554.154,
+              254.983,
+              634.466
+            ],
+            [
+              58.049,
+              634.466,
+              254.983,
+              674.742
+            ],
+            [
+              58.049,
+              674.742,
+              254.983,
+              701.832
+            ],
+            [
+              58.049,
+              701.832,
+              254.983,
+              771.116
+            ],
+            [
+              254.983,
+              43.872,
+              461.872,
+              62.332
+            ],
+            [
+              254.983,
+              62.332,
+              461.872,
+              100.57
+            ],
+            [
+              254.983,
+              100.57,
+              461.872,
+              122.866
+            ],
+            [
+              254.983,
+              122.866,
+              461.872,
+              145.281
+            ],
+            [
+              254.983,
+              145.281,
+              461.872,
+              268.506
+            ],
+            [
+              254.983,
+              268.506,
+              461.872,
+              441.597
+            ],
+            [
+              254.983,
+              441.597,
+              461.872,
+              497.935
+            ],
+            [
+              254.983,
+              497.935,
+              461.872,
+              554.154
+            ],
+            [
+              254.983,
+              554.154,
+              461.872,
+              634.466
+            ],
+            [
+              254.983,
+              634.466,
+              461.872,
+              674.742
+            ],
+            [
+              254.983,
+              674.742,
+              461.872,
+              701.832
+            ],
+            [
+              254.983,
+              701.832,
+              461.872,
+              771.116
+            ],
+            [
+              461.872,
+              43.872,
+              552.663,
+              62.332
+            ],
+            [
+              461.872,
+              62.332,
+              552.663,
+              100.57
+            ],
+            [
+              461.872,
+              100.57,
+              552.663,
+              122.866
+            ],
+            [
+              461.872,
+              122.866,
+              552.663,
+              145.281
+            ],
+            [
+              461.872,
+              145.281,
+              552.663,
+              268.506
+            ],
+            [
+              461.872,
+              268.506,
+              552.663,
+              441.597
+            ],
+            [
+              461.872,
+              441.597,
+              552.663,
+              497.935
+            ],
+            [
+              461.872,
+              497.935,
+              552.663,
+              554.154
+            ],
+            [
+              461.872,
+              554.154,
+              552.663,
+              634.466
+            ],
+            [
+              461.872,
+              634.466,
+              552.663,
+              674.742
+            ],
+            [
+              461.872,
+              674.742,
+              552.663,
+              701.832
+            ],
+            [
+              461.872,
+              701.832,
+              552.663,
+              771.116
+            ]
+          ],
+          "logical_cells": [
+            {
+              "cell_id": "p3_r0_c0",
+              "row_index": 0,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                43.872,
+                254.983,
+                62.332
+              ],
+              "reviewed_text": "품 목",
+              "text_sha256": "8c5ffc13068de21f2200f50b9a5cb46914bb7619c6bb5e9606dd643615430855"
+            },
+            {
+              "cell_id": "p3_r0_c1",
+              "row_index": 0,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                43.872,
+                461.872,
+                62.332
+              ],
+              "reviewed_text": "품 질 보 증 기 간",
+              "text_sha256": "30972a0d0767f9e1d31597305d4d9d144e3d50f0351f475d4e741191cc84702e"
+            },
+            {
+              "cell_id": "p3_r0_c2",
+              "row_index": 0,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                43.872,
+                552.663,
+                62.332
+              ],
+              "reviewed_text": "부품 보유 기간",
+              "text_sha256": "bdc729c62dd3a99b35cd9b39f9cd98b678d35bc7386acbb0a5d332fef3b010ae"
+            },
+            {
+              "cell_id": "p3_r1_c0",
+              "row_index": 1,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                62.332,
+                254.983,
+                100.57
+              ],
+              "reviewed_text": "- 라켓(테니스, 탁구, 배드민턴 등) 몸체 (라\n켓에 부착된 라바 또는 끈 등 제외)",
+              "text_sha256": "3bfdfdd844e7fe20753b8bb9445ba383b93782460bb6b23b951c2062ba08232b"
+            },
+            {
+              "cell_id": "p3_r1_c1",
+              "row_index": 1,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                62.332,
+                461.872,
+                100.57
+              ],
+              "reviewed_text": "◦ 6개월",
+              "text_sha256": "25c9b61f2c0070c78156702cb472ef54437f396c2d421f638675c3e665769f0a"
+            },
+            {
+              "cell_id": "p3_r1_c2",
+              "row_index": 1,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                62.332,
+                552.663,
+                100.57
+              ],
+              "reviewed_text": "◦ 제조일로부터 1년",
+              "text_sha256": "a749d677130f37ab2452659750d3007999d9f396d98b31b06255bc955277eba8"
+            },
+            {
+              "cell_id": "p3_r2_c0",
+              "row_index": 2,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                100.57,
+                254.983,
+                122.866
+              ],
+              "reviewed_text": "- 헬스기구, 골프채",
+              "text_sha256": "320b6f48f55730ea3c317ed3df41250ce94398a194caad10d110f8b5e8009b9f"
+            },
+            {
+              "cell_id": "p3_r2_c1",
+              "row_index": 2,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                100.57,
+                461.872,
+                122.866
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p3_r2_c2",
+              "row_index": 2,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                100.57,
+                552.663,
+                122.866
+              ],
+              "reviewed_text": "◦ 제조일로부터 5년",
+              "text_sha256": "2decc7e36ac6e0d764d9d93789b7f070493544159f8c81b6bb98ea221fb2d5f0"
+            },
+            {
+              "cell_id": "p3_r3_c0",
+              "row_index": 3,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                122.866,
+                254.983,
+                145.281
+              ],
+              "reviewed_text": "- 우산류",
+              "text_sha256": "edb5b9c3b207decf5a036b519c19ac2c291dbb924c81c160cb0d3e9d6c146fcc"
+            },
+            {
+              "cell_id": "p3_r3_c1",
+              "row_index": 3,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                122.866,
+                461.872,
+                145.281
+              ],
+              "reviewed_text": "◦ 1개월",
+              "text_sha256": "403a0de0950b8573ad3d00d660e55f8d412a81caee013eaf1181e703f9d83489"
+            },
+            {
+              "cell_id": "p3_r3_c2",
+              "row_index": 3,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                122.866,
+                552.663,
+                145.281
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r4_c0",
+              "row_index": 4,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                145.281,
+                254.983,
+                184
+              ],
+              "reviewed_text": "- 전구류",
+              "text_sha256": "19d037581d49301ef5e3d4c671df4772dbee5da831d498add5f63d8b751532a3"
+            },
+            {
+              "cell_id": "p3_r4_c1",
+              "row_index": 4,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                145.281,
+                461.872,
+                184
+              ],
+              "reviewed_text": "◦ 1개월(형광등, 백열전구)\n◦ 6개월(LED전구)",
+              "text_sha256": "960189adc69cc4abd2a9ea8bcbbc9da4412b292690c80de2b40323a2f3eeff0d"
+            },
+            {
+              "cell_id": "p3_r4_c2",
+              "row_index": 4,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                145.281,
+                552.663,
+                184
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r5_c0",
+              "row_index": 5,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                184,
+                254.983,
+                207
+              ],
+              "reviewed_text": "- 문구",
+              "text_sha256": "81b3a54cd1eb5387e236c2d2f05c8f4ae603de07f33cc0361a25b69dc170df06"
+            },
+            {
+              "cell_id": "p3_r5_c1",
+              "row_index": 5,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                184,
+                461.872,
+                207
+              ],
+              "reviewed_text": "◦ 6개월",
+              "text_sha256": "25c9b61f2c0070c78156702cb472ef54437f396c2d421f638675c3e665769f0a"
+            },
+            {
+              "cell_id": "p3_r5_c2",
+              "row_index": 5,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                184,
+                552.663,
+                207
+              ],
+              "reviewed_text": "◦ 제조일로부터 1년",
+              "text_sha256": "a749d677130f37ab2452659750d3007999d9f396d98b31b06255bc955277eba8"
+            },
+            {
+              "cell_id": "p3_r6_c0",
+              "row_index": 6,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                207,
+                254.983,
+                230
+              ],
+              "reviewed_text": "- 완구",
+              "text_sha256": "8d3143d2f68e46b02878181b47c9a9a020342d0a53841ac23b3c4dd6f206be74"
+            },
+            {
+              "cell_id": "p3_r6_c1",
+              "row_index": 6,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                207,
+                461.872,
+                230
+              ],
+              "reviewed_text": "◦ 6개월",
+              "text_sha256": "25c9b61f2c0070c78156702cb472ef54437f396c2d421f638675c3e665769f0a"
+            },
+            {
+              "cell_id": "p3_r6_c2",
+              "row_index": 6,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                207,
+                552.663,
+                230
+              ],
+              "reviewed_text": "◦ 제조일로부터 1년",
+              "text_sha256": "a749d677130f37ab2452659750d3007999d9f396d98b31b06255bc955277eba8"
+            },
+            {
+              "cell_id": "p3_r7_c0",
+              "row_index": 7,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                230,
+                254.983,
+                268.506
+              ],
+              "reviewed_text": "- 가발",
+              "text_sha256": "20dc3bca3caf2075251df96fd2219c51adc081e30387804fd2bfd22fba397d12"
+            },
+            {
+              "cell_id": "p3_r7_c1",
+              "row_index": 7,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                230,
+                461.872,
+                268.506
+              ],
+              "reviewed_text": "◦ 6개월(인모)\n◦ 1년(인공모)",
+              "text_sha256": "ab5e20e608fd4b337a3f71b4213c283fb5d7556f7b8d7fd60869cec3835d631e"
+            },
+            {
+              "cell_id": "p3_r7_c2",
+              "row_index": 7,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                230,
+                552.663,
+                268.506
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r8_c0",
+              "row_index": 8,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                268.506,
+                254.983,
+                350
+              ],
+              "reviewed_text": "2) 핵심부품",
+              "text_sha256": "5c1072800177b460473d83b36612a9b58b2bf5dc279c4d630324674ae3d1e5ed"
+            },
+            {
+              "cell_id": "p3_r8_c1",
+              "row_index": 8,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                268.506,
+                461.872,
+                350
+              ],
+              "reviewed_text": "◦ 핵심부품 품질보증기간내 정상적인 사용상태\n하에서 발생한 성능·기능상의 하자로 부품수\n리가 필요한 경우\n- 핵심부품에 대한 무상수리",
+              "text_sha256": "d809bfe066ddb8f714c6d4a953b8562d5b37d97e0a171ad9d17503a3611d7b5e"
+            },
+            {
+              "cell_id": "p3_r8_c2",
+              "row_index": 8,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                268.506,
+                552.663,
+                350
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r9_c0",
+              "row_index": 9,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                350,
+                254.983,
+                385
+              ],
+              "reviewed_text": "- 에어컨：컴프레서",
+              "text_sha256": "6af0f35662e77aad9d78dee54f3a9171837346e7d597747f8223244b2dd320c1"
+            },
+            {
+              "cell_id": "p3_r9_c1",
+              "row_index": 9,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                350,
+                461.872,
+                385
+              ],
+              "reviewed_text": "◦ 4년",
+              "text_sha256": "bc04f463b57cbb547f62d65ff9cd871bf9ff8dbf98394f451c8c2177c7cba75b"
+            },
+            {
+              "cell_id": "p3_r9_c2",
+              "row_index": 9,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                350,
+                552.663,
+                385
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r10_c0",
+              "row_index": 10,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                385,
+                254.983,
+                441.597
+              ],
+              "reviewed_text": "- LCD TV, LCD 모니터(단, LCD 노트북 모\n니터는 제외), LCD모니터·본체 일체형 PC\n: LCD 패널",
+              "text_sha256": "c94a0a445bf59a7027d2c6199d14f5e2a52b7f05c496dd20b084f274c0e7a8b3"
+            },
+            {
+              "cell_id": "p3_r10_c1",
+              "row_index": 10,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                385,
+                461.872,
+                441.597
+              ],
+              "reviewed_text": "◦ 2년 (단, 소비자가 확인 가능한 타이머가 부\n착된 제품으로 5,000시간을 초과한 경우에는\n기간이 만료된 것으로 함.)",
+              "text_sha256": "e376861e38801b6f14a08d087c247b024e9e6ecfc1b619cd8382f46697550858"
+            },
+            {
+              "cell_id": "p3_r10_c2",
+              "row_index": 10,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                385,
+                552.663,
+                441.597
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r11_c0",
+              "row_index": 11,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                441.597,
+                254.983,
+                497.935
+              ],
+              "reviewed_text": "- PDP TV 패널",
+              "text_sha256": "a350c91f798b3e69ebb2e981197063f02744aa4a372486f2495bbc1803f4cdfd"
+            },
+            {
+              "cell_id": "p3_r11_c1",
+              "row_index": 11,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                441.597,
+                461.872,
+                497.935
+              ],
+              "reviewed_text": "◦ 2년 (단, 소비자가 확인 가능한 타이머가 부\n착된 제품으로 5,000시간을 초과한 경우에는\n기간이 만료된 것으로 함)",
+              "text_sha256": "540e4f19eab170a6a345b1d3f601b0bd41cc711a6fe89e92de778b1c35a2a680"
+            },
+            {
+              "cell_id": "p3_r11_c2",
+              "row_index": 11,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                441.597,
+                552.663,
+                497.935
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r12_c0",
+              "row_index": 12,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                497.935,
+                254.983,
+                554.154
+              ],
+              "reviewed_text": "- LED TV, LED 모니터(단, LED 노트북 모\n니터는 제외), LED모니터·본체 일체형 PC\n: LED 패널",
+              "text_sha256": "d531b7d6a3469e700befdfbcb8180a149d4a39b20f59e80819f86594d9ebbe98"
+            },
+            {
+              "cell_id": "p3_r12_c1",
+              "row_index": 12,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                497.935,
+                461.872,
+                554.154
+              ],
+              "reviewed_text": "◦ 2년 (단, 소비자가 확인 가능한 타이머가 부\n착된 제품으로 5,000시간을 초과한 경우에는\n기간이 만료된 것으로 함.)",
+              "text_sha256": "e376861e38801b6f14a08d087c247b024e9e6ecfc1b619cd8382f46697550858"
+            },
+            {
+              "cell_id": "p3_r12_c2",
+              "row_index": 12,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                497.935,
+                552.663,
+                554.154
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r13_c0",
+              "row_index": 13,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                554.154,
+                254.983,
+                634.466
+              ],
+              "reviewed_text": "- 세탁기：모터, TV：CPT, 냉장고：컴프레\n서, 모니터：CDT, 전자렌지：마그네트론,\nVTR：헤드드럼, 비디오카메라：헤드드럼,\n팬히터：버너, 로터리히터：버너",
+              "text_sha256": "d6a98e7beeaaeefc2b3c852a49704ad02ea47ce9621def68cc364795a31fa06c"
+            },
+            {
+              "cell_id": "p3_r13_c1",
+              "row_index": 13,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                554.154,
+                461.872,
+                634.466
+              ],
+              "reviewed_text": "◦ 3년 (단, 모니터용 CDT의 경우에는 소비자가\n확인 가능한 타이머가 부착된 제품으로서\n10,000시간을 초과한 경우에는 기간이 만료\n된 것으로 함.)",
+              "text_sha256": "9bc21f5e6b661cd5c2e7aa7b732c730d426bbe51bc4651de90032afff015a99c"
+            },
+            {
+              "cell_id": "p3_r13_c2",
+              "row_index": 13,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                554.154,
+                552.663,
+                634.466
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r14_c0",
+              "row_index": 14,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                634.466,
+                254.983,
+                674.742
+              ],
+              "reviewed_text": "- 의류건조기：컴프레서, 의류관리기：컴프\n레서",
+              "text_sha256": "bae44cd25aa5ddbef64cd4410a74dc588e47deafd689f88ef41e025d78e57183"
+            },
+            {
+              "cell_id": "p3_r14_c1",
+              "row_index": 14,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                634.466,
+                461.872,
+                674.742
+              ],
+              "reviewed_text": "◦ 3년",
+              "text_sha256": "441763f349c29902f4b12e4f60b8ee4caa84a927f8bae193f3b8b5a9a2e7294a"
+            },
+            {
+              "cell_id": "p3_r14_c2",
+              "row_index": 14,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                634.466,
+                552.663,
+                674.742
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r15_c0",
+              "row_index": 15,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                674.742,
+                254.983,
+                701.832
+              ],
+              "reviewed_text": "- 데스크탑, 노트북：Main Board",
+              "text_sha256": "f2be61ee99b4376dd0bf0bbbbb56431b0041f74431af9a71bab597c9982d72b5"
+            },
+            {
+              "cell_id": "p3_r15_c1",
+              "row_index": 15,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                674.742,
+                461.872,
+                701.832
+              ],
+              "reviewed_text": "◦ 2년",
+              "text_sha256": "0a557448c60832b0f6cb761310a88ffd8079cd1f0c88ef48f28a85bb1898ddb3"
+            },
+            {
+              "cell_id": "p3_r15_c2",
+              "row_index": 15,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                674.742,
+                552.663,
+                701.832
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r16_c0",
+              "row_index": 16,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                701.832,
+                254.983,
+                725
+              ],
+              "reviewed_text": "6. 별도의 기간을 정하지 않은 경우",
+              "text_sha256": "ff7f0757e864a2a974636a736df6c30fe712e634aafa4ab683335ab2d9bf3dda"
+            },
+            {
+              "cell_id": "p3_r16_c1",
+              "row_index": 16,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                701.832,
+                461.872,
+                725
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r16_c2",
+              "row_index": 16,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                701.832,
+                552.663,
+                725
+              ],
+              "reviewed_text": "",
+              "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "cell_id": "p3_r17_c0",
+              "row_index": 17,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                725,
+                254.983,
+                744
+              ],
+              "reviewed_text": "1) 유사품목에 따를 수 있는 경우",
+              "text_sha256": "1ca532599f6cf4525d84bfdd64a0f7db96463ea9a8cae6fda5a14ede2fd6057e"
+            },
+            {
+              "cell_id": "p3_r17_c1",
+              "row_index": 17,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                725,
+                461.872,
+                744
+              ],
+              "reviewed_text": "◦ 유사품목에 따름",
+              "text_sha256": "b04259f38d3c53bd58047f960a8a3850eeafbe4cc4980b4b16a7e725cc5b987a"
+            },
+            {
+              "cell_id": "p3_r17_c2",
+              "row_index": 17,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                725,
+                552.663,
+                744
+              ],
+              "reviewed_text": "◦ 유사품목에 따름",
+              "text_sha256": "b04259f38d3c53bd58047f960a8a3850eeafbe4cc4980b4b16a7e725cc5b987a"
+            },
+            {
+              "cell_id": "p3_r18_c0",
+              "row_index": 18,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                744,
+                254.983,
+                771.116
+              ],
+              "reviewed_text": "2) 유사품목에 따를 수 없는 경우",
+              "text_sha256": "684ce21c712269b042696404c8d0353cc0eaa55a6b00e02e091e6a465104b27b"
+            },
+            {
+              "cell_id": "p3_r18_c1",
+              "row_index": 18,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                254.983,
+                744,
+                461.872,
+                771.116
+              ],
+              "reviewed_text": "◦ 1년",
+              "text_sha256": "f041a7dc3432684aa4bc1b7967d57a737b8641f125f902f93aad0254ba5cb63b"
+            },
+            {
+              "cell_id": "p3_r18_c2",
+              "row_index": 18,
+              "column_index": 2,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                461.872,
+                744,
+                552.663,
+                771.116
+              ],
+              "reviewed_text": "◦ 제조일로부터 5년",
+              "text_sha256": "2decc7e36ac6e0d764d9d93789b7f070493544159f8c81b6bb98ea221fb2d5f0"
+            }
+          ],
+          "outside_text": "",
+          "outside_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "row_context_cell_ids": {
+            "9": [
+              "p3_r8_c0",
+              "p3_r8_c1"
+            ],
+            "10": [
+              "p3_r8_c0",
+              "p3_r8_c1"
+            ],
+            "11": [
+              "p3_r8_c0",
+              "p3_r8_c1"
+            ],
+            "12": [
+              "p3_r8_c0",
+              "p3_r8_c1"
+            ],
+            "13": [
+              "p3_r8_c0",
+              "p3_r8_c1"
+            ],
+            "14": [
+              "p3_r8_c0",
+              "p3_r8_c1"
+            ],
+            "15": [
+              "p3_r8_c0",
+              "p3_r8_c1"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "appendix_number": "0004",
+      "title": "품목별 내용연수표",
+      "pdf_source_id": "consumer_dispute_standard_appendix_3",
+      "pdf_file": "data/raw/consumer_sources/consumer_dispute_standard_appendix_3_f6d4e6570d0bd34f.pdf",
+      "pdf_sha256": "f6d4e6570d0bd34f527d023e1a5f4ee13ff4a7c0730515b8cb6a7845296704e4",
+      "pdf_source_url": "https://www.law.go.kr/LSW/flDownload.do?flSeq=159470225",
+      "pages": [
+        {
+          "page_number": 1,
+          "table_bbox": [
+            58.049,
+            81.031,
+            548.585,
+            528.742
+          ],
+          "column_boundaries": [
+            58.049,
+            424.931,
+            548.585
+          ],
+          "row_boundaries": [
+            81.031,
+            102.368,
+            131.376,
+            160.265,
+            209.651,
+            299.792,
+            349.058,
+            398.444,
+            462.454,
+            499.853,
+            528.742
+          ],
+          "physical_cells": [
+            [
+              58.049,
+              81.031,
+              424.931,
+              102.368
+            ],
+            [
+              58.049,
+              102.368,
+              424.931,
+              131.376
+            ],
+            [
+              58.049,
+              131.376,
+              424.931,
+              160.265
+            ],
+            [
+              58.049,
+              160.265,
+              424.931,
+              209.651
+            ],
+            [
+              58.049,
+              209.651,
+              424.931,
+              299.792
+            ],
+            [
+              58.049,
+              299.792,
+              424.931,
+              349.058
+            ],
+            [
+              58.049,
+              349.058,
+              424.931,
+              398.444
+            ],
+            [
+              58.049,
+              398.444,
+              424.931,
+              462.454
+            ],
+            [
+              58.049,
+              462.454,
+              424.931,
+              499.853
+            ],
+            [
+              58.049,
+              499.853,
+              424.931,
+              528.742
+            ],
+            [
+              424.931,
+              81.031,
+              548.585,
+              102.368
+            ],
+            [
+              424.931,
+              102.368,
+              548.585,
+              499.853
+            ],
+            [
+              424.931,
+              499.853,
+              548.585,
+              528.742
+            ]
+          ],
+          "logical_cells": [
+            {
+              "cell_id": "p1_r0_c0",
+              "row_index": 0,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                81.031,
+                424.931,
+                102.368
+              ],
+              "reviewed_text": "품 목",
+              "text_sha256": "8c5ffc13068de21f2200f50b9a5cb46914bb7619c6bb5e9606dd643615430855"
+            },
+            {
+              "cell_id": "p1_r0_c1",
+              "row_index": 0,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                424.931,
+                81.031,
+                548.585,
+                102.368
+              ],
+              "reviewed_text": "내 용 연 수",
+              "text_sha256": "6590047140226dceb535d0133abe25012b851c9c35dd03d69d13b9e4fb1d0a67"
+            },
+            {
+              "cell_id": "p1_r1_c0",
+              "row_index": 1,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                102.368,
+                424.931,
+                131.376
+              ],
+              "reviewed_text": "농업용기기",
+              "text_sha256": "27bb817d1453ddc70e288749800d270c7304f3b2ba4061c474083311250e08e2"
+            },
+            {
+              "cell_id": "p1_r1_c1",
+              "row_index": 1,
+              "column_index": 1,
+              "row_span": 8,
+              "column_span": 1,
+              "bbox": [
+                424.931,
+                102.368,
+                548.585,
+                499.853
+              ],
+              "reviewed_text": "사업자가 품질보증서에 표시\n한 부품보유기간으로 함.\n다만, 그 기간이 [별표Ⅲ]의\n부품보유기간에 기재된\n기간보다 짧거나 미기재한\n경우 [별표Ⅲ]의 부품보유\n기간으로 함",
+              "text_sha256": "2212cc22d31ab52ec5ba9db96f072c6cc0b7d96edbb406d318030d60b69d4880"
+            },
+            {
+              "cell_id": "p1_r2_c0",
+              "row_index": 2,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                131.376,
+                424.931,
+                160.265
+              ],
+              "reviewed_text": "침대, 책상, 장롱, 장식장, 책장",
+              "text_sha256": "5048fa6e8393787f308e01438408eb7b62f6ef12e807e0cfa6c90420c9c6ee95"
+            },
+            {
+              "cell_id": "p1_r3_c0",
+              "row_index": 3,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                160.265,
+                424.931,
+                209.651
+              ],
+              "reviewed_text": "보일러, 에어컨, TV, 전축, 냉장고, 정수기, 가습기/제습기, 전기청소기, 식탁,\n신발장, 문갑, 전자렌지",
+              "text_sha256": "2a0852109ab10543c071ba0a8f98f7942c18d4f4ed4ed35121112f780080e675"
+            },
+            {
+              "cell_id": "p1_r4_c0",
+              "row_index": 4,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                209.651,
+                424.931,
+                299.792
+              ],
+              "reviewed_text": "비디오플레이어, DVD 플레이어, 전기(가스)오븐, 비데, 전기압력밥솥, 가스레인\n지, 유․무선전화기, 믹서기, 전기온수기, 냉온수기, 캠코더, 홈시어터, 안마의자,\n족욕기, 망원경, 현미경, 자동차, 소파, 화장대, 찬장",
+              "text_sha256": "3a36401b2e77fcc2becee2978fea7013cd4b08bf147359758193cb74a77793e7"
+            },
+            {
+              "cell_id": "p1_r5_c0",
+              "row_index": 5,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                299.792,
+                424.931,
+                349.058
+              ],
+              "reviewed_text": "선풍기, 냉풍기, 전기장판, 세탁기, 모터사이클, 카메라, 디지털피아노, 네비게\n이션, 난로(전기, 가스, 기름), 헬스기구, 골프채",
+              "text_sha256": "5e13db2095dc3607844ff42693b4716a478866202dd154014a17a756828396f6"
+            },
+            {
+              "cell_id": "p1_r6_c0",
+              "row_index": 6,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                349.058,
+                424.931,
+                398.444
+              ],
+              "reviewed_text": "퍼스널 컴퓨터(완성품) 및 주변기기, 노트북PC, 휴대용음향기기(MP3, 카세트,\nCD 플레이어)",
+              "text_sha256": "55d3f0b5dc62ff6d09a901f33db71b922047d8e0d5a9231b27449d4421b5e43b"
+            },
+            {
+              "cell_id": "p1_r7_c0",
+              "row_index": 7,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                398.444,
+                424.931,
+                462.454
+              ],
+              "reviewed_text": "휴대폰, 스마트폰, 전기면도기, 전기조리기기(멀티쿠커, 튀김기, 다용도식품조리\n기, 전기토스터, 전기냄비, 전기프라이팬 등), 헤어드라이어",
+              "text_sha256": "76db0d8d674b8615c4515a3801a67f76ee8f61e7471c4ed448ac04f8320e39c9"
+            },
+            {
+              "cell_id": "p1_r8_c0",
+              "row_index": 8,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                462.454,
+                424.931,
+                499.853
+              ],
+              "reviewed_text": "라켓(테니스, 탁구, 배드민턴 등) 몸체(라켓에 부착된 라바 또는 끈 등은 제외),\n문구, 완구",
+              "text_sha256": "be0bcfb660a3ee068d1ca83c4f8c5aa342f62cf47caea9f03e3566aca2685fe8"
+            },
+            {
+              "cell_id": "p1_r9_c0",
+              "row_index": 9,
+              "column_index": 0,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                58.049,
+                499.853,
+                424.931,
+                528.742
+              ],
+              "reviewed_text": "별도의 기간을 정하지 않은 경우로서 유사품목에 따를 수 없는 경우",
+              "text_sha256": "d85aa93f70880e06512477a455c0839cda6ecf3438c158f00b194a0064530ae6"
+            },
+            {
+              "cell_id": "p1_r9_c1",
+              "row_index": 9,
+              "column_index": 1,
+              "row_span": 1,
+              "column_span": 1,
+              "bbox": [
+                424.931,
+                499.853,
+                548.585,
+                528.742
+              ],
+              "reviewed_text": "5년",
+              "text_sha256": "470168385e8d6f2b94e7ae30782024762fd99a6a6a56e9a3641d1da6505edc30"
+            }
+          ],
+          "outside_text": "<별표 Ⅳ>\n품목별 내용연수표",
+          "outside_text_sha256": "38fe65bdc36b4fef94b0b752a5efcc1344a772c64a92db91eef27317cf8205c0",
+          "row_context_cell_ids": {}
+        }
+      ]
+    }
+  ]
+}

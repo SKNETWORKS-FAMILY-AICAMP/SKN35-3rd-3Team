@@ -14,11 +14,30 @@ from src.Scripts.collect_consumer_sources import ROOT, MANIFEST, digest, preserv
 from src.Scripts.preprocess_consumer_sources import (OUTPUT_DIR, PARCEL_VERSIONS, extract_case,
     extract_admin, preprocess, hwp_paragraph_text, compare_parcel_versions, refund_table_rows, extract_labor_guide, extract_overseas_guide, extract_fitness_closure_guide, installment_context,
     CIVIL_RECOVERY_GUIDES, HOUSING_GUIDES, extract_civil_recovery_guide,
-    CONSUMER_REDRESS_GUIDES, extract_consumer_redress_guide)
+    CONSUMER_REDRESS_GUIDES, extract_consumer_redress_guide,
+    APPENDIX_REVIEW_FILE, reviewed_pdf_table, apply_reviewed_consumer_appendices)
 from src.Scripts.chunk_consumer_sources import OUTPUT_DIR as CHUNK_DIR, make_chunks
 
 
 class ConsumerSourceTests(unittest.TestCase):
+    def test_pilates_case_versions_and_legal_limits_survive_preprocessing_and_embedding(self):
+        for sid in ['kca_case_1003739114','kca_case_1003640779']:
+            doc=next(d for d in self.documents if d['source_id']==sid)
+            regenerated=preprocess(doc)
+            self.assertEqual(regenerated['units'],doc['units'])
+            self.assertEqual(regenerated['law_version_review'],doc['law_version_review'])
+            self.assertIsNone(doc['decision_date'])
+            related=make_chunks(doc)
+            self.assertEqual(related,[c for c in self.chunks if c['source_id']==sid])
+            for chunk in related:
+                self.assertEqual(chunk['law_version_review'],doc['law_version_review'])
+                self.assertEqual(chunk['text'],next(u for u in doc['units'] if u['unit_id']==chunk['unit_id'])['text'][chunk['start']:chunk['end']])
+                self.assertTrue(chunk['required_context_chunk_ids'])
+                self.assertTrue(all(w in chunk['embedding_text'] for w in doc['warnings']))
+                if chunk['role'] in {'reasoning','decision','cited_law'}:
+                    self.assertIn(doc['law_version_review']['supporting_law_context'],chunk['embedding_text'])
+                self.assertEqual(digest((ROOT/chunk['law_version_review']['review_record_file']).read_bytes()),chunk['law_version_review']['review_record_sha256'])
+
     def test_consumer_redress_units_reproduce_sources_and_keep_warnings_and_law_links(self):
         by_id={d['source_id']:d for d in self.documents}
         law_ids={json.loads(line)['chunk_id'] for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()}
@@ -469,20 +488,107 @@ class ConsumerSourceTests(unittest.TestCase):
         for u in units:
             appendix=root.find(f'.//별표단위[별표번호="{u["appendix_number"]}"]')
             body=appendix.findtext('별표내용')
-            self.assertEqual(u['text'],body)
+            self.assertEqual(u['source_xml_text'],body)
+            self.assertEqual(u['source_xml_text_sha256'],digest(body.encode('utf-8')))
+            self.assertEqual((u['source_xml_start'],u['source_xml_end']),(0,len(body)))
+            self.assertEqual(u['source_comparison']['status'],'reviewed_against_collected_official_pdf')
+            self.assertEqual(u['source_comparison']['pdf_question_mark_count'],0)
+            self.assertEqual(u['source_comparison']['xml_question_mark_count'],body.count('?'))
+            self.assertTrue(u['pdf_tables'])
             self.assertEqual(u['appendix_title'],appendix.findtext('별표제목'))
-            self.assertEqual((u['start'],u['end']),(0,len(body)))
+            self.assertEqual((u['start'],u['end']),(0,len(u['text'])))
             found=[c for c in self.chunks if c['source_id']==doc['source_id'] and c['unit_id']==u['unit_id']]
             self.assertEqual(len(found),1)
             c=found[0]
-            self.assertEqual(c['text'],body)
+            self.assertEqual(c['text'],u['text'])
             self.assertEqual(c['source_offset_basis'],u['offset_basis'])
-            self.assertEqual(c['source_end'],len(body))
+            self.assertEqual(c['source_end'],len(u['text']))
+            self.assertEqual(c['source_xml_end'],len(body))
+            self.assertEqual(c['pdf_tables'],u['pdf_tables'])
+            self.assertEqual(c['body_source_url'],u['pdf_source_url'])
+            self.assertEqual(c['pdf_sha256'],digest((ROOT/c['pdf_file']).read_bytes()))
+            self.assertEqual(c['review_record_sha256'],digest(APPENDIX_REVIEW_FILE.read_bytes()))
             self.assertIn(u['appendix_title'],c['embedding_text'])
             self.assertIn('consumer_general',c['domains'])
             self.assertTrue(c['atomic'])
             self.assertTrue(c['oversize_atomic_unit'])
             self.assertTrue(c['warnings'])
+            for warning in c['warnings']:
+                self.assertIn(warning,c['embedding_text'])
+
+    def test_reviewed_pdf_grid_keeps_product_periods_exceptions_and_blank_cells(self):
+        d=next(d for d in self.documents if d['source_id']=='consumer_dispute_standard')
+        u=next(u for u in d['units'] if u['unit_id']=='appendix_0003')
+        self.assertEqual([len(t['rows']) for t in u['pdf_tables']],[5,16,19])
+        page2=u['pdf_tables'][1]
+        def values(table,row):
+            return [table['cells'][i]['text'] for i in table['rows'][row]['column_cell_indices']]
+        smartphone=values(page2,12)
+        self.assertIn('스마트폰',smartphone[0])
+        self.assertIn('2년(단, 배터리는 1년)',smartphone[1])
+        self.assertIn('4년',smartphone[2])
+        copier=values(page2,14)
+        shoes=values(page2,15)
+        self.assertIn('복사기',copier[0])
+        self.assertIn('6개월',copier[1])
+        self.assertIn('3만매',copier[1])
+        self.assertIn('신발',shoes[0])
+        self.assertIn('가죽제품',shoes[1])
+        self.assertEqual(copier[2],shoes[2])
+        self.assertEqual(page2['cells'][page2['rows'][14]['column_cell_indices'][2]]['row_span'],2)
+        page3=u['pdf_tables'][2]
+        self.assertEqual(values(page3,3)[2],'')  # 우산류 빈 부품보유기간을 인접 값으로 채우지 않음.
+        core=values(page3,10)
+        self.assertIn('LCD',core[0])
+        self.assertIn('5,000시간',core[1])
+        contexts=[page3['cells'][i]['text'] for i in page3['rows'][10]['context_cell_indices']]
+        self.assertIn('정상적인 사용상태',''.join(contexts))
+        self.assertTrue(all(t['character_inventory_match'] for t in u['pdf_tables']))
+
+    def test_useful_life_shared_cell_and_warranty_reference_are_not_guessed_or_discarded(self):
+        d=next(d for d in self.documents if d['source_id']=='consumer_dispute_standard')
+        u=next(u for u in d['units'] if u['unit_id']=='appendix_0004')
+        table=u['pdf_tables'][0]
+        indices=[table['rows'][r]['column_cell_indices'][1] for r in range(1,9)]
+        self.assertEqual(len(set(indices)),1)
+        shared=table['cells'][indices[0]]
+        self.assertEqual(shared['row_span'],8)
+        self.assertIn('다만',shared['text'])
+        self.assertIn('별표Ⅲ',shared['text'])
+        self.assertEqual(table['cells'][table['rows'][9]['column_cell_indices'][1]]['text'],'5년')
+        c=next(c for c in self.chunks if c['chunk_id']=='consumer_dispute_standard_appendix_0004_0000')
+        self.assertEqual(c['required_context_chunk_ids'],['consumer_dispute_standard_appendix_0003_0000'])
+        passages=[p for p in c['search_passages'] if p.get('derivation')=='reviewed_pdf_row_and_shared_cell_context']
+        self.assertEqual(len(passages),9)
+        for p in passages[:8]:
+            self.assertIn('다만',p['search_text'])
+            self.assertIn('별표Ⅲ',p['search_text'])
+            self.assertEqual(p['text'],c['text'][p['start']:p['end']])
+
+    def test_reviewed_pdf_rejects_missing_overlapping_changed_cells_and_missing_pages(self):
+        import pdfplumber
+        review=json.loads(APPENDIX_REVIEW_FILE.read_text(encoding='utf-8'))
+        spec=review['appendices'][1]
+        with pdfplumber.open(ROOT/spec['pdf_file']) as pdf:
+            for problem in ['missing','overlap','changed_text','wrong_geometry','common_note']:
+                layout=copy.deepcopy(spec['pages'][0])
+                if problem=='missing':layout['logical_cells'].pop()
+                elif problem=='overlap':layout['logical_cells'].append(copy.deepcopy(layout['logical_cells'][0]))
+                elif problem=='changed_text':layout['logical_cells'][0]['text_sha256']='wrong'
+                elif problem=='wrong_geometry':layout['logical_cells'][0]['bbox'][0]+=1
+                else:layout['outside_text_sha256']='wrong'
+                with self.subTest(problem=problem),self.assertRaises(ValueError):
+                    reviewed_pdf_table(pdf.pages[0],layout)
+        d=next(d for d in self.documents if d['source_id']=='consumer_dispute_standard')
+        units,_=extract_admin((ROOT/d['raw_file']).read_bytes())
+        for problem in ['parent_hash','pdf_hash','missing_page','wrong_link']:
+            changed=copy.deepcopy(review)
+            if problem=='parent_hash':changed['parent_raw_sha256']='wrong'
+            elif problem=='pdf_hash':changed['appendices'][0]['pdf_sha256']='wrong'
+            elif problem=='missing_page':changed['appendices'][0]['pages'].pop()
+            else:changed['appendices'][0]['pdf_source_url']='https://www.law.go.kr/wrong'
+            with self.subTest(problem=problem),self.assertRaises(ValueError):
+                apply_reviewed_consumer_appendices(d,units,changed)
 
     def test_product_tables_keep_continuations_notes_and_exact_official_offsets(self):
         doc=next(d for d in self.documents if d['document_type']=='administrative_rule')
@@ -677,6 +783,17 @@ class ConsumerSourceTests(unittest.TestCase):
                 self.assertEqual(p['text'],c['text'][p['start']:p['end']])
                 self.assertTrue(0<=p['start']<p['end']<=len(c['text']))
                 if 'search_text' in p:
+                    if p['derivation']=='reviewed_pdf_row_and_shared_cell_context':
+                        table=next(t for t in c['pdf_tables'] if t['page_number']==p['page_number'])
+                        row=next(r for r in table['rows'] if r['row_index']==p['row_index'])
+                        cells=[table['cells'][i] for i in row['column_cell_indices']]
+                        labels=['품목','품질보증기간','부품보유기간'] if c['appendix_number']=='0003' else ['품목','내용연수']
+                        context=[table['cells'][i]['text'] for i in row['context_cell_indices']]
+                        self.assertEqual(p['search_text'],'\n'.join([c['appendix_title'],table['outside_text'],*context,
+                            *(label+': '+cell['text'] for label,cell in zip(labels,cells))]))
+                        self.assertEqual(p['start'],min(cell['rendered_start'] for cell in cells))
+                        self.assertEqual(p['end'],max(cell['rendered_end'] for cell in cells))
+                        continue
                     cells=json.loads(p['text'])
                     if p['derivation']=='table_cell_texts_in_source_order_no_merge_inference':
                         self.assertEqual(p['search_text'],'\n'.join(cell['text'] for cell in cells))

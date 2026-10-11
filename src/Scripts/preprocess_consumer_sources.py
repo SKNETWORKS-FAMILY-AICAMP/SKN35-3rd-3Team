@@ -16,6 +16,7 @@ else:
     from collect_consumer_sources import ROOT, RAW_DIR, MANIFEST, HTMLTree, decode_html, digest, write_json
 
 OUTPUT_DIR = MANIFEST.parent
+APPENDIX_REVIEW_FILE = OUTPUT_DIR/'consumer_appendix_review_pmh.json'
 
 PARCEL_VERSIONS = {
     'ftc_terms_11185_file_a321590d': ('ftc_parcel_terms_14849', '2020-06-05', 26, 'preferred_collected_version'),
@@ -352,6 +353,137 @@ def extract_admin(data):
                       '표 전체를 하나의 청크로 보존하므로 임베딩 모델 토큰 제한 확인 필요.']))
     meta = {n.tag:n.text for n in info}
     return units, meta
+
+
+def reviewed_pdf_table(page, layout):
+    """검토된 좌표로만 표를 읽는다. 빈 값·병합 관계를 텍스트 순서로 추정하지 않는다."""
+    xs,ys=layout['column_boundaries'],layout['row_boundaries']
+    if len(xs)<3 or len(ys)<3 or xs!=sorted(set(xs)) or ys!=sorted(set(ys)):
+        raise ValueError('검토 PDF 표의 행·열 경계 불일치')
+    if layout['table_bbox'] != [xs[0],ys[0],xs[-1],ys[-1]]:
+        raise ValueError('검토 PDF 표 범위 불일치')
+    physical_tables=page.find_tables()
+    if len(physical_tables)!=1 or [[round(v,3) for v in cell] for cell in physical_tables[0].cells]!=layout['physical_cells']:
+        raise ValueError('검토 PDF의 실물 표 격자 변경')
+    def region_text(bbox, outside=False):
+        def selected(obj):
+            if obj.get('object_type')!='char':
+                return False
+            x,y=(obj['x0']+obj['x1'])/2,(obj['top']+obj['bottom'])/2
+            inside=bbox[0]<=x<bbox[2] and bbox[1]<=y<bbox[3]
+            return not inside if outside else inside
+        return page.filter(selected).extract_text() or ''
+    grid={};cells=[]
+    for raw in layout['logical_cells']:
+        row,col=raw['row_index'],raw['column_index']
+        height,width=raw['row_span'],raw['column_span']
+        if (any(type(n) is not int for n in [row,col,height,width]) or row<0 or col<0 or height<1 or width<1
+                or row+height>=len(ys) or col+width>=len(xs)):
+            raise ValueError('검토 PDF 셀 범위 불일치')
+        bbox=[xs[col],ys[row],xs[col+width],ys[row+height]]
+        if raw['bbox']!=bbox:
+            raise ValueError('검토 PDF 셀 좌표·병합 범위 불일치')
+        text=region_text(bbox)
+        if text!=raw['reviewed_text'] or digest(text.encode('utf-8'))!=raw['text_sha256']:
+            raise ValueError('검토 후 PDF 셀 본문 변경 또는 좌표 불일치')
+        index=len(cells)
+        for r in range(row,row+height):
+            for c in range(col,col+width):
+                if (r,c) in grid:
+                    raise ValueError('검토 PDF 병합 셀 중복')
+                grid[r,c]=index
+        cells.append({k:v for k,v in raw.items() if k not in {'reviewed_text','text_sha256'}} | {'text':text})
+    expected={(r,c) for r in range(len(ys)-1) for c in range(len(xs)-1)}
+    if set(grid)!=expected:
+        raise ValueError('검토 PDF 표 셀 누락')
+    outside=region_text(layout['table_bbox'],outside=True)
+    if outside!=layout['outside_text'] or digest(outside.encode('utf-8'))!=layout['outside_text_sha256']:
+        raise ValueError('검토 PDF 공통기준·표 외 본문 변경')
+    original=Counter(normalized_text(''.join(c['text'] for c in page.chars)))
+    extracted=Counter(normalized_text(outside+''.join(c['text'] for c in cells)))
+    if original!=extracted:
+        raise ValueError('검토 PDF 페이지 문자 누락 또는 중복')
+    by_id={c['cell_id']:i for i,c in enumerate(cells)}
+    if len(by_id)!=len(cells):
+        raise ValueError('검토 PDF 셀 ID 중복')
+    rows=[]
+    for r in range(len(ys)-1):
+        context_ids=layout.get('row_context_cell_ids',{}).get(str(r),[])
+        if any(i not in by_id for i in context_ids):
+            raise ValueError('검토 PDF 공통 조건 셀 누락')
+        rows.append({'row_index':r,'column_cell_indices':[grid[r,c] for c in range(len(xs)-1)],
+                     'context_cell_indices':[by_id[i] for i in context_ids]})
+    return {'page_number':layout['page_number'],'bbox':layout['table_bbox'],
+            'physical_cells':layout['physical_cells'],'column_boundaries':xs,'row_boundaries':ys,
+            'cells':cells,'rows':rows,'outside_text':outside,'character_inventory_match':True,
+            'derivation':'reviewed_pdf_coordinates_and_spans'}
+
+
+def apply_reviewed_consumer_appendices(source, units, review=None):
+    import pdfplumber
+    record_bytes=APPENDIX_REVIEW_FILE.read_bytes()
+    review=json.loads(record_bytes) if review is None else review
+    if (review['parent_source_id']!=source['source_id'] or review['parent_raw_file']!=source['raw_file']
+            or review['parent_raw_sha256']!=source['raw_sha256']):
+        raise ValueError('별표 검토 기록의 상위 XML 원본 지문 불일치')
+    xml=ET.fromstring((ROOT/source['raw_file']).read_bytes())
+    if review['effective_date']!=xml.findtext('.//시행일자'):
+        raise ValueError('별표 PDF 검토와 상위 고시 시행본 불일치')
+    if {a['appendix_number'] for a in review['appendices']}!={'0003','0004'} or len(review['appendices'])!=2:
+        raise ValueError('검토 별표 목록 누락 또는 중복')
+    result=[]
+    for original in units:
+        if original['unit_id'] not in {'appendix_0003','appendix_0004'}:
+            result.append(original)
+            continue
+        number=original['appendix_number']
+        spec=next(a for a in review['appendices'] if a['appendix_number']==number)
+        node=xml.find(f'.//별표단위[별표번호="{number}"]')
+        link=node.findtext('별표서식PDF파일링크')
+        if original['appendix_title']!=spec['title'] or spec['pdf_source_url']!='https://www.law.go.kr'+link:
+            raise ValueError('별표 PDF 제목·원문 XML 첨부 링크 불일치')
+        path=(ROOT/spec['pdf_file']).resolve()
+        if not path.is_relative_to((ROOT/'data/raw/consumer_sources').resolve()) or not path.is_file():
+            raise ValueError('검토 별표 PDF 경로 불일치')
+        if digest(path.read_bytes())!=spec['pdf_sha256']:
+            raise ValueError('검토 별표 PDF 원본 변경')
+        tables=[]
+        with pdfplumber.open(path) as pdf:
+            if [p['page_number'] for p in spec['pages']]!=list(range(1,len(pdf.pages)+1)):
+                raise ValueError('검토 별표 PDF 페이지 누락 또는 중복')
+            for page,layout in zip(pdf.pages,spec['pages']):
+                tables.append(reviewed_pdf_table(page,layout))
+        if normalized_text(spec['title']) not in normalized_text(''.join(t['outside_text'] for t in tables)):
+            raise ValueError('검토 PDF 별표 제목 누락')
+        pieces=[]
+        labels=['품목','품질보증기간','부품보유기간'] if number=='0003' else ['품목','내용연수']
+        for table in tables:
+            page_number=table['page_number']
+            pieces.append(f'[공식 PDF 페이지 {page_number} 공통기준]\n'+table['outside_text'])
+            for cell in table['cells']:
+                label=f"[페이지 {page_number} / 행 {cell['row_index']} / 열 {labels[cell['column_index']]} / 셀 {cell['cell_id']} / 행 병합 {cell['row_span']}]"
+                cell['rendered_start']=len('\n'.join(pieces))+(1 if pieces else 0)
+                block=label+'\n'+cell['text']
+                pieces.append(block)
+                cell['rendered_end']=cell['rendered_start']+len(block)
+        text='\n'.join(pieces)
+        original_text=original['text']
+        result.append({**original,'text':text,'start':0,'end':len(text),
+            'offset_basis':'reviewed_pdf_table_text','source_locator':f'공식 PDF 별표 {number} / 검토 좌표·병합 범위 / 전체 {len(tables)}페이지',
+            'source_xml_text':original_text,'source_xml_text_sha256':digest(original_text.encode('utf-8')),
+            'source_xml_offset_basis':original['offset_basis'],'source_xml_start':original['start'],'source_xml_end':original['end'],
+            'pdf_file':spec['pdf_file'],'pdf_sha256':spec['pdf_sha256'],'pdf_source_url':spec['pdf_source_url'],
+            'pdf_source_id':spec['pdf_source_id'],'pdf_tables':tables,'page_numbers':[t['page_number'] for t in tables],
+            'review_record_file':APPENDIX_REVIEW_FILE.relative_to(ROOT).as_posix(),'review_record_sha256':digest(record_bytes),
+            **({'required_context_chunk_ids':['consumer_dispute_standard_appendix_0003_0000']} if number=='0004' else {}),
+            'source_comparison':{'status':'reviewed_against_collected_official_pdf','reviewed_on':review['reviewed_on'],
+                'source_effective_date':review['effective_date'],'xml_question_mark_count':original_text.count('?'),
+                'pdf_question_mark_count':sum(c['text'].count('?') for t in tables for c in t['cells']),
+                'xml_preserved':True,'scope':review['scope'],'layout_policy':review['layout_policy']},
+            'warnings':['수집된 공식 PDF의 문자·좌표·병합 관계를 대조한 별표. XML 원문은 별도로 보존하고 물음표를 일괄 치환하지 않음.',
+                        '논리 행은 시각 대조한 좌표 기준이며 빈 셀은 미기재로 보존. 품질보증기간·부품보유기간·내용연수는 서로 다른 기준.',
+                        '표 전체를 하나의 청크로 보존. 개별 계약·제품에 대한 적용과 최신 개정 여부 및 임베딩 모델 토큰 제한은 별도 확인.']})
+    return result
 
 
 def refund_table_rows(cells):
@@ -1090,12 +1222,20 @@ def preprocess(source):
         doc['source_missing_fields']=['party_claims'] if not any(u['role']=='party_claims' for u in units) else []
         doc['warnings']=['분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.',
                          '사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.']
+        if source['source_id'] in {'kca_case_1003739114','kca_case_1003640779'}:
+            if __package__:
+                from .review_pilates_law_versions import verified_case
+            else:
+                from review_pilates_law_versions import verified_case
+            doc['law_version_review']=verified_case(doc)
+            doc['warnings']+=doc['law_version_review']['warnings']
     elif kind=='administrative_rule':
         if source['source_id'] in {'continual_contract_refund','minimum_wage_2026','minimum_wage_simple_labor'}:
             units,meta,extra=extract_supporting_admin(source,data)
             doc.update(extra)
         else:
             units,meta=extract_admin(data)
+            units=apply_reviewed_consumer_appendices(source,units)
         doc.update(units=units,administrative_metadata=meta,effective_date=meta.get('시행일자'))
         doc['warnings']=(['공식 고시. 적용 범위·예외·유효 기간과 상위 법령을 함께 확인. 계산 자동화는 별도 검증.']
                          if source['source_id'] in {'continual_contract_refund','minimum_wage_2026','minimum_wage_simple_labor'}

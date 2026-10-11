@@ -52,9 +52,13 @@ def make_chunks(doc,size=1200,overlap=120):
             if doc.get('terms_revision_date'):
                 header+=f" [개정일: {doc['terms_revision_date']}]"
             caution_warnings=source.get('warnings',[])
-            if doc['source_id'] in CIVIL_RECOVERY_GUIDES or doc['source_id'] in HOUSING_GUIDES or doc['source_id'] in CONSUMER_REDRESS_GUIDES:
+            if doc.get('law_version_review'):
                 caution_warnings=list(dict.fromkeys(doc['warnings']+caution_warnings))
-            caution='\n[원문 주의사항] '+ ' '.join(caution_warnings) if source.get('source_anomaly') or ((doc['source_id'] in CIVIL_RECOVERY_GUIDES or doc['source_id'] in HOUSING_GUIDES or doc['source_id'] in CONSUMER_REDRESS_GUIDES or doc['source_id'].startswith('kca_overseas_') or doc['source_id'] in {'kca_fitness_closure_gym','kca_fitness_closure_pilates','kca_damage_redress_procedure'}) and caution_warnings) else ''
+            if source.get('pdf_tables') or doc['source_id'] in CIVIL_RECOVERY_GUIDES or doc['source_id'] in HOUSING_GUIDES or doc['source_id'] in CONSUMER_REDRESS_GUIDES:
+                caution_warnings=list(dict.fromkeys(doc['warnings']+caution_warnings))
+            caution='\n[원문 주의사항] '+ ' '.join(caution_warnings) if source.get('pdf_tables') or source.get('source_anomaly') or ((doc['source_id'] in CIVIL_RECOVERY_GUIDES or doc['source_id'] in HOUSING_GUIDES or doc['source_id'] in CONSUMER_REDRESS_GUIDES or doc['source_id'].startswith('kca_overseas_') or doc['source_id'] in {'kca_fitness_closure_gym','kca_fitness_closure_pilates','kca_damage_redress_procedure'}) and caution_warnings) else ''
+            if doc.get('law_version_review'):
+                caution='\n[원문 주의사항] '+' '.join(caution_warnings)
             chunks.append({'schema_version':1,'chunk_id':f"{doc['source_id']}_{source['unit_id']}_{index:04d}",
                 'source_id':doc['source_id'],'unit_id':source['unit_id'],'title':doc['title'],
                 'document_type':doc['document_type'],'domain':source.get('domain',doc['domain']),
@@ -80,6 +84,10 @@ def make_chunks(doc,size=1200,overlap=120):
                     'source_start':source['start'],'source_end':source['end'],'source_offset_basis':source['offset_basis']}
                    if source['role']=='product_table' else {}),
                 **({'refund_tables':source['refund_tables']} if source.get('refund_tables') else {}),
+                **({key:source[key] for key in ['pdf_tables','pdf_file','pdf_sha256','pdf_source_url','pdf_source_id',
+                                               'review_record_file','review_record_sha256','source_comparison',
+                                               'source_xml_text_sha256','source_xml_offset_basis','source_xml_start','source_xml_end']}
+                   if source.get('pdf_tables') else {}),
                 'context_header':header,'embedding_text':header+caution+('\n[사건개요 문맥]\n'+context if context else '')+'\n'+text[start:end],
                 'atomic':source.get('atomic',False),'oversize_atomic_unit':source.get('atomic',False) and len(text)>size,
                 'embedding_candidate':True,'warnings':doc['warnings']+source.get('warnings',[])})
@@ -88,6 +96,15 @@ def make_chunks(doc,size=1200,overlap=120):
                 break
             start=max(start+1,end-overlap)
     for chunk in chunks:
+        if doc.get('law_version_review'):
+            chunk['law_version_review']=doc['law_version_review']
+            chunk['required_context_chunk_ids']=doc['law_version_review']['required_context_chunk_ids']
+            if chunk['role'] in {'reasoning','decision','cited_law'}:
+                chunk['embedding_text']+='\n'+doc['law_version_review']['supporting_law_context']
+        if chunk.get('pdf_tables'):
+            unit=next(u for u in doc['units'] if u['unit_id']==chunk['unit_id'])
+            if unit.get('required_context_chunk_ids'):
+                chunk['required_context_chunk_ids']=unit['required_context_chunk_ids']
         if doc['source_id'] in HOUSING_GUIDES or doc['source_id'] in CONSUMER_REDRESS_GUIDES:
             unit=next(u for u in doc['units'] if u['unit_id']==chunk['unit_id'])
             chunk['required_context_chunk_ids']=unit['required_context_chunk_ids']
@@ -109,6 +126,21 @@ def make_chunks(doc,size=1200,overlap=120):
                 if key in unit:
                     chunk[key]=unit[key]
         chunk['search_passages']=search_passages(chunk['text'])
+        for table in chunk.get('pdf_tables',[]):
+            labels=['품목','품질보증기간','부품보유기간'] if chunk['appendix_number']=='0003' else ['품목','내용연수']
+            for row in table['rows'][1:]:
+                cells=[table['cells'][i] for i in row['column_cell_indices']]
+                if not cells[0]['text'].strip():
+                    continue
+                start=min(c['rendered_start'] for c in cells)
+                end=max(c['rendered_end'] for c in cells)
+                context=[table['cells'][i]['text'] for i in row['context_cell_indices']]
+                row_text='\n'.join([chunk['appendix_title'],table['outside_text'],*context,
+                                   *(label+': '+c['text'] for label,c in zip(labels,cells))])
+                chunk['search_passages'].append({'start':start,'end':end,'text':chunk['text'][start:end],
+                    'search_text':row_text,'page_number':table['page_number'],'row_index':row['row_index'],
+                    'derivation':'reviewed_pdf_row_and_shared_cell_context'})
+            chunk['body_source_url']=chunk['pdf_source_url']
         # HWPX의 주소·병합 정보 JSON은 그대로 보존하고 검색에는 확인된 셀 문자만 추가 사용한다.
         marker='[표 셀: address는 행·열, span은 병합 범위]\n'
         cursor=0

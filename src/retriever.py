@@ -14,6 +14,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
+from src.rrf import reciprocal_rank_fusion
 from src.vectorstore import (
     VectorCollectionInfo,
     VectorDocument,
@@ -22,6 +23,10 @@ from src.vectorstore import (
     VectorStore,
 )
 
+
+# --------------------------------------------------------------------------
+# 인터페이스(Protocol)
+# --------------------------------------------------------------------------
 @runtime_checkable
 class QueryEmbedder(Protocol):
     """문서와 같은 모델로 질문 벡터를 만드는 인터페이스."""
@@ -73,13 +78,50 @@ class SearchBackend(Protocol):
         """질문 임베딩 없이 문서 ID가 같은 청크를 정확 조회합니다."""
 
 
+# --------------------------------------------------------------------------
+# 공통 검증 헬퍼 (BM25Retriever / HybridRetriever에서 함께 사용)
+# --------------------------------------------------------------------------
+def _validate_query(query: object) -> str:
+    """질문 타입과 공백 여부를 검사하고, 앞뒤 공백을 제거한 문자열을 반환합니다."""
+
+    if not isinstance(query, str):
+        raise TypeError("query는 문자열이어야 합니다.")
+    normalized = query.strip()
+    if not normalized:
+        raise ValueError("query는 비어 있을 수 없습니다.")
+    return normalized
+
+
+def _validate_filters(filters: Mapping[str, object] | None) -> dict[str, object]:
+    """메타데이터 정확 일치 필터를 검증하고 복사본을 반환합니다."""
+
+    if filters is not None and not isinstance(filters, Mapping):
+        raise TypeError("filters는 매핑 또는 None이어야 합니다.")
+    conditions = dict(filters or {})
+    for key, value in conditions.items():
+        if not isinstance(key, str) or not key.strip():
+            raise ValueError("필터 키는 비어 있지 않은 문자열이어야 합니다.")
+        if not isinstance(value, (str, int, bool)):
+            raise TypeError("필터 값은 문자열·정수·불리언만 지원합니다.")
+    return conditions
+
+
+# --------------------------------------------------------------------------
+# Dense 검색
+# --------------------------------------------------------------------------
 @dataclass
 class DocumentRetriever:
-    """임베딩과 Vector Store를 연결하는 검색 서비스."""
+    """임베딩과 Vector Store를 연결하는 검색 서비스.
+
+    embedder는 질문을 숫자 벡터로, vector_store는 그 벡터를 검색 결과로
+    바꿉니다. 객체를 외부에서 받으므로 OpenAI/NVIDIA 설정을 고정하지 않습니다.
+    """
 
     embedder: QueryEmbedder
     vector_store: VectorStore
     expected_dimension: int | None = None
+    # [택1-A] Qdrant 내부 Sparse 검색(SEARCH_MODE=hybrid, 팀 기본값). 사용 중.
+    # 메모리 BM25(HybridRetriever)와 동시에 쓰면 키워드 검색이 이중 반영됩니다.
     sparse_embedder: SparseQueryEmbedder | None = None
 
     def __post_init__(self) -> None:
@@ -90,9 +132,6 @@ class DocumentRetriever:
             self.expected_dimension = collection_info.vector_size
         if self.expected_dimension < 1:
             raise ValueError("expected_dimension은 1 이상이어야 합니다.")
-
-    # embedder는 질문을 숫자 벡터로, vector_store는 그 벡터를 검색 결과로
-    # 바꿉니다. 객체를 외부에서 받으므로 OpenAI/NVIDIA 설정을 고정하지 않습니다.
 
     def health_check(self) -> bool:
         return self.vector_store.health_check()
@@ -113,30 +152,30 @@ class DocumentRetriever:
         score_threshold는 검색 점수의 하한이며 Precision 점수가 아닙니다.
         모델과 컬렉션의 일치는 호출부에서 보장해야 합니다.
         """
-        if not isinstance(query, str):
-            raise TypeError("query는 문자열이어야 합니다.")
-    
-        normalized_query = query.strip()
-        if not normalized_query:
-            raise ValueError("query는 비어 있을 수 없습니다.")
+        normalized_query = _validate_query(query)
 
+        # [택1] 필터 검증 방식. 현재는 기존 방식(VectorSearchRequest.create에
+        # 위임, 필터 값 타입은 검사하지 않음)을 사용합니다.
+        # BM25/Hybrid와 같은 엄격한 규칙(문자열·정수·불리언만 허용)으로 통일하려면
+        # 아래 두 줄을 해제하고, create의 filters 인자를 conditions로 바꾸세요.
+        # conditions = _validate_filters(filters)
+
+        # 1. 잘못된 옵션은 임베딩 API를 호출하기 전에 거절합니다(비용 방지).
+        VectorSearchRequest.create(
+            [0.0], top_k=top_k, score_threshold=score_threshold, filters=filters
+        )
+
+        # 2. 저장된 문서와 같은 모델로 질문을 한 번만 임베딩합니다.
         query_vector = self.embedder.embed_query(normalized_query)
         sparse_vector = (
             self.sparse_embedder.embed_query(normalized_query)
             if self.sparse_embedder is not None
             else None
         )
-        # 잘못된 옵션은 임베딩 API를 호출하기 전에 거절합니다.
-        VectorSearchRequest.create(
-            [0.0], top_k=top_k, score_threshold=score_threshold, filters=filters
-        )
 
-        # 1. DB가 사용하는 벡터 차원을 확인합니다.
-        collection_info = self.vector_store.get_collection_info()
-        # 2. 저장된 문서와 같은 모델로 질문을 임베딩합니다.
-        query_vector = self.embedder.embed_query(normalized_query)
-        # 3. 차원과 검색 옵션을 검증해 공용 요청 객체를 만듭니다.
-
+        # 3. 차원(시작 시 확인한 expected_dimension)과 옵션을 검증해
+        #    공용 요청 객체를 만들고, 실제 검색은 Vector Store 구현에 맡깁니다.
+        #    반환된 문서 순위, 본문, 점수, 출처를 변경하지 않습니다.
         request = VectorSearchRequest.create(
             query_vector,
             top_k=top_k,
@@ -169,25 +208,13 @@ class DocumentRetriever:
         )
 
 
-def retriever(state: object) -> dict[str, object]:
-    """기존 자리 함수.
-
-    LangGraph 연결은 별도 담당 범위이므로 현재 단계에서는 구현하지 않습니다.
-    """
-
-    return {}
-
-        #     expected_dimension=collection_info.vector_size,
-        # )
-        # # 4. 실제 검색은 2번 담당자의 DB 구현에 맡깁니다.
-        # # 반환된 문서 순위, 본문, 점수, 출처를 변경하지 않습니다.
-        # return self.vector_store.search(request)
-
-# retriver 구현
+# --------------------------------------------------------------------------
+# LangGraph 노드
+# --------------------------------------------------------------------------
 def retriever(
     state: Mapping[str, object],
     *,
-    searcher: DocumentRetriever,
+    searcher: SearchBackend,
     top_k: int = 5,
     score_threshold: float | None = None,
     filters: Mapping[str, object] | None = None,
@@ -206,6 +233,9 @@ def retriever(
     return {"documents": [hit.to_document() for hit in hits]}
 
 
+# --------------------------------------------------------------------------
+# 키워드(BM25) 검색
+# --------------------------------------------------------------------------
 def tokenize_keywords(text: str) -> list[str]:
     """기본 키워드 분리: 유니코드 정규화 후 한글·영문·숫자 단위로 분리.
 
@@ -289,25 +319,15 @@ class BM25Retriever:
         Hybrid에서는 각각 따로 설정해야 합니다. 기본값은 제한 없음입니다.
         필터는 메타데이터의 문자열·정수·불리언 정확 일치 조건(AND)입니다.
         """
-        if not isinstance(query, str):
-            raise TypeError("query는 문자열이어야 합니다.")
-        if not query.strip():
-            raise ValueError("query는 비어 있을 수 없습니다.")
-        if filters is not None and not isinstance(filters, Mapping):
-            raise TypeError("filters는 매핑 또는 None이어야 합니다.")
+        normalized_query = _validate_query(query)
+        conditions = _validate_filters(filters)
         # Dense와 동일한 top_k 및 유한한 점수 검증 규칙을 재사용합니다.
         VectorSearchRequest.create(
-            [0.0], top_k=top_k, score_threshold=score_threshold, filters=filters
+            [0.0], top_k=top_k, score_threshold=score_threshold
         )
-        conditions = dict(filters or {})
-        for key, value in conditions.items():
-            if not isinstance(key, str) or not key.strip():
-                raise ValueError("필터 키는 비어 있지 않은 문자열이어야 합니다.")
-            if not isinstance(value, (str, int, bool)):
-                raise TypeError("필터 값은 문자열·정수·불리언만 지원합니다.")
 
         # 같은 검색어를 반복 입력해도 점수를 중복 가산하지 않습니다.
-        terms = set(self._tokenizer(query))
+        terms = set(self._tokenizer(normalized_query))
         if not terms or not self._average_length:
             return ()
 
@@ -317,6 +337,7 @@ class BM25Retriever:
         ):
             # 예: document_type='law'이면 판례/안내서는 검색 결과에서 제외.
             # 통계는 전체 색인 기준으로 유지하고, 결과 후보에만 필터를 적용.
+            # type까지 비교하므로 True와 1은 서로 다른 값으로 취급합니다.
             if any(
                 type(doc.metadata.get(key)) is not type(value)
                 or doc.metadata.get(key) != value
@@ -336,89 +357,105 @@ class BM25Retriever:
             # 무관한 문서를 top_k 개수 맞추기 위해 억지로 반환하지 않습니다.
             if score <= 0 or (score_threshold is not None and score < score_threshold):
                 continue
-            hits.append(VectorSearchHit(doc.point_id, score, doc.text, dict(doc.metadata)))
+            hits.append(
+                VectorSearchHit(doc.point_id, score, doc.text, dict(doc.metadata))
+            )
 
         # 점수 내림차순. 동점이면 ID 순서로 고정하여 비교 평가를 재현합니다.
         hits.sort(key=lambda hit: (-hit.score, hit.point_id))
         return tuple(hits[:top_k])
 
 
-@dataclass
-class HybridRetriever:
-    """Dense + BM25 검색을 실행하고 RRF로 통합하는 검색기.
-
-    Dense는 Qdrant, BM25는 같은 청크 전체의 메모리 색인을 사용합니다.
-    두 검색의 데이터/ID/출처를 동기화하는 것은 검색기 조립 단계의 책임입니다.
-    기존 DocumentRetriever를 변경하지 않고 내부 구성 요소로 사용합니다.
-    """
-
-    dense: DocumentRetriever
-    keyword: BM25Retriever
-    candidate_k: int = 20  # 각 검색의 후보 수. 최종 반환 수 top_k와 다릅니다.
-    rank_constant: float = 60.0
-
-    def health_check(self) -> bool:
-        return self.dense.health_check()
-
-    def get_collection_info(self) -> VectorCollectionInfo:
-        return self.dense.get_collection_info()
-
-    def search_documents(
-        self,
-        query: str,
-        *,
-        top_k: int = 5,
-        score_threshold: float | None = None,
-        filters: Mapping[str, object] | None = None,
-        dense_score_threshold: float | None = None,
-        bm25_score_threshold: float | None = None,
-    ) -> Sequence[VectorSearchHit]:
-        """후보 검색 → RRF 통합 → 점수 하한 적용 → 상위 top_k 반환.
-
-        score_threshold는 RRF 점수 하한이며 Dense/BM25 점수와 다릅니다.
-        기본값 None을 권장하며, 개별 검색 점수 하한은 별도 인자로 지정합니다.
-        """
-        from src.rrf import reciprocal_rank_fusion
-
-        # APIを呼ぶ前に入力と設定を確認し、誤入力による費用を避けます。
-        if not isinstance(query, str):
-            raise TypeError("query는 문자열이어야 합니다.")
-        if not query.strip():
-            raise ValueError("query는 비어 있을 수 없습니다.")
-        if filters is not None and not isinstance(filters, Mapping):
-            raise TypeError("filters는 매핑 또는 None이어야 합니다.")
-        conditions = dict(filters or {})
-        for key, value in conditions.items():
-            if not isinstance(key, str) or not key.strip():
-                raise ValueError("필터 키는 비어 있지 않은 문자열이어야 합니다.")
-            if not isinstance(value, (str, int, bool)):
-                raise TypeError("필터 값은 문자열·정수·불리언만 지원합니다.")
-        for count, threshold in (
-            (top_k, score_threshold),
-            (self.candidate_k, dense_score_threshold),
-            (self.candidate_k, bm25_score_threshold),
-        ):
-            VectorSearchRequest.create([0.0], top_k=count, score_threshold=threshold)
-        reciprocal_rank_fusion({}, top_k=top_k, rank_constant=self.rank_constant)
-
-        # 각 검색에서 처음부터 5개만 찾으면 통합에 필요한 후보를 놓칠 수
-        # 있습니다. 각각 넓게 찾고 통합 후 최종 반환 개수를 제한합니다.
-        candidates = max(self.candidate_k, top_k)
-        dense_hits = self.dense.search_documents(
-            query.strip(), top_k=candidates,
-            score_threshold=dense_score_threshold, filters=conditions,
-        )
-        keyword_hits = self.keyword.search_documents(
-            query.strip(), top_k=candidates,
-            score_threshold=bm25_score_threshold, filters=conditions,
-        )
-        # 정상적인 빈 결과는 허용하지만 연결/API 오류는 숨기지 않습니다.
-        # 한쪽이 비면 다른 쪽 결과를 사용하고, 양쪽이 비면 빈 튜플입니다.
-        fused = reciprocal_rank_fusion(
-            {"dense": dense_hits, "bm25": keyword_hits},
-            top_k=top_k, rank_constant=self.rank_constant,
-        )
-        return tuple(
-            hit for hit in fused
-            if score_threshold is None or hit.score >= score_threshold
-        )
+# --------------------------------------------------------------------------
+# Hybrid 검색 (Dense + 메모리 BM25 → RRF)
+# [택1-B] 아래 HybridRetriever는 Qdrant Sparse([택1-A])와 동시에 쓰면 안 되어
+# 현재 주석 처리했습니다. 사용하려면:
+#   1) 이 블록의 주석을 해제하고
+#   2) SEARCH_MODE=dense 로 실행하며(Qdrant가 Sparse 벡터를 요구하지 않도록)
+#   3) DocumentRetriever에는 sparse_embedder를 넘기지 않아야 합니다.
+# (src/vector_db/search_bootstrap.py, scripts/search_evaluate.py가 이 클래스를
+#  import하므로 해제 전에는 해당 스크립트가 동작하지 않습니다.)
+# --------------------------------------------------------------------------
+# @dataclass
+# class HybridRetriever:
+#     """Dense + BM25 검색을 실행하고 RRF로 통합하는 검색기.
+#
+#     Dense는 Qdrant, BM25는 같은 청크 전체의 메모리 색인을 사용합니다.
+#     두 검색의 데이터/ID/출처를 동기화하는 것은 검색기 조립 단계의 책임입니다.
+#     기존 DocumentRetriever를 변경하지 않고 내부 구성 요소로 사용합니다.
+#     """
+#
+#     dense: DocumentRetriever
+#     keyword: BM25Retriever
+#     candidate_k: int = 20  # 각 검색의 후보 수. 최종 반환 수 top_k와 다릅니다.
+#     rank_constant: float = 60.0
+#
+#     def health_check(self) -> bool:
+#         return self.dense.health_check()
+#
+#     def get_collection_info(self) -> VectorCollectionInfo:
+#         return self.dense.get_collection_info()
+#
+#     def lookup_document(
+#         self,
+#         document_id: str,
+#         *,
+#         limit: int = 20,
+#     ) -> Sequence[VectorDocument]:
+#         """정확 조회는 검색 방식과 무관하므로 Dense(Qdrant)에 위임합니다."""
+#
+#         return self.dense.lookup_document(document_id, limit=limit)
+#
+#     def search_documents(
+#         self,
+#         query: str,
+#         *,
+#         top_k: int = 5,
+#         score_threshold: float | None = None,
+#         filters: Mapping[str, object] | None = None,
+#         dense_score_threshold: float | None = None,
+#         bm25_score_threshold: float | None = None,
+#     ) -> Sequence[VectorSearchHit]:
+#         """후보 검색 → RRF 통합 → 점수 하한 적용 → 상위 top_k 반환.
+#
+#         score_threshold는 RRF 점수 하한이며 Dense/BM25 점수와 다릅니다.
+#         기본값 None을 권장하며, 개별 검색 점수 하한은 별도 인자로 지정합니다.
+#         """
+#         # API를 호출하기 전에 입력과 설정을 확인해 잘못된 입력으로 인한 비용을 막습니다.
+#         normalized_query = _validate_query(query)
+#         conditions = _validate_filters(filters)
+#         for count, threshold in (
+#             (top_k, score_threshold),
+#             (self.candidate_k, dense_score_threshold),
+#             (self.candidate_k, bm25_score_threshold),
+#         ):
+#             VectorSearchRequest.create([0.0], top_k=count, score_threshold=threshold)
+#         reciprocal_rank_fusion({}, top_k=top_k, rank_constant=self.rank_constant)
+#
+#         # 각 검색에서 처음부터 top_k개만 찾으면 통합에 필요한 후보를 놓칠 수
+#         # 있습니다. 각각 넓게 찾고 통합 후 최종 반환 개수를 제한합니다.
+#         candidates = max(self.candidate_k, top_k)
+#         dense_hits = self.dense.search_documents(
+#             normalized_query,
+#             top_k=candidates,
+#             score_threshold=dense_score_threshold,
+#             filters=conditions,
+#         )
+#         keyword_hits = self.keyword.search_documents(
+#             normalized_query,
+#             top_k=candidates,
+#             score_threshold=bm25_score_threshold,
+#             filters=conditions,
+#         )
+#         # 정상적인 빈 결과는 허용하지만 연결/API 오류는 숨기지 않습니다.
+#         # 한쪽이 비면 다른 쪽 결과를 사용하고, 양쪽이 비면 빈 튜플입니다.
+#         fused = reciprocal_rank_fusion(
+#             {"dense": dense_hits, "bm25": keyword_hits},
+#             top_k=top_k,
+#             rank_constant=self.rank_constant,
+#         )
+#         return tuple(
+#             hit
+#             for hit in fused
+#             if score_threshold is None or hit.score >= score_threshold
+#         )

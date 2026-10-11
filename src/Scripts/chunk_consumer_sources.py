@@ -14,6 +14,23 @@ else:
 OUTPUT_DIR=ROOT/'data/chunk/consumer_sources'
 
 
+def search_passages(text, size=700, overlap=120):
+    """검색 점수용 본문 창. 표 셀을 해석하지 않으며 원문 청크를 대체하지 않는다."""
+    passages=[]
+    start=0
+    while start<len(text):
+        end=min(start+size,len(text))
+        if end<len(text):
+            line=text.rfind('\n',start+size//2,end)
+            if line>=0:
+                end=line+1
+        passages.append({'start':start,'end':end,'text':text[start:end]})
+        if end==len(text):
+            break
+        start=max(start+1,end-overlap)
+    return passages
+
+
 def make_chunks(doc,size=1200,overlap=120):
     if type(size) is not int or type(overlap) is not int or size<=0 or not 0<=overlap<size:
         raise ValueError('유효하지 않은 청크 크기')
@@ -52,6 +69,9 @@ def make_chunks(doc,size=1200,overlap=120):
                 'calculation_restricted_clause':source.get('calculation_restricted_clause'),
                 'start':start,'end':end,'offset_basis':'unit.text','text':text[start:end],
                 'source_locator':source.get('source_locator'),'parent_context':context,
+                **({'appendix_number':source['appendix_number'], 'appendix_title':source['appendix_title'],
+                    'source_offset_basis':source['offset_basis'], 'source_start':source['start'], 'source_end':source['end']}
+                   if source['role']=='appendix_table' else {}),
                 'context_header':header,'embedding_text':header+caution+('\n[사건개요 문맥]\n'+context if context else '')+'\n'+text[start:end],
                 'atomic':source.get('atomic',False),'oversize_atomic_unit':source.get('atomic',False) and len(text)>size,
                 'embedding_candidate':True,'warnings':doc['warnings']+source.get('warnings',[])})
@@ -59,6 +79,24 @@ def make_chunks(doc,size=1200,overlap=120):
             if end==len(text):
                 break
             start=max(start+1,end-overlap)
+    for chunk in chunks:
+        chunk['search_passages']=search_passages(chunk['text'])
+        # HWPX의 주소·병합 정보 JSON은 그대로 보존하고 검색에는 확인된 셀 문자만 추가 사용한다.
+        marker='[표 셀: address는 행·열, span은 병합 범위]\n'
+        cursor=0
+        while marker in chunk['text'][cursor:]:
+            start=chunk['text'].index(marker,cursor)+len(marker)
+            cells,length=json.JSONDecoder().raw_decode(chunk['text'][start:])
+            end=start+length
+            if not isinstance(cells,list) or not all(isinstance(c,dict) and isinstance(c.get('text'),str) for c in cells):
+                raise ValueError('검색 표현을 생성할 표 셀 형식 불일치')
+            chunk['search_passages'].append({'start':start,'end':end,'text':chunk['text'][start:end],
+                'search_text':'\n'.join(c['text'] for c in cells),
+                'derivation':'table_cell_texts_in_source_order_no_merge_inference'})
+            cursor=end
+        chunk['search_representation_version']=1
+        chunk['search_passages_usage']='본문 위치 기반 BM25 점수용. 셀·조건의 독립 근거가 아니며 반환·임베딩은 전체 원문 청크 사용.'
+        chunk['evidence_role']='party_claim' if chunk['role']=='party_claims' else ('case_reasoning' if chunk['role']=='reasoning' else chunk['role'])
     return [normalize_chunk(c, doc) for c in chunks]
 
 

@@ -11,7 +11,7 @@ from collections import Counter
 from pathlib import Path
 from unittest.mock import patch
 
-from src.Scripts.tests.test_consumer_coverage_pmh import load_chunks
+from src.Scripts.tests.test_consumer_coverage_pmh import load_chunks, SEARCH_OPTIONS, SEARCH_POLICY
 from src.Scripts.tests.test_precedent_retrieval_pmh import BM25
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -144,7 +144,7 @@ def question_bank(chunks):
     add(consumer,"consumer_repeat","수리를 반복해도 같은 하자가 생기는 제품은 모두 환불받을 수 있나요?",
         "품목별 기준;수리 횟수·보증기간;교환·환급 구분","partial","반지 사례는 재제작 조정이며 일반 제품 모두 환불이라는 근거가 아님. 소비자 기준은 3개 업종만 선별.",["kca_case_1003604873_case_reasoning_0000"],"우선 대상 품목을 정하고 해당 품목별 소비자분쟁해결기준 보강")
     add(consumer,"consumer_warranty","영수증이 없으면 제품 품질보증기간과 구매일을 어떻게 판단하나요?",
-        "품목별 보증기간;구매일 증명;영수증 없는 경우","partial","제3조는 별표Ⅲ를 참조할 뿐. 품목별 보증기간 표와 영수증 없는 경우의 일반 처리 근거를 검토 확보하지 않음.",["consumer_dispute_standard_article_2_0000"],"소비자분쟁해결기준 별표Ⅲ·일반적 해결기준과 구매일 증빙 안내 보강")
+        "품목별 보증기간;구매일 증명;영수증 없는 경우","partial","제3조와 추가 정제한 별표Ⅲ의 품목별 품질보증·부품보유기간, 별표Ⅳ의 내용연수 기준 확보. 영수증 없는 구매일 판단 근거는 이 표에 없으며 문자 이상·병합 관계의 공식 파일 대조도 필요. 질문 전체는 여전히 부분 확보.",["consumer_dispute_standard_article_2_0000","consumer_dispute_standard_appendix_0003_0000","consumer_dispute_standard_appendix_0004_0000"],"일반적 해결기준·구매일 증빙 안내 보강 및 별표 문자·병합 관계 대조")
     add(consumer,"consumer_criteria","소비자분쟁해결기준은 바로 강제되는 법적 배상 기준인가요?",
         "합의·권고 기준 성격;별도 약정과 적용","supported","고시 목적 조문과 택배 안내서의 별도 약정·합의 권고 설명 확보. 실제 집행력·소송 효력 전반은 별도 검토.",["consumer_dispute_standard_article_0_0000","guide_94e9d4bd30eadf0b_p0005_body_0000"])
     return bank
@@ -152,6 +152,8 @@ def question_bank(chunks):
 
 # 최초 내용 검토 시 선정된 근거 본문 해시. 이후 변경 시 자동으로 재검토 표시.
 REVIEWED_HASHES = {
+    "consumer_dispute_standard_appendix_0003_0000": "34815ef7afae0e6874c166295c92fe4c34f3a692b75dc84828fc1bf75679067b",
+    "consumer_dispute_standard_appendix_0004_0000": "ac434a2eab42e0eef204f3e4f6c31bab2618d7aad9ba2186eb7de2cc8ecb0279",
     "001248_276291_20260102_art_3_0_chunk_0000": "555073c96bf2234af3a99dfe47d671b6d40b6a063a8e55e393772c860acf096d",
     "001248_276291_20260102_art_3_2_chunk_0000": "47104f5ec1ef5f77aab693f9f3528b58e88221b07eaa039a6a0fdb3f063cef2a",
     "001248_276291_20260102_art_3_2_chunk_0001": "01477b22897898489a2cde4a63010bcebdd04dcb8480bbb5b83f391e76de8cdb",
@@ -231,7 +233,8 @@ def audit():
     chunks = load_chunks()
     by_id = {c["chunk_id"]: c for c in chunks}
     bank = question_bank(chunks)
-    index = BM25(chunks)
+    index = BM25(chunks,evidence_mode=True)
+    legacy = BM25(chunks)
     records = []
     for item in bank:
         row = dict(item)
@@ -257,11 +260,18 @@ def audit():
             row["follow_up"] = "선정 근거 변경/누락: 기존 검토 메모 재확인 필요. " + row["follow_up"]
         expected_sources = {e["evaluation_source_id"] for e in evidence}
         expected_ids = {e["chunk_id"] for e in evidence}
-        hits = index.search(item["query"], top_k=5)
+        hits = index.search(item["query"], top_k=5,**SEARCH_OPTIONS)
+        old_hits = legacy.search(item["query"], top_k=5)
         row.update(evidence=evidence, evidence_snapshot_valid=not stale,
                    search_results=[{"rank": rank, "chunk_id": c["chunk_id"], "document_id": c["document_id"],
-                                    "title": c["title"], "score": c["score"], "excerpt": c["text"][:450]}
+                                    "title": c["title"], "score": c["score"], "role":c.get('role'),
+                                    "matched_span":c.get('matched_span'),
+                                    "warnings":c.get('warnings',[]),"source_anomaly":c.get('source_anomaly'),
+                                    "calculation_restricted_clause":c.get('calculation_restricted_clause'),"excerpt": c["text"][:450]}
                                    for rank, c in enumerate(hits, 1)],
+                   legacy_search_results=[{'chunk_id':c['chunk_id'],'document_id':c['document_id'],'score':c['score']} for c in old_hits],
+                   legacy_source_hit_at_5=any(c['precedent_id'] in expected_sources for c in old_hits) if evidence else None,
+                   legacy_chunk_hit_at_5=any(c['chunk_id'] in expected_ids for c in old_hits) if evidence else None,
                    reviewed_source_hit_at_5=any(c["precedent_id"] in expected_sources for c in hits) if evidence else None,
                    reviewed_chunk_hit_at_5=any(c["chunk_id"] in expected_ids for c in hits) if evidence else None)
         if row["review_status"] == "supported":
@@ -280,10 +290,17 @@ def audit():
     return {"evaluation_type": "reviewed_evidence_and_offline_bm25_domain_audit",
             "reviewer": "Codex의 수집 자료 내용 검토. 전문가 법률 검증 아님",
             "chunk_count": len(chunks), "question_count": len(records),
-            "input_fingerprint": source_fingerprint(), "summary": summaries, "questions": records,
+            "input_fingerprint": source_fingerprint(), "search_policy":SEARCH_POLICY,"summary": summaries, "questions": records,
+            "search_comparison":{'legacy_source_hits':sum(r['legacy_source_hit_at_5'] is True for r in records),
+                                 'legacy_chunk_hits':sum(r['legacy_chunk_hit_at_5'] is True for r in records),
+                                 'improved_source_hits':sum(r['reviewed_source_hit_at_5'] is True for r in records),
+                                 'improved_chunk_hits':sum(r['reviewed_chunk_hit_at_5'] is True for r in records),
+                                 'chunk_improved':[r['question_id'] for r in records if r['legacy_chunk_hit_at_5'] is False and r['reviewed_chunk_hit_at_5'] is True],
+                                 'chunk_regressed':[r['question_id'] for r in records if r['legacy_chunk_hit_at_5'] is True and r['reviewed_chunk_hit_at_5'] is False],
+                                 'source_regressed':[r['question_id'] for r in records if r['legacy_source_hit_at_5'] is True and r['reviewed_source_hit_at_5'] is False]},
             "limitations": ["수동 선정 45문항의 기본 근거 점검이며 전체 분야 커버리지 완료율이 아님.",
                             "기본 근거 확보는 명시한 질문 범위·수집본 내용에 한정. 실제 사건 적용·현행성을 보장하지 않음.",
-                            "BM25는 문서별 중복 제거 후 상위 5개. 출처 적중과 검토한 청크 적중을 구분.",
+                            "BM25는 점수용 본문 구간과 셀 문자·용어 확장·주장 감점을 사용하며 문서 버전당 최대 2개 청크로 상위 5개 반환. 기존 문서당 1개 방식과 동일 자료·선정 근거로 비교.",
                             "기대 근거 목록은 완전한 정답 목록이 아님. 미적중은 답변 불가의 증명이 아님.",
                             "선정 근거의 본문이 바뀌면 기존 내용 검토를 재사용하지 않고 추가 검토로 표시.",
                             "원문 전체의 추출 무결성·PDF 모든 시각 요소·최신 개정은 이 테스트가 자동 검증하지 않음.",
@@ -298,6 +315,13 @@ def render(report):
     for s in report["summary"]:
         counts = s["statuses"]
         lines.append(f"| {s['domain']} | {s['question_count']} | {counts.get('supported',0)} | {counts.get('partial',0)} | {counts.get('restricted',0)} | {counts.get('needs_review',0)} | {s['reviewed_source_hits']}/{s['questions_with_evidence']} | {s['reviewed_chunk_hits']}/{s['questions_with_evidence']} |")
+    comparison=report['search_comparison']
+    lines += ['', '## 기존 검색과 개선 검색 비교', '',
+              f"- 동일 자료·선정 근거로 비교: 출처 {comparison['legacy_source_hits']} → {comparison['improved_source_hits']}건, 선정 청크 {comparison['legacy_chunk_hits']} → {comparison['improved_chunk_hits']}건.",
+              '- 청크 적중 개선: '+', '.join(comparison['chunk_improved']),
+              '- 청크 적중 하락: '+(', '.join(comparison['chunk_regressed']) or '없음'),
+              '- 출처 적중 하락: '+(', '.join(comparison['source_regressed']) or '없음'),
+              '- 품질보증 질문의 선정 근거에는 추가 검토한 별표 Ⅲ·Ⅳ를 포함하므로 이전 보고서의 근거 목록과 다릅니다. 검색 개선 비교는 양쪽 모두 현재 근거 목록을 사용합니다.']
     lines += ["", "## 자료 보강·대조 목록", ""]
     for q in report["questions"]:
         if q["review_status"] != "supported":
@@ -315,13 +339,14 @@ def render(report):
                   "- 후속 작업: " + q["next_step"], "", "### 검토 근거", ""]
         for e in q["evidence"]:
             lines += [f"- `{e['chunk_id']}` · {e['title']} · 원본 `{e['source_path']}` · 위치 {e['source_locator'] or e['page_number']}",
-                      f"  - 원문 URL: {e['source_url'] or '미확인'}", "  - 본문 발췌: " + e["excerpt"].replace("\n", " "),
+                      f"  - 원문 URL: {e['source_url'] or '미확인'}", "  - 본문 발췌: " + e["excerpt"].replace("\n", " ").rstrip(),
                       "  - 주의사항: " + str(e["source_anomaly"] or e["calculation_restricted_clause"] or " / ".join(e["warnings"]) or "별도 표시 없음")]
         if not q["evidence"]:
             lines.append("- 검토한 직접 근거 없음. 검색 결과 존재 여부와 별도로 자료 보완 필요.")
         lines += ["", "### 검색 상위 5개", ""]
         for h in q["search_results"]:
             lines.append(f"- {h['rank']}. `{h['chunk_id']}` · {h['title']} · BM25 {h['score']}")
+        lines.append('- 기존 검색 청크 적중: '+str(q['legacy_chunk_hit_at_5']))
     lines += ["", "## 검증 범위의 한계", ""] + ["- " + x for x in report["limitations"]]
     lines += ["", "## 재실행 및 삭제", "", "`uv run python -m src.Scripts.tests.test_domain_coverage_pmh`로 보고서만 갱신합니다.",
               "이 파일과 두 보고서는 기존 수집·정제·청크 생성 코드의 의존성이 아닙니다. 삭제해도 데이터 생성에는 영향이 없지만 질문·검토 기록과 재검증 기능은 사라집니다."]
@@ -396,6 +421,15 @@ class DomainCoverageTests(unittest.TestCase):
         saved = json.loads(REPORT_JSON.read_text(encoding="utf-8"))
         self.assertEqual(saved, self.report)
         self.assertEqual(REPORT_MD.read_text(encoding="utf-8"), render(self.report))
+
+    def test_comparison_counts_and_new_appendix_review_do_not_upgrade_sufficiency(self):
+        rows=self.report['questions']
+        comparison=self.report['search_comparison']
+        self.assertEqual(comparison['legacy_chunk_hits'],sum(r['legacy_chunk_hit_at_5'] is True for r in rows))
+        self.assertEqual(comparison['improved_chunk_hits'],sum(r['reviewed_chunk_hit_at_5'] is True for r in rows))
+        warranty=next(r for r in rows if r['question_id']=='consumer_warranty')
+        self.assertEqual(warranty['review_status'],'partial')
+        self.assertTrue({'consumer_dispute_standard_appendix_0003_0000','consumer_dispute_standard_appendix_0004_0000'}.issubset(warranty['reviewed_chunk_ids']))
 
 
 if __name__ == "__main__":

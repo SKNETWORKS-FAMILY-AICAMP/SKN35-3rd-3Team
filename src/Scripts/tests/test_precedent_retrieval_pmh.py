@@ -92,34 +92,85 @@ def tokens(text):
     return [text[i:i+n] for n in (2, 3) for i in range(len(text)-n+1)]
 
 
+def expanded_terms(query):
+    """생활 표현과 자료 용어를 검색에만 연결한다. 법률상 동등성 판정이 아니다."""
+    terms=set(tokens(query))
+    for left,right in [('헬스장','체력단련장'),('환불','환급')]:
+        if left in query:
+            terms.update(tokens(right))
+        if right in query:
+            terms.update(tokens(left))
+    return terms
+
+
 class BM25:
-    def __init__(self, chunks):
+    def __init__(self, chunks, *, evidence_mode=False):
         self.chunks = chunks
+        self.evidence_mode = evidence_mode
         self.counts = [Counter(tokens(c.get("embedding_text", c["text"]))) for c in chunks]
         self.lengths = [sum(c.values()) for c in self.counts]
         self.average = sum(self.lengths) / max(1, len(chunks)) or 1
         df = Counter(term for counts in self.counts for term in counts)
         self.idf = {term: math.log(1 + (len(chunks)-count+0.5)/(count+0.5)) for term, count in df.items()}
 
-    def search(self, query, top_k=3):
+        if evidence_mode:
+            self.passages = []
+            for chunk in chunks:
+                spans=chunk.get('search_passages') or [{'start':0,'end':len(chunk['text']),'text':chunk['text']}]
+                header=chunk.get('context_header','')
+                group=[]
+                for span in spans:
+                    counts=Counter(tokens(header+'\n'+span.get('search_text',span['text'])))
+                    group.append((span,counts,sum(counts.values())))
+                self.passages.append(group)
+            lengths=[length for group in self.passages for _,_,length in group]
+            self.average=sum(lengths)/max(1,len(lengths)) or 1
+            # 긴 표의 창 개수로 IDF가 바뀌지 않도록 부모 청크별 문서 빈도를 사용한다.
+            df=Counter(term for group in self.passages for term in set(t for _,counts,_ in group for t in counts))
+            self.idf={term:math.log(1+(len(chunks)-count+0.5)/(count+0.5)) for term,count in df.items()}
+
+    def search(self, query, top_k=3, *, max_per_document=1, repeat_penalty=1.0):
         if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k < 0:
             raise ValueError("top_k는 0 이상의 정수여야 합니다.")
         if top_k == 0:
             return []
-        terms = set(tokens(query))
+        if max_per_document is not None and (type(max_per_document) is not int or max_per_document<=0):
+            raise ValueError('max_per_document는 양의 정수 또는 None이어야 합니다.')
+        if isinstance(repeat_penalty,bool) or not isinstance(repeat_penalty,(int,float)) or not 0<repeat_penalty<=1:
+            raise ValueError('repeat_penalty는 0 초과 1 이하의 수여야 합니다.')
+        terms = expanded_terms(query) if self.evidence_mode else set(tokens(query))
         scored = []
-        for chunk, counts, length in zip(self.chunks, self.counts, self.lengths):
-            score = sum(self.idf.get(t, 0) * counts[t] * 2.5 /
-                        (counts[t] + 1.5*(0.25+0.75*length/self.average)) for t in terms if counts[t])
+        for i,(chunk, counts, length) in enumerate(zip(self.chunks, self.counts, self.lengths)):
+            def score_counts(counts,length):
+                return sum(self.idf.get(t, 0) * counts[t] * 2.5 /
+                           (counts[t] + 1.5*(0.25+0.75*length/self.average)) for t in terms if counts[t])
+            span=None
+            if self.evidence_mode:
+                score,span=max(((score_counts(c,length),s) for s,c,length in self.passages[i]),key=lambda pair:pair[0])
+                # 당사자 주장은 판단·결론보다 보조 근거로 사용한다. 본문과 역할은 반환 시 보존한다.
+                if chunk.get('role')=='party_claims':
+                    score*=0.6
+            else:
+                score=score_counts(counts,length)
             if score > 0:
-                scored.append((score, chunk))
+                scored.append((score, chunk,span))
         scored.sort(key=lambda item: (-item[0], item[1]["chunk_id"]))
-        results, seen = [], set()
-        for score, chunk in scored:
-            if chunk["precedent_id"] in seen:
+        results, seen = [], Counter()
+        while scored:
+            # 동일 문서의 후속 청크는 후보로 유지하되 다른 출처와 경쟁하도록 감점한다.
+            selected=min(range(len(scored)),key=lambda i:(-scored[i][0]*repeat_penalty**seen[scored[i][1].get('document_id') or scored[i][1]['precedent_id']],scored[i][1]['chunk_id']))
+            score, chunk,span=scored.pop(selected)
+            identifier=chunk.get('document_id') or chunk['precedent_id']
+            if max_per_document is not None and seen[identifier]>=max_per_document:
                 continue
-            seen.add(chunk["precedent_id"])
-            results.append({**chunk, "score": round(score, 5)})
+            adjusted=score*repeat_penalty**seen[identifier]
+            seen[identifier]+=1
+            result={**chunk, "score": round(adjusted, 5)}
+            if self.evidence_mode:
+                result['raw_score']=round(score,5)
+            if span is not None:
+                result['matched_span']={**span,'offset_basis':'chunk.text'}
+            results.append(result)
             if len(results) == top_k:
                 break
         return results
@@ -169,6 +220,47 @@ def evaluate():
 
 
 class RetrievalTests(unittest.TestCase):
+    def test_multiple_chunks_preserve_document_versions_and_configured_cap(self):
+        chunks=[{'chunk_id':'a1','precedent_id':'a','document_id':'law:a:v1','text':'보증금 반환'},
+                {'chunk_id':'a2','precedent_id':'a','document_id':'law:a:v1','text':'보증금 반환'},
+                {'chunk_id':'a3','precedent_id':'a','document_id':'law:a:v1','text':'보증금 반환'},
+                {'chunk_id':'b1','precedent_id':'a','document_id':'law:a:v2','text':'보증금 반환'}]
+        index=BM25(chunks)
+        self.assertEqual(len(index.search('보증금',top_k=5)),2)
+        self.assertEqual(len(index.search('보증금',top_k=5,max_per_document=2)),3)
+        self.assertEqual(len(index.search('보증금',top_k=5,max_per_document=None)),4)
+        for invalid in [0,-1,True,1.5]:
+            with self.assertRaises(ValueError):
+                index.search('보증금',max_per_document=invalid)
+        for invalid in [0,-1,True,1.5,float('nan')]:
+            with self.assertRaises(ValueError):
+                index.search('보증금',repeat_penalty=invalid)
+
+    def test_evidence_search_keeps_claims_but_prefers_equal_matching_reasoning(self):
+        chunks=[{'chunk_id':'claim','precedent_id':'a','text':'환급 위약금','role':'party_claims'},
+                {'chunk_id':'reason','precedent_id':'b','text':'환급 위약금','role':'reasoning'}]
+        hits=BM25(chunks,evidence_mode=True).search('환급 위약금')
+        self.assertEqual([h['chunk_id'] for h in hits],['reason','claim'])
+        self.assertEqual(hits[1]['role'],'party_claims')
+        self.assertEqual(hits[1]['text'],chunks[0]['text'])
+
+    def test_short_search_window_returns_complete_parent_and_exact_source_span(self):
+        body='배경 설명 '*500+'환불 위약금 반환 기준'+' 조건 설명 '*500
+        start=body.index('환불')
+        passage={'start':start,'end':start+12,'text':body[start:start+12]}
+        chunk={'chunk_id':'table','precedent_id':'t','text':body,'search_passages':[passage],
+               'warnings':['원문 확인 필요'],'source_anomaly':{'unit':'missing'}}
+        result=BM25([chunk],evidence_mode=True).search('환불 위약금')[0]
+        self.assertEqual(result['text'],body)
+        self.assertEqual(result['matched_span']['text'],body[result['matched_span']['start']:result['matched_span']['end']])
+        self.assertEqual(result['warnings'],chunk['warnings'])
+        self.assertEqual(result['source_anomaly'],chunk['source_anomaly'])
+
+    def test_repeated_document_penalty_preserves_source_diversity(self):
+        chunks=[{'chunk_id':key,'precedent_id':source,'text':'환불 위약금'} for key,source in [('a1','a'),('a2','a'),('b1','b')]]
+        hits=BM25(chunks).search('환불',top_k=3,max_per_document=2,repeat_penalty=.5)
+        self.assertEqual([h['chunk_id'] for h in hits],['a1','b1','a2'])
+
     def test_chunks_cover_text_without_loss_and_keep_provenance(self):
         doc = {"retrieval_text": "가나다 문단\n"*400, "precedent_id": "1", "case_name": "사건",
                "case_number": "2020다1", "court": "법원", "judgment_date": "2020-01-01",

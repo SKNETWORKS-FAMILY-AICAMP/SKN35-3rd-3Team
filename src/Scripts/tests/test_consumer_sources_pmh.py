@@ -70,6 +70,48 @@ class ConsumerSourceTests(unittest.TestCase):
             self.assertTrue(u['atomic'])
         self.assertEqual(doc['effective_date'],root.findtext('.//시행일자'))
 
+    def test_additional_appendices_preserve_complete_official_text_and_provenance(self):
+        doc=next(d for d in self.documents if d['document_type']=='administrative_rule')
+        root=ET.fromstring((ROOT/doc['raw_file']).read_bytes())
+        units=[u for u in doc['units'] if u['role']=='appendix_table']
+        self.assertEqual({u['appendix_number'] for u in units},{'0003','0004'})
+        for u in units:
+            appendix=root.find(f'.//별표단위[별표번호="{u["appendix_number"]}"]')
+            body=appendix.findtext('별표내용')
+            self.assertEqual(u['text'],body)
+            self.assertEqual(u['appendix_title'],appendix.findtext('별표제목'))
+            self.assertEqual((u['start'],u['end']),(0,len(body)))
+            found=[c for c in self.chunks if c['source_id']==doc['source_id'] and c['unit_id']==u['unit_id']]
+            self.assertEqual(len(found),1)
+            c=found[0]
+            self.assertEqual(c['text'],body)
+            self.assertEqual(c['source_offset_basis'],u['offset_basis'])
+            self.assertEqual(c['source_end'],len(body))
+            self.assertIn(u['appendix_title'],c['embedding_text'])
+            self.assertIn('consumer_general',c['domains'])
+            self.assertTrue(c['atomic'])
+            self.assertTrue(c['oversize_atomic_unit'])
+            self.assertTrue(c['warnings'])
+
+    def test_additional_appendices_reject_missing_empty_duplicate_and_wrong_title(self):
+        doc=next(d for d in self.documents if d['document_type']=='administrative_rule')
+        original=ET.fromstring((ROOT/doc['raw_file']).read_bytes())
+        for number in ['0003','0004']:
+            for problem in ['missing','empty','duplicate','title']:
+                root=copy.deepcopy(original)
+                target=root.find(f'.//별표단위[별표번호="{number}"]')
+                if problem=='missing':
+                    parent=next(n for n in root.iter() if target in list(n))
+                    parent.remove(target)
+                elif problem=='empty':
+                    target.find('별표내용').text='  '
+                elif problem=='duplicate':
+                    root.append(copy.deepcopy(target))
+                else:
+                    target.find('별표제목').text='wrong'
+                with self.subTest(number=number,problem=problem), self.assertRaises(ValueError):
+                    extract_admin(ET.tostring(root,encoding='utf-8'))
+
     def test_hwpx_equations_cells_and_merged_spans_are_preserved(self):
         for doc in self.documents:
             if doc['format']!='hwpx':
@@ -129,6 +171,22 @@ class ConsumerSourceTests(unittest.TestCase):
         for size,overlap in [(0,0),(5,5),(False,0),(5,-1)]:
             with self.assertRaises(ValueError):
                 make_chunks(self.documents[0],size,overlap)
+
+    def test_search_passages_cover_original_body_and_table_cell_texts_without_inference(self):
+        for c in self.chunks:
+            passages=c['search_passages']
+            covered=set()
+            for p in passages:
+                self.assertEqual(p['text'],c['text'][p['start']:p['end']])
+                self.assertTrue(0<=p['start']<p['end']<=len(c['text']))
+                if 'search_text' in p:
+                    cells=json.loads(p['text'])
+                    self.assertEqual(p['search_text'],'\n'.join(cell['text'] for cell in cells))
+                    self.assertEqual(p['derivation'],'table_cell_texts_in_source_order_no_merge_inference')
+                else:
+                    covered.update(range(p['start'],p['end']))
+            self.assertEqual(len(covered),len(c['text']))
+            self.assertEqual(c['evidence_role']=='party_claim',c['role']=='party_claims')
 
     def test_parcel_versions_preserve_complete_articles_pages_and_conversion_hashes(self):
         for doc in self.documents:

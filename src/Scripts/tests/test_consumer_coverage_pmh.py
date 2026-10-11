@@ -10,6 +10,20 @@ from pathlib import Path
 from src.Scripts.collect_consumer_sources import ROOT, write_json
 from src.Scripts.tests.test_precedent_retrieval_pmh import BM25
 
+SEARCH_OPTIONS={'max_per_document':2,'repeat_penalty':1.0}
+SEARCH_POLICY={'evidence_mode':True,**SEARCH_OPTIONS,'claim_weight':0.6,
+               'query_expansions':[['헬스장','체력단련장'],['환불','환급']],
+               'note':'검색 점수용 구간과 용어 확장. 전체 원문·역할·경고를 반환하며 법률상 동등성이나 계산 가능성 판정이 아님.'}
+SELECTED_CHUNKS={
+    'gym_refund':['ftc_terms_46118_file_5b139f26_terms_article_7_0000','consumer_dispute_standard_industry_fitness_refund_0000'],
+    'pilates_before_start':['ftc_terms_47762_file_05d51a47_terms_article_8_0000'],
+    'pilates_cancelled_class':['kca_case_1003739114_case_reasoning_0000','kca_case_1003739114_case_reasoning_0001'],
+    'pilates_transfer':['kca_case_1003640779_case_reasoning_0000','kca_case_1003640779_case_decision_0000'],
+    'parcel_loss':['ftc_terms_11185_file_a321590d_terms_article_22_0000'],
+    'shopping_custom':['kca_case_1003164054_case_reasoning_0000'],
+    'parcel_compensation_deadline':['ftc_terms_11185_file_a321590d_terms_article_22_0000'],
+}
+
 QUESTIONS=[
     {'id':'gym_refund','query':'헬스장 이용권을 중도해지하면 환불은 얼마나 받나요?',
      'expected_ids':['consumer_dispute_standard','ftc_terms_46118_file_5b139f26']},
@@ -59,30 +73,39 @@ def load_chunks(include_consumer=True):
 
 
 def compact(hit):
-    return {k:hit.get(k) for k in ['chunk_id','precedent_id','source_url','title','role','unit_id','score']}
+    return {k:hit.get(k) for k in ['chunk_id','precedent_id','document_id','source_url','source_path','title','role','unit_id','score','raw_score','matched_span','warnings','source_anomaly','calculation_restricted_clause']}
 
 
 def evaluate():
     base=load_chunks(False)
     added=[normalize(json.loads(line)) for line in (ROOT/'data/chunk/consumer_sources/chunks.jsonl').read_text(encoding='utf-8').splitlines()]
-    before,after=BM25(base),BM25(base+added)
+    before,legacy,after=BM25(base),BM25(base+added),BM25(base+added,evidence_mode=True)
     records=[]
     for question in QUESTIONS:
         results={}
-        for label,index in [('before',before),('after',after)]:
-            hits=index.search(question['query'],top_k=5)
+        selected=SELECTED_CHUNKS.get(question['id'],[])
+        for label,index in [('before',before),('legacy_after',legacy),('after',after)]:
+            hits=index.search(question['query'],top_k=5,**(SEARCH_OPTIONS if label=='after' else {}))
             rank=next((i for i,h in enumerate(hits,1) if h['precedent_id'] in question['expected_ids']),None)
             results[label]={'expected_source_hit_at_3':rank is not None and rank<=3,
                             'expected_source_hit_at_5':rank is not None,'rank':rank,
+                            'expected_chunk_hit_at_5':any(h['chunk_id'] in selected for h in hits) if selected else None,
                             'results':[compact(h) for h in hits]}
-        records.append({**question,**results})
-    report={'evaluation_type':'global_char_ngram_bm25_before_after','baseline_chunk_count':len(base),
+        records.append({**question,'selected_chunk_ids':selected,**results})
+    report={'evaluation_type':'global_char_ngram_bm25_before_after_and_search_policy_comparison','search_policy':SEARCH_POLICY,'baseline_chunk_count':len(base),
             'added_chunk_count':len(added),'question_count':len(records),'questions':records,
             'limitations':['수동 질문으로 기대 출처의 검색 여부를 평가. 답변·환불 계산·현행 적용의 정확성은 검증하지 않음.',
                            '기존 UNCOVERED는 판례만 평가. 이번 before는 기존 모든 자료 유형을 사용.',
+                           'legacy_after와 after는 같은 전체 데이터로 기존 검색과 개선 검색을 비교. before는 소비자 자료 추가 전 기존 방식.',
+                           '선정 청크 진단은 일부 질문만 수행하며 출처 목록과 독립적임. 출처 적중은 답변 근거 적중을 보장하지 않음.',
                            'LLM·임베딩·Qdrant 평가가 아님. 기대 출처는 모든 정답의 목록이 아님.']}
-    for label in ['before','after']:
+    for label in ['before','legacy_after','after']:
         report[label]={f'expected_source_hit_at_{k}':sum(r[label][f'expected_source_hit_at_{k}'] for r in records)/len(records) for k in [3,5]}
+        reviewed=[r for r in records if r[label]['expected_chunk_hit_at_5'] is not None]
+        report[label]['selected_chunk_hits']=sum(r[label]['expected_chunk_hit_at_5'] for r in reviewed)
+        report[label]['questions_with_selected_chunks']=len(reviewed)
+    report['search_changes']={'source_improved':[r['id'] for r in records if not r['legacy_after']['expected_source_hit_at_5'] and r['after']['expected_source_hit_at_5']],
+                              'source_regressed':[r['id'] for r in records if r['legacy_after']['expected_source_hit_at_5'] and not r['after']['expected_source_hit_at_5']]}
     write_json(ROOT/'data/processed/retrieval_evaluation/consumer_coverage_report.json',report)
     print(json.dumps({k:report[k] for k in ['question_count','baseline_chunk_count','added_chunk_count','before','after']},ensure_ascii=False))
     return report
@@ -106,7 +129,7 @@ class CoverageTests(unittest.TestCase):
         self.assertEqual(report['question_count'],len(QUESTIONS))
         self.assertEqual(report['baseline_chunk_count'],len(load_chunks(False)))
         self.assertEqual(report['added_chunk_count'],len(load_chunks())-len(load_chunks(False)))
-        for label in ['before','after']:
+        for label in ['before','legacy_after','after']:
             for k in [3,5]:
                 key=f'expected_source_hit_at_{k}'
                 self.assertEqual(report[label][key],sum(r[label][key] for r in report['questions'])/len(QUESTIONS))
@@ -114,14 +137,33 @@ class CoverageTests(unittest.TestCase):
     def test_parcel_search_preserves_pdf_citations_and_excludes_old_terms(self):
         chunks=load_chunks()
         self.assertNotIn('ftc_terms_11125_file_e27d5f98',{c['precedent_id'] for c in chunks})
-        index=BM25(chunks)
+        index=BM25(chunks,evidence_mode=True)
         for q in [q for q in QUESTIONS if q['id'] in {'parcel_compensation_deadline','parcel_absent_receiver','parcel_shipper_duties'}]:
-            hits=[h for h in index.search(q['query'],top_k=5) if h['precedent_id']=='ftc_terms_11185_file_a321590d']
+            hits=[h for h in index.search(q['query'],top_k=5,**SEARCH_OPTIONS) if h['precedent_id']=='ftc_terms_11185_file_a321590d']
             self.assertTrue(hits,q['id'])
             for hit in hits:
                 self.assertTrue(hit['page_numbers'])
                 self.assertEqual(hit['terms_revision_date'],'2020-06-05')
                 self.assertTrue(hit['derived_pdf_sha256'])
+
+    def test_saved_policy_and_selected_chunk_diagnostics_are_independent_of_source_hits(self):
+        chunks={c['chunk_id']:c for c in load_chunks()}
+        report=json.loads((ROOT/'data/processed/retrieval_evaluation/consumer_coverage_report.json').read_text(encoding='utf-8'))
+        self.assertEqual(report['search_policy'],SEARCH_POLICY)
+        for row in report['questions']:
+            for identifier in row['selected_chunk_ids']:
+                self.assertIn(identifier,chunks)
+            for label in ['before','legacy_after','after']:
+                hits=row[label]['results']
+                expected=any(h['chunk_id'] in row['selected_chunk_ids'] for h in hits) if row['selected_chunk_ids'] else None
+                self.assertEqual(row[label]['expected_chunk_hit_at_5'],expected)
+                for hit in hits:
+                    original=chunks[hit['chunk_id']]
+                    self.assertEqual(hit['warnings'],original.get('warnings'))
+                    self.assertEqual(hit['role'],original.get('role'))
+                    if label=='after':
+                        span=hit['matched_span']
+                        self.assertEqual(span['text'],original['text'][span['start']:span['end']])
 
 
 if __name__=='__main__':

@@ -313,6 +313,24 @@ def extract_admin(data):
             domains.add(domain)
     if domains != set(targets.values()):
         raise ValueError('필수 업종 별표 구간 누락')
+    # 문자 표의 병합 열·공통 조건을 추정하거나 중간에서 잘라내지 않는다.
+    for number, title in [('0003', '품목별 품질보증기간 및 부품보유기간'),
+                          ('0004', '품목별 내용연수표')]:
+        matches = root.findall(f'.//별표단위[별표번호="{number}"]')
+        if len(matches) != 1:
+            raise ValueError(f'별표 {number} 누락 또는 중복')
+        appendix = matches[0]
+        body = appendix.findtext('별표내용') or ''
+        if appendix.findtext('별표제목') != title or not body.strip():
+            raise ValueError(f'별표 {number} 제목 불일치 또는 본문 누락')
+        units.append(unit('appendix_'+number, 'appendix_table', body,
+            domain='consumer', atomic=True, appendix_number=number,
+            appendix_title=title, start=0, end=len(body),
+            offset_basis=f'별표단위[별표번호={number}].별표내용',
+            source_locator=f'별표 {number} / {title}',
+            warnings=['공식 XML 문자 표 전체 보존. 품목·기간·비고·공통 조건을 분리하거나 셀 관계를 추정하지 않음.',
+                      'XML의 물음표 등 문자 이상 가능성 및 표의 병합 관계는 공식 별표 파일과 대조 필요. 수치 자동 계산 근거로 사용하기 전 확인.',
+                      '표 전체를 하나의 청크로 보존하므로 임베딩 모델 토큰 제한 확인 필요.']))
     meta = {n.tag:n.text for n in info}
     return units, meta
 

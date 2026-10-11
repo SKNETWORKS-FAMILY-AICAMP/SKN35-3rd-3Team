@@ -243,7 +243,9 @@ def render_handoff(report):
            f"| 안내서 | PDF 5개 | {counts.get('official_guide',0)} | `data/chunk/guides/guide_chunking_report.json`의 `saved[].file` → 파일별 `chunks` 배열 |",
            f"| 소비자 자료 | 정제 문서 37개 / 검색 대상 23개 | {sum(counts.get(k,0) for k in ['administrative_rule','mediation_case','standard_terms'])} | `data/chunk/consumer_sources/chunks.jsonl` |",
            f"| 합계 | 분야 간 공유 자료를 다시 합산하지 않음 | {sum(counts.values())} | JSONL 3개 + 안내서별 JSON 5개 |", "",
-           "소비자 청크는 행정규칙 7개, 조정사례 98개, 표준약관 64개입니다. 파일 수·문서 수·청크 수는 서로 다른 집계입니다.","",
+           f"소비자 청크는 행정규칙 {counts.get('administrative_rule',0)}개, 조정사례 {counts.get('mediation_case',0)}개, 표준약관 {counts.get('standard_terms',0)}개입니다. 파일 수·문서 수·청크 수는 서로 다른 집계입니다.","",
+           "소비자분쟁해결기준 별표 Ⅲ(품질보증기간·부품보유기간)과 별표 Ⅳ(내용연수표)를 추가 정제했습니다. 각 표는 조건·비고·병합 관계의 손실을 막기 위해 원문 전체를 한 청크로 보존합니다. 문자 이상·표 셀 관계는 공식 별표 대조 필요 경고를 유지하며 임베딩 전 토큰 제한을 확인해야 합니다.","",
+           "45문항 분야 검토 중 품질보증 질문은 별표 Ⅲ·Ⅳ의 확보 내용을 근거 목록에 추가했습니다. 영수증 없는 구매일 판단과 표 대조는 남아 있으므로 부분 확보 상태를 유지합니다. 검색 비교는 양쪽 모두 현재 선정 근거를 사용합니다.","",
            "## 폴더와 원본 보존 정책", "",
            "| 위치 | 역할 |", "|---|---|",
            "| `data/raw/laws` | 법령 8종의 수집 API 응답 JSON과 수집 기록 |",
@@ -284,7 +286,10 @@ def render_handoff(report):
            "조정사례의 금액·이율·사실관계를 다른 사건에 그대로 적용하지 않습니다. 수집본을 현행 적용 가능 자료로 자동 간주하지 않습니다. PDF 원문 URL이 확인되지 않은 경우 기관 홈페이지를 원문 URL로 대체하지 않습니다.","",
            "## 검색·분야 검토 결과와 보강 목록", "",
            f"- 판례 10문항: BM25 Hit@3={baseline['hit_at_3']:.0%}, MRR@3={baseline['mrr_at_3']:.3f}.",
-           f"- 소비자 12문항: 보강 포함 기대 출처 Hit@3={consumer_eval['after']['expected_source_hit_at_3']:.1%}, Hit@5={consumer_eval['after']['expected_source_hit_at_5']:.1%}. 판례 헤더 보완 후 Top 5가 12/12에서 11/12로 변경됐습니다.",
+           f"- 소비자 12문항: 동일 데이터의 기존 검색 Hit@5={consumer_eval['legacy_after']['expected_source_hit_at_5']:.1%} → 개선 검색 Hit@5={consumer_eval['after']['expected_source_hit_at_5']:.1%}, 개선 Hit@3={consumer_eval['after']['expected_source_hit_at_3']:.1%}.",
+           "- 개선 BM25는 본문 구간·HWPX 셀 문자로 점수를 계산하고 생활 표현을 검색 용어로 확장합니다. 당사자 주장 점수는 0.6배, 문서 버전당 최대 2개 청크로 제한하며 원문 전체·역할·경고를 반환합니다. 설정은 로컬 평가용이며 서비스 검색·답변 제한은 별도 구현이 필요합니다.",
+           f"- 45문항 동일 자료·선정 근거 비교: 출처 {coverage['search_comparison']['legacy_source_hits']} → {coverage['search_comparison']['improved_source_hits']}건, 선정 청크 {coverage['search_comparison']['legacy_chunk_hits']} → {coverage['search_comparison']['improved_chunk_hits']}건. 청크 적중 하락 질문: {', '.join(coverage['search_comparison']['chunk_regressed']) or '없음'}.",
+           f"- 출처 적중 하락 질문: {', '.join(coverage['search_comparison']['source_regressed']) or '없음'}. 헬스장 일반 환불·필라테스 개시 전 환불의 선정 환급 기준 청크는 여전히 Top 5 밖에 있으므로 추가 검색 개선이 필요합니다. 이번 설정을 전체 서비스의 최종 검색 정책으로 확정한 것은 아닙니다.",
            "- 분야 검토: 선정 질문 45개. 자료 내용 검토와 검색 진단을 분리합니다. 키워드 적중만으로 충분하다고 판정하지 않습니다.", "",
            "| 분야 | 기본 근거 | 보완 | 추가 검토 | 적용 보류 |", "|---|---:|---:|---:|---:|"]
     for item in coverage["summary"]:

@@ -85,7 +85,7 @@
       "consumer_documents": 37
     },
     "chunk_metadata_and_duplicates": {
-      "chunk_count": 3237,
+      "chunk_count": 3239,
       "duplicate_chunk_ids": 0,
       "empty_text_or_header": 0,
       "unmapped_domains": 0,
@@ -112,7 +112,7 @@
       "by_document_type": {
         "law": 2231,
         "precedent": 349,
-        "administrative_rule": 7,
+        "administrative_rule": 9,
         "mediation_case": 98,
         "standard_terms": 64,
         "official_guide": 488
@@ -124,7 +124,7 @@
         "guide_94e9d4bd30eadf0b_chunks.json",
         "guide_cad7b1de1e4dc64c_chunks.json"
       ],
-      "total": 3237
+      "total": 3239
     },
     "eligibility_and_exclusion_records": {
       "precedent_ready": 27,
@@ -628,8 +628,8 @@
     },
     {
       "path": "data/raw/laws/__init__.py",
-      "bytes": 25,
-      "sha256": "c47c46229d2ed2d900cd8b81797ed45047934386f6988eebe2dc3640cf5456f3"
+      "bytes": 125,
+      "sha256": "8d5331a7a3b0ce6d69b240d9678e46cbd5f9c3daacb122485167a3c253d56f0f"
     },
     {
       "path": "data/raw/laws/collection_report_20261010T014508435630Z.json",
@@ -1183,33 +1183,33 @@
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard.json",
-      "bytes": 28022,
-      "sha256": "7860880c19bc68f6e72c588cf7932bd5a0d749858054bbdd7841f616c2f924d9"
+      "bytes": 55638,
+      "sha256": "ffba21d90f5c6eafc475f33a0f80999f075774e15cb76518eab4de960410b285"
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_0.json",
       "bytes": 913,
-      "sha256": "d112ae59a895bb03ffb053075fb5a9acbb4ed0d1eed837f75c0d975a815fde39"
+      "sha256": "bf6bc20f96d15ead9548b21403f603c3dd8e57b6e477aa917a377cab5a483f7a"
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_1.json",
       "bytes": 923,
-      "sha256": "cbbd1caa399b5e16d9decab6902b91330cb772c1a2ab89d087db47e77e54468f"
+      "sha256": "bd924184d7261f1657feff2a9406f2eb7e7536ea609948ae6067ae6286c39954"
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_2.json",
       "bytes": 952,
-      "sha256": "b38b6cb9d9f138758e6175f411239bca4c15eee44ddd210d0faaa0d723127771"
+      "sha256": "bf25a052ac2fcae4e387c6a8682aa0578fff2f5f67b4107261a74be129bcc2ad"
     },
     {
       "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_3.json",
       "bytes": 926,
-      "sha256": "e6488ff0ee6c32016a756d54f64eda3ee0e92245409a91fa01d4df451b3c012b"
+      "sha256": "b189e764242bc29aeceb8b2ef1015fd4a86e5d46aef7c186170722d865ad6248"
     },
     {
       "path": "data/processed/consumer_sources/consumer_preprocessing_report.json",
       "bytes": 14042,
-      "sha256": "83adc6ea420c390a9aa66ae33e1cabdbb414c676aead59efdc92a978b96542f3"
+      "sha256": "11e6bd5c1682a645c64a70a2acbd15863b904697dce4dafdfc43d08671f675f7"
     },
     {
       "path": "data/processed/consumer_sources/converted/ftc_parcel_terms_14786.conversion.json",
@@ -1234,162 +1234,162 @@
     {
       "path": "data/processed/consumer_sources/ftc_terms_11125.json",
       "bytes": 1088,
-      "sha256": "5d3a2c0b8981178abfb2763fd4029fdba5ef17b5234752083becff402aadcf01"
+      "sha256": "751ce38ca5d3b7396f5f8c208b1f4b14f96fd490d252cbe189643c28f3be6cf1"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_11125_file_e27d5f98.json",
       "bytes": 71440,
-      "sha256": "85816fb29fc55702c5f50a3db7a6416765e5b662686449c96b7d4dfaf2741eb9"
+      "sha256": "e0a82fef8eb7decb85793a967edcdc512146c794605b9c75a92a5ac159589132"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_11185.json",
       "bytes": 1082,
-      "sha256": "492c8d84057ad8e4d3b35a346c44d75d70aef5f71507beb70724001c61160775"
+      "sha256": "49cc069dea19c459cb5fd9d0022176d4a4af09241026186d92058c3de9682d08"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_11185_file_a321590d.json",
       "bytes": 87814,
-      "sha256": "5027669a87a362db8a43dd2e5b0cff997e28f3b99e774ba407d6a0f61a378102"
+      "sha256": "e7466c14fd0a0966397c15ef89bf73f49ec6fb0a4b5bafade17a2b1834409d5a"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_46118.json",
       "bytes": 1055,
-      "sha256": "3eaefaa99188a4e04383010f005125df82cc008674439ecfc432432f96e56ab1"
+      "sha256": "80a8fddd673ee6808193855d5b995c1fa2ab923cb443416a11e25ffaf9b357bb"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_46118_file_5b139f26.json",
       "bytes": 51039,
-      "sha256": "4c3ea12bc52b67eabd2f1b3b2de4721f3cc9a6cc1d14dd320c1dc6eccf33aac5"
+      "sha256": "9f6c39e44cf51d4901ee0ac754df0b239e5033c96867535b1119265a1069601a"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_47762.json",
       "bytes": 1066,
-      "sha256": "7d0bef6dc492e86249eaf197b799abd55566859dad1999459b8a2b008086a08d"
+      "sha256": "8842f7dd750317fe55270d598a25fa0a00e6dfb6a12a3317735eef66c705627e"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_47762_file_05d51a47.json",
       "bytes": 77803,
-      "sha256": "235a6f878ad107e5d0bfdf8c6ed9faf368e8e050ef1056e27980c013ccc8287d"
+      "sha256": "0f2752791645bae5a43bf2cf7914e0ca13e8635ee0457c22c47e6b889afab94e"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_discovery.json",
       "bytes": 923,
-      "sha256": "03943a70faf5bd624ccad61c163c45eae961ef610e890360763b2cc6f7a94f7e"
+      "sha256": "b293e50dec062ca3d4044e623ff645a9e34cfcde7d8f98540c354b2b2415d34c"
     },
     {
       "path": "data/processed/consumer_sources/ftc_terms_discovery_parcel.json",
       "bytes": 1013,
-      "sha256": "53bb4809b87e0f08ae82c12e279aaa5ac537d8bc231ee9ecdbb2cf0efd434803"
+      "sha256": "867769ea8f282cde4181701eb43d1b3226e2cf6aebf72cc72988c7dd8bebbe55"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1001243565.json",
       "bytes": 4880,
-      "sha256": "844863871afeec418e3935427194a7d010cfdddd4e3faf0135c2b9422e3c14dc"
+      "sha256": "120b55087a70fa583740edd88cfc4be7cdf21fa019353b3fb5f7947ef60a7cdb"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1001329664.json",
       "bytes": 11141,
-      "sha256": "774a38c3f6b448b6a1fe22230a99ad8de07ac63045255c78ca11cff6e3122f6b"
+      "sha256": "10169005bacfe447dafe2741ead2a6f45d144b2b17ec075774e14683c2d9c2d4"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1002730975.json",
       "bytes": 6313,
-      "sha256": "b8cda3e5d1ebe6194db091878a8c078e59185b14be38c3b7334b99fd38f228b3"
+      "sha256": "26344d195b32dd70bb8ed7c6f0c08e2b7f44c9d87385901de552278c0a833853"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003148978.json",
       "bytes": 6582,
-      "sha256": "c04e72cd65fa2e8dba546d25011aa6ec1ecd1467f33345798864e9791883251e"
+      "sha256": "32147ccf0ae41ca7b654c623a6089e4290fff31952bbebb276aa618849f51eba"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003164054.json",
       "bytes": 8722,
-      "sha256": "5eaa966067fa09d325a0132b5658a64378685c3cfb9d965c8e3b6f5f57e73339"
+      "sha256": "6b29a307f34ffb14851e6c9b523fa1ce80f23f1379fb16d0fdb8c674f56d4198"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003475989.json",
       "bytes": 8622,
-      "sha256": "106f918102759c8f529de1c20fc3bf489e191109b41d99645f3a9128544ab931"
+      "sha256": "65a72d468acfab6f76b98819506effd25da4f7b3bfcd13f7ff9c68adc53ed665"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003604873.json",
       "bytes": 6286,
-      "sha256": "298a164aebc21bafb3b42b6fe474bc53d8e229facc6f277b38bc52022b010514"
+      "sha256": "0d2ac3d10b1142a3364238b1d85db818aa331f43c4f6993f5d94684c33f1f544"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003640779.json",
       "bytes": 5576,
-      "sha256": "291e2ac4c806d72d3b05ca9188c3f8f31a086c920e2abe0341b31ea8fdec5fc8"
+      "sha256": "471c5febcf4b7a8cc89ab1a4fffd8b61f54f662d03646546fc6b16f5c8120015"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003641375.json",
       "bytes": 6262,
-      "sha256": "d2dbafade6093b6b60462a08a00041e33b4f53d485b5fc981e39fd105e56ff60"
+      "sha256": "0a7b49669976bfaca1ac22423595d8ec844a255e86c8e9deaf8b4aea042b2be7"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003641715.json",
       "bytes": 6775,
-      "sha256": "b49da81aedb75fc15e71948b0cb38ed026577a1dda33fdd31454ee6759280fd1"
+      "sha256": "ebcd1eb4d2c43527edf55a4df3ab9cf713a458f0bafef953972c3c1daa9c43c1"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003739114.json",
       "bytes": 8733,
-      "sha256": "6b23cd88883f10841f3e171dd676cc0f99fbe0df99e07240164405334bd6d92a"
+      "sha256": "56d4958d45ff45b7c52d29c9ed7db5dbca636a6b2376ae76ef2f33a99b03c03b"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003817065.json",
       "bytes": 3892,
-      "sha256": "790fa3c07eac6479422e1445bfafde0eafefef2d057b90bd2bececb7c8a20567"
+      "sha256": "23cfff93f13da33d4c241166cc3570e7395060ac6b326daf847a554660ba60ff"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003890245.json",
       "bytes": 5747,
-      "sha256": "111ef3fd10867970c9ba4a321f1461d0cd1f43edd6629ea6fade186cb255d03b"
+      "sha256": "3397ac5409ff53edd65073698244f7385b8cfbc019ab6d6cb9f13a274e9a7385"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003892039.json",
       "bytes": 5747,
-      "sha256": "af07f214beb8bd3dc67d58b6307839fc940d2be247fa357b4b1046b8753ed7b5"
+      "sha256": "b7c766b1856816476ab287699b9bf96bc92a93eaae7de2114bd9900563bc256d"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003892170.json",
       "bytes": 6807,
-      "sha256": "42a2419c67aaccc603c227d4866e8eec02046fe9d3176fef5b33f106b5820129"
+      "sha256": "407aee8acb3ee90c799c331bfd766702e8f6440e1aef00ed2e7471485d18a079"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003940398.json",
       "bytes": 5392,
-      "sha256": "17e02051b591c457627dc11d672acf16936a896ca44d0560626cd93c2de22aca"
+      "sha256": "f338073e230cf982075961b7d6635e97e13a2710de30b63083b61fb72a9a2b73"
     },
     {
       "path": "data/processed/consumer_sources/kca_case_1003941875.json",
       "bytes": 5672,
-      "sha256": "14a28cea303855c1f28df8ed89542274dcfebd91a8d7a9f79dd74ccaddac32fd"
+      "sha256": "3b9a706fb69247a09fb619d1edf642526d4a68cd376619ce1315a3959bf9c752"
     },
     {
       "path": "data/processed/consumer_sources/kca_discovery_fitness.json",
       "bytes": 958,
-      "sha256": "bbbebda067aa76f51adb4d718a04b8d08c2c6deacd07be9cfe5f4a2e974390c8"
+      "sha256": "5bc6a54ffbea747d3ae2e8db4bbf0738e6d1c378da680c221254cce544b6fe7b"
     },
     {
       "path": "data/processed/consumer_sources/kca_discovery_parcel.json",
       "bytes": 974,
-      "sha256": "956085a09c614700f227720a0cb453c051c3a685907e10cb7e7673a58eed02eb"
+      "sha256": "45639bdc2ac0a9e168e8aa1befcf5ddbe5a8106310f64b390271c9f3686414ee"
     },
     {
       "path": "data/processed/consumer_sources/kca_discovery_shopping.json",
       "bytes": 982,
-      "sha256": "3b71db4dd524f53ea1d6a6b121771c223b4658ed4d0dbbdd3ea6d0e3ddbe6aae"
+      "sha256": "2375d726ba6b27a770f50a9b648c0799d8840c3f4608b0a346207f923b0ee968"
     },
     {
       "path": "data/processed/consumer_sources/kca_parcel_1003817349.json",
       "bytes": 4315,
-      "sha256": "7085ceaa44a6310af018e2b1a2dcd191befc41d29c15de8d68c97b167fcc716e"
+      "sha256": "ca48a692776ae534cb9f2cfee9e4a894d2ba8aa60cd49360b40cc0626a18ddf1"
     },
     {
       "path": "data/processed/consumer_sources/kca_pilates_1003941650.json",
       "bytes": 5624,
-      "sha256": "e9c718d1e59a229113697007b0e482ee41fcbfd584ccd8efd50e6bbc9d74e3a3"
+      "sha256": "c7da551234b77b85abced54f4ad1c314896cb514dffd1289e00ec16fe6455531"
     },
     {
       "path": "data/processed/consumer_sources/parcel_terms_revision_comparison.json",
@@ -1778,18 +1778,18 @@
     },
     {
       "path": "data/processed/retrieval_evaluation/consumer_coverage_report.json",
-      "bytes": 53413,
-      "sha256": "115914bd66f353ef6c11587e504c0601a78b394ef1fa796b16d58fdccabe2fe8"
+      "bytes": 266224,
+      "sha256": "2ead9cd1ad1bd001925b2f7381b47f340536c27e2108406969fc27ecf96255ef"
     },
     {
       "path": "data/processed/retrieval_evaluation/domain_coverage_report_pmh.json",
-      "bytes": 535188,
-      "sha256": "24e114d1f317b86a10b23305c22fef3bcbff8a000da1717a35aa7bb4b8929cb3"
+      "bytes": 1016366,
+      "sha256": "1bbf836a4027eda5d64620bd6a9fb84b062a1edbec73e4686646eb35aa9e1b1c"
     },
     {
       "path": "data/processed/retrieval_evaluation/domain_coverage_report_pmh.md",
-      "bytes": 190601,
-      "sha256": "17386272bba421c42780d0adf0eebbcffdda8b7d5cd8bc1aa5f988be30411fab"
+      "bytes": 197545,
+      "sha256": "dc889e3046fe839a7cca7dcf88470d6224e00008b41e4f92ffe61ae4c727342e"
     },
     {
       "path": "data/chunk/__init__.py",
@@ -1803,13 +1803,13 @@
     },
     {
       "path": "data/chunk/consumer_sources/chunks.jsonl",
-      "bytes": 841343,
-      "sha256": "e32e1e0c2033210672837627e9fa55099d9c5969d59504580ed996d74c67189d"
+      "bytes": 1204091,
+      "sha256": "b9272a4030d7405de4adbfdf04b96bc4eddfc2450307c49f8b807f7f2fbf5214"
     },
     {
       "path": "data/chunk/consumer_sources/consumer_chunking_report.json",
-      "bytes": 7656,
-      "sha256": "191078684d9e465d5a9a96f56de730e1b573a6c622c2d0747d5a1dcb5017f531"
+      "bytes": 7657,
+      "sha256": "6ef60b554b1fb0d2b25d69da50eff7b5f2d59aee666e77b051802b0569f454a0"
     },
     {
       "path": "data/chunk/guides/__init__.py",
@@ -1872,16 +1872,16 @@
       "sha256": "6865ac36d296ababb4c657c2eb087727ba1f623db3723a8cc08cacac2534610d"
     }
   ],
-  "inventory_sha256": "b3ddf9b5766aec4f7f129f7569eb9c8b9e866949eb18ec26bd910e04047db579",
+  "inventory_sha256": "e03c99d22045bfbc8c96eb8f4e6182f2cdcce5033cb1d9224080ceb1988b03fc",
   "remaining_limits": [
     "분야 검토: 기본 근거 28문항, 자료 보완 15문항, 추가 내용 검토 1문항, 원문 적용 보류 1문항인 현재 스냅샷",
     "자료 추가·개정 후 분야별 내용 검토와 평가 보고서를 다시 갱신해야 함",
     "PDF 모든 이미지/원문 시각 요소 및 신규 현행 개정의 전수 검증은 아님",
     "공통 서비스 로더·임베딩·Qdrant 저장/검색·LLM 답변·MCP 연결은 미구현"
   ],
-  "validated_at": "2026-10-10T17:26:46.485228+00:00",
+  "validated_at": "2026-10-11T00:01:12.372589+00:00",
   "test_suite": {
-    "tests_run": 93,
+    "tests_run": 102,
     "successful": true,
     "failures": [],
     "errors": [],

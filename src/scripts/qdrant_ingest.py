@@ -1,8 +1,8 @@
 """전처리 청크의 사전 점검과 Qdrant 적재를 분리해 실행합니다.
 
 사용 예시:
-    uv run python -m src.Scripts.qdrant_ingest check-input
-    uv run python -m src.Scripts.qdrant_ingest ingest
+    uv run python -m src.scripts.qdrant_ingest check-input
+    uv run python -m src.scripts.qdrant_ingest ingest
 """
 
 from __future__ import annotations

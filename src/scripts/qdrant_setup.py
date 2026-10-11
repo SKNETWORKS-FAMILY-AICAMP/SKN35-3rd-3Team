@@ -1,8 +1,8 @@
 """팀 Qdrant 연결 확인 및 최초 컬렉션 준비 명령.
 
 사용 예시:
-    uv run python -m src.Scripts.qdrant_setup check
-    uv run python -m src.Scripts.qdrant_setup init
+    uv run python -m src.scripts.qdrant_setup check
+    uv run python -m src.scripts.qdrant_setup init
 
 ``init``은 컬렉션이 없을 때만 생성하며 기존 컬렉션을 삭제하지 않습니다.
 """

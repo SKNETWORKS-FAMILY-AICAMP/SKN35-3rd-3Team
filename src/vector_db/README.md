@@ -22,13 +22,13 @@ EMBEDDING_API_KEY=개인별_임베딩_API_키
 ```powershell
 uv sync
 Copy-Item .env.example .env
-uv run python -m src.Scripts.qdrant_setup check
+uv run python -m src.scripts.qdrant_setup check
 ```
 
 컬렉션이 없고 생성 권한이 있는 사용자만 아래 명령을 한 번 실행합니다.
 
 ```powershell
-uv run python -m src.Scripts.qdrant_setup init
+uv run python -m src.scripts.qdrant_setup init
 ```
 
 `init`은 컬렉션이 없을 때만 생성합니다. 기존 컬렉션 삭제·강제 재생성은
@@ -115,7 +115,7 @@ Vector DB 계층은 아래 형식을 검증한 뒤 임베딩과 Qdrant Payload�
 파싱, 필수 필드, 중복 `document_id/chunk_id`, 전체 3,793건 여부를 확인합니다.
 
 ```powershell
-uv run python -m src.Scripts.qdrant_ingest check-input
+uv run python -m src.scripts.qdrant_ingest check-input
 ```
 
 기본 점검 보고서는 아래에 저장됩니다.
@@ -127,7 +127,7 @@ tests/report/qdrant_input_validation.md
 다른 위치에서 데이터를 전달받았다면 `--data-root`만 지정합니다.
 
 ```powershell
-uv run python -m src.Scripts.qdrant_ingest check-input `
+uv run python -m src.scripts.qdrant_ingest check-input `
   --data-root "C:\path\to\data\chunk"
 ```
 
@@ -137,7 +137,7 @@ uv run python -m src.Scripts.qdrant_ingest check-input `
 실행합니다. 기존 컬렉션을 삭제하거나 재생성하지 않습니다.
 
 ```powershell
-uv run python -m src.Scripts.qdrant_ingest ingest
+uv run python -m src.scripts.qdrant_ingest ingest
 ```
 
 기본 적재 검증 보고서는 아래에 저장됩니다.
@@ -268,10 +268,10 @@ Hybrid 검색을 추가할 때는 기존 Dense 컬렉션을 삭제하거나 강�
 `document_type`은 Hybrid 검색의 필터와 키워드 정확도를 높이는 데 재사용할 수
 있습니다.
 
-원격 Qdrant 주소가 확정되면 관리자가
-`src/const/vector_db_defaults.py`의 `TEAM_QDRANT_URL`을 한 번 변경해
-공유합니다. 이후 팀원은 URL·컬렉션명·모델·차원을 각자 입력하지 않고 개인
-키만 사용합니다.
+팀 공용 Qdrant Cloud 주소는 `src/const/vector_db_defaults.py`에 고정되어
+있습니다. 팀원은 URL·컬렉션명·모델·차원을 반복 입력하지 않고 개인
+`QDRANT_API_KEY`만 사용합니다. 로컬 Docker를 사용할 때만 `.env`에서
+`QDRANT_URL=http://localhost:6333`으로 덮어씁니다.
 
 팀원의 manage JWT는 컬렉션 변경 권한이 있으므로 개인별로 발급하고, Qdrant
 루트 관리자 키는 공유하지 않습니다. 일반 앱 실행에는 가능하면 read-only

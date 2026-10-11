@@ -9,8 +9,11 @@ from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Final
 
-# 원격 서버 배포 전까지는 수업과 같은 로컬 Docker 주소를 사용합니다.
-TEAM_QDRANT_URL: Final = "http://localhost:6333"
+# 팀 공용 Qdrant Cloud 주소입니다. 비밀 키는 개인 ``.env``에서만 관리합니다.
+TEAM_QDRANT_URL: Final = (
+    "https://31ff3cbb-4b6c-42a7-b0c1-09a7f3d59d65."
+    "us-west-1-0.aws.cloud.qdrant.io"
+)
 TEAM_QDRANT_COLLECTION: Final = "team_documents_openai_dev"
 TEAM_QDRANT_VECTOR_NAME: Final[str | None] = None
 TEAM_QDRANT_DISTANCE: Final = "cosine"

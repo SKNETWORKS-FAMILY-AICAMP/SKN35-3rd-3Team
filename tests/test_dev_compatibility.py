@@ -22,7 +22,7 @@ class DevCompatibilityTests(unittest.TestCase):
         calls = []
         store = SimpleNamespace(lookup=lambda filters, limit: calls.append((filters, limit)) or ())
         embedder = SimpleNamespace(embed_query=lambda query: self.fail("문서 조회는 임베딩 금지"))
-        DocumentRetriever(embedder, store).lookup_document(" law:1 ", limit=3)
+        DocumentRetriever(embedder, store, expected_dimension=2).lookup_document(" law:1 ", limit=3)
         self.assertEqual(calls, [({"document_id": "law:1"}, 3)])
 
     def test_common_response_shapes(self):

@@ -221,8 +221,6 @@ class VectorStore(Protocol):
 이 인터페이스를 따르며, MCP 계층은 Qdrant Client를 직접 호출하지 않습니다.
 """
 
-from __future__ import annotations
-
 import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field

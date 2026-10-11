@@ -165,6 +165,10 @@ class DocumentRetriever:
             [0.0], top_k=top_k, score_threshold=score_threshold, filters=filters
         )
 
+        dimension = self.expected_dimension
+        if dimension is None:
+            dimension = self.vector_store.get_collection_info().vector_size
+
         # 2. 저장된 문서와 같은 모델로 질문을 한 번만 임베딩합니다.
         query_vector = self.embedder.embed_query(normalized_query)
         sparse_vector = (
@@ -376,86 +380,86 @@ class BM25Retriever:
 # (src/vector_db/search_bootstrap.py, scripts/search_evaluate.py가 이 클래스를
 #  import하므로 해제 전에는 해당 스크립트가 동작하지 않습니다.)
 # --------------------------------------------------------------------------
-# @dataclass
-# class HybridRetriever:
-#     """Dense + BM25 검색을 실행하고 RRF로 통합하는 검색기.
-#
-#     Dense는 Qdrant, BM25는 같은 청크 전체의 메모리 색인을 사용합니다.
-#     두 검색의 데이터/ID/출처를 동기화하는 것은 검색기 조립 단계의 책임입니다.
-#     기존 DocumentRetriever를 변경하지 않고 내부 구성 요소로 사용합니다.
-#     """
-#
-#     dense: DocumentRetriever
-#     keyword: BM25Retriever
-#     candidate_k: int = 20  # 각 검색의 후보 수. 최종 반환 수 top_k와 다릅니다.
-#     rank_constant: float = 60.0
-#
-#     def health_check(self) -> bool:
-#         return self.dense.health_check()
-#
-#     def get_collection_info(self) -> VectorCollectionInfo:
-#         return self.dense.get_collection_info()
-#
-#     def lookup_document(
-#         self,
-#         document_id: str,
-#         *,
-#         limit: int = 20,
-#     ) -> Sequence[VectorDocument]:
-#         """정확 조회는 검색 방식과 무관하므로 Dense(Qdrant)에 위임합니다."""
-#
-#         return self.dense.lookup_document(document_id, limit=limit)
-#
-#     def search_documents(
-#         self,
-#         query: str,
-#         *,
-#         top_k: int = 5,
-#         score_threshold: float | None = None,
-#         filters: Mapping[str, object] | None = None,
-#         dense_score_threshold: float | None = None,
-#         bm25_score_threshold: float | None = None,
-#     ) -> Sequence[VectorSearchHit]:
-#         """후보 검색 → RRF 통합 → 점수 하한 적용 → 상위 top_k 반환.
-#
-#         score_threshold는 RRF 점수 하한이며 Dense/BM25 점수와 다릅니다.
-#         기본값 None을 권장하며, 개별 검색 점수 하한은 별도 인자로 지정합니다.
-#         """
-#         # API를 호출하기 전에 입력과 설정을 확인해 잘못된 입력으로 인한 비용을 막습니다.
-#         normalized_query = _validate_query(query)
-#         conditions = _validate_filters(filters)
-#         for count, threshold in (
-#             (top_k, score_threshold),
-#             (self.candidate_k, dense_score_threshold),
-#             (self.candidate_k, bm25_score_threshold),
-#         ):
-#             VectorSearchRequest.create([0.0], top_k=count, score_threshold=threshold)
-#         reciprocal_rank_fusion({}, top_k=top_k, rank_constant=self.rank_constant)
-#
-#         # 각 검색에서 처음부터 top_k개만 찾으면 통합에 필요한 후보를 놓칠 수
-#         # 있습니다. 각각 넓게 찾고 통합 후 최종 반환 개수를 제한합니다.
-#         candidates = max(self.candidate_k, top_k)
-#         dense_hits = self.dense.search_documents(
-#             normalized_query,
-#             top_k=candidates,
-#             score_threshold=dense_score_threshold,
-#             filters=conditions,
-#         )
-#         keyword_hits = self.keyword.search_documents(
-#             normalized_query,
-#             top_k=candidates,
-#             score_threshold=bm25_score_threshold,
-#             filters=conditions,
-#         )
-#         # 정상적인 빈 결과는 허용하지만 연결/API 오류는 숨기지 않습니다.
-#         # 한쪽이 비면 다른 쪽 결과를 사용하고, 양쪽이 비면 빈 튜플입니다.
-#         fused = reciprocal_rank_fusion(
-#             {"dense": dense_hits, "bm25": keyword_hits},
-#             top_k=top_k,
-#             rank_constant=self.rank_constant,
-#         )
-#         return tuple(
-#             hit
-#             for hit in fused
-#             if score_threshold is None or hit.score >= score_threshold
-#         )
+@dataclass
+class HybridRetriever:
+    """Dense + BM25 검색을 실행하고 RRF로 통합하는 검색기.
+
+    Dense는 Qdrant, BM25는 같은 청크 전체의 메모리 색인을 사용합니다.
+    두 검색의 데이터/ID/출처를 동기화하는 것은 검색기 조립 단계의 책임입니다.
+    기존 DocumentRetriever를 변경하지 않고 내부 구성 요소로 사용합니다.
+    """
+
+    dense: DocumentRetriever
+    keyword: BM25Retriever
+    candidate_k: int = 20  # 각 검색의 후보 수. 최종 반환 수 top_k와 다릅니다.
+    rank_constant: float = 60.0
+
+    def health_check(self) -> bool:
+        return self.dense.health_check()
+
+    def get_collection_info(self) -> VectorCollectionInfo:
+        return self.dense.get_collection_info()
+
+    def lookup_document(
+        self,
+        document_id: str,
+        *,
+        limit: int = 20,
+    ) -> Sequence[VectorDocument]:
+        """정확 조회는 검색 방식과 무관하므로 Dense(Qdrant)에 위임합니다."""
+
+        return self.dense.lookup_document(document_id, limit=limit)
+
+    def search_documents(
+        self,
+        query: str,
+        *,
+        top_k: int = 5,
+        score_threshold: float | None = None,
+        filters: Mapping[str, object] | None = None,
+        dense_score_threshold: float | None = None,
+        bm25_score_threshold: float | None = None,
+    ) -> Sequence[VectorSearchHit]:
+        """후보 검색 → RRF 통합 → 점수 하한 적용 → 상위 top_k 반환.
+
+        score_threshold는 RRF 점수 하한이며 Dense/BM25 점수와 다릅니다.
+        기본값 None을 권장하며, 개별 검색 점수 하한은 별도 인자로 지정합니다.
+        """
+        # API를 호출하기 전에 입력과 설정을 확인해 잘못된 입력으로 인한 비용을 막습니다.
+        normalized_query = _validate_query(query)
+        conditions = _validate_filters(filters)
+        for count, threshold in (
+            (top_k, score_threshold),
+            (self.candidate_k, dense_score_threshold),
+            (self.candidate_k, bm25_score_threshold),
+        ):
+            VectorSearchRequest.create([0.0], top_k=count, score_threshold=threshold)
+        reciprocal_rank_fusion({}, top_k=top_k, rank_constant=self.rank_constant)
+
+        # 각 검색에서 처음부터 top_k개만 찾으면 통합에 필요한 후보를 놓칠 수
+        # 있습니다. 각각 넓게 찾고 통합 후 최종 반환 개수를 제한합니다.
+        candidates = max(self.candidate_k, top_k)
+        dense_hits = self.dense.search_documents(
+            normalized_query,
+            top_k=candidates,
+            score_threshold=dense_score_threshold,
+            filters=conditions,
+        )
+        keyword_hits = self.keyword.search_documents(
+            normalized_query,
+            top_k=candidates,
+            score_threshold=bm25_score_threshold,
+            filters=conditions,
+        )
+        # 정상적인 빈 결과는 허용하지만 연결/API 오류는 숨기지 않습니다.
+        # 한쪽이 비면 다른 쪽 결과를 사용하고, 양쪽이 비면 빈 튜플입니다.
+        fused = reciprocal_rank_fusion(
+            {"dense": dense_hits, "bm25": keyword_hits},
+            top_k=top_k,
+            rank_constant=self.rank_constant,
+        )
+        return tuple(
+            hit
+            for hit in fused
+            if score_threshold is None or hit.score >= score_threshold
+        )

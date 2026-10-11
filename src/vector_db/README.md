@@ -1,0 +1,295 @@
+# 팀 Qdrant 사용 방법
+
+팀 공용 값은 `src/const/vector_db_defaults.py`에 있습니다. 개인 PC의
+`.env`에는 비밀 키만 입력합니다.
+
+```dotenv
+QDRANT_API_KEY=개인별_Qdrant_키_또는_manage_JWT
+EMBEDDING_API_KEY=개인별_임베딩_API_키
+```
+
+`OPENAI_API_KEY` 또는 `NVIDIA_API_KEY` 중 하나를 입력하면 해당 API의 팀 고정
+모델·차원·컬렉션을 자동으로 사용합니다. 모델 정보를 개인이 반복해서 입력할
+필요가 없습니다.
+키 문자열은 사용자마다 달라도 같은 제공자·모델이면 동일한 벡터 공간을
+사용하므로 문제가 없습니다.
+
+로컬 Docker Qdrant를 인증 없이 사용할 때는 `QDRANT_API_KEY`를 비워둘 수
+있습니다. 실제 `.env`는 Git에 올리지 않습니다.
+
+## 최초 준비
+
+```powershell
+uv sync --locked
+uv run python -m src.scripts.environment_setup
+uv run python -m src.scripts.qdrant_setup check
+```
+
+`uv sync --locked`는 Python 패키지와 `.venv`만 맞추며 `.env`와 비밀 키는
+가져오지 않습니다. 환경 초기화 명령은 `.env`가 없을 때만 예제 파일을
+복사하고, 기존 `.env`는 유지한 채 입력이 필요한 키 이름만 표시합니다. 값을
+입력한 뒤 `uv run python -m src.scripts.environment_setup --check`로 다시
+확인할 수 있습니다.
+
+컬렉션이 없고 생성 권한이 있는 사용자만 아래 명령을 한 번 실행합니다.
+
+```powershell
+uv run python -m src.scripts.qdrant_setup init
+```
+
+`init`은 컬렉션이 없을 때만 생성합니다. 기존 컬렉션 삭제·강제 재생성은
+하지 않으며, 이미 존재하면 선택한 임베딩 프로필의 차원·Cosine 규격이
+맞는지 확인합니다. 이어서 아래 1차 Payload 인덱스 중 누락된 것만 생성합니다.
+
+## Payload 인덱스 1차 확정
+
+전처리 데이터의 실제 키를 우선으로 하여, 현재 검색·검증 코드에서 사용하는
+세 필드만 인덱싱합니다.
+
+| 실제 입력 JSON 키 | Qdrant Payload 키 | 형식 | 필터 목적 |
+| --- | --- | --- | --- |
+| `document_id` | `document_id` | `Keyword` | 한 문서의 청크 정확 조회·적재 검증 |
+| 폴더명 | `document_type` | `Keyword` | 법령·안내서·판례·소비자 자료 종류 제한 |
+| `title` | `source_name` | `Keyword` | 문서명·사건명 정확 일치 필터 |
+
+`document_type`은 원본 JSON을 바꾸지 않고 `laws`, `guides`, `precedents`,
+`consumer_sources` 폴더에 따라 Vector DB 계층에서 보완합니다. `source_name`도
+최상위 `title`에서 변환합니다.
+
+현재 세 값은 모두 문자열의 정확 일치 검색이므로 `Keyword`가 맞습니다.
+`Datetime`·`Integer` 인덱스는 아직 만들지 않습니다. 법령 조문·사건번호·
+시행일·선고일 등의 실제 JSON 키와 값 형식이 확인된 뒤, 실제 필터 요구가 있는
+필드만 2차로 추가합니다. `text`, `source_url`, `chunk_id`는 현재 필터에 쓰지
+않으므로 인덱스 대상에서 제외합니다.
+
+`check`는 현재 인덱스 상태만 표시하고, `init`만 누락 인덱스를 생성합니다.
+기존 인덱스의 형식이 다르면 자동 변경하지 않고 오류로 알려 줍니다.
+
+## 전처리 결과 입력 계약
+
+전처리 결과는 프로젝트의 `data/chunk` 아래 네 영역에서 읽습니다.
+
+| 하위 폴더 | 기본 `document_type` |
+| --- | --- |
+| `laws` | `law` |
+| `guides` | `official_guide` |
+| `precedents` | `precedent` |
+| `consumer_sources` | `consumer_source` |
+
+전처리 담당자가 확인한 전체 청크 수는 **4,932건**입니다. 최신 폴더별
+수량은 아직 제공되지 않아 보고서에는 실제 발견 수량을 표시하고, 전체
+수량만 4,932건인지 검사합니다.
+
+각 폴더의 `.json`과 `.jsonl`을 하위 경로까지 자동 탐색합니다. JSON은 청크
+객체 한 건, 청크 배열 또는 `chunks`·`records`·`items`·`data` 배열을 지원하고,
+JSONL은 비어 있지 않은 한 줄을 청크 한 건으로 읽습니다. 원본 파일은 수정하지
+않습니다.
+
+전처리 결과는 `metadata` 중첩 객체 없이 `title`, `source_url` 등의 출처 필드를
+최상위에 둡니다. Vector DB 계층은 최상위 `title`을 표준 `source_name`으로
+매핑하고, 나머지 최상위 출처 필드도 Payload에서 유지합니다.
+
+Vector DB 계층은 아래 형식을 검증한 뒤 임베딩과 Qdrant Payload를 생성합니다.
+
+```json
+{
+  "document_id": "law-001",
+  "chunk_id": "law-001-0001",
+  "text": "전처리와 청킹이 끝난 본문",
+  "title": "사건명 또는 문서명",
+  "source_url": "https://example.com/law/001",
+  "domain": "주택임대차",
+  "effective_date": "2024-01-01",
+  "article_label": "제6조의3",
+  "page": 12,
+  "section": "계약갱신 요구"
+}
+```
+
+현재 코드에서 실제 적재에 필요한 값은 다음과 같습니다.
+
+- `document_id`
+- `chunk_id`
+- `text`
+- `title` (`source_name`으로 변환)
+
+`document_type`이 없으면 입력 폴더에 대응하는 기본값을 메모리의 복사본에만
+보완합니다. 원본 파일은 변경하지 않습니다.
+
+### 실제 파일을 받기 전·후 사전 점검
+
+다음 명령은 임베딩 API와 Qdrant를 호출하지 않습니다. 폴더 존재 여부, 파일
+파싱, 필수 필드, 중복 `document_id/chunk_id`, 전체 4,932건 여부를 확인합니다.
+
+```powershell
+uv run python -m src.scripts.qdrant_ingest check-input
+```
+
+기본 점검 보고서는 아래에 저장됩니다.
+
+```text
+tests/report/qdrant_input_validation.md
+```
+
+다른 위치에서 데이터를 전달받았다면 `--data-root`만 지정합니다.
+
+```powershell
+uv run python -m src.scripts.qdrant_ingest check-input `
+  --data-root "C:\path\to\data\chunk"
+```
+
+### 검증 완료 후 실제 적재
+
+입력 점검이 통과한 경우에만 임베딩·Qdrant 적재·저장 결과 재검증을 순서대로
+실행합니다. 기존 컬렉션을 삭제하거나 재생성하지 않습니다.
+
+```powershell
+uv run python -m src.scripts.qdrant_ingest ingest
+```
+
+기본 적재 검증 보고서는 아래에 저장됩니다.
+
+```text
+tests/report/qdrant_ingestion_validation.md
+```
+
+검색과 출처 표시에 사용하는 권장 Payload는 다음과 같습니다.
+
+- `domain`: 주택임대차·근로·중고거래 등 문서 업무 영역
+- `document_type`: `law`·`precedent`·`official_guide` 등 문서 종류
+- `effective_date`: 법령·지침의 시행일 또는 기준일 (`YYYY-MM-DD` 권장)
+- `source_url`: 원문 출처 URL
+- `article_label`: 조문·항목 번호 또는 문서 내부 표제
+
+이 값들은 선택 필드이므로 기존 전처리 결과도 계속 사용할 수 있습니다.
+`source_url`은 Payload에 그대로 보존하며, 기존 코드 호환성을 위해
+`source_path` 별칭에도 같은 값을 넣습니다.
+
+## API 키에 따른 임베딩 자동 선택
+
+현재 고정 API 프로필은 다음과 같습니다.
+
+| 입력한 키 | 모델 | 차원 | 컬렉션 |
+| --- | --- | ---: | --- |
+| `OPENAI_API_KEY` | `text-embedding-3-small` | 1536 | `team_documents_openai_dev` |
+| `NVIDIA_API_KEY` | `nvidia/nemotron-3-embed-1b` | 2048 | `team_documents_nvidia_dev` |
+
+두 키가 모두 설정된 경우에만 `EMBEDDING_PROVIDER=openai` 또는 `nvidia`를
+추가해 사용할 API를 선택합니다.
+
+다른 키를 쓰는 것과 다른 모델을 쓰는 것은 구분해야 합니다.
+
+- 키만 다름: 같은 컬렉션 사용 가능
+- 모델 또는 제공자가 다름: 문서를 다시 임베딩하고 새 컬렉션 사용
+
+NVIDIA를 사용할 때는 개인 키만 입력합니다.
+
+```dotenv
+NVIDIA_API_KEY=개인키
+```
+
+개인 GPU에서는 Sentence Transformers 모델을 직접 실행할 수 있습니다. 공개
+모델은 일반적으로 Hugging Face 토큰 없이 다운로드할 수 있고, 비공개 또는
+승인형 모델을 사용할 때만 `HF_TOKEN`이 필요합니다.
+
+```powershell
+uv pip install sentence-transformers
+```
+
+```dotenv
+EMBEDDING_PROVIDER=local_huggingface
+EMBEDDING_MODEL=팀에서_정한_Hugging_Face_모델_ID
+EMBEDDING_DIMENSION=모델의_실제_차원
+EMBEDDING_DEVICE=cuda
+EMBEDDING_BATCH_SIZE=32
+QDRANT_COLLECTION=team_documents_local_model_dev
+
+# 비공개·승인형 모델일 때만 입력
+HF_TOKEN=개인_Hugging_Face_토큰
+```
+
+예를 들어 다른 OpenAI 호환 API를 쓸 때는 개인 `.env`에 모델 규격과 전용
+컬렉션을 함께 지정합니다.
+
+```dotenv
+EMBEDDING_PROVIDER=openai_compatible
+EMBEDDING_API_KEY=개인키
+EMBEDDING_BASE_URL=https://provider.example.com/v1
+EMBEDDING_MODEL=provider/model-name
+EMBEDDING_DIMENSION=모델의_실제_차원
+QDRANT_COLLECTION=team_documents_provider_model_v1
+```
+
+## 코드에서 검색기 사용
+
+```python
+from src.vector_db import create_team_retriever
+
+retriever = create_team_retriever()
+results = retriever.search_documents(
+    "질문 내용",
+    top_k=5,
+    score_threshold=None,
+    filters={
+        "domain": "주택임대차",
+        "document_type": "law",
+    },
+)
+```
+
+현재 필터는 문자열·정수·불리언의 정확한 일치 조건을 지원합니다.
+`effective_date`의 범위 검색은 별도 확장 대상입니다.
+
+## 적재 후 재확인 루프
+
+적재 검증은 데이터를 자동 삭제하지 않습니다. 현재 입력 문서 범위의 Qdrant
+Payload를 읽어 중복·누락·잔여 Point와 `content_hash` 불일치를 보고서로
+남깁니다.
+
+```python
+from src.vector_db import validate_qdrant_ingestion
+
+saved_count = vector_store.upsert_points(points)
+report = validate_qdrant_ingestion(vector_store, points)
+report.write_markdown("tests/report/qdrant_ingestion_validation.md")
+
+print("적재 건수:", saved_count)
+print("검증 통과:", report.passed)
+```
+
+검증에 실패하면 입력의 `document_id`, `chunk_id`, `content_hash`를 수정하고
+같은 절차로 재적재합니다. 안정적 Point ID이므로 같은 논리 청크는 Upsert로
+갱신됩니다. 잔여·중복 Point는 보고서에만 표시하며 자동 삭제하지 않습니다.
+기존 데이터에서 발생한 잔여·중복은 재적재만으로 없어지지 않으므로 별도 정리
+대상으로 남겨 둡니다.
+
+## Hybrid 검색
+
+기본값은 `SEARCH_MODE=hybrid`입니다. 선택한 OpenAI·NVIDIA·로컬 Dense
+임베딩과 FastEmbed `Qdrant/bm25` Sparse Vector를 함께 저장하고, 검색 시 두
+후보 목록을 Qdrant RRF(Reciprocal Rank Fusion)로 결합합니다.
+
+BM25는 로컬에서 생성하므로 Qdrant Cloud의 유료 Inference에 의존하지
+않습니다. 한국어 원문에는 영어 stemming과 stopword를 적용하지 않습니다.
+최초 실행 시 약 0.01GB의 BM25 모델 파일을 내려받으며 공개 모델이므로
+`HF_TOKEN`은 필수가 아닙니다.
+
+기존 Dense 컬렉션은 삭제하거나 재생성하지 않습니다. 컬렉션이 비어 있으면
+`qdrant_setup init`이 `bm25` Sparse Vector 설정을 추가합니다. 데이터가 있는
+컬렉션에서 Sparse 설정이 누락된 경우에는 자동 변경을 중단하고 재적재 계획을
+먼저 확인하도록 오류를 반환합니다.
+
+팀 적재 명령은 모든 Point가 Dense와 Sparse를 함께 보유하도록
+`SEARCH_MODE=hybrid`에서만 실행됩니다. 적재가 끝난 뒤 Dense 단독 비교가
+필요하면 `.env`에 `SEARCH_MODE=dense`를 지정합니다. Hybrid로 적재한 Point는
+Dense와 Sparse를 모두 보유하므로 동일 컬렉션에서 Dense 단독 검색과 Hybrid
+검색을 비교할 수 있습니다.
+
+팀 공용 Qdrant Cloud 주소는 `src/const/vector_db_defaults.py`에 고정되어
+있습니다. 팀원은 URL·컬렉션명·모델·차원을 반복 입력하지 않고 개인
+`QDRANT_API_KEY`만 사용합니다. 로컬 Docker를 사용할 때만 `.env`에서
+`QDRANT_URL=http://localhost:6333`으로 덮어씁니다.
+
+팀원의 manage JWT는 컬렉션 변경 권한이 있으므로 개인별로 발급하고, Qdrant
+루트 관리자 키는 공유하지 않습니다. 일반 앱 실행에는 가능하면 read-only
+키를 사용합니다.

@@ -2,8 +2,8 @@
 name = "skn35-3rd-3team"
 version = "0.1.0"
 description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.12"
+readme = "README_jb.md"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "langchain-google-genai>=4.4.0",
     "langchain-openai>=1.7.0",
@@ -11,4 +11,16 @@ dependencies = [
     "numpy>=2.5.3",
     "python-dotenv>=1.2.4",
     "streamlit>=1.65.0",
+    "mcp>=2,<3",
+    "openai>=2.7.0",
+    "qdrant-client[fastembed]>=1.15.1,<2",
+    "tiktoken>=0.12,<1",
 ]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src", "src.*"]

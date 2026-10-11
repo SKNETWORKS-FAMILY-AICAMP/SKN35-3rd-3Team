@@ -1,0 +1,305 @@
+"""전처리 청크를 Qdrant 적재 직전 Point로 변환합니다.
+
+이 모듈은 Qdrant Client와 MCP를 import하지 않습니다. 따라서 전처리 결과의
+형식과 벡터 차원을 서버 연결 전에 단위 테스트할 수 있습니다.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterable, Iterator, Mapping, Sequence
+from dataclasses import dataclass, replace
+from datetime import datetime, timezone
+from functools import lru_cache
+from typing import Protocol, runtime_checkable
+
+import tiktoken
+
+from src.const.qdrant_config import EmbeddingSettings
+from src.const.vector_data_contract import (
+    PreparedChunk,
+    infer_vector_dimension,
+    normalize_vector,
+    validate_unique_records,
+)
+from src.vector_db.sparse_embedder import SparseEmbedding
+
+
+_OPENAI_EMBEDDING_TOKEN_LIMIT = 8_191
+
+
+@runtime_checkable
+class DocumentEmbeddingProvider(Protocol):
+    """적재할 문서 본문을 벡터로 변환하는 최소 인터페이스."""
+
+    def embed_documents(
+        self,
+        texts: Sequence[str],
+    ) -> Sequence[Sequence[float]]:
+        """입력 순서와 같은 순서의 문서 벡터를 반환합니다."""
+
+
+@dataclass(frozen=True)
+class PreparedPoint:
+    """Qdrant SDK 객체로 바꾸기 전의 저장 독립 Point."""
+
+    point_id: str
+    vector: tuple[float, ...]
+    payload: Mapping[str, object]
+    sparse_indices: tuple[int, ...] | None = None
+    sparse_values: tuple[float, ...] | None = None
+    sparse_vector_name: str | None = None
+
+
+@dataclass(frozen=True)
+class _EmbeddingInput:
+    """API 제한을 반영한 Dense 임베딩 입력과 감사 정보."""
+
+    text: str
+    original_token_count: int | None = None
+
+    @property
+    def truncated(self) -> bool:
+        return self.original_token_count is not None
+
+
+@lru_cache(maxsize=None)
+def _openai_encoding(model: str) -> object:
+    """OpenAI 모델에 맞는 토크나이저를 재사용합니다."""
+
+    try:
+        return tiktoken.encoding_for_model(model)
+    except KeyError:
+        return tiktoken.get_encoding("cl100k_base")
+
+
+def _embedding_input(
+    record: PreparedChunk,
+    settings: EmbeddingSettings,
+) -> _EmbeddingInput:
+    """전처리 문맥을 사용하고 OpenAI 입력 한도를 안전하게 적용합니다."""
+
+    text = record.embedding_input_text
+    if settings.provider != "openai" or settings.model is None:
+        return _EmbeddingInput(text=text)
+
+    encoding = _openai_encoding(settings.model)
+    tokens = encoding.encode(text)
+    if len(tokens) <= _OPENAI_EMBEDDING_TOKEN_LIMIT:
+        return _EmbeddingInput(text=text)
+    return _EmbeddingInput(
+        text=encoding.decode(tokens[:_OPENAI_EMBEDDING_TOKEN_LIMIT]),
+        original_token_count=len(tokens),
+    )
+
+
+def _utc_now_iso() -> str:
+    """초 단위 UTC ISO 8601 시각을 반환합니다."""
+
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def _validated_batch_size(batch_size: int) -> int:
+    """배치 크기를 검사하고 정상 값을 반환합니다."""
+
+    if isinstance(batch_size, bool) or not isinstance(batch_size, int):
+        raise TypeError("batch_size는 정수여야 합니다.")
+    if batch_size < 1:
+        raise ValueError("batch_size는 1 이상이어야 합니다.")
+    return batch_size
+
+
+def _validate_existing_vector_metadata(
+    record: PreparedChunk,
+    settings: EmbeddingSettings,
+) -> None:
+    """기존 벡터가 현재 팀 임베딩 규격과 같은지 확인합니다."""
+
+    expected_values = {
+        "embedding_provider": settings.provider,
+        "embedding_model": settings.model,
+        "embedding_dimension": settings.dimension,
+        "embedding_normalized": settings.normalized,
+    }
+    actual_values = {
+        "embedding_provider": record.embedding_provider,
+        "embedding_model": record.embedding_model,
+        "embedding_dimension": record.embedding_dimension,
+        "embedding_normalized": record.embedding_normalized,
+    }
+
+    for field_name, expected_value in expected_values.items():
+        actual_value = actual_values[field_name]
+        if actual_value is None or expected_value is None:
+            continue
+        if actual_value != expected_value:
+            raise ValueError(
+                "기존 벡터의 임베딩 정보가 현재 설정과 다릅니다: "
+                f"field={field_name}, expected={expected_value}, "
+                f"actual={actual_value}"
+            )
+
+
+def generate_document_vectors(
+    records: Iterable[PreparedChunk],
+    *,
+    embedder: DocumentEmbeddingProvider,
+    settings: EmbeddingSettings,
+    batch_size: int = 64,
+) -> tuple[PreparedChunk, ...]:
+    """벡터가 없는 문서만 배치 임베딩해 적재 가능한 레코드로 만듭니다.
+
+    이미 벡터가 있는 레코드는 다시 API에 보내지 않습니다. 대신 현재 설정과
+    차원이 호환되는지 확인합니다. 반환 순서는 입력 순서와 같습니다.
+    """
+
+    settings.validate_for_vector_work()
+    assert settings.provider is not None
+    assert settings.model is not None
+    assert settings.dimension is not None
+
+    validated_batch_size = _validated_batch_size(batch_size)
+    record_list = list(records)
+    validate_unique_records(record_list)
+
+    generated_records = list(record_list)
+    pending_indexes: list[int] = []
+    embedding_inputs: dict[int, _EmbeddingInput] = {}
+    for index, record in enumerate(record_list):
+        record.validate(require_vector=False)
+        if record.vector is None:
+            pending_indexes.append(index)
+            embedding_inputs[index] = _embedding_input(record, settings)
+            continue
+
+        record.validate(
+            require_vector=True,
+            expected_dimension=settings.dimension,
+        )
+        _validate_existing_vector_metadata(record, settings)
+
+    for start in range(0, len(pending_indexes), validated_batch_size):
+        batch_indexes = pending_indexes[
+            start : start + validated_batch_size
+        ]
+        batch_texts = [
+            embedding_inputs[index].text for index in batch_indexes
+        ]
+        batch_vectors = list(embedder.embed_documents(batch_texts))
+
+        if len(batch_vectors) != len(batch_indexes):
+            raise RuntimeError(
+                "임베딩 응답 개수가 입력 문서 개수와 다릅니다: "
+                f"expected={len(batch_indexes)}, actual={len(batch_vectors)}"
+            )
+
+        for record_index, vector in zip(
+            batch_indexes,
+            batch_vectors,
+            strict=True,
+        ):
+            embedding_input = embedding_inputs[record_index]
+            extra_metadata = dict(record_list[record_index].extra_metadata)
+            if embedding_input.truncated:
+                extra_metadata.update(
+                    {
+                        "embedding_input_truncated": True,
+                        "embedding_input_token_count": (
+                            embedding_input.original_token_count
+                        ),
+                        "embedding_input_token_limit": (
+                            _OPENAI_EMBEDDING_TOKEN_LIMIT
+                        ),
+                    }
+                )
+            embedded_record = replace(
+                record_list[record_index],
+                vector=normalize_vector(vector),
+                embedding_provider=settings.provider,
+                embedding_model=settings.model,
+                embedding_dimension=settings.dimension,
+                embedding_normalized=settings.normalized,
+                extra_metadata=extra_metadata,
+            )
+            embedded_record.validate(
+                require_vector=True,
+                expected_dimension=settings.dimension,
+            )
+            generated_records[record_index] = embedded_record
+
+    return tuple(generated_records)
+
+
+def prepare_upsert_points(
+    records: Iterable[PreparedChunk],
+    *,
+    expected_dimension: int,
+    indexed_at: str | None = None,
+    sparse_vector_name: str | None = None,
+    sparse_vectors: Sequence[SparseEmbedding] | None = None,
+) -> tuple[PreparedPoint, ...]:
+    """검증된 청크를 Qdrant 적재 후보 Point로 변환합니다."""
+
+    if isinstance(expected_dimension, bool) or not isinstance(
+        expected_dimension,
+        int,
+    ):
+        raise TypeError("expected_dimension은 정수여야 합니다.")
+    if expected_dimension < 1:
+        raise ValueError("expected_dimension은 1 이상이어야 합니다.")
+    if (sparse_vector_name is None) != (sparse_vectors is None):
+        raise ValueError(
+            "Sparse Vector 이름과 벡터 목록은 함께 설정해야 합니다."
+        )
+
+    record_list = list(records)
+    validate_unique_records(record_list)
+    if sparse_vectors is not None and len(sparse_vectors) != len(record_list):
+        raise ValueError(
+            "Sparse Vector 개수가 입력 청크 개수와 다릅니다."
+        )
+
+    inferred_dimension = infer_vector_dimension(record_list)
+    if inferred_dimension is not None and inferred_dimension != expected_dimension:
+        raise ValueError(
+            "입력 벡터 차원이 컬렉션 차원과 일치하지 않습니다: "
+            f"expected={expected_dimension}, actual={inferred_dimension}"
+        )
+
+    indexed_time = indexed_at or _utc_now_iso()
+    points: list[PreparedPoint] = []
+    for index, record in enumerate(record_list):
+        record.validate(
+            require_vector=True,
+            expected_dimension=expected_dimension,
+        )
+        assert record.vector is not None
+        sparse_vector = sparse_vectors[index] if sparse_vectors else None
+        points.append(
+            PreparedPoint(
+                point_id=record.point_id(),
+                vector=record.vector,
+                payload=record.payload(indexed_at=indexed_time),
+                sparse_indices=(
+                    sparse_vector.indices if sparse_vector is not None else None
+                ),
+                sparse_values=(
+                    sparse_vector.values if sparse_vector is not None else None
+                ),
+                sparse_vector_name=sparse_vector_name,
+            )
+        )
+
+    return tuple(points)
+
+
+def iter_point_batches(
+    points: Sequence[PreparedPoint],
+    *,
+    batch_size: int = 64,
+) -> Iterator[tuple[PreparedPoint, ...]]:
+    """대량 적재를 위해 Point를 일정한 크기로 나눕니다."""
+
+    validated_batch_size = _validated_batch_size(batch_size)
+
+    for start in range(0, len(points), validated_batch_size):
+        yield tuple(points[start : start + validated_batch_size])

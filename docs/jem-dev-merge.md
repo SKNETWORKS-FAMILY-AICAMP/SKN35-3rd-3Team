@@ -1,8 +1,5 @@
 # jem 검색 변경을 dev에 통합할 때
 
-검증 기준: dev e1fe7ca + 현재 jem 검색 수정본.
-다른 팀원의 코드/데이터와 옛 폴더 연결을 jem에 다시 복사하지 않았습니다.
-
 ## 이번 변경
 
 - DocumentRetriever가 공용 bootstrap의 expected_dimension, sparse_embedder 인자를 수용합니다.

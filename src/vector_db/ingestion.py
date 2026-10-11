@@ -9,7 +9,10 @@ from __future__ import annotations
 from collections.abc import Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
+from functools import lru_cache
 from typing import Protocol, runtime_checkable
+
+import tiktoken
 
 from src.const.qdrant_config import EmbeddingSettings
 from src.const.vector_data_contract import (
@@ -19,6 +22,9 @@ from src.const.vector_data_contract import (
     validate_unique_records,
 )
 from src.vector_db.sparse_embedder import SparseEmbedding
+
+
+_OPENAI_EMBEDDING_TOKEN_LIMIT = 8_191
 
 
 @runtime_checkable
@@ -42,6 +48,48 @@ class PreparedPoint:
     sparse_indices: tuple[int, ...] | None = None
     sparse_values: tuple[float, ...] | None = None
     sparse_vector_name: str | None = None
+
+
+@dataclass(frozen=True)
+class _EmbeddingInput:
+    """API 제한을 반영한 Dense 임베딩 입력과 감사 정보."""
+
+    text: str
+    original_token_count: int | None = None
+
+    @property
+    def truncated(self) -> bool:
+        return self.original_token_count is not None
+
+
+@lru_cache(maxsize=None)
+def _openai_encoding(model: str) -> object:
+    """OpenAI 모델에 맞는 토크나이저를 재사용합니다."""
+
+    try:
+        return tiktoken.encoding_for_model(model)
+    except KeyError:
+        return tiktoken.get_encoding("cl100k_base")
+
+
+def _embedding_input(
+    record: PreparedChunk,
+    settings: EmbeddingSettings,
+) -> _EmbeddingInput:
+    """전처리 문맥을 사용하고 OpenAI 입력 한도를 안전하게 적용합니다."""
+
+    text = record.embedding_input_text
+    if settings.provider != "openai" or settings.model is None:
+        return _EmbeddingInput(text=text)
+
+    encoding = _openai_encoding(settings.model)
+    tokens = encoding.encode(text)
+    if len(tokens) <= _OPENAI_EMBEDDING_TOKEN_LIMIT:
+        return _EmbeddingInput(text=text)
+    return _EmbeddingInput(
+        text=encoding.decode(tokens[:_OPENAI_EMBEDDING_TOKEN_LIMIT]),
+        original_token_count=len(tokens),
+    )
 
 
 def _utc_now_iso() -> str:
@@ -115,10 +163,12 @@ def generate_document_vectors(
 
     generated_records = list(record_list)
     pending_indexes: list[int] = []
+    embedding_inputs: dict[int, _EmbeddingInput] = {}
     for index, record in enumerate(record_list):
         record.validate(require_vector=False)
         if record.vector is None:
             pending_indexes.append(index)
+            embedding_inputs[index] = _embedding_input(record, settings)
             continue
 
         record.validate(
@@ -131,7 +181,9 @@ def generate_document_vectors(
         batch_indexes = pending_indexes[
             start : start + validated_batch_size
         ]
-        batch_texts = [record_list[index].text for index in batch_indexes]
+        batch_texts = [
+            embedding_inputs[index].text for index in batch_indexes
+        ]
         batch_vectors = list(embedder.embed_documents(batch_texts))
 
         if len(batch_vectors) != len(batch_indexes):
@@ -145,6 +197,20 @@ def generate_document_vectors(
             batch_vectors,
             strict=True,
         ):
+            embedding_input = embedding_inputs[record_index]
+            extra_metadata = dict(record_list[record_index].extra_metadata)
+            if embedding_input.truncated:
+                extra_metadata.update(
+                    {
+                        "embedding_input_truncated": True,
+                        "embedding_input_token_count": (
+                            embedding_input.original_token_count
+                        ),
+                        "embedding_input_token_limit": (
+                            _OPENAI_EMBEDDING_TOKEN_LIMIT
+                        ),
+                    }
+                )
             embedded_record = replace(
                 record_list[record_index],
                 vector=normalize_vector(vector),
@@ -152,6 +218,7 @@ def generate_document_vectors(
                 embedding_model=settings.model,
                 embedding_dimension=settings.dimension,
                 embedding_normalized=settings.normalized,
+                extra_metadata=extra_metadata,
             )
             embedded_record.validate(
                 require_vector=True,

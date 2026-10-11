@@ -271,6 +271,19 @@ class PreparedChunk:
 
         return self.vector is None
 
+    @property
+    def embedding_input_text(self) -> str:
+        """전처리 검색 문맥을 포함한 임베딩 입력을 반환합니다.
+
+        전처리 결과에 ``embedding_text``가 없으면 기존 입력과의 호환을 위해
+        보존 본문인 ``text``를 사용합니다.
+        """
+
+        embedding_text = self.extra_metadata.get("embedding_text")
+        if embedding_text is None:
+            return self.text
+        return _required_text(embedding_text, "embedding_text")
+
     def validate(
         self,
         *,

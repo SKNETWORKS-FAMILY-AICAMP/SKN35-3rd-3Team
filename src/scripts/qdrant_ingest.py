@@ -96,7 +96,7 @@ def ingest(args: argparse.Namespace) -> int:
         settings.collection.sparse_model
     )
     sparse_vectors = sparse_embedder.embed_documents(
-        [record.text for record in embedded_records],
+        [record.embedding_input_text for record in embedded_records],
         batch_size=args.embedding_batch_size,
     )
     points = prepare_upsert_points(

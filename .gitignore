@@ -5,3 +5,6 @@ __pycache__/
 *.egg-info/
 .env
 tests/
+
+# 무료 로컬 Reranker 모델 캐시(대용량 가중치)는 저장소에 올리지 않습니다.
+.cache/

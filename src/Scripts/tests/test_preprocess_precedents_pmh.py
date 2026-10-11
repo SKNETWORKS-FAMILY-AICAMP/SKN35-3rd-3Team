@@ -10,6 +10,26 @@ from src.Scripts.preprocess_precedents import (
 
 
 class PreprocessingTests(unittest.TestCase):
+    def test_restoration_case_scope_individual_amounts_and_historical_interest_are_preserved(self):
+        d=json.loads((ROOT/'data/processed/precedents/147076.json').read_text(encoding='utf-8'))
+        self.assertEqual(len(d['selected_spans']),4)
+        self.assertEqual(d['review_resolution']['review_date'],'2026-10-11')
+        self.assertFalse(d['needs_manual_review'])
+        for phrase in ['연기학원','통상적인 손모','구체적으로 명시','견적서','50%','명도일 다음날','연 20%']:
+            self.assertIn(phrase,d['retrieval_text'])
+        warnings=' '.join(d['warnings'])
+        for phrase in ['하급심','주택','현재','일반 공제율']:
+            self.assertIn(phrase,warnings)
+        from src.Scripts.tests.test_precedent_retrieval_pmh import make_chunks
+        for c in make_chunks(d):
+            for warning in d['warnings']:
+                self.assertIn(warning,c['embedding_text'])
+        raw=json.loads((ROOT/'data/raw/precedents/147076.json').read_text(encoding='utf-8'))
+        raw['detail']['판례내용'] += '<br/>changed'
+        review=json.loads((ROOT/'data/processed/precedent_relevance_review.json').read_text(encoding='utf-8'))
+        row=next(r for r in review['records'] if r['precedent_id']=='147076')
+        self.assertTrue(preprocess(row,raw)['needs_manual_review'])
+
     def test_html_boundaries_and_legal_notation(self):
         value = '<p>「민법」 제390조&nbsp; 1,290만 원</p><p>2024다216187<br/>甲 &amp; 乙</p><script>삭제</script>'
         cleaned = clean_text(value)

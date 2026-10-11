@@ -468,6 +468,600 @@ def extract_hwpx(data_path):
     return text,attach_refund_tables(units),tables
 
 
+def extract_supporting_admin(source, data):
+    """추가 고시의 전체 조문·별표를 보존하며 적용 범위를 확대 해석하지 않는다."""
+    root=ET.fromstring(data)
+    info=root.find('행정규칙기본정보')
+    if info is None or info.findtext('행정규칙명')!=source['title']:
+        raise ValueError('추가 고시의 요청명·본문명 불일치')
+    meta={n.tag:n.text or '' for n in info}
+    if meta.get('시행일자')!=source.get('expected_effective_date',meta.get('시행일자')):
+        raise ValueError('추가 고시의 적용 연도 불일치')
+    units=[unit(f'article_{i}','general_rule',n.text or '',atomic=True,
+                source_locator=f'조문내용[{i+1}]')
+           for i,n in enumerate(root.findall('조문내용')) if (n.text or '').strip()]
+    for i,n in enumerate(root.findall('.//별표단위')):
+        text=n.findtext('별표내용') or ''
+        if not text.strip():
+            raise ValueError('추가 고시 별표 본문 누락')
+        units.append(unit(f'appendix_{i}','appendix_table',text,atomic=True,
+            appendix_number=n.findtext('별표번호'),appendix_title=n.findtext('별표제목'),
+            start=0,end=len(text),offset_basis=f'별표단위[{i+1}].별표내용',
+            source_locator=f'별표[{i+1}] '+(n.findtext('별표제목') or ''),
+            warnings=['XML 문자 표 전체 보존. ? 등 원문 문자를 보정하지 않으며 셀 관계·원문 대조 필요.']))
+    if source['source_id']=='minimum_wage_2026':
+        import pdfplumber
+        path=ROOT/source['body_pdf_file']
+        if digest(path.read_bytes())!=source['body_pdf_sha256']:
+            raise ValueError('고시 본문 PDF 지문 불일치')
+        with pdfplumber.open(path) as pdf:
+            pages=[{'page_number':i+1,'text':p.extract_text() or '', 'tables':p.extract_tables()}
+                   for i,p in enumerate(pdf.pages)]
+        text='\n'.join(p['text'] for p in pages)
+        if not all(t in text for t in [source['title'],'10,320원','2026. 1. 1. ~ 2026. 12. 31.','209시간','주 소정근로 40시간']):
+            raise ValueError('2026년 고시 금액·적용 기간·환산 조건 확인 실패')
+        if units:
+            raise ValueError('API 본문이 추가됨: PDF와 재대조 필요')
+        units=[unit('notice_body','notice_body',text,atomic=True,source_locator='공식 고시 첨부 PDF 전문',
+                    page_numbers=[p['page_number'] for p in pages])]
+        extra={'derived_pdf_file':source['body_pdf_file'],'derived_pdf_sha256':source['body_pdf_sha256'],
+               'pdf_pages':pages,'valid_from':'2026-01-01','valid_until':'2026-12-31',
+               'body_source_url':source['body_pdf_url'],'body_review':'공식 PDF 1페이지 표·본문 시각 대조 완료'}
+    else:
+        extra={}
+    if not units:
+        raise ValueError('추가 고시의 본문·별표가 모두 비어 있음')
+    extra['additional_materials']={n.tag:ET.tostring(n,encoding='unicode') for n in root
+                                 if n.tag not in ['행정규칙기본정보','조문내용','별표']}
+    extra['additional_materials_policy']='개정별 부칙·이유·첨부 목록은 정제에 보존. 과거 적용을 확정하지 않아 기본 검색 제외.'
+    return units,meta,extra
+
+
+CIVIL_RECOVERY_GUIDES = {
+    'easylaw_consumer_small_claim': [
+        ('scope','소액사건심판의 대상',1), ('filing','소액사건심판의 제기',1),
+        ('recommendation','피고에 대한 이행 권고',1), ('hearing','변론',1), ('judgment','판결의 선고',1)],
+    'easylaw_consumer_payment_order': [
+        ('definition','지급명령(독촉절차)',1), ('filing','지급명령의 신청',1),
+        ('service','지급명령의 발령',1), ('objection_finality','지급명령의 확정',1)],
+    'easylaw_payment_order_application': [
+        ('application','지급명령 신청서 제출',1), ('service','송달',1),
+        ('objection','이의신청',1), ('litigation','소송의 제기',1), ('stamp_correction','인지 등의 보정',1)],
+    'easylaw_civil_enforcement': [
+        ('execution_copy','집행문의 부여',2), ('property_disclosure','재산명시신청',1),
+        ('property_inquiry','재산조회',1), ('movables_claims','유체동산·채권에 대한 강제집행',1)]}
+
+
+HOUSING_GUIDES = {
+    'easylaw_housing_termination': [
+        ('return','임차주택의 반환 및 임차보증금의 반환',1),
+        ('registration_move','임차권등기명령신청권의 취득',1)],
+    'easylaw_housing_restoration': [
+        ('care','임차주택의 사용·수익에 따른 의무',1),
+        ('restoration','임차주택의 반환의무 및 원상회복의무',1)],
+    'easylaw_housing_distribution': [
+        ('definition','배당요구',1), ('creditors','배당요구를 할 수 있는 채권자',1),
+        ('deadline_exceptions','배당요구의 시기 및 종기',1), ('application','배당요구의 신청',1),
+        ('tenant_share_exceptions','임차인의 배당액',1),
+        ('maintain_priority','대항력과 우선변제권의 유지',1),
+        ('paid','임차인이 보증금 전액을 배당받은 경우',1),
+        ('unpaid','임차인이 보증금 전액을 배당받지 못한 경우',1),
+        ('delivery','임차주택의 인도',1)]}
+
+
+def extract_civil_recovery_guide(source, data):
+    """검토한 소제목 단위로 조건·예외를 묶고 안내 기준일과 개정 공지를 보존한다."""
+    identifier=source['source_id']
+    configuration = HOUSING_GUIDES if identifier in HOUSING_GUIDES else CIVIL_RECOVERY_GUIDES
+    if identifier not in configuration:
+        raise ValueError('검토하지 않은 민사 회수 안내 ID')
+    tree=HTMLTree(decode_html(data)).root
+    clean=lambda n:' '.join(n.text().split())
+    bodies=tree.find(lambda n:'ovDivbox' in n.attrs.get('class','').split())
+    wrappers=tree.find(lambda n:'ovDivbox1' in n.attrs.get('class','').split())
+    if len(bodies)!=1 or len(wrappers)!=1:
+        raise ValueError('민사 회수 안내 본문 누락·중복 또는 차단 화면')
+    match=re.search(r'이 정보는 (\d{4})년 (\d{1,2})월 (\d{1,2})일 기준으로 작성',clean(wrappers[0]))
+    if not match:
+        raise ValueError('공식 안내 작성 기준일 누락')
+    as_of='-'.join([match[1],match[2].zfill(2),match[3].zfill(2)])
+    alerts=[clean(n) for n in tree.find(lambda n:n.tag=='a' and '업데이트 예정' in clean(n))]
+    warnings=['공식 생활법령 해설이며 법령 원문·판례와 구분. 안내 기준일 이후 개정 및 계약 당사자·환급청구액·증빙·송달주소 확인 필요.',
+              '헬스장·필라테스 현금·일시불·이미 지급한 이용료 환급 청구의 민사절차 참고용. 카드사 잔여 할부금 지급 거절과 구분. 승소·확정이 실제 회수를 보장하지 않으며 집행 가능한 채무자 재산·권리 순위·도산 여부를 별도 확인.']
+    if identifier in HOUSING_GUIDES:
+        warnings = [
+            '공식 주택임대차 해설이며 법령 원문·판례와 구분. 안내 작성 기준일 이후 개정과 계약·인도·등기·송달 시점을 별도 확인.',
+            '보증금 반환 지연손해금은 계약 종료만으로 발생·이율을 일률 확정하지 않음. 주택 인도·이행 제공, 약정, 금전채무 지체 및 소장 등 송달과 소송촉진법 제3조의 예외를 함께 확인.',
+            '원상회복비 공제는 계약·특약, 입주 당시 상태, 통상손모와 귀책 훼손, 공사·견적·영수증 등 증빙에 따라 개별 판단. 배당요구 예외와 대항요건 유지·권리 순위는 구분하며 배당액·전액 회수를 보장하지 않음.']
+    if alerts:
+        warnings.append('원문 개정 검토 공지: '+' / '.join(alerts)+' 현행 법령 대조 전 자동 기한·비용 계산에 사용하지 않음.')
+    sections={}
+    current=None
+    for node in bodies[0].children:
+        if not hasattr(node,'tag'):
+            continue
+        classes=node.attrs.get('class','').split()
+        if any(c.startswith('plv1') for c in classes):
+            current=None
+        if 'plv2a' in classes:
+            current=[]
+            sections.setdefault(clean(node),[]).append(current)
+        if current is not None and any(c.startswith('plv') for c in classes):
+            current.append(node)
+    units=[]
+    for key,heading,count in configuration[identifier]:
+        found=sections.get(heading,[])
+        if len(found)!=count:
+            raise ValueError('민사 회수 필수 소제목 누락·중복: '+heading)
+        nodes=[n for group in found for n in group]
+        text='\n'.join(clean(n) for n in nodes if clean(n))
+        if not text or all(clean(n)==heading for n in nodes):
+            raise ValueError('민사 회수 소제목 본문 누락: '+heading)
+        units.append({'unit_id':key,'role':('housing_' if identifier in HOUSING_GUIDES else 'civil_recovery_')+key,'text':text,'atomic':True,
+                      'source_locator':'.ovDivbox > '+heading,
+                      'source_node_ids':[n.attrs['id'] for n in nodes if n.attrs.get('id')],
+                      'warnings':[]})
+    checks={
+        'easylaw_consumer_small_claim':['3,000만원','분할','인정되지','2주','이의신청','확정판결'],
+        'easylaw_consumer_payment_order':['주소보정','외국','2주','이의신청한 범위','강제집행'],
+        'easylaw_payment_order_application':['청구 취지와 원인','법인','보정명령','공시송달','2주','각하'],
+        'easylaw_civil_enforcement':['집행문을 부여받지 않아도','다만','승계','재산목록','부족한 경우','추심명령·전부명령'],
+        'easylaw_housing_termination':['동시이행항변권','다만','등기를 마치면','지연손해금'],
+        'easylaw_housing_restoration':['다만','구체적·개별적으로','임대 당시','제615조','제654조'],
+        'easylaw_housing_distribution':['종기','배당요구를 하지 않아도','서면','경매개시결정 전에','경매개시결정 후에','대항력과 우선변제권','동시이행관계']}
+    joined=' '.join(u['text'] for u in units)
+    if not all(term in joined for term in checks[identifier]):
+        raise ValueError('민사 회수 조건·예외 누락: '+identifier)
+    included={h for _,h,_ in configuration[identifier]}
+    if identifier in HOUSING_GUIDES:
+        context = housing_law_context(identifier)
+        for unit in units:
+            unit['required_context_chunk_ids'] = context
+        if identifier == 'easylaw_housing_distribution':
+            warning = ('원문 인용 조문 불일치: 안내의 민사집행규칙 제91조는 수집 현행본에서 강제관리의 수익 처리 조문이고, '
+                       '민사집행법 제148조 제3호는 선등기 가압류채권자이다. 원문 문자는 보존하되 경매 배당 신청의 직접 근거로 해당 인용을 사용하지 않음. '
+                       '종기·서면은 법 제84·88조와 규칙 제48조, 배당 참가 범위는 법 제148조 각 호를 대조. 임차권등기 예외의 개별 적용은 추가 확인.')
+            warnings.append(warning)
+            for unit in units:
+                if unit['unit_id'] in {'deadline_exceptions','tenant_share_exceptions'}:
+                    unit['warnings'].append(warning)
+    return {'units':units,'information_as_of':as_of,'source_update_notices':alerts,
+            'source_date_note':'안내 작성 기준일만 보존. 게시일·법령 시행일로 대체하지 않음. 개정 검토 공지는 경고에 보존.',
+            'scope_included':[u['source_locator'] for u in units],
+            'scope_excluded':[{'scope':'메뉴·푸터·첨부·외부 접수 화면·이미지 흐름도·tplv 외부참조/전자소송 안내',
+                               'reason':'검토한 HTML 문자 본문만 검색. 이미지 alt를 절차 본문으로 대체하지 않음'},
+                              {'scope':sorted(set(sections)-included),
+                               'reason':('주택 반환·원상회복·배당 신청 범위 밖 소제목. 배당 순위 표의 조세 항목·순위는 현행 조세법 대조 전 검색에서 제외; 원본 보존. 개별 배당액 계산에 사용하지 않음.' if identifier in HOUSING_GUIDES else '이번 민사 회수 범위 밖 소제목. 원본 HTML 보존; 대여금 사례·가압류를 환급 집행권원으로 임의 확대하지 않음')}],
+            'citation_discrepancies': ([
+                {'unit_ids':['deadline_exceptions','tenant_share_exceptions'],
+                 'source_citation':'민사집행규칙 제91조 제1항', 'current_article_title':'수익의 처리',
+                 'review_note':'강제관리 수익 배당 절차와 강제경매 절차를 구분. 종기 법 제84조 및 서면 규칙 제48조 연결; 인용을 임의 수정하지 않음.'},
+                {'unit_ids':['tenant_share_exceptions'], 'source_citation':'민사집행법 제148조 제3호',
+                 'current_article_text':'첫 경매개시결정등기전에 등기된 가압류채권자',
+                 'review_note':'같은 조 제4호의 선등기·매각으로 소멸하는 우선변제권과 구분. 안내 인용을 그대로 적용하지 않음.'}]
+                if identifier=='easylaw_housing_distribution' else []),
+            'warnings':warnings}
+
+
+def housing_law_context(identifier):
+    """검토한 현행 조문을 연결한다. 계약 당시 버전으로 간주하지 않는다."""
+    scope = {
+        'easylaw_housing_termination': {
+            '민법':{'제379조','제387조','제397조','제460조','제536조'},
+            '주택임대차보호법':{'제3조의2','제3조의3','제4조'},
+            '소송촉진 등에 관한 특례법':{'제3조'},
+            '소송촉진 등에 관한 특례법 제3조제1항 본문의 법정이율에 관한 규정':{'전문'}},
+        'easylaw_housing_restoration': {'민법':{'제374조','제390조','제393조','제615조','제634조','제654조'}},
+        'easylaw_housing_distribution': {
+            '민사집행법':{'제84조','제88조','제145조','제148조'},
+            '민사집행규칙':{'제48조'},
+            '주택임대차보호법':{'제3조의2','제3조의3','제3조의5','제8조'},'민법':{'제536조'}}}[identifier]
+    records=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+    result=[]
+    for name,labels in scope.items():
+        found=[c for c in records if c.get('law_name')==name and c.get('article_label') in labels]
+        if {c['article_label'] for c in found} != labels or len({c['document_id'] for c in found}) != 1:
+            raise ValueError('주택임대차 연결 조문 누락 또는 버전 혼합: '+name)
+        result.extend(c['chunk_id'] for c in found)
+    return result
+
+
+FITNESS_CLOSURE_GUIDES={'kca_fitness_closure_gym','kca_fitness_closure_pilates','kca_damage_redress_procedure'}
+
+CONSUMER_REDRESS_GUIDES={'kca_redress_requirements','kca_redress_submission','kca_mediation_procedure'}
+
+
+def consumer_redress_context(identifier):
+    """피해구제와 조정의 서로 다른 기간·효력을 현행 조문에 연결한다."""
+    labels=({'제55조','제57조','제58조','제61조','제63조','제65조','제66조','제67조'}
+            if identifier=='kca_mediation_procedure' else {'제55조','제57조','제58조'})
+    records=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+    result=[]
+    for name,expected in [('소비자기본법',labels),('소비자기본법 시행령',{'제44조'})]:
+        found=[c for c in records if c.get('law_name')==name and c.get('article_label') in expected]
+        if {c['article_label'] for c in found}!=expected or len({c['document_id'] for c in found})!=1:
+            raise ValueError('소비자 피해구제 연결 법령 누락 또는 버전 혼합: '+name)
+        result.extend(c['chunk_id'] for c in found)
+    return result
+
+
+def extract_consumer_redress_guide(source,data):
+    tree=HTMLTree(decode_html(data)).root
+    clean=lambda node:' '.join(node.text().split())
+    identifier=source['source_id']
+    if identifier not in CONSUMER_REDRESS_GUIDES:
+        raise ValueError('검토하지 않은 소비자 절차 안내')
+    units=[]
+    def one(nodes,label):
+        if len(nodes)!=1:
+            raise ValueError('소비자 절차 필수 영역 누락 또는 중복: '+label)
+        return nodes[0]
+    def section(title):
+        h=one(tree.find(lambda n:n.tag=='h4' and clean(n)==title),title)
+        parent=one(tree.find(lambda n:h in n.children),title+' 부모')
+        return one([n for n in parent.children if getattr(n,'tag',None) in {'ul','div'} and
+                    (n.tag=='ul' or 'cnsut_box' in n.attrs.get('class','').split())],title+' 본문')
+    def add(key,node,role,locator,required,warning=None):
+        text=clean(node)
+        if not text or not all(phrase in text for phrase in required):
+            raise ValueError('소비자 절차 조건·예외 누락: '+key)
+        units.append({'unit_id':key,'role':role,'text':text,'source_locator':locator,'atomic':True,
+                      'warnings':[warning] if warning else []})
+    if identifier=='kca_redress_requirements':
+        add('eligibility',section('피해구제 접수 해당 요건'),'redress_eligibility',
+            'h4: 피해구제 접수 해당 요건 > .cnsut_box',
+            ['사업자가 제공하는','입증서류 미제출','개인간 거래','소재파악','법원에 소송'])
+        heading=one(tree.find(lambda n:n.tag=='h4' and clean(n)=='피해구제 접수 신청서 양식'),'신청서 양식 제목')
+        parent=one(tree.find(lambda n:heading in n.children),'양식 제목 부모')
+        children=[n for n in parent.children if hasattr(n,'tag')]
+        index=children.index(heading)
+        note=children[index+1] if index+1<len(children) else None
+        if note is None or note.tag!='div' or 'mt10' not in note.attrs.get('class','').split():
+            raise ValueError('전문분야 양식 제출 조건 구조 변경')
+        add('specialized_forms',note,'specialized_application_forms','h4: 피해구제 접수 신청서 양식 + div.mt10',
+            ['일반분야를 제외한','전문분야','필수제출 서류','접수불가능'],
+            '이 필수제출 조건은 원문이 명시한 전문분야에 관한 안내. 일반분야의 모든 신청에 동일하게 확대하지 않음. 첨부 양식 자체는 미변환·미검토.')
+    elif identifier=='kca_redress_submission':
+        add('evidence',section('피해구제 접수 안내'),'application_evidence','h4: 피해구제 접수 안내 > .cnsut_box',
+            ['계약서','영수증','이의를 제기한','전자문서','화면 캡처'])
+        for label,key in [('온라인신청','online'),('방문신청','visit'),('우편신청','postal')]:
+            box=one(tree.find(lambda n:'step_txtbx' in n.attrs.get('class','').split() and
+                             any(getattr(c,'tag',None)=='p' and clean(c)==label for c in n.children)),label)
+            required={'online':['소비자상담','안내받은 분','6개월 이내'],
+                      'visit':['증빙서류를 지참','직접 방문'], 'postal':['증빙서류를 첨부','주소']}[key]
+            add(key,box,'submission_method','.step_txtbx > p.stepnum: '+label,required,
+                '6개월은 이 페이지의 온라인 신청 이용 조건. 일반적인 청구권 소멸시효 또는 모든 접수 방법의 기한으로 해석하지 않음.' if key=='online' else
+                '방문·우편 주소와 접수 기능은 수집 후 변경될 수 있으므로 신청 전 원문 페이지에서 확인.')
+        address=one(tree.find(lambda n:n.tag=='ul' and 'help_txt' in n.attrs.get('class','').split() and
+                             '일반우편 이용시 분실의 위험' in clean(n)),'우편 주소·품목별 예외')
+        add('postal_address',address,'submission_address','.help_txt: 우편 접수 주소·섬유/신발 예외',
+            ['등기우편','섬유','신발'], '원문 수집 시점의 주소. 최신 접수 주소는 원문에서 재확인.')
+    else:
+        add('definition',section('분쟁조정이란?'),'mediation_definition','h4: 분쟁조정이란? > ul',
+            ['양 당사자의 수락','재판상 화해','강제집행'],
+            '조정 신청만으로 재판상 화해 효력이 생기지 않음. 소비자기본법 제67조의 수락·수락 간주 요건과 통지일을 함께 확인. 적법한 기간 내 불수락이면 양 당사자 수락을 전제한 성립으로 단정하지 않음. 실제 집행은 법원 절차와 채무자 재산에 따라 별도 검토.')
+        box=section('분쟁조정 절차 안내')
+        steps=box.find(lambda n:n.tag=='li' and 'step_li' in n.attrs.get('class','').split())
+        if len(steps)!=6:
+            raise ValueError('분쟁조정 6단계 누락 또는 변경')
+        scope=[('request',['합의가 이루어지지 않은','제65조']),('commission',['150명','5명']),
+               ('investigation',['사실조사','시험검사']),('meeting',['3~11명']),
+               ('acceptance',['통지를 받은 날부터 15일','서면','의사표시가 없는','재판상 화해']),
+               ('completion',['30일','정당한 사유','연장'])]
+        for node,(key,required) in zip(steps,scope):
+            add(key,node,'mediation_step','h4: 분쟁조정 절차 안내 > li.step_li: '+key,required)
+    links=consumer_redress_context(identifier)
+    for u in units:
+        u['required_context_chunk_ids']=links+(['kca_damage_redress_procedure_redress_exclusions_0000']
+            if identifier!='kca_mediation_procedure' else [])
+    return {'units':units,'information_as_of':None,
+            'source_date_note':'페이지에 확인 가능한 작성·수정 기준일이 없어 null로 보존. 수집일을 안내 작성일이나 법령 시행일로 대체하지 않음.',
+            'scope_included':[u['source_locator'] for u in units],
+            'scope_excluded':[{'scope':'첨부 HWP/DOC 양식·필독사항·작성 예시 및 신청 화면/영상/절차도 이미지',
+                               'reason':'링크 안내와 HTML 본문만 검토. 첨부 파일 내용·온라인 신청 기능은 미검증. 원본 HTML 보존'},
+                              {'scope':'개인정보 안내·메뉴·푸터 및 알렛츠/티몬/위메프/해피머니 특정 사건 팝업',
+                               'reason':'일반 절차 범위 밖. 특정 사건의 제출 조건·마감일을 일반 신청에 적용하지 않음'}],
+            'warnings':['공식 소비자 절차 안내이며 법령·판례가 아님. 연결한 소비자기본법·시행령은 수집 시점 현행본이며 안내의 작성 시점은 확인되지 않음. 법령 시행일은 연결 청크에서 확인.',
+                        '피해구제 합의권고와 분쟁조정 성립의 효력은 다름. 접수·상담·조정 신청이 환급이나 강제집행을 보장하지 않음.']}
+
+
+def installment_context():
+    """각 요건의 조문을 버전 단위로 연결하고 누락·혼합을 거부한다."""
+    records=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+    scope={'할부거래에 관한 법률':{'제2조','제3조','제4조','제16조'},
+           '할부거래에 관한 법률 시행령':{'제2조','제4조','제11조'}}
+    selected=[]
+    versions={}
+    for name,articles in scope.items():
+        found=[c for c in records if c.get('law_name')==name and c.get('article_label') in articles]
+        if {c.get('article_label') for c in found}!=articles or len({c['document_id'] for c in found})!=1:
+            raise ValueError('할부거래법 근거 조문 누락 또는 버전 혼합: '+name)
+        selected.extend(found)
+        versions[name]={'document_id':found[0]['document_id'],'effective_date':found[0]['dates']['effective_date']}
+    return {'required_context_chunk_ids':[c['chunk_id'] for c in selected], 'versions':versions,
+            'review_note':'안내 원문의 3개월 할부 표현을 보존하고 법 제2조의 2개월 이상에 걸쳐 3회 이상 지급 요건을 함께 확인. 법 제16조의 사유·신용제공자 통지·당시 미지급 잔여금·서면 효력 및 시행령 제11조의 금액 조건, 적용제외·다른 법률 관계를 연결. 연결본은 수집 시점 현행 법령이며 2024/2025 안내 당시 구법·개별 계약일의 적용을 확정하지 않음.'}
+
+
+def extract_fitness_closure_guide(source,data):
+    tree=HTMLTree(decode_html(data)).root
+    clean=lambda n:' '.join(n.text().split())
+    units=[]
+    identifier=source['source_id']
+    def one(nodes,label):
+        if len(nodes)!=1:
+            raise ValueError('폐업 공식 안내 필수 영역 누락 또는 중복: '+label)
+        return nodes[0]
+    def add(key,node,role,locator,warnings=None):
+        text=clean(node)
+        if not text:
+            raise ValueError('폐업 안내 빈 본문: '+key)
+        item={'unit_id':key,'role':role,'text':text,'source_locator':locator,'atomic':True,'warnings':warnings or []}
+        units.append(item)
+        return item
+    card_warning='할부항변권은 요건에 맞는 거래의 잔여 할부금 지급 거절에 관한 안내. 이미 낸 이용료의 자동 환급이나 일시불·현금 결제의 동일한 지급 거절을 보장하지 않음. 결제 방식·할부 조건·채무불이행 및 카드사 확인 필요. 연결한 할부거래법·시행령 근거의 기간·횟수·금액·통지·예외 조건을 함께 확인. 개별 계약일·거래에 대한 법률 적용은 별도 검토.'
+    publication_date=None
+    publication_period=None
+    if identifier=='kca_fitness_closure_gym':
+        main=one(tree.find(lambda n:n.attrs.get('id')=='view_wrap'),'헬스장 게시 본문')
+        sections={}
+        current=None
+        for node in main.children:
+            if not hasattr(node,'tag'):
+                continue
+            if node.tag=='h5':
+                current=clean(node)
+                if current in sections:
+                    raise ValueError('폐업 안내 제목 중복')
+                sections[current]=[]
+            elif current and node.tag=='p' and clean(node):
+                sections[current].append(node)
+        for label,key,role in [('헬스장 ‘폐업’으로 인한 피해도 지속적으로 발생','closure_risk','closure_risk'),
+                ('장기 또는 다회 계약은 신중히 결정하고 신용카드 할부 결제 이용','card_evidence','payment_and_evidence')]:
+            nodes=sections.get(label,[])
+            if not nodes:
+                raise ValueError('헬스장 폐업·결제 안내 제목 누락')
+            add(key,nodes[0],role,'#view_wrap > h5: '+label,[card_warning] if key=='card_evidence' else [])
+        if not all(w in units[1]['text'] for w in ['20만 원 이상','3개월 이상','내용증명','문자']):
+            raise ValueError('헬스장 할부 조건·증빙 누락')
+        body=one(tree.find(lambda n:n.attrs.get('id')=='contentBody'),'헬스장 게시일')
+        match=re.search(r'등록일\s+(\d{4}-\d{2}-\d{2})',clean(body))
+        if not match:
+            raise ValueError('공식 게시 등록일 누락')
+        publication_date=match[1]
+    elif identifier=='kca_fitness_closure_pilates':
+        main=one(tree.find(lambda n:n.attrs.get('id')=='contents'),'필라테스 기사 본문')
+        definition=one(main.find(lambda n:n.tag=='p' and clean(n).startswith('할부항변권 :')),'할부항변권 정의')
+        add('card_objection',definition,'card_objection','#contents > p: 할부항변권 정의',[card_warning])
+        if not all(w in units[-1]['text'] for w in ['잔여할부금','3개월','20만 원 이상']):
+            raise ValueError('할부항변권 잔여금·조건 누락')
+        action=one(main.find(lambda n:n.tag=='p' and clean(n).startswith('필라테스 폐업으로 인한 피해를 예방하기 위해서는')),'폐업 증빙·대응')
+        add('closure_action',action,'closure_action','#contents > p: 폐업 예방·잔여 횟수·해지 통지',[card_warning])
+        if not all(w in units[-1]['text'] for w in ['잔여 횟수','계약해지일','사업자에게 계약해지 의사','카드사에 할부항변권']):
+            raise ValueError('폐업 대응·증빙 누락')
+        table=one(main.find(lambda n:n.tag=='table'),'계약 단계별 주의사항 표')
+        u=add('evidence_table',table,'closure_evidence','#contents > table: 단계별 주의사항',[card_warning])
+        cells=[[{'tag':c.tag,'text':clean(c),'rowspan':int(c.attrs.get('rowspan',1)),
+                 'colspan':int(c.attrs.get('colspan',1))} for c in row.children if getattr(c,'tag',None) in {'td','th'}]
+               for row in table.find(lambda n:n.tag=='tr')]
+        if not cells or any(not row or any(not c['text'] or c['rowspan']<1 or c['colspan']<1 for c in row) for row in cells):
+            raise ValueError('폐업 안내 표 셀 누락')
+        if not all(w in u['text'] for w in ['폐업·연락 두절','내용증명','계약서','이용 일수']):
+            raise ValueError('폐업 표 제한·증빙 누락')
+        u['official_table']={'rows':cells,'layout_policy':'원문 물리 행·셀 순서와 rowspan/colspan 보존. 병합 셀의 의미를 임의 확장하지 않음.'}
+        paragraphs=main.find(lambda n:n.tag=='p' and '1372 소비자상담센터' in clean(n))
+        add('consultation',one(paragraphs,'1372 상담'),'consultation','#contents > p: 1372 상담')
+        publication_period='2025-05'
+    elif identifier=='kca_damage_redress_procedure':
+        expected=[('피해구제란?','redress_definition','redress_definition'),
+                  ('이런 경우에는 피해구제 대상에서 제외됩니다.','redress_exclusions','redress_exclusions'),
+                  ('피해구제 절차 안내','redress_procedure','redress_procedure')]
+        for title,key,role in expected:
+            heading=one(tree.find(lambda n:n.tag=='h4' and clean(n)==title),title)
+            parent=one(tree.find(lambda n:heading in n.children),'제목 부모')
+            content=[n for n in parent.children if getattr(n,'tag',None) in {'ul','div'} and
+                     ('cnsut_box' in n.attrs.get('class','').split() or n.tag=='ul')]
+            add(key,one(content,'피해구제 본문'),role,'h4: '+title)
+        if not all(w in units[1]['text'] for w in ['폐업','연락이 불가능','소재파악']):
+            raise ValueError('폐업 연락두절 피해구제 제외 조건 누락')
+        if not all(w in units[2]['text'] for w in ['먼저 상담','30일','90일','토·일요일','합의권고','소비자분쟁조정위원회']):
+            raise ValueError('피해구제 사전 상담·기한·조정 단계 누락')
+        limitation='공식 안내는 사업자의 부도·폐업 등으로 연락이 불가능하거나 소재파악이 안 되는 경우를 피해구제 제외 대상으로 명시. 상담·피해구제 신청이 환급이나 강제집행을 보장하지 않음.'
+        for u in units:
+            if u['unit_id']!='redress_exclusions':
+                u['warnings']=[limitation]
+                u['required_context_chunk_ids']=[identifier+'_redress_exclusions_0000']
+    else:
+        raise ValueError('검토하지 않은 폐업 공식 안내 ID')
+    legal_basis={}
+    if identifier in {'kca_fitness_closure_gym','kca_fitness_closure_pilates'}:
+        legal_basis=installment_context()
+        for u in units:
+            if u['role'] in {'payment_and_evidence','card_objection','closure_action','closure_evidence'}:
+                u['required_context_chunk_ids']=legal_basis['required_context_chunk_ids']
+                u['warnings'].append(legal_basis['review_note'])
+            elif u['role'] in {'closure_risk','consultation'}:
+                u['required_context_chunk_ids']=[name+'_'+key+'_0000'
+                    for name,sections in CIVIL_RECOVERY_GUIDES.items() for key,_,_ in sections]
+                u['warnings'].append('현금·일시불·기지급 이용료의 민사 회수 참고 안내를 연결. 안내의 개정 검토 공지와 현행 법령·송달 가능성·채무자 재산을 함께 확인. 실제 환급 보장 아님.')
+    return {'units':units,'publication_date':publication_date,'publication_period':publication_period,
+            'legal_basis':legal_basis,
+            'source_date_note':'게시 등록일 또는 웹진 발행 연월만 보존. 수정일·법령 시행일·현행 적용일로 대체하지 않음.',
+            'scope_included':[u['source_locator'] for u in units],
+            'scope_excluded':[{'scope':'본문 밖 메뉴·대기 화면·팝업·푸터·담당자 연락처·통계·장식 이미지',
+                              'reason':'이번 폐업·증빙·대응 절차 범위 밖. 원본 HTML 보존'},
+                             {'scope':'첨부 PDF·외부 접수 페이지·온라인 기능 안내·청렴 안내',
+                              'reason':'이번 HTML 본문 수집 범위 밖. 개별 접수 화면·첨부·이미지 전수 검증은 하지 않음'}],
+            'warnings':['공식 소비자 안내이며 법령·판례가 아님. 안내 시점 이후 변경 및 구체적 계약·결제 조건 확인 필요.',
+                        '사업자에게 환급 요구, 카드사에 잔여 할부금 지급 거절, 소비자원 상담·피해구제를 구분. 환급금의 실제 회수·민사집행은 별도 검토.']}
+
+
+OVERSEAS_GUIDES = {'kca_overseas_types', 'kca_overseas_checklist', 'kca_overseas_returns'}
+
+
+def extract_overseas_guide(source, data):
+    """본문 영역과 확인한 단위를 지정하여 유형·조건·원문 표를 보존한다."""
+    tree = HTMLTree(decode_html(data)).root
+    mains = tree.find(lambda n: n.attrs.get('id') == 'contents')
+    if len(mains) != 1:
+        raise ValueError('KCA 해외직구 안내 본문 누락 또는 중복')
+    main = mains[0]
+    clean = lambda n: ' '.join(n.text().split())
+    classes = lambda n, value: value in n.attrs.get('class', '').split()
+    units = []
+    excluded = [{'scope': '본문 밖 메뉴·대기 화면·로그인·푸터 및 장식 이미지',
+                 'reason': '안내 본문이 아닌 화면 요소. 이미지 별도 의미 추론 없음. 원본 보존'}]
+
+    def unique(nodes, label):
+        if len(nodes) != 1:
+            raise ValueError('공식 안내 필수 영역 누락 또는 중복: '+label)
+        return nodes[0]
+
+    def add(identifier, node, role, locator, trade_types=None, warnings=None):
+        text = clean(node)
+        if not text:
+            raise ValueError('공식 안내 본문이 비어 있음: '+locator)
+        unit = {'unit_id': identifier, 'role': role, 'text': text, 'atomic': True,
+                'source_locator': '#contents > '+locator, 'trade_types': trade_types or [],
+                'warnings': warnings or []}
+        units.append(unit)
+        return unit
+
+    identifier = source['source_id']
+    if identifier == 'kca_overseas_types':
+        add('definition', unique(main.find(lambda n: classes(n,'border')), '해외직구 정의'),
+            'trade_definition', 'div.border')
+        novice = main.find(lambda n: n.tag == 'ul' and classes(n,'novice'))
+        if len(novice) != 2:
+            raise ValueError('거래 유형 정의·과정 목록 누락')
+        types = [('direct_delivery','직접배송'),('forwarding','배송대행'),('purchase_agent','구매대행')]
+        for group, prefix, role in [(novice[0], 'type', 'trade_definition'), (novice[1], 'process', 'trade_process')]:
+            rows = [n for n in group.children if getattr(n,'tag',None) == 'li']
+            if len(rows) != 3:
+                raise ValueError('해외직구 유형 3종 목록 불일치')
+            for row, (kind, title) in zip(rows, types):
+                if not clean(row).startswith(title):
+                    raise ValueError('거래 유형 순서·제목 변경')
+                add(prefix+'_'+kind,row,role,'ul.novice '+prefix+' > li: '+title,[kind])
+        table = unique(main.find(lambda n:n.tag=='table'), '유형별 장단점 표')
+        rows = table.find(lambda n:n.tag=='tr')
+        cells = [[{'tag': n.tag, 'text': clean(n), 'rowspan':int(n.attrs.get('rowspan',1)),
+                   'colspan':int(n.attrs.get('colspan',1)), 'scope':n.attrs.get('scope')}
+                  for n in row.children if getattr(n,'tag',None) in {'th','td'}] for row in rows]
+        if (len(cells)!=4 or any(len(row)!=3 for row in cells)
+                or any(c['rowspan']!=1 or c['colspan']!=1 or not c['text'] for row in cells for c in row)
+                or [c['text'] for c in cells[0]]!=['유형','이런 점이 좋아요!','이런 점은 유의하세요!']
+                or [row[0]['text'] for row in cells[1:]]!=[title for _,title in types]):
+            raise ValueError('해외직구 비교표 구조 변경: 원문 재검토 필요')
+        u=add('comparison',table,'trade_comparison','table: 해외직구 유형별 장·단점', [k for k,_ in types])
+        u['official_table']={'headers':[c['text'] for c in cells[0]], 'rows':cells}
+        # 각 셀의 열 제목을 반복하여 관계를 검색 본문에도 보존한다.
+        u['text']='해외직구 유형별 장·단점 점검\n'+'\n'.join(
+            ' | '.join(header+': '+cell['text'] for header,cell in zip(u['official_table']['headers'],row))
+            for row in cells[1:])
+        excluded += [{'scope':'배송 가능 여부 tip·나에게 맞는 유형선택',
+                      'reason':'이번 유형 정의·과정·조건 비교 범위 밖. 원본 보존'}]
+    elif identifier == 'kca_overseas_checklist':
+        payment = unique(main.find(lambda n:classes(n,'itemList') and '결제내역' in n.text()),'결제 증빙 안내')
+        add('payment_evidence',payment,'purchase_evidence','div.itemList: 반품·취소 대비')
+        tips=unique(main.find(lambda n:classes(n,'tip_layout')),'유형별 피해예방')
+        blocks=[n for n in tips.children if getattr(n,'tag',None) in {'ul','div'}]
+        if len(blocks)!=5:
+            raise ValueError('유형별 예방·대응 블록 변경')
+        required=['해외직접배송','주문번호','배송대행업체','구매대행업체','1372']
+        if any(word not in clean(block) for word,block in zip(required,blocks)):
+            raise ValueError('유형별 예방·대응 내용 누락')
+        add('direct_delivery',blocks[0],'trade_conditions','div.tip_layout > 직접배송 안내',['direct_delivery'])
+        add('direct_contact',blocks[1],'dispute_procedure','div.tip_layout > 해외 쇼핑몰 대처방안',['direct_delivery'])
+        delivery=unique(blocks[2].find(lambda n:n.tag=='li' and clean(n).startswith('배송대행업체를 통한 거래 시에는')), '배송대행 사고·증거 안내')
+        add('forwarding_evidence',delivery,'trade_conditions','div.tip_layout > 배송대행 > 운송 사고·증거',['forwarding'])
+        unit=add('purchase_agent',blocks[3],'trade_conditions','div.tip_layout > 구매대행 안내',['purchase_agent'],
+            ['국내소재 구매대행에 관한 안내. 7일 청약철회 안내만으로 모든 거래의 반품 가능 여부를 단정하지 않음. 전자상거래법 제17·18조의 예외·비용 조건을 함께 확인.'])
+        if not all(word in unit['text'] for word in ['국내소재의 구매대행은 국내법', '7일', '반품', '배송비용']):
+            raise ValueError('국내 구매대행 적용 범위 또는 비용 조건 누락')
+        lawname='전자상거래 등에서의 소비자보호에 관한 법률'
+        records=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        context=[c['chunk_id'] for c in records if c.get('law_name')==lawname and c.get('article_label') in {'제17조','제18조'}]
+        if not context or {c.get('article_label') for c in records if c['chunk_id'] in context}!={'제17조','제18조'}:
+            raise ValueError('전자상거래법 청약철회·비용 청크 연결 누락')
+        unit['required_context_chunk_ids']=context
+        add('purchase_agent_contact',blocks[4],'dispute_procedure','div.tip_layout > 국내업체 피해구제',['purchase_agent'])
+        excluded += [{'scope':'구매품목·관세 한도·지역별 세금·유형 선택 및 외부 조회 링크',
+                      'reason':'이번 반품·거래조건 범위 밖. 관세·지역 세금의 현행성은 검증하지 않음. 원본 보존'}]
+    elif identifier == 'kca_overseas_returns':
+        box=unique(main.find(lambda n:classes(n,'box-style')),'수령·반품 조건')
+        u=add('return_conditions',box,'return_conditions','div.box-style: 수령/반품 단계 유의사항',
+            ['direct_delivery','forwarding','purchase_agent'],
+            ['해외직구 일반 안내. 판매자·대행업체 약정, 파손 발생 구간, 적용 국가·법령에 따라 구체적 책임과 비용을 별도 확인.'])
+        if not all(word in u['text'] for word in ['단순변심','제품하자','국내에서 배송대행지까지','국제배송비','단, 배송대행지에서 국내로 오는 과정','보상을 요구']):
+            raise ValueError('하자 반품 비용 또는 배송대행 파손 예외 누락')
+        excluded += [{'scope':'외부 반품가이드 연결 페이지', 'reason':'링크 대상은 이번 수집에 포함하지 않음'}]
+    else:
+        raise ValueError('검토하지 않은 해외직구 안내 ID')
+    return {'units':units, 'scope_included':[u['source_locator'] for u in units], 'scope_excluded':excluded,
+            'source_date_note':'안내 페이지에 게시·수정일 미표시. 수집일을 법령 시행일 또는 안내 기준일로 대체하지 않음.',
+            'warnings':['한국소비자원의 공식 소비자 안내이며 법령·판례가 아님. 직접배송·배송대행·구매대행을 구분.',
+                        '해외 판매자에 국내 구매대행 기준을 일괄 적용하지 않음. 계약 상대방·거래조건·적용 법령은 개별 확인.']}
+
+
+def extract_labor_guide(source, data):
+    """승인한 공식 HTML의 범위를 명시해 추출. 구조 변경·본문 누락은 실패 처리."""
+    tree = HTMLTree(decode_html(data)).root
+    identifier = source['source_id']
+    if identifier == 'moel_wage_procedure':
+        panels = tree.find(lambda n: n.attrs.get('id') == 'tabpanel01')
+        if len(panels) != 1:
+            raise ValueError('노동포털 진정/고소 본문 영역 누락 또는 중복')
+        panel = panels[0]
+        expected = ['진정/고소', '신청방법', '진정 제기', '진정 취하', '처리절차']
+        sections = []
+        current = None
+        for node in panel.children:
+            if not hasattr(node, 'tag'):
+                continue
+            headings = node.find(lambda n: n.tag == 'h4')
+            if headings:
+                if len(headings) != 1:
+                    raise ValueError('공식 안내 제목 구조 변경')
+                current = [' '.join(headings[0].text().split()), []]
+                sections.append(current)
+            elif current is not None and (node.tag == 'ul' or 'contBox' in node.attrs.get('class','').split()):
+                current[1].append(' '.join(node.text().split()))
+        if [title for title, _ in sections] != expected or any(not parts or not all(parts) for _, parts in sections):
+            raise ValueError('공식 안내 필수 절차 누락 또는 제목 변경')
+        units = [{'unit_id': f'procedure_{i}', 'role': 'procedure', 'text': title+'\n'+'\n'.join(parts),
+                  'source_locator': '#tabpanel01 > h4: '+title, 'atomic': True}
+                 for i, (title, parts) in enumerate(sections)]
+        return {'units': units, 'scope_included': expected,
+                'scope_excluded': [{'scope': '본문 외 메뉴·로그인·서식 버튼', 'reason': '안내 본문이 아닌 화면 요소'},
+                    {'scope': '다른 탭의 대지급금·융자·민사소송·도산 및 연령별 지원 안내',
+                     'reason': '이번 신고 절차·준비자료 보강 범위 밖. 원본 HTML에는 보존'}],
+                'source_date_note': '페이지에 게시·수정일 미표시. 수집일을 시행일로 대체하지 않음.'}
+    if identifier == 'moel_wage_evidence_1000323154':
+        answers = tree.find(lambda n: n.tag == 'div' and n.attrs.get('style') == 'padding-top:0px'
+                            and '급여자료' in n.text() and '답변일' in n.text())
+        if len(answers) != 1:
+            raise ValueError('1350 준비자료 답변 영역 누락 또는 중복')
+        answer = ' '.join(answers[0].text().split())
+        start = answer.find('- 진정 제기 시')
+        end = answer.find('◆ 진정제기 방법', start)
+        date_match = re.search(r'답변일\s*:\s*(\d{4})\.(\d{2})\.(\d{2})', answer)
+        if start < 0 or end <= start or not date_match:
+            raise ValueError('1350 준비자료 구간 또는 답변일 누락')
+        text = answer[start:end].strip()
+        end = start + len(text)
+        if not all(word in text for word in ['근로계약서', '급여자료', '근로시간', '별도 증빙이 어려운 경우', '대질 조사']):
+            raise ValueError('준비자료 예시 또는 증빙 부족 안내 누락')
+        return {'units': [{'unit_id': 'evidence_0', 'role': 'supporting_documents', 'text': text,
+                    'source_locator': '1350 상담 ID 1000323154 > 준비자료 답변 구간', 'atomic': True,
+                    'start': start, 'end': end, 'offset_basis': 'normalized_answer_text'}],
+                'normalized_answer_text': answer, 'information_as_of': '-'.join(date_match.groups()),
+                'source_date_note': 'information_as_of는 해당 상담 답변일. 법령 시행일·페이지 전체 최종 수정일이 아님.',
+                'scope_included': ['진정 준비자료 예시', '증빙 부족 시 조사 안내'],
+                'scope_excluded': [{'scope': '질문·다른 상담 답변 및 신고시점·소멸시효·지연이자·접수 경로',
+                    'reason': '이번 준비자료 구간 밖. 신고 경로는 노동포털 안내 사용. 원본 HTML에는 보존'}]}
+    raise ValueError('정제 범위가 검토되지 않은 공식 안내 ID')
+
+
 def preprocess(source):
     path=ROOT/source['raw_file']
     data=path.read_bytes()
@@ -477,7 +1071,17 @@ def preprocess(source):
          'publication_date':None,'updated_date':None,'decision_date':None,'effective_date':None,
          'warnings':[],'processed_at':datetime.now(timezone.utc).isoformat()}
     kind=source['document_type']
-    if kind=='mediation_case':
+    if kind=='official_guide':
+        doc.update(extract_consumer_redress_guide(source,data) if source['source_id'] in CONSUMER_REDRESS_GUIDES
+                   else extract_civil_recovery_guide(source,data) if source['source_id'] in CIVIL_RECOVERY_GUIDES or source['source_id'] in HOUSING_GUIDES
+                   else extract_fitness_closure_guide(source,data) if source['source_id'] in FITNESS_CLOSURE_GUIDES
+                   else extract_overseas_guide(source,data) if source['source_id'] in OVERSEAS_GUIDES
+                   else extract_labor_guide(source, data))
+        doc['guide_id']=source['source_id']
+        if source['source_id'] not in OVERSEAS_GUIDES | FITNESS_CLOSURE_GUIDES | CONSUMER_REDRESS_GUIDES | CIVIL_RECOVERY_GUIDES.keys() | HOUSING_GUIDES.keys():
+            doc['warnings']=['공식 절차 안내이며 법령·판례와 구분. 수집 이후 접수 화면·절차 변경 가능.',
+                         '준비자료는 상담을 돕는 예시이며 모든 자료가 있어야만 신고할 수 있다는 의미가 아님.']
+    elif kind=='mediation_case':
         title,units,dates=extract_case(data)
         if title!=source['title']:
             raise ValueError('목록 제목과 상세 사례 제목 불일치')
@@ -487,9 +1091,15 @@ def preprocess(source):
         doc['warnings']=['분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.',
                          '사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음.']
     elif kind=='administrative_rule':
-        units,meta=extract_admin(data)
+        if source['source_id'] in {'continual_contract_refund','minimum_wage_2026','minimum_wage_simple_labor'}:
+            units,meta,extra=extract_supporting_admin(source,data)
+            doc.update(extra)
+        else:
+            units,meta=extract_admin(data)
         doc.update(units=units,administrative_metadata=meta,effective_date=meta.get('시행일자'))
-        doc['warnings']=['합의 또는 권고 기준. 법률·표준약관·개별 사례와 구분. 수집 당시 현행 버전.']
+        doc['warnings']=(['공식 고시. 적용 범위·예외·유효 기간과 상위 법령을 함께 확인. 계산 자동화는 별도 검증.']
+                         if source['source_id'] in {'continual_contract_refund','minimum_wage_2026','minimum_wage_simple_labor'}
+                         else ['합의 또는 권고 기준. 법률·표준약관·개별 사례와 구분. 수집 당시 현행 버전.'])
     elif source['format']=='hwpx' and kind=='standard_terms':
         text,units,tables=extract_hwpx(path)
         doc.update(units=units,extracted_text=text,tables=tables)

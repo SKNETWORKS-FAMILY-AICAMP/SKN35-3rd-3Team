@@ -1,0 +1,51 @@
+{
+  "saved": [
+    {
+      "source_id": "kca_overseas_types",
+      "title": "해외직구 유형 및 과정",
+      "document_type": "official_guide",
+      "source_url": "https://www.kca.go.kr/home/sub.do?menukey=7825",
+      "domain": "shopping_return",
+      "publisher": "한국소비자원",
+      "collection_status": "pending",
+      "review_status": "pending",
+      "resolved_url": "https://www.kca.go.kr/home/sub.do?menukey=7825",
+      "raw_file": "data/raw/consumer_sources/kca_overseas_types_8b985f72ecc984e9.html",
+      "raw_sha256": "8b985f72ecc984e9e7c0c844c3cd1e285de51915f24e9620f0ab55dcf17ff832",
+      "collected_at": "2026-10-11T03:07:11.622618+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "kca_overseas_checklist",
+      "title": "해외직구 체크리스트",
+      "document_type": "official_guide",
+      "source_url": "https://www.kca.go.kr/home/sub.do?menukey=7827",
+      "domain": "shopping_return",
+      "publisher": "한국소비자원",
+      "collection_status": "pending",
+      "review_status": "pending",
+      "resolved_url": "https://www.kca.go.kr/home/sub.do?menukey=7827",
+      "raw_file": "data/raw/consumer_sources/kca_overseas_checklist_8a7c044d6fb1eb22.html",
+      "raw_sha256": "8a7c044d6fb1eb22d7dd5eaf6edc2778c3dd0dec0a709e1513964ead3706dcac",
+      "collected_at": "2026-10-11T03:07:12.301220+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "kca_overseas_returns",
+      "title": "해외직구 수령·반품 단계 유의사항",
+      "document_type": "official_guide",
+      "source_url": "https://www.kca.go.kr/home/sub.do?menukey=7830",
+      "domain": "shopping_return",
+      "publisher": "한국소비자원",
+      "collection_status": "pending",
+      "review_status": "pending",
+      "resolved_url": "https://www.kca.go.kr/home/sub.do?menukey=7830",
+      "raw_file": "data/raw/consumer_sources/kca_overseas_returns_bc2e743fc2f1ec0b.html",
+      "raw_sha256": "bc2e743fc2f1ec0b040b03f275fb2e89619ec75e536f35aa3a1503b7116c0c04",
+      "collected_at": "2026-10-11T03:07:12.963046+00:00",
+      "format": "html"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T03:07:10.481742+00:00"
+}

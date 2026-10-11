@@ -1,0 +1,18 @@
+{
+  "saved": [],
+  "failures": [
+    {
+      "source_id": "kca_overseas_types",
+      "error_type": "ConnectionError"
+    },
+    {
+      "source_id": "kca_overseas_checklist",
+      "error_type": "ConnectionError"
+    },
+    {
+      "source_id": "kca_overseas_returns",
+      "error_type": "ConnectionError"
+    }
+  ],
+  "started_at": "2026-10-11T03:06:48.166985+00:00"
+}

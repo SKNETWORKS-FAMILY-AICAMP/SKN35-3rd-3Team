@@ -8,7 +8,7 @@ from unittest.mock import Mock
 from src.Scripts.preprocess_laws import (
     INPUT_DIR, OUTPUT_DIR, REPORT_NAME, body_segments, clean_text,
     ensure_output, preprocess, sha256, xml_to_data, parse_box_tables,
-    preprocess_supplements, content_inventory, ROOT,
+    preprocess_supplements, content_inventory, ROOT, as_list,
 )
 from src.Scripts.chunk_laws import OUTPUT_DIR as CHUNK_DIR, make_chunks, make_aux_chunks
 
@@ -37,6 +37,21 @@ def unit(body, number='1', branch='', effective='20260101'):
 
 
 class LawPreprocessingTests(unittest.TestCase):
+    def test_unnumbered_single_text_is_searchable_without_invented_article(self):
+        xml = ('<조문단위 조문키="0000000"><조문번호>0</조문번호><조문여부>전문</조문여부>'
+               '<조문시행일자>20260101</조문시행일자><조문내용>연 100분의 12를 말한다.</조문내용></조문단위>')
+        doc=preprocess(fixture_path(xml))
+        self.assertEqual(doc['structural_headings'],[])
+        a=doc['articles'][0]
+        self.assertEqual(a['article_label'],'전문')
+        self.assertEqual(a['structure']['조문여부'],'전문')
+        self.assertTrue(a['embedding_candidate'])
+        chunks=make_chunks(doc,a)
+        self.assertEqual(''.join(c['text'] for c in chunks),a['body_text'])
+        self.assertNotIn('제0조',chunks[0]['context_header'])
+        heading=xml.replace('연 100분의 12를 말한다.','제1장 총칙')
+        self.assertEqual(preprocess(fixture_path(heading))['articles'],[])
+
     def test_nested_body_keeps_all_levels_in_source_order(self):
         raw = {'조문번호': '3', '조문내용': '제3조의2(제목) <개정 2026.1.1>',
                '항': [{'항번호': '①', '항내용': '① 조건',
@@ -91,14 +106,16 @@ class LawPreprocessingTests(unittest.TestCase):
     def test_saved_laws_preserve_every_source_unit_and_nested_body(self):
         report = json.loads((OUTPUT_DIR / REPORT_NAME).read_text(encoding='utf-8'))
         self.assertEqual(report['failures'], [])
-        self.assertEqual(len(report['saved']), 8)
+        from src.Scripts.collect_laws import LAW_NAMES
+        self.assertEqual({e['source_file'] for e in report['saved']},{p.name for p in INPUT_DIR.glob('[0-9]*.json')})
+        self.assertTrue(set(LAW_NAMES).issubset({e['law_name'] for e in report['saved']}))
         for entry in report['saved']:
             path = INPUT_DIR / entry['source_file']
             raw = json.loads(path.read_text(encoding='utf-8'))
             doc = json.loads((OUTPUT_DIR / entry['file']).read_text(encoding='utf-8'))
             self.assertEqual(sha256(path), doc['raw_sha256'])
             self.assertEqual(doc['raw_sha256'], entry['raw_sha256'])
-            units = raw['detail']['조문']['조문단위']
+            units = as_list(raw['detail']['조문']['조문단위'])
             combined = doc['articles'] + doc['structural_headings']
             self.assertEqual(sorted(x['source_unit_index'] for x in combined), list(range(len(units))))
             for item in combined:
@@ -186,6 +203,26 @@ class LawChunkingTests(unittest.TestCase):
 
 
 class AdditionalLawMaterialTests(unittest.TestCase):
+    def test_retired_appendices_and_application_forms_are_preserved_but_not_searched(self):
+        doc=preprocess(INPUT_DIR/'008480_282351_20260102.json')
+        by_key={u['appendix_key']:u for u in doc['appendices']}
+        for key in ['000100E','000200E','000300F','000400F','000500F','000600F']:
+            item=by_key[key]
+            self.assertFalse(item['embedding_candidate'])
+            self.assertFalse(item['needs_manual_review'])
+            self.assertTrue(item['exclusion_reason'])
+            self.assertFalse(item['tables'])
+            self.assertEqual(item['body_text'],item['structure']['별표내용'].strip())
+            self.assertTrue((ROOT/item['pdf_file']).is_file())
+            self.assertFalse(make_aux_chunks(doc,item))
+        for key in ['000100F','000200F']:
+            self.assertFalse(by_key[key]['embedding_candidate'])
+            self.assertTrue(by_key[key]['needs_manual_review'])
+            self.assertIn('서식',by_key[key]['exclusion_reason'])
+            self.assertFalse(make_aux_chunks(doc,by_key[key]))
+        self.assertTrue(by_key['000300E']['embedding_candidate'])
+        self.assertTrue(by_key['000300E']['tables'])
+
     def test_supplement_commencement_is_not_inferred_from_promulgation(self):
         raw = {'as_of': '2026-10-10', 'detail': {'부칙': {'부칙단위': {
             '@부칙키': '20260101123', '부칙공포일자': '20260101', '부칙공포번호': '123',
@@ -225,7 +262,8 @@ class AdditionalLawMaterialTests(unittest.TestCase):
                         self.assertTrue(u['pdf_comparison']['character_inventory_match'])
                         self.assertEqual(content_inventory(u['body_text']),
                                          content_inventory(''.join(p['text'] for p in u['pdf_pages'])))
-        self.assertEqual(totals, {'supplements': 206, 'appendices': 8})
+        report=json.loads((OUTPUT_DIR/REPORT_NAME).read_text(encoding='utf-8'))
+        self.assertEqual(totals, {k:sum(e['supplement_count' if k=='supplements' else 'appendix_count'] for e in report['saved']) for k in totals})
 
     def test_auxiliary_chunks_cover_nonwhitespace_and_keep_tables_atomic(self):
         chunks = [json.loads(line) for line in (CHUNK_DIR / 'chunks.jsonl').read_text(encoding='utf-8').splitlines()]
@@ -261,7 +299,17 @@ class AdditionalLawMaterialTests(unittest.TestCase):
                     matching = [c for c in actual if c['atomic_table'] and c['start'] == table['start']]
                     self.assertEqual(len(matching), 1)
         self.assertEqual(set(grouped), expected_ids)
-        self.assertEqual(len(expected_ids), 214)
+        report=json.loads((OUTPUT_DIR/REPORT_NAME).read_text(encoding='utf-8'))
+        self.assertEqual(len(expected_ids),sum(e['supplement_candidate_count']+e['appendix_candidate_count'] for e in report['saved']))
+
+    def test_minimum_wage_article_links_year_specific_supplement(self):
+        chunks=[json.loads(line) for line in (CHUNK_DIR/'chunks.jsonl').read_text(encoding='utf-8').splitlines()]
+        targets=[c for c in chunks if c.get('law_name')=='최저임금법' and c.get('article_label')=='제6조']
+        self.assertTrue(targets)
+        for c in targets:
+            self.assertTrue(c['required_context_unit_ids'])
+            for identifier in c['required_context_unit_ids']:
+                self.assertTrue(any(x.get('unit_id')==identifier and '2024년부터는 100분의 0' in x['text'] for x in chunks))
 
     def test_compensation_table_preserves_grade_amount_pairs(self):
         doc = json.loads(next(OUTPUT_DIR.glob('001872*.json')).read_text(encoding='utf-8'))

@@ -1,0 +1,36 @@
+{
+  "saved": [
+    {
+      "source_id": "moel_wage_procedure",
+      "title": "임금체불 진정·고소 신고 및 처리 절차",
+      "source_url": "https://labor.moel.go.kr/minwonSysInfo/wagesolway.do",
+      "document_type": "official_guide",
+      "domain": "임금체불",
+      "publisher": "고용노동부",
+      "collection_status": "pending",
+      "review_status": "pending",
+      "resolved_url": "https://labor.moel.go.kr/minwonSysInfo/wagesolway.do",
+      "raw_file": "data/raw/consumer_sources/moel_wage_procedure_9c52aa51a2d0ec54.html",
+      "raw_sha256": "9c52aa51a2d0ec54ecf1dd2c1bbbf1d0178bb80f38be77bcf48acce864bc8122",
+      "collected_at": "2026-10-11T02:53:40.600746+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "moel_wage_evidence_1000323154",
+      "title": "임금체불 진정 준비자료와 증빙 부족 시 조사 안내",
+      "source_url": "https://1350.moel.go.kr/rtmview.do?id=1000323154",
+      "document_type": "official_guide",
+      "domain": "임금체불",
+      "publisher": "고용노동부",
+      "collection_status": "pending",
+      "review_status": "pending",
+      "resolved_url": "https://1350.moel.go.kr/rtmview.do?id=1000323154",
+      "raw_file": "data/raw/consumer_sources/moel_wage_evidence_1000323154_7492a58ac0c94d39.html",
+      "raw_sha256": "7492a58ac0c94d39e099c999175696084026eddf014736756bc5afdb52e4af5a",
+      "collected_at": "2026-10-11T02:53:41.134898+00:00",
+      "format": "html"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T02:53:40.277269+00:00"
+}

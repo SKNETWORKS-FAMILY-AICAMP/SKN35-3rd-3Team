@@ -79,7 +79,9 @@ def make_chunks(document, size=900, overlap=120):
             chunk["section_heading"] = segment.get("heading", "판례 검색 본문")
             chunk["section_context_header"] = segment.get("context_header", "")
             chunk["context_header"] = make_source_header(document, segment)
-            chunk["embedding_text"] = chunk["context_header"] + "\n" + chunk["text"]
+            caution = ("\n[원문 주의사항]\n" + "\n".join(document['warnings'])
+                       if document.get('warnings') else "")
+            chunk["embedding_text"] = chunk["context_header"] + caution + "\n" + chunk["text"]
             chunks.append(chunk)
             if end == stop:
                 break
@@ -104,7 +106,10 @@ def expanded_terms(query):
 
 
 class BM25:
-    def __init__(self, chunks, *, evidence_mode=False):
+    def __init__(self, chunks, *, evidence_mode=False, header_weight=0.5):
+        if isinstance(header_weight,bool) or not isinstance(header_weight,(int,float)) or not math.isfinite(header_weight) or not 0<=header_weight<=1:
+            raise ValueError("header_weight는 0 이상 1 이하의 유한수여야 합니다.")
+        self.header_weight=header_weight
         self.chunks = chunks
         self.evidence_mode = evidence_mode
         self.counts = [Counter(tokens(c.get("embedding_text", c["text"]))) for c in chunks]
@@ -120,7 +125,10 @@ class BM25:
                 header=chunk.get('context_header','')
                 group=[]
                 for span in spans:
-                    counts=Counter(tokens(header+'\n'+span.get('search_text',span['text'])))
+                    counts=Counter(tokens(span.get('search_text',span['text'])))
+                    for term,count in Counter(tokens(header)).items():
+                        if header_weight:
+                            counts[term]+=header_weight*count
                     group.append((span,counts,sum(counts.values())))
                 self.passages.append(group)
             lengths=[length for group in self.passages for _,_,length in group]
@@ -220,6 +228,20 @@ def evaluate():
 
 
 class RetrievalTests(unittest.TestCase):
+    def test_header_weight_prefers_body_and_preserves_returned_header(self):
+        chunks=[{'chunk_id':'a_header','precedent_id':'a','text':'절차 설명',
+                 'context_header':'환급 위약금','embedding_text':'환급 위약금 절차 설명'},
+                {'chunk_id':'b_body','precedent_id':'b','text':'환급 위약금',
+                 'context_header':'절차 설명','embedding_text':'절차 설명 환급 위약금'}]
+        hits=BM25(chunks,evidence_mode=True).search('환급 위약금')
+        self.assertEqual(hits[0]['chunk_id'],'b_body')
+        self.assertEqual(hits[1]['context_header'],chunks[0]['context_header'])
+        self.assertEqual(hits[1]['text'],chunks[0]['text'])
+        for invalid in [-1,2,True,float('nan'),float('inf')]:
+            with self.assertRaises(ValueError):BM25(chunks,evidence_mode=True,header_weight=invalid)
+        # 기존 판례 기준 검색은 evidence_mode=False라 헤더 비중 변경의 영향을 받지 않는다.
+        self.assertEqual(BM25(chunks,header_weight=0).search('환급'),BM25(chunks,header_weight=1).search('환급'))
+
     def test_multiple_chunks_preserve_document_versions_and_configured_cap(self):
         chunks=[{'chunk_id':'a1','precedent_id':'a','document_id':'law:a:v1','text':'보증금 반환'},
                 {'chunk_id':'a2','precedent_id':'a','document_id':'law:a:v1','text':'보증금 반환'},
@@ -285,7 +307,7 @@ class RetrievalTests(unittest.TestCase):
                 index.search("보증금", top_k=invalid)
 
     def test_partial_chunks_keep_roles_and_do_not_cross_spans(self):
-        for identifier in ("227759", "234477", "605583"):
+        for identifier in ("227759", "234477", "605583", "147076"):
             doc = json.loads((ROOT / "data/processed/precedents" / f"{identifier}.json").read_text(encoding="utf-8"))
             for chunk in make_chunks(doc):
                 segment = next(s for s in doc["retrieval_segments"] if s["start"] <= chunk["start"] < s["end"])
@@ -293,7 +315,10 @@ class RetrievalTests(unittest.TestCase):
                 self.assertEqual(chunk["role"], segment["role"])
                 self.assertEqual(chunk["section_context_header"], segment["context_header"])
                 self.assertIn(segment["context_header"], chunk["context_header"].splitlines())
-                self.assertEqual(chunk["embedding_text"], chunk["context_header"] + "\n" + chunk["text"])
+                self.assertTrue(chunk["embedding_text"].startswith(chunk["context_header"]))
+                self.assertTrue(chunk["embedding_text"].endswith("\n"+chunk["text"]))
+                for warning in doc['warnings']:
+                    self.assertIn(warning,chunk['embedding_text'])
                 self.assertEqual(chunk["text"], doc["retrieval_text"][chunk["start"]:chunk["end"]])
 
     def test_saved_headers_include_verified_provenance_and_original_section_headers(self):
@@ -303,7 +328,10 @@ class RetrievalTests(unittest.TestCase):
             with self.subTest(chunk_id=chunk["chunk_id"]):
                 for key in ("case_name", "case_number", "court", "judgment_date", "source_url"):
                     self.assertIn(chunk[key], chunk["context_header"])
-                self.assertEqual(chunk["embedding_text"], chunk["context_header"] + "\n" + chunk["text"])
+                self.assertTrue(chunk["embedding_text"].startswith(chunk["context_header"]))
+                self.assertTrue(chunk["embedding_text"].endswith("\n"+chunk["text"]))
+                for warning in chunk['warnings']:
+                    self.assertIn(warning,chunk['embedding_text'])
                 if chunk["section_context_header"]:
                     self.assertIn(chunk["section_context_header"], chunk["context_header"].splitlines())
                 doc = json.loads((ROOT / "data/processed/precedents" / f"{chunk['precedent_id']}.json").read_text(encoding="utf-8"))

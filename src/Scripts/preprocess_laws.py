@@ -6,6 +6,7 @@ uv run python src/Scripts/preprocess_laws.py
 
 import argparse
 import hashlib
+import html
 import json
 import re
 import xml.etree.ElementTree as ET
@@ -276,7 +277,10 @@ def preprocess_appendices(raw, version_id, source_hash=None):
         text = clean_text(unit.get("별표내용", ""))
         if not text:
             raise ValueError("API 별표 본문이 비어 있습니다. PDF 직접 정제 검토가 필요합니다.")
-        tables = parse_box_tables(text)
+        marker=html.unescape(unit['별표제목']).strip()
+        retired=bool(re.fullmatch(r'(?:삭제|\[[^\]]+\]\s*으로\s*이동)\s*(?:<[^>]*>)?',marker))
+        is_form = key.endswith("F")
+        tables = [] if retired or is_form else parse_box_tables(text)
         pages = []
         with pdfplumber.open(path) as pdf:
             for number, page in enumerate(pdf.pages, 1):
@@ -287,7 +291,7 @@ def preprocess_appendices(raw, version_id, source_hash=None):
         valid_pdf_text = all(p["text"].strip() for p in pages)
         effective = iso_date(unit["별표시행일자"])
         inventory_match = content_inventory(text) == content_inventory("\n".join(p["text"] for p in pages))
-        candidate = valid_pdf_text and inventory_match and effective <= raw["as_of"]
+        candidate = not retired and not is_form and valid_pdf_text and inventory_match and effective <= raw["as_of"]
         # 문단을 표 내부에서 나누지 않도록 표 범위는 독립된 원자 단위로 처리.
         segments, cursor = [], 0
         for table_index, table in enumerate(tables):
@@ -328,6 +332,12 @@ def preprocess_appendices(raw, version_id, source_hash=None):
                        "embedding_candidate": candidate, "needs_manual_review": not candidate,
                        "warnings": ["표 전체를 분할하지 않고 검색에 사용. 복합 헤더·병합 셀은 원본 PDF와 대조",
                                     "PDF 자동 표 추출은 페이지 간 행·열을 완전히 복원하지 못할 수 있어 API 테두리 표를 함께 보존"]})
+        if retired:
+            result[-1].update(needs_manual_review=False,exclusion_reason='삭제·이동된 별표/서식: 현행 검색 제외',
+                             warnings=['삭제·이동된 별표/서식의 원문·PDF·출처는 보존하고 현행 검색에서 제외'])
+        elif is_form:
+            result[-1].update(exclusion_reason='별지 신청·인가 서식: 참고용 보존, 검색 제외',
+                             warnings=['별지 서식은 빈 작성란·직인 등 시각 요소가 있어 원문·PDF를 참고용으로 보존. 자동 표 해석과 기본 검색 제외'])
     return result
 
 
@@ -361,11 +371,14 @@ def preprocess(path):
     articles, structural, stack, seen = [], [], [], set()
     for index, unit in enumerate(units):
         text, segments = body_segments(unit)
-        if unit.get("조문여부") == "전문":
+        unnumbered = (unit.get("조문여부") == "전문" and len(units) == 1
+                      and unit.get("조문번호") == "0" and bool(text)
+                      and not re.match(r"^제\s*\d+\s*[편장절관]\s+", text))
+        if unit.get("조문여부") == "전문" and not unnumbered:
             stack = update_hierarchy(stack, text)
             structural.append({"source_unit_index": index, "text": text, "structure": unit})
             continue
-        if unit.get("조문여부") != "조문":
+        if unit.get("조문여부") != "조문" and not unnumbered:
             raise ValueError("알 수 없는 조문단위 유형입니다.")
         number = unit["조문번호"]
         branch = unit.get("조문가지번호", "")
@@ -375,7 +388,7 @@ def preprocess(path):
         if article_id in seen:
             raise ValueError("같은 법령 버전에서 중복 조문번호가 발견됐습니다.")
         seen.add(article_id)
-        label = f"제{int(number)}조" + (f"의{int(branch)}" if branch else "")
+        label = "전문" if unnumbered else f"제{int(number)}조" + (f"의{int(branch)}" if branch else "")
         deleted = bool(re.fullmatch(r"제\s*\d+\s*조(?:\s*의\s*\d+)?\s+삭제(?:\s*<[^>]*>)*\s*",
                                     clean_text(unit.get("조문내용", ""))))
         warnings = []
@@ -391,6 +404,8 @@ def preprocess(path):
         if deleted and any(s["level"] != "조" for s in segments):
             raise ValueError("삭제 조문에 하위 본문이 남아 있어 확인이 필요합니다.")
         needs_review = bool(warnings)
+        if unnumbered:
+            warnings.append("원문은 조 번호 없는 전문. API의 조문번호 0·조문키를 보존하며 제1조 또는 제0조로 만들지 않음")
         articles.append({"article_id": article_id, "source_unit_index": index,
                          "source_article_key": unit.get("@조문키"),
                          "article_number": number, "branch_number": branch,

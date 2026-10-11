@@ -1,8 +1,9 @@
 {
-  "processed_at": "2026-10-10T03:16:55.047844+00:00",
+  "processed_at": "2026-10-11T05:00:41.991758+00:00",
   "review_file": "C:\\study\\SKN35-3rd-3Team\\data\\processed\\precedent_relevance_review.json",
-  "selected_count": 29,
+  "selected_count": 30,
   "saved": [
+    "147076",
     "213515",
     "227759",
     "234477",
@@ -76,9 +77,10 @@
     "622971": "20272390e936c9f17a20157fa1e10c4ffef26786675f71b3ae7a9661d207f4bf",
     "623049": "2de9be5a1825bd4738b15baf15c230d79931390e957836bf1929d97d78658594",
     "623961": "f56ed5ea8f837ae5ed9a68225beb309edaee365ceaf20216545ae67d0abdaaf4",
-    "623979": "6b24461c50cb9d0026e6670959ff478a443d5aaaf51f2aa0391e76c81489b161"
+    "623979": "6b24461c50cb9d0026e6670959ff478a443d5aaaf51f2aa0391e76c81489b161",
+    "147076": "de5261ba7d14de4fae6975f7a5fc2ce6a4f87161a097761b42d7504760998e5b"
   },
-  "embedding_candidate_count": 27,
-  "ready_without_manual_review_count": 27,
+  "embedding_candidate_count": 28,
+  "ready_without_manual_review_count": 28,
   "usage": "saved 목록의 JSON만 읽고 embedding_candidate 및 needs_manual_review를 확인한 뒤 retrieval_text를 청크로 분할하세요. texts.full_text는 부분 사용 사건의 검색 입력으로 쓰지 마세요."
 }

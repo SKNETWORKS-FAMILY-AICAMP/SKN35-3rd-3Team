@@ -1,0 +1,14 @@
+{
+  "saved": [],
+  "failures": [
+    {
+      "source_id": "moel_wage_procedure",
+      "error_type": "ConnectionError"
+    },
+    {
+      "source_id": "moel_wage_evidence_1000323154",
+      "error_type": "ConnectionError"
+    }
+  ],
+  "started_at": "2026-10-11T02:53:26.511856+00:00"
+}

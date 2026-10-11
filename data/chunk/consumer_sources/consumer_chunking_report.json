@@ -1,161 +1,249 @@
 {
   "metadata_version": 1,
-  "document_count": 23,
-  "chunk_count": 173,
+  "document_count": 44,
+  "chunk_count": 259,
   "size": 1200,
   "overlap": 120,
-  "chunks_sha256": "790a02d263cfcfa26d96a1533361f75fd10da4066e33e21e794d76d865e63144",
+  "chunks_sha256": "091895847ad8aa0ae4c9a8dcadff08d930acbfb031b3912e1f274a4f932994ce",
   "inputs": [
     {
       "file": "consumer_dispute_standard.json",
-      "processed_sha256": "21ef060313cd8ab189c7d268aa5f278cb93acf9504aea25028446eedbfeffb30"
+      "processed_sha256": "43dfa40f4ed2940c6c20c77e7505ca586fad5b530cb28ca0620f5d04a5429c59"
     },
     {
       "file": "consumer_dispute_standard_appendix_0.json",
-      "processed_sha256": "bf6bc20f96d15ead9548b21403f603c3dd8e57b6e477aa917a377cab5a483f7a"
+      "processed_sha256": "784a5e69c91495360111e4a543b99b5d44af34a647fb20b7a556157bf89f2138"
     },
     {
       "file": "consumer_dispute_standard_appendix_1.json",
-      "processed_sha256": "bd924184d7261f1657feff2a9406f2eb7e7536ea609948ae6067ae6286c39954"
+      "processed_sha256": "d8595da26b53cfd9a549856cec7bcd1cb931001aa18a1b0d338204f47ce7b5fb"
     },
     {
       "file": "consumer_dispute_standard_appendix_2.json",
-      "processed_sha256": "bf25a052ac2fcae4e387c6a8682aa0578fff2f5f67b4107261a74be129bcc2ad"
+      "processed_sha256": "b08434f7347309baa82bcbf4743a707903c8e668908853fd5b3ec5a69b040423"
     },
     {
       "file": "consumer_dispute_standard_appendix_3.json",
-      "processed_sha256": "b189e764242bc29aeceb8b2ef1015fd4a86e5d46aef7c186170722d865ad6248"
+      "processed_sha256": "e18457767d06794029491f52e65bff0c82247266e55a9eee5da3a527b2af8cec"
     },
     {
       "file": "kca_pilates_1003941650.json",
-      "processed_sha256": "c7da551234b77b85abced54f4ad1c314896cb514dffd1289e00ec16fe6455531"
+      "processed_sha256": "4b732b2523e234cb1c281fb22879ca9db7aafcad657795bf8bc4b38d215c28b1"
     },
     {
       "file": "kca_parcel_1003817349.json",
-      "processed_sha256": "ca48a692776ae534cb9f2cfee9e4a894d2ba8aa60cd49360b40cc0626a18ddf1"
+      "processed_sha256": "41fe9c23d0669ce25cfa3e8c56c4618083682ac13b8c26438101b1b15f239b66"
     },
     {
       "file": "kca_discovery_fitness.json",
-      "processed_sha256": "5bc6a54ffbea747d3ae2e8db4bbf0738e6d1c378da680c221254cce544b6fe7b"
+      "processed_sha256": "cb6fc6c5fbb06612c0709bec7ed216ab3b04287fd643064e34dd46b999b635a6"
     },
     {
       "file": "ftc_terms_discovery.json",
-      "processed_sha256": "b293e50dec062ca3d4044e623ff645a9e34cfcde7d8f98540c354b2b2415d34c"
+      "processed_sha256": "29d390732fa1f0c76d4587c352a4360e580525ec8503e7c74e8c6bc2f981977d"
     },
     {
       "file": "kca_discovery_parcel.json",
-      "processed_sha256": "45639bdc2ac0a9e168e8aa1befcf5ddbe5a8106310f64b390271c9f3686414ee"
+      "processed_sha256": "8aabb8bdfe373cae9920105b81eb10cda077b0837223ddd3bc91a4fec752d3ca"
     },
     {
       "file": "kca_discovery_shopping.json",
-      "processed_sha256": "2375d726ba6b27a770f50a9b648c0799d8840c3f4608b0a346207f923b0ee968"
+      "processed_sha256": "7d2627dfc63812ebdb294bd91bf106a3144fe2ef4b3e8b625e4dbcd8714980a9"
     },
     {
       "file": "ftc_terms_discovery_parcel.json",
-      "processed_sha256": "867769ea8f282cde4181701eb43d1b3226e2cf6aebf72cc72988c7dd8bebbe55"
+      "processed_sha256": "ad7339656981d2905c46bdc66c3a3825c127c997de21723a164683537d200b70"
     },
     {
       "file": "kca_case_1003941875.json",
-      "processed_sha256": "3b9a706fb69247a09fb619d1edf642526d4a68cd376619ce1315a3959bf9c752"
+      "processed_sha256": "ca8c251098e2eec57e589d0b9d1721a10d9b2081f81ea7892cd3a9fb26b95a3a"
     },
     {
       "file": "kca_case_1003892170.json",
-      "processed_sha256": "407aee8acb3ee90c799c331bfd766702e8f6440e1aef00ed2e7471485d18a079"
+      "processed_sha256": "1253f7659d8efd35fe9d1a196810d3d5886e905c97f11015918a0f0213d1f077"
     },
     {
       "file": "kca_case_1003892039.json",
-      "processed_sha256": "b7c766b1856816476ab287699b9bf96bc92a93eaae7de2114bd9900563bc256d"
+      "processed_sha256": "58db6beae7923ff04935e9dd56aa93c0f7ae8421cfcb98384f63f96469db7dc6"
     },
     {
       "file": "kca_case_1003817065.json",
-      "processed_sha256": "23cfff93f13da33d4c241166cc3570e7395060ac6b326daf847a554660ba60ff"
+      "processed_sha256": "67eab30e1c083795bac973e0103435082d5b943bfc18ac48650cc2666f4c015d"
     },
     {
       "file": "kca_case_1003739114.json",
-      "processed_sha256": "56d4958d45ff45b7c52d29c9ed7db5dbca636a6b2376ae76ef2f33a99b03c03b"
+      "processed_sha256": "d513107064b459168a23db846d4876ece90a32b5521ac1f53a428c6050249cca"
     },
     {
       "file": "kca_case_1003640779.json",
-      "processed_sha256": "471c5febcf4b7a8cc89ab1a4fffd8b61f54f662d03646546fc6b16f5c8120015"
+      "processed_sha256": "e769460b3c82d94d959612d233175259dfb404240ac71c3c60ba0566bf8c7846"
     },
     {
       "file": "ftc_terms_47762.json",
-      "processed_sha256": "8842f7dd750317fe55270d598a25fa0a00e6dfb6a12a3317735eef66c705627e"
+      "processed_sha256": "76e818f27ce906f5a06936cae6b71c133799e35e713059f42ff211ef5d67a28a"
     },
     {
       "file": "ftc_terms_46118.json",
-      "processed_sha256": "80a8fddd673ee6808193855d5b995c1fa2ab923cb443416a11e25ffaf9b357bb"
+      "processed_sha256": "cdb1005d18a344586f32c1403b63d9e40bb183057a1c5ea09b90da6cd4414d1f"
     },
     {
       "file": "kca_case_1003475989.json",
-      "processed_sha256": "65a72d468acfab6f76b98819506effd25da4f7b3bfcd13f7ff9c68adc53ed665"
+      "processed_sha256": "b3a7f8aa9139c09c700bf6c11b7d966eb151b89749c1e70cee29896b6611275f"
     },
     {
       "file": "kca_case_1003148978.json",
-      "processed_sha256": "32147ccf0ae41ca7b654c623a6089e4290fff31952bbebb276aa618849f51eba"
+      "processed_sha256": "afed9f5f386c8ca96ab9f92342d03dba3f25fd3b8f919f26b04a3e1ae1dbe300"
     },
     {
       "file": "kca_case_1002730975.json",
-      "processed_sha256": "26344d195b32dd70bb8ed7c6f0c08e2b7f44c9d87385901de552278c0a833853"
+      "processed_sha256": "168ce79971f26f2530dbdc425de4ba49dc4372e90b8ae928954d3628d709daef"
     },
     {
       "file": "kca_case_1001329664.json",
-      "processed_sha256": "10169005bacfe447dafe2741ead2a6f45d144b2b17ec075774e14683c2d9c2d4"
+      "processed_sha256": "9a45105a37d2b4a52ec17854532c2f550618705b9241b835c991f37983983ce8"
     },
     {
       "file": "kca_case_1001243565.json",
-      "processed_sha256": "120b55087a70fa583740edd88cfc4be7cdf21fa019353b3fb5f7947ef60a7cdb"
+      "processed_sha256": "abaace6199818a33dd152a583b5d4b79952f0b92dcba0b6a095bb0d88a716a66"
     },
     {
       "file": "kca_case_1003940398.json",
-      "processed_sha256": "f338073e230cf982075961b7d6635e97e13a2710de30b63083b61fb72a9a2b73"
+      "processed_sha256": "4bf5311c46211d8bdba2d75deba05ef219bbc2a8f61131395c25cf664d461362"
     },
     {
       "file": "kca_case_1003890245.json",
-      "processed_sha256": "3397ac5409ff53edd65073698244f7385b8cfbc019ab6d6cb9f13a274e9a7385"
+      "processed_sha256": "237fd7cc93b354a30505c70ed0f35ebc5a8afa24c19f9ad0fbe288c05519e563"
     },
     {
       "file": "kca_case_1003641715.json",
-      "processed_sha256": "ebcd1eb4d2c43527edf55a4df3ab9cf713a458f0bafef953972c3c1daa9c43c1"
+      "processed_sha256": "e2d55f3002e10db1f082850210b8e82176e50d97e2fb188d37b82b9f79623036"
     },
     {
       "file": "kca_case_1003641375.json",
-      "processed_sha256": "0a7b49669976bfaca1ac22423595d8ec844a255e86c8e9deaf8b4aea042b2be7"
+      "processed_sha256": "ecc9b3e96c48a94b2ca1a10f3bb35db5f63e89e5eafc931178327816ac7d99f4"
     },
     {
       "file": "kca_case_1003604873.json",
-      "processed_sha256": "0d2ac3d10b1142a3364238b1d85db818aa331f43c4f6993f5d94684c33f1f544"
+      "processed_sha256": "27602a10bea725c26b0095ad0d5229bfefe3aebe4795d84472c6e60c4048604d"
     },
     {
       "file": "kca_case_1003164054.json",
-      "processed_sha256": "6b29a307f34ffb14851e6c9b523fa1ce80f23f1379fb16d0fdb8c674f56d4198"
+      "processed_sha256": "d6dcf8490e68f2380935ebb7454a1d7211be3eeddd25386e4424742c4374215e"
     },
     {
       "file": "ftc_terms_11185.json",
-      "processed_sha256": "49cc069dea19c459cb5fd9d0022176d4a4af09241026186d92058c3de9682d08"
+      "processed_sha256": "84d9636a5f9ce4c2a8e818c6e9ad6ac944e857e1064298811347f8f7ade7e524"
     },
     {
       "file": "ftc_terms_11125.json",
-      "processed_sha256": "751ce38ca5d3b7396f5f8c208b1f4b14f96fd490d252cbe189643c28f3be6cf1"
+      "processed_sha256": "39d954cf0b1dfce4afb3c8935f929b59b595f83f64adc76952e76d19b60a976c"
     },
     {
       "file": "ftc_terms_47762_file_05d51a47.json",
-      "processed_sha256": "cbc6509c55c5f14686b61ab7d3eb207760a7e2102295148798fc01e5743ee73a"
+      "processed_sha256": "85328f88aaea2a9023db38eeca5f793794a1d16dafef62ae62d607f0862a19f9"
     },
     {
       "file": "ftc_terms_46118_file_5b139f26.json",
-      "processed_sha256": "d980b6b9a7762434fd883859c87bbc94294881c45888a6dda31cf68ed4232251"
+      "processed_sha256": "23240a4c754929afff66252136124cb5c8fdf4a4f397528701ab2cc32e755aef"
     },
     {
       "file": "ftc_terms_11185_file_a321590d.json",
-      "processed_sha256": "e7466c14fd0a0966397c15ef89bf73f49ec6fb0a4b5bafade17a2b1834409d5a"
+      "processed_sha256": "73cd1cc1721b28b6f064b076975377f2e1431dc790badd24d441a59b1a04f057"
     },
     {
       "file": "ftc_terms_11125_file_e27d5f98.json",
-      "processed_sha256": "e0a82fef8eb7decb85793a967edcdc512146c794605b9c75a92a5ac159589132"
+      "processed_sha256": "031f56eea763400f6f0216a24f4617e09dd0673b8e52a8a0af8aeb2e96a60800"
+    },
+    {
+      "file": "continual_contract_refund.json",
+      "processed_sha256": "e91b8dbdbfb655dd5f404569a5b7decf24950da1fd1dc474033c6f55d04d3ffa"
+    },
+    {
+      "file": "minimum_wage_2026.json",
+      "processed_sha256": "1b31f624114d7f702294a9525959b5b75c161c909407014b522f45b4da19850e"
+    },
+    {
+      "file": "minimum_wage_2026_attachment_body.json",
+      "processed_sha256": "1f7684ef8574c67e6380cd321be658ae3990ddec53c9723d8096dede8dc58fab"
+    },
+    {
+      "file": "minimum_wage_simple_labor.json",
+      "processed_sha256": "4f75a8deabde04c3a8f01d60c54dd8b0442051a0d2952af5821eb38acca6df7d"
+    },
+    {
+      "file": "moel_wage_procedure.json",
+      "processed_sha256": "3415b242d5daecc90331a4a69c0ce923e039337b62243325c24e220e03539c68"
+    },
+    {
+      "file": "moel_wage_evidence_1000323154.json",
+      "processed_sha256": "94040ea0009d96445ec51ce908bda9a2636c365c47ab97504bff7e64bc03860c"
+    },
+    {
+      "file": "kca_overseas_types.json",
+      "processed_sha256": "0b7b223970eaf52fdb0389e90953c9bacdbbf14c7b2fefaae166ee23bacb3ec7"
+    },
+    {
+      "file": "kca_overseas_checklist.json",
+      "processed_sha256": "c7d716ce4afb8539e3aa4f1dfffc3f4d3f06b52acda0f043a6370ae936427a73"
+    },
+    {
+      "file": "kca_overseas_returns.json",
+      "processed_sha256": "f45404401352a99f98b1d3aed9c57048e1ad641c0896a16c3b4c9005f0fb1b88"
+    },
+    {
+      "file": "kca_fitness_closure_gym.json",
+      "processed_sha256": "2357b6c222f2aa2c7d70ff59fdb5142265f7e09bd32ea7cca02a1827af7ba5dd"
+    },
+    {
+      "file": "kca_fitness_closure_pilates.json",
+      "processed_sha256": "c89941f8aba841075eab3aca42f0f97caeeebce46d98bddc35318033d2cfb7a8"
+    },
+    {
+      "file": "kca_damage_redress_procedure.json",
+      "processed_sha256": "d12e07fc3a475818b14658d27c5bb2e09882a9a2baa2e3fa5c90b60640bc15df"
+    },
+    {
+      "file": "easylaw_consumer_small_claim.json",
+      "processed_sha256": "c467b0924892303d7b8a77710b946f0cf557fb76d4c6ea78fbc39d659a4fe785"
+    },
+    {
+      "file": "easylaw_consumer_payment_order.json",
+      "processed_sha256": "8121c60a30f77db7dee98c31cf6a0adb4d7cde37cb5c6c6523a009fd08b4fe55"
+    },
+    {
+      "file": "easylaw_payment_order_application.json",
+      "processed_sha256": "9dc6d67b2d57ca909083d1ab6171355252329638cbc43139dbac756e915cdd5f"
+    },
+    {
+      "file": "easylaw_civil_enforcement.json",
+      "processed_sha256": "48363c85dc4e0ac270335e272f0138b7a089855fa1df52937c570ec8eba8c277"
+    },
+    {
+      "file": "easylaw_housing_termination.json",
+      "processed_sha256": "aea170fa239cdb59fff7020a50b6c6d59cfe5602a4ab63ecee2f4d2a86227bed"
+    },
+    {
+      "file": "easylaw_housing_restoration.json",
+      "processed_sha256": "cb89770dc0e92a8e2d28e8d49548dde9b14fd158f61216a4683af1b87223c55f"
+    },
+    {
+      "file": "easylaw_housing_distribution.json",
+      "processed_sha256": "7d6f6f4ca6c0de48ffa829a6b77045b02597ce9467e6c72e3e28ccc790fdb2b1"
+    },
+    {
+      "file": "kca_redress_requirements.json",
+      "processed_sha256": "a6883541e20926fc91f0063abee4fc20b9e76f563d813011bafb740dc4cff45c"
+    },
+    {
+      "file": "kca_redress_submission.json",
+      "processed_sha256": "2b12ec5d6d7659ce5b61d359d976b374cd6dc6ccf9e217a0b273a940a9a9866f"
+    },
+    {
+      "file": "kca_mediation_procedure.json",
+      "processed_sha256": "e7db6e66c281de51b3e42a3af342087be82b8229707b3a573e2cbc09e4ad0f53"
     }
   ],
-  "oversize_atomic_count": 12,
+  "oversize_atomic_count": 13,
   "usage": "embedding_text 사용. 표·약관 조문은 원자 단위 유지. 실제 임베딩 전 모델 토큰 제한 확인.",
   "excluded": [
     {
@@ -213,6 +301,10 @@
     {
       "source_id": "ftc_terms_11125_file_e27d5f98",
       "reason": "processed_historical"
+    },
+    {
+      "source_id": "minimum_wage_2026_attachment_body",
+      "reason": "reference_only"
     }
   ],
   "duplicate_aliases": [

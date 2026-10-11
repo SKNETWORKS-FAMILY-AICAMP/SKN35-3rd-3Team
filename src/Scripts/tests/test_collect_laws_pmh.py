@@ -4,10 +4,18 @@ from datetime import date
 from unittest.mock import patch
 from datetime import datetime, timezone
 
-from src.Scripts.collect_laws import select_law, validate_body, xml_to_data, korea_today
+from src.Scripts.collect_laws import select_law, validate_body, xml_to_data, korea_today, LAW_NAMES
 
 
 class LawCollectionTests(unittest.TestCase):
+    def test_priority_law_sources_are_configured_without_duplicates(self):
+        self.assertEqual(len(LAW_NAMES),len(set(LAW_NAMES)))
+        self.assertTrue({'방문판매 등에 관한 법률','전자상거래 등에서의 소비자보호에 관한 법률 시행령',
+                         '최저임금법','최저임금법 시행령','주택임대차보호법 시행령',
+                         '할부거래에 관한 법률','할부거래에 관한 법률 시행령',
+                         '소송촉진 등에 관한 특례법','소송촉진 등에 관한 특례법 제3조제1항 본문의 법정이율에 관한 규정',
+                         '민사집행법','민사집행규칙','소비자기본법','소비자기본법 시행령'}.issubset(LAW_NAMES))
+
     def test_default_date_tracks_today_in_korea(self):
         with patch('src.Scripts.collect_laws.datetime') as clock:
             clock.now.side_effect = lambda tz: datetime(2030, 1, 1, 16, tzinfo=timezone.utc).astimezone(tz)

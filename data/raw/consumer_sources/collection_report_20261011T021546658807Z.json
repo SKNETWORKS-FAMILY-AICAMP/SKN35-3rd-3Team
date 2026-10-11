@@ -1,0 +1,10 @@
+{
+  "saved": [],
+  "failures": [
+    {
+      "source_id": "minimum_wage_simple_labor",
+      "error_type": "ConnectionError"
+    }
+  ],
+  "started_at": "2026-10-11T02:15:46.344733+00:00"
+}

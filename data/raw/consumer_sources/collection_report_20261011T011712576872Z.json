@@ -1,0 +1,36 @@
+{
+  "saved": [
+    {
+      "source_id": "minimum_wage_2026",
+      "title": "2026년 적용 최저임금 고시",
+      "document_type": "administrative_rule",
+      "domain": "임금",
+      "administrative_id": "2100000262710",
+      "expected_effective_date": "20260101",
+      "source_url": "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2100000262710",
+      "raw_file": "data/raw/consumer_sources/minimum_wage_2026_c0a8b9413dbfebc6.xml",
+      "raw_sha256": "c0a8b9413dbfebc6e660bb48daa7e20843bced7d5f64a95ed4f0e2542ad139c5",
+      "collected_at": "2026-10-11T01:17:12.081053+00:00",
+      "format": "xml",
+      "body_pdf_file": "data/raw/consumer_sources/minimum_wage_2026_attachment_body_b87d3570ff339e04.pdf",
+      "body_pdf_sha256": "b87d3570ff339e04747d7835228e20c2faeffa7c9fbcdfe79d719e6ed096a30d",
+      "body_pdf_url": "https://law.go.kr/flDownload.do?flSeq=155278071"
+    },
+    {
+      "source_id": "minimum_wage_2026_attachment_body",
+      "title": "2026년 적용 최저임금 고시(고용노동부 고시 제2025-47호).pdf",
+      "document_type": "administrative_rule_appendix",
+      "domain": "임금",
+      "administrative_id": "2100000262710",
+      "expected_effective_date": "20260101",
+      "source_url": "https://law.go.kr/flDownload.do?flSeq=155278071",
+      "parent_source_id": "minimum_wage_2026",
+      "raw_file": "data/raw/consumer_sources/minimum_wage_2026_attachment_body_b87d3570ff339e04.pdf",
+      "raw_sha256": "b87d3570ff339e04747d7835228e20c2faeffa7c9fbcdfe79d719e6ed096a30d",
+      "collected_at": "2026-10-11T01:17:12.276042+00:00",
+      "format": "pdf"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T01:17:11.371256+00:00"
+}

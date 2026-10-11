@@ -1,12 +1,37 @@
 import json
 import unittest
-from unittest.mock import Mock
+import tempfile
+import xml.etree.ElementTree as ET
+from pathlib import Path
+from unittest.mock import Mock, patch
 from urllib.parse import parse_qs, urlsplit
 
-from src.Scripts.collect_precedents import sanitize_listing, valid_saved
+from src.Scripts.collect_precedents import sanitize_listing, valid_saved, collect
 
 
 class PrecedentCollectionTests(unittest.TestCase):
+    def test_explicit_ids_skip_search_and_preserve_invalid_existing_raw(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder=Path(directory)
+            detail=ET.fromstring('<PrecService><판례정보일련번호>123</판례정보일련번호><판례내용>본문</판례내용></PrecService>')
+            with patch('src.Scripts.collect_precedents.OUTPUT_DIR',folder), patch.dict('os.environ',{'LAW_API_OC':'test'}), \
+                 patch('src.Scripts.collect_precedents.load_dotenv'), patch('src.Scripts.collect_precedents.requests.Session'), \
+                 patch('src.Scripts.collect_precedents.time.sleep'), patch('src.Scripts.collect_precedents.request_xml',return_value=detail) as request:
+                self.assertEqual(collect('unused',20,0,['123','123']),0)
+                self.assertEqual(request.call_count,1)
+                self.assertEqual(request.call_args.args[1],'lawService.do')
+                raw=json.loads((folder/'123.json').read_text(encoding='utf-8'))
+                self.assertEqual(raw['list_metadata'],{})
+                self.assertIsNone(raw['query'])
+                self.assertEqual(collect('unused',20,0,['123']),0)
+                self.assertEqual(request.call_count,1)
+                (folder/'456.json').write_text('broken raw',encoding='utf-8')
+                self.assertEqual(collect('unused',20,0,['456']),1)
+                self.assertEqual((folder/'456.json').read_text(encoding='utf-8'),'broken raw')
+                self.assertEqual(request.call_count,1)
+        with self.assertRaises(ValueError):
+            collect('unused',20,0,['../123'])
+
     def test_authentication_removed_without_losing_link_parameters(self):
         listing = {"판례상세링크": "/DRF/lawService.do?OC=sample&ID=123&type=XML&blank=", "사건명": "사건"}
         safe = sanitize_listing(listing)

@@ -23,6 +23,7 @@ TEXT_FIELDS = {
 
 # 2026-10-10 원문 비교·발췌 검토 결과. 본문이 바뀌면 검토 승인을 재사용하지 않는다.
 REVIEWED_HASHES = {
+    "147076": "59df2e5a5981c3d726d04900ef23038ac85cca967c867fd4d1bc0a2ed1321232",
     "227759": "774cd24394e92992b9e321ba5bfd756224334a04b876afc56770a0caa7a002bf",
     "234477": "74d9ad73b0e354c5baaeebefaac3401a94ab04f29347183859ab366932f81115",
     "605583": "f1590661cf690d527c4c77b47ee0847025711363ccea366eba5264ef38612980",
@@ -30,6 +31,10 @@ REVIEWED_HASHES = {
     "614661": "144036fbf02fd3c5a009fb5cf07d5bbd6eeb409953fba444b334ce9985da59b0",
 }
 SPAN_ROLES = {
+    "건물 임대차 사건의 전제사실": "civil_case_facts",
+    "원상복구비와 원상복구기간의 판단": "civil_court_discussion",
+    "보증금 공제와 잔액 판단": "civil_court_discussion",
+    "명도 후 반환 지연손해금 판단": "civil_historical_interest",
     "심판범위": "procedural_scope",
     "피고인의 임금·퇴직금 주장": "party_argument",
     "법원의 임금·퇴직금 판단": "court_discussion_with_arguments",
@@ -43,6 +48,9 @@ SPAN_ROLES = {
     "중고나라 미배송 사기 적용법조": "applied_law",
 }
 ROLE_LABELS = {
+    "civil_case_facts": "학원 건물 임대차 사건의 사실관계: 주택 사건과 구분",
+    "civil_court_discussion": "서울중앙지법 판단: 당사자 주장·증빙·특약 및 개별 인정액 포함",
+    "civil_historical_interest": "2007년 하급심의 당시 이율 적용: 현행 이율과 구분",
     "procedural_scope": "심판 범위",
     "party_argument": "당사자 주장: 법원 판단과 구분",
     "court_discussion_with_arguments": "법원 검토: 공소사실·당사자 주장·하급심 및 당심 판단 포함",
@@ -117,6 +125,12 @@ def get_sections(text):
 # 확인한 원문의 제목 경계를 사용한다. 경계가 달라지면 자동 추측하지 않고 실패한다.
 # start/end는 정제된 full_text 기준의 0-based, end-exclusive 위치이다.
 PARTIAL_RULES = {
+    "147076": [
+        ("건물 임대차 사건의 전제사실", r"【이\s*유】\s*1\. 사안의 개요", r"(?m)^2\. 본소청구에 대한 판단", 0),
+        ("원상복구비와 원상복구기간의 판단", r"(?m)^나\. 원상복구비용과 원상복구기간", r"(?m)^다\. 연체관리비", 0),
+        ("보증금 공제와 잔액 판단", r"(?m)^가\. 임대차보증금반환청구에 대하여", r"(?m)^나\. 손해배상청구에 대하여", 0),
+        ("명도 후 반환 지연손해금 판단", r"(?m)^다\. 반소청구의 결론", r"(?m)^4\. 결", 0),
+    ],
     "227759": [
         ("심판범위", r"【이\s*유】1\. 이 법원의 심판범위", r"(?m)^2\. 항소이유의 요지", 0),
         ("피고인의 임금·퇴직금 주장", r"(?m)^나\) 공소외 2 회사 근로자들에 대한 근로기준법위반 및 근로자퇴직급여보장법위반의 점에 대하여", r"(?m)^다\) 위계공무집행방해의 점에 대하여", 0),
@@ -208,9 +222,14 @@ def preprocess(row, raw):
     warnings = []
     if not texts["issues"] and not texts["summary"]:
         warnings.append("판시사항·판결요지 없음. 원문에 없는 요약을 생성하지 않았습니다.")
-    if is_partial:
+    if is_partial and identifier != "147076":
         warnings.append("관련 구간 발췌. 전체 사건의 형량·배상명령은 해당 쟁점만의 결과가 아닙니다.")
         warnings.append("당사자 주장·공소사실과 법원의 판단을 구분해서 읽어야 합니다.")
+    if identifier == "147076":
+        warnings.extend([
+            "서울중앙지법 2007-05-31 학원 건물 임대차 하급심(원문 항소 표시). 주택 임대차 직접 판례·대법원 확정 판단으로 간주하지 않음. 사실관계·특약·증빙과 법원의 판단을 함께 발췌.",
+            "통상손모 제외, 특약 합의 및 공사비·기간의 개별 판단 사례. 공사비 50% 및 5일은 이 사건 인정치로 일반 공제율·기간이 아님.",
+            "원문 연 20%는 2007년 당시 소송촉진법 적용 이율. 현재 지연이자율로 사용하지 않음. 명도·이행 제공, 약정·송달·항쟁의 상당성 및 적용 시점별 현행 조문 대조 필요."])
     if date_iso is None:
         warnings.append("선고일자 정규화 실패. 원문 날짜를 확인해주세요.")
     digest = text_digest(texts["full_text"])
@@ -219,6 +238,8 @@ def preprocess(row, raw):
     if reviewed:
         review_note = ("관련 발췌 구간과 주장·판단 맥락 확인 완료. 전체 사건 형량은 검색 입력에서 제외."
                       if is_partial else "동일 사건 두 자료를 비교: 공백·인용부호·표 경계 물음표만 다름. 대표는 614661.")
+        if identifier == "147076":
+            review_note = "학원 건물 사건의 전제사실·원상복구 특약 및 통상손모·견적과 공사기간·공제 잔액·명도 후 역사적 이율 판단을 원문 대조. 주택/상가 및 심급·현행 이율의 적용 범위 경고 보존."
     return {
         "schema_version": 1, "document_type": "precedent", "precedent_id": identifier,
         "case_name": clean_text(detail.get("사건명", "")),
@@ -231,7 +252,7 @@ def preprocess(row, raw):
         "source_url": f"https://www.law.go.kr/LSW/precInfoP.do?precSeq={identifier}",
         "source_file": f"data/raw/precedents/{identifier}.json",
         "source_collected_at": raw.get("collected_at"),
-        "collection_query": raw.get("query"), "domain": row["domain"],
+        "collection_query": None if raw.get('collection_mode')=='explicit_id' else raw.get("query"), "domain": row["domain"],
         "relevance_status": row["status"], "relevance_reason": row["reason"],
         "texts": texts, "sections": sections, "selected_spans": selected,
         "retrieval_text": retrieval_text,
@@ -240,7 +261,7 @@ def preprocess(row, raw):
         "missing_fields": [field for key, field in TEXT_FIELDS.items() if not texts[key]],
         "warnings": warnings, "needs_manual_review": is_partial and not reviewed,
         "review_resolution": {"status": "reviewed" if reviewed else "not_applicable",
-                              "review_date": "2026-10-10" if reviewed else None,
+                              "review_date": ("2026-10-11" if identifier == "147076" else "2026-10-10") if reviewed else None,
                               "reviewed_full_text_sha256": digest if reviewed else None,
                               "note": review_note},
         "duplicate_candidates": row.get("duplicate_group", []),

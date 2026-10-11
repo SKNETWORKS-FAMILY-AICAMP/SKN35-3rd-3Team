@@ -22,7 +22,7 @@ from requests.adapters import HTTPAdapter
 ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT / 'data/raw/consumer_sources'
 MANIFEST = ROOT / 'data/processed/consumer_sources/source_manifest.json'
-HOSTS = {'www.kca.go.kr', 'www.ftc.go.kr', 'www.law.go.kr', 'law.go.kr', 'news.seoul.go.kr'}
+HOSTS = {'www.kca.go.kr', 'www.ftc.go.kr', 'www.law.go.kr', 'law.go.kr', 'news.seoul.go.kr', 'labor.moel.go.kr', '1350.moel.go.kr', 'www.easylaw.go.kr'}
 
 
 def write_json(path, value):
@@ -137,6 +137,10 @@ def fetch(client, url, params=None):
     response.raise_for_status()
     if urlparse(response.url).hostname not in HOSTS or urlparse(response.url).scheme != 'https':
         raise ValueError('공식 출처 외부로 이동했습니다.')
+    if urlparse(response.url).hostname == 'www.easylaw.go.kr':
+        tree=HTMLTree(decode_html(response.content)).root
+        if len(tree.find(lambda n:'ovDivbox' in n.attrs.get('class','').split())) != 1:
+            raise ValueError('생활법령 본문 누락 또는 접근 차단 화면')
     return response
 
 
@@ -162,12 +166,23 @@ def collect_admin(client, source):
     load_dotenv(ROOT / '.env')
     oc = os.environ['LAW_API_OC']
     response = fetch(client, 'https://www.law.go.kr/DRF/lawService.do',
-                     {'OC':oc, 'target':'admrul', 'type':'XML', 'LM':source['title']})
+                     {'OC':oc, 'target':'admrul', 'type':'XML',
+                      **({'ID':source['administrative_id']} if source.get('administrative_id') else {'LM':source['title']})})
     text = response.content.decode('utf-8-sig')
     text = re.sub(r'([?&](?:amp;)?OC=)[^&\s<>"\']+', r'\1REDACTED', text, flags=re.I)
     root = ET.fromstring(text)
     if root.find('.//행정규칙명') is None:
         raise ValueError('정상 행정규칙 응답이 아닙니다.')
+    info=root.find('행정규칙기본정보')
+    if info is None or re.sub(r'\s','',info.findtext('행정규칙명','')) != re.sub(r'\s','',source['title']):
+        raise ValueError('요청한 행정규칙명과 응답이 다릅니다.')
+    if source.get('administrative_id') and info.findtext('행정규칙일련번호')!=source['administrative_id']:
+        raise ValueError('행정규칙 고정 버전 불일치')
+    effective=info.findtext('시행일자','')
+    if not re.fullmatch(r'\d{8}',effective) or datetime.strptime(effective,'%Y%m%d').date()>datetime.now().date():
+        raise ValueError('행정규칙 시행일 확인 필요 또는 시행예정 자료')
+    if source.get('expected_effective_date') and effective != source['expected_effective_date']:
+        raise ValueError('고정한 적용 연도의 시행일과 응답이 다릅니다.')
     record = preserve(text.encode('utf-8'), source, 'xml')
     attachments = []
     for index, unit in enumerate(root.findall('.//별표단위')):
@@ -182,6 +197,25 @@ def collect_admin(client, source):
                 'title':unit.findtext('별표제목') or '별표', 'source_url':safe_url(url),
                 'parent_source_id':source['source_id'], 'document_type':'administrative_rule_appendix'}
         attachments.append(preserve(pdf.content, item, 'pdf'))
+    if source['source_id']=='minimum_wage_2026':
+        pairs=[];name=None
+        for n in root.find('첨부파일'):
+            if n.tag=='첨부파일명':name=(n.text or '').strip()
+            elif n.tag=='첨부파일링크' and name and name.startswith(source['title']) and name.endswith('.pdf'):
+                pairs.append((name,n.text))
+        if len(pairs)!=1:
+            raise ValueError('최저임금 고시 본문 PDF를 확정할 수 없습니다.')
+        url=urljoin('https://www.law.go.kr',pairs[0][1]).replace('http://','https://',1)
+        response=fetch(client,url)
+        if not response.content.startswith(b'%PDF'):
+            raise ValueError('최저임금 고시 본문 PDF 응답이 아닙니다.')
+        attachment=preserve(response.content,{**source,'source_id':source['source_id']+'_attachment_body',
+            'title':pairs[0][0],'source_url':safe_url(url),'parent_source_id':source['source_id'],
+            'document_type':'administrative_rule_appendix'},'pdf')
+        record['body_pdf_file']=attachment['raw_file']
+        record['body_pdf_sha256']=attachment['raw_sha256']
+        record['body_pdf_url']=attachment['source_url']
+        attachments.append(attachment)
     return [record]+attachments
 
 
@@ -224,11 +258,13 @@ def attachments(source, data):
     return found
 
 
-def run():
+def run(source_ids=None):
     manifest = json.loads(MANIFEST.read_text(encoding='utf-8'))
     report = {'saved': [], 'failures': [], 'started_at':datetime.now(timezone.utc).isoformat()}
     client = session()
-    queue = list(manifest['sources'])
+    queue = [s for s in manifest['sources'] if source_ids is None or s['source_id'] in source_ids]
+    if source_ids and set(source_ids) != {s['source_id'] for s in queue}:
+        raise ValueError('manifest에 없는 수집 ID')
     seen = set()
     for source in queue:
         if source['source_id'] in seen:
@@ -252,12 +288,21 @@ def run():
         time.sleep(0.3)
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     write_json(RAW_DIR / f'collection_report_{stamp}.json', report)
-    write_json(MANIFEST.parent / 'consumer_collection_report.json', report)
-    manifest['sources'] = list({s['source_id']:s for s in queue}.values())
+    current_path=MANIFEST.parent / 'consumer_collection_report.json'
+    if source_ids and current_path.exists():
+        previous=json.loads(current_path.read_text(encoding='utf-8'))
+        replaced={s['source_id'] for s in report['saved']}
+        report['saved']=[s for s in previous['saved'] if s['source_id'] not in replaced]+report['saved']
+        report['failures']=[s for s in previous['failures'] if s['source_id'] not in set(source_ids)]+report['failures']
+    write_json(current_path, report)
+    manifest['sources'] = list({s['source_id']:s for s in manifest['sources']+queue}.values())
     write_json(MANIFEST,manifest)
     print(f"수집 {len(report['saved'])} / 실패 {len(report['failures'])}")
     return report
 
 
 if __name__ == '__main__':
-    raise SystemExit(bool(run()['failures']))
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source-id',action='append',help='manifest의 특정 자료만 수집하고 기존 수집 기록 유지')
+    args=parser.parse_args()
+    raise SystemExit(bool(run(args.source_id)['failures']))

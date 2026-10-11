@@ -18,6 +18,19 @@ DOMAIN_MAP = {
     "parcel_loss": ["parcel_loss"], "shopping_return": ["shopping_return"],
 }
 LAW_DOMAINS = {
+    "소비자기본법": ["consumer_general"], "소비자기본법 시행령": ["consumer_general"],
+    "소송촉진 등에 관한 특례법": ["civil_general"],
+    "소송촉진 등에 관한 특례법 제3조제1항 본문의 법정이율에 관한 규정": ["civil_general"],
+    "민사집행법": ["civil_general"], "민사집행규칙": ["civil_general"],
+    "할부거래에 관한 법률": ["fitness_refund", "consumer_general"],
+    "할부거래에 관한 법률 시행령": ["fitness_refund", "consumer_general"],
+    "방문판매 등에 관한 법률": ["fitness_refund", "consumer_general"],
+    "방문판매 등에 관한 법률 시행령": ["fitness_refund", "consumer_general"],
+    "방문판매 등에 관한 법률 시행규칙": ["fitness_refund", "consumer_general"],
+    "전자상거래 등에서의 소비자보호에 관한 법률 시행령": ["shopping_return", "consumer_general"],
+    "최저임금법": ["labor_wage"], "최저임금법 시행령": ["labor_wage"],
+    "최저임금법 시행규칙": ["labor_wage"],
+    "주택임대차보호법 시행령": ["housing_lease"],
     "주택임대차보호법": ["housing_lease"], "공인중개사법": ["housing_lease"],
     "민법": ["civil_general"], "형법": ["criminal_general"],
     "근로기준법": ["labor_general"], "근로기준법 시행령": ["labor_general"],
@@ -77,7 +90,8 @@ def normalize_chunk(chunk, document=None):
         domains = LAW_DOMAINS.get(chunk.get("law_name"), [])
         basis = "law_document"
     elif kind == "official_guide":
-        domains = GUIDE_DOMAINS.get(chunk.get("source_file"), [])
+        domains = (DOMAIN_MAP.get(chunk.get("domain"), []) if (document.get("format") or chunk.get("source_format"))=="html"
+                   and identifier==chunk.get("source_id") else GUIDE_DOMAINS.get(chunk.get("source_file"), []))
         basis = "guide_document"
     else:
         domains = DOMAIN_MAP.get(chunk.get("domain"), [])
@@ -100,6 +114,13 @@ def normalize_chunk(chunk, document=None):
                   domains=list(domains), domain_classification=basis if domains else "unmapped",
                   source_url=chunk.get("source_url"), source_path=source_path,
                   dates={key: normalize_date(chunk.get(key)) for key in DATE_FIELDS})
+    if kind=='law' and chunk.get('law_name')=='최저임금법' and chunk.get('article_label')=='제6조':
+        related=([u['unit_id'] for u in document['supplements'] if '2024년부터는 100분의 0' in u['body_text']]
+                 if 'supplements' in document else chunk.get('required_context_unit_ids',[]))
+        if not related:
+            raise ValueError('최저임금법 산입 비율의 연도별 부칙 연결 누락')
+        result['required_context_unit_ids']=related
+        result['context_requirement_note']='제6조의 본칙 비율만으로 해당 연도 산입범위를 계산하지 않음. 연결 부칙 적용 특례와 시행규칙을 함께 확인.'
     validate_chunk(result)
     return result
 

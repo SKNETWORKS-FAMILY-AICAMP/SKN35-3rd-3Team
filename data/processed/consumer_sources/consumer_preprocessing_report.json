@@ -332,6 +332,204 @@
       "domain": "parcel_loss",
       "unit_count": 24,
       "raw_sha256": "edd5d70775cc8b53ad4bb65425df93e5a2a2cfa13e51a99b0f639865bd65c355"
+    },
+    {
+      "file": "continual_contract_refund.json",
+      "source_id": "continual_contract_refund",
+      "document_type": "administrative_rule",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 9,
+      "raw_sha256": "6b47303e7142fc41b1b0512c02d1b4ad56fa5311134fde4cc4bf974990fcf7d3"
+    },
+    {
+      "file": "minimum_wage_2026.json",
+      "source_id": "minimum_wage_2026",
+      "document_type": "administrative_rule",
+      "embedding_candidate": true,
+      "domain": "임금",
+      "unit_count": 1,
+      "raw_sha256": "c0a8b9413dbfebc6e660bb48daa7e20843bced7d5f64a95ed4f0e2542ad139c5"
+    },
+    {
+      "file": "minimum_wage_2026_attachment_body.json",
+      "source_id": "minimum_wage_2026_attachment_body",
+      "document_type": "administrative_rule_appendix",
+      "embedding_candidate": false,
+      "domain": "임금",
+      "unit_count": 0,
+      "raw_sha256": "b87d3570ff339e04747d7835228e20c2faeffa7c9fbcdfe79d719e6ed096a30d"
+    },
+    {
+      "file": "minimum_wage_simple_labor.json",
+      "source_id": "minimum_wage_simple_labor",
+      "document_type": "administrative_rule",
+      "embedding_candidate": true,
+      "domain": "임금",
+      "unit_count": 1,
+      "raw_sha256": "df8550c1d3d7570dd9fe920885c4dbe8a75339f2592ca19a294a546a1c84e848"
+    },
+    {
+      "file": "moel_wage_procedure.json",
+      "source_id": "moel_wage_procedure",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "임금체불",
+      "unit_count": 5,
+      "raw_sha256": "9c52aa51a2d0ec54ecf1dd2c1bbbf1d0178bb80f38be77bcf48acce864bc8122"
+    },
+    {
+      "file": "moel_wage_evidence_1000323154.json",
+      "source_id": "moel_wage_evidence_1000323154",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "임금체불",
+      "unit_count": 1,
+      "raw_sha256": "7492a58ac0c94d39e099c999175696084026eddf014736756bc5afdb52e4af5a"
+    },
+    {
+      "file": "kca_overseas_types.json",
+      "source_id": "kca_overseas_types",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 8,
+      "raw_sha256": "8b985f72ecc984e9e7c0c844c3cd1e285de51915f24e9620f0ab55dcf17ff832"
+    },
+    {
+      "file": "kca_overseas_checklist.json",
+      "source_id": "kca_overseas_checklist",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 6,
+      "raw_sha256": "8a7c044d6fb1eb22d7dd5eaf6edc2778c3dd0dec0a709e1513964ead3706dcac"
+    },
+    {
+      "file": "kca_overseas_returns.json",
+      "source_id": "kca_overseas_returns",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 1,
+      "raw_sha256": "bc2e743fc2f1ec0b040b03f275fb2e89619ec75e536f35aa3a1503b7116c0c04"
+    },
+    {
+      "file": "kca_fitness_closure_gym.json",
+      "source_id": "kca_fitness_closure_gym",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 2,
+      "raw_sha256": "c624ab16f714fd3ffebcff2a683e0502592338d17da021b41c4abb64ff66940a"
+    },
+    {
+      "file": "kca_fitness_closure_pilates.json",
+      "source_id": "kca_fitness_closure_pilates",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 4,
+      "raw_sha256": "0c85b3eaed61bd88aa4f958522b4afde87f3266352849d09b27ebccfb44ddf74"
+    },
+    {
+      "file": "kca_damage_redress_procedure.json",
+      "source_id": "kca_damage_redress_procedure",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 3,
+      "raw_sha256": "a76de09b87f6e09531234b7ae3c2a4cf5c0939170d95a5f3456d1b9b89dfe863"
+    },
+    {
+      "file": "easylaw_consumer_small_claim.json",
+      "source_id": "easylaw_consumer_small_claim",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "3650e2b8cbaaccd3b8fec83cae0e27955d4c76f316c770736e6e90ea46452ca9"
+    },
+    {
+      "file": "easylaw_consumer_payment_order.json",
+      "source_id": "easylaw_consumer_payment_order",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 4,
+      "raw_sha256": "ea994a1979330dba43f686720c4651aba525d64f120ef995bdb27dc39f1b6fdd"
+    },
+    {
+      "file": "easylaw_payment_order_application.json",
+      "source_id": "easylaw_payment_order_application",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "95a740b53c356d13fe35206b6005f73022718bcf5985b481e47db7a73ae56b54"
+    },
+    {
+      "file": "easylaw_civil_enforcement.json",
+      "source_id": "easylaw_civil_enforcement",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 4,
+      "raw_sha256": "344f615b7ca0b3e2daad9990ce08c5f9666577640fbd6f1beaae9425614ed545"
+    },
+    {
+      "file": "easylaw_housing_termination.json",
+      "source_id": "easylaw_housing_termination",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "주택임대차",
+      "unit_count": 2,
+      "raw_sha256": "99c0cd5e05a96ba24645b505a9b53ce954838520400767846d882fd344501477"
+    },
+    {
+      "file": "easylaw_housing_restoration.json",
+      "source_id": "easylaw_housing_restoration",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "주택임대차",
+      "unit_count": 2,
+      "raw_sha256": "095ff325282e7a26f3522067c37976e75af69bb8d66984f2a8328b8cd3d981fe"
+    },
+    {
+      "file": "easylaw_housing_distribution.json",
+      "source_id": "easylaw_housing_distribution",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "주택임대차",
+      "unit_count": 9,
+      "raw_sha256": "b665db61357ab62b7816aab6c046e2d9859b347d62705340ee44fd02b4628b1b"
+    },
+    {
+      "file": "kca_redress_requirements.json",
+      "source_id": "kca_redress_requirements",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "consumer",
+      "unit_count": 2,
+      "raw_sha256": "f5048b0525c401e490afe2cf7e89fba8f882477c0a5f23a25d89c3cce6668857"
+    },
+    {
+      "file": "kca_redress_submission.json",
+      "source_id": "kca_redress_submission",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "consumer",
+      "unit_count": 5,
+      "raw_sha256": "c98aa847ed1f68d56261e4fb49fcd06bc1c32a06e02f6cdab9bd9b7d4bc798c9"
+    },
+    {
+      "file": "kca_mediation_procedure.json",
+      "source_id": "kca_mediation_procedure",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "consumer",
+      "unit_count": 7,
+      "raw_sha256": "30422ca02b9d5a45a056c8501be866eff5cd3643b83cc3d3ae6baadad9b0e6bb"
     }
   ],
   "failures": [],
@@ -391,6 +589,10 @@
     {
       "source_id": "ftc_terms_11125_file_e27d5f98",
       "reason": "processed_historical"
+    },
+    {
+      "source_id": "minimum_wage_2026_attachment_body",
+      "reason": "reference_only"
     }
   ],
   "duplicate_aliases": [

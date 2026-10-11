@@ -9,6 +9,7 @@ uv run python src/Scripts/collect_precedents.py --query "물품대금 사기" --
 uv run python src/Scripts/collect_precedents.py --query "청약철회" --limit 20
 uv run python src/Scripts/collect_precedents.py --query "전자상거래" --limit 20
 uv run python src/Scripts/collect_precedents.py --query "임금체불" --limit 20
+uv run python src/Scripts/collect_precedents.py --id 147076
 
 인증키 : .env의 LAW_API_OC
 """
@@ -95,14 +96,20 @@ def valid_saved(path, identifier):
         return False
 
 
-def collect(query, limit, delay):
+def collect(query, limit, delay, identifiers=None):
+    if identifiers is not None:
+        identifiers=list(dict.fromkeys(identifiers))
+        if not identifiers or any(not i.isascii() or not i.isdigit() for i in identifiers):
+            raise ValueError('판례 ID는 ASCII 숫자여야 합니다.')
+        limit=len(identifiers)
     load_dotenv(PROJECT_ROOT / ".env")
     oc = os.environ.get("LAW_API_OC", "").strip()
     if not oc:
         raise RuntimeError(".env 또는 환경변수에 LAW_API_OC를 설정해주세요.")
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     report = {
-        "query": query,
+        "query": query if identifiers is None else None,
+        "requested_ids": identifiers,
         "started_at": datetime.now(timezone.utc).isoformat(),
         "limit": limit,
         "saved": [],
@@ -116,10 +123,16 @@ def collect(query, limit, delay):
         session.mount("https://", HTTPAdapter(max_retries=retry))
         try:
             while len(seen) < limit:
-                root = request_xml(
-                    session, "lawSearch.do", oc, search=2, query=query,
-                    display=min(100, limit), page=page,
-                )
+                if identifiers is not None:
+                    root=ET.Element('PrecSearch')
+                    for identifier in identifiers:
+                        entry=ET.SubElement(root,'prec')
+                        ET.SubElement(entry,'판례일련번호').text=identifier
+                else:
+                    root = request_xml(
+                        session, "lawSearch.do", oc, search=2, query=query,
+                        display=min(100, limit), page=page,
+                    )
                 if root.tag != "PrecSearch":
                     raise RuntimeError("판례 목록 응답 형식이 아닙니다. 인증 및 API 권한을 확인해주세요.")
                 entries = root.findall("prec")
@@ -141,6 +154,9 @@ def collect(query, limit, delay):
                         report["skipped"].append(identifier)
                         print(f"[건너뜀] {identifier}")
                         continue
+                    if path.exists():
+                        report['failures'].append({'precedent_id':identifier,'error':'기존 raw 검증 실패: 덮어쓰기 금지'})
+                        continue
                     time.sleep(delay)
                     try:
                         detail_root = request_xml(session, "lawService.do", oc, ID=identifier)
@@ -157,9 +173,10 @@ def collect(query, limit, delay):
                             "precedent_id": identifier,
                             "source": "국가법령정보센터",
                             "source_url": f"https://www.law.go.kr/LSW/precInfoP.do?precSeq={identifier}",
-                            "query": query,
+                            "query": query if identifiers is None else None,
                             "collected_at": datetime.now(timezone.utc).isoformat(),
-                            "list_metadata": listing,
+                            "list_metadata": listing if identifiers is None else {},
+                            "collection_mode": "search" if identifiers is None else "explicit_id",
                             "detail": detail,
                         })
                         report["saved"].append(identifier)
@@ -185,14 +202,15 @@ def collect(query, limit, delay):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--query", default="보증금반환", help="판례 본문 검색어")
+    parser.add_argument("--id", action="append", help="확인한 판례일련번호로 직접 수집; 반복 지정 가능")
     parser.add_argument("--limit", type=int, default=20, help="검색 결과 중 처리할 최대 판례 수")
     parser.add_argument("--delay", type=float, default=0.5, help="요청 간 대기 시간(초)")
     args = parser.parse_args()
     if args.limit <= 0 or args.delay < 0 or not args.query.strip():
         parser.error("limit은 양수, delay는 0 이상, query는 비어 있지 않아야 합니다.")
     try:
-        return collect(args.query, args.limit, args.delay)
-    except (RuntimeError, OSError) as exc:
+        return collect(args.query, args.limit, args.delay, args.id)
+    except (RuntimeError, OSError, ValueError) as exc:
         print(f"수집을 시작할 수 없습니다: {exc}", file=sys.stderr)
         return 1
 

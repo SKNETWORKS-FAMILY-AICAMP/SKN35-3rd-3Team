@@ -105,6 +105,11 @@ def make_aux_chunks(document, unit, size=1200, overlap=120):
     if not text or cursor != len(text):
         raise ValueError("부칙·별표 본문에 누락된 구간이 있습니다.")
     tables = unit.get("tables", [])
+    # PDF 줄바꿈을 목 경계로 오인하면 구매일 불명 조건과 단서가 분리된다.
+    # 일반적 해결기준의 비표형 본문은 기준·예외 전체를 원자 단위로 보존한다.
+    atomic_criteria = (document["law_name"] == "소비자기본법 시행령"
+                       and unit["content_type"] == "appendix" and not tables
+                       and unit["title"].startswith("일반적 소비자분쟁해결기준"))
     ranges, cursor = [], 0
     for table in tables:
         if cursor < table["start"]:
@@ -113,6 +118,8 @@ def make_aux_chunks(document, unit, size=1200, overlap=120):
         cursor = table["end"]
     if cursor < len(text):
         ranges.append((cursor, len(text), None))
+    if atomic_criteria:
+        ranges = [(0, len(text), None)]
     if unit["content_type"] == "supplement":
         header = (f"[{document['law_name']} / 부칙 / 공포일 {unit['promulgation_date']} / "
                   f"공포번호 {unit['promulgation_number']} / {unit['title']}]\n"
@@ -122,6 +129,8 @@ def make_aux_chunks(document, unit, size=1200, overlap=120):
         header = f"[{document['law_name']} / 별표 / {unit['title']} / 별표 시행일 {unit['effective_date']}]"
         # 표의 비고·일반기준도 문맥으로 유지한다.
         context = "\n".join(s["text"].strip() for s in segments if s["level"] != "표" and s["text"].strip())
+        if atomic_criteria:
+            context = ""  # 반환 본문에 이미 기준 전체가 있어 임베딩에 중복하지 않는다.
     boundaries = {s["end"] for s in segments}
     chunks = []
     for begin, stop, table in ranges:
@@ -129,7 +138,7 @@ def make_aux_chunks(document, unit, size=1200, overlap=120):
         while start < stop:
             limit = min(start + size, stop)
             options = [b for b in boundaries if start < b <= limit]
-            end = stop if table else (max(options) if options else limit)
+            end = stop if table or atomic_criteria else (max(options) if options else limit)
             fragment = text[start:end]
             # 공백 전용 구간은 검색용 청크에서 제외하되 원본에는 남긴다.
             if fragment.strip():
@@ -158,7 +167,9 @@ def make_aux_chunks(document, unit, size=1200, overlap=120):
                                "offset_basis": "unit.body_text", "atomic_table": bool(table),
                                "oversize_atomic_table": bool(table) and len(fragment) > size,
                                "table_rows": table["physical_rows"] if table else [],
-                               "split_basis": "whole_table" if table else "paragraph_or_char_window",
+                               "split_basis": "whole_general_criteria" if atomic_criteria else ("whole_table" if table else "paragraph_or_char_window"),
+                               **({"atomic_unit": True, "oversize_atomic_unit": len(fragment) > size}
+                                  if atomic_criteria else {}),
                                "warnings": document["warnings"] + unit["warnings"]})
             if end == stop:
                 break

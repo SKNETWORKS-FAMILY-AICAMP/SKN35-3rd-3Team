@@ -11,7 +11,7 @@ from src.Scripts.collect_consumer_sources import ROOT, write_json
 from src.Scripts.tests.test_precedent_retrieval_pmh import BM25
 
 SEARCH_OPTIONS={'max_per_document':2,'repeat_penalty':1.0}
-SEARCH_POLICY={'evidence_mode':True,**SEARCH_OPTIONS,'claim_weight':0.6,
+SEARCH_POLICY={'evidence_mode':True,**SEARCH_OPTIONS,'claim_weight':0.6,'header_weight':0.5,'search_representation_version':3,
                'query_expansions':[['헬스장','체력단련장'],['환불','환급']],
                'note':'검색 점수용 구간과 용어 확장. 전체 원문·역할·경고를 반환하며 법률상 동등성이나 계산 가능성 판정이 아님.'}
 SELECTED_CHUNKS={
@@ -124,7 +124,7 @@ def evaluate():
                            'chunk_after':any(h['chunk_id'] in old['selected_chunk_ids'] for h in now['after']['results']) if old['selected_chunk_ids'] else None})
     report['preprocessing_baseline']=frozen
     report['preprocessing_comparison']={
-        'basis':'동일 검색 정책과 수정 전 선정 청크 ID를 고정한 전처리 전후 비교',
+        'basis':'수정 전 선정 청크 ID를 고정한 누적 비교. 현재 검색 정책도 변경되어 전처리 단독 효과가 아님',
         'source_before':sum(r['source_before'] for r in comparison),
         'source_after':sum(r['source_after'] for r in comparison),
         'chunk_before':sum(r['chunk_before'] is True for r in comparison),
@@ -132,6 +132,26 @@ def evaluate():
         'source_regressed':[r['id'] for r in comparison if r['source_before'] and not r['source_after']],
         'chunk_regressed':[r['id'] for r in comparison if r['chunk_before'] and not r['chunk_after']],
         'questions':comparison}
+    refinement=saved.get('search_refinement_baseline') or {
+        'added_chunk_count':saved.get('added_chunk_count'),'search_policy':saved.get('search_policy'),
+        'questions':[{'id':r['id'],'selected_chunk_ids':r.get('selected_chunk_ids',[]),
+                      'source_hit':r['after']['expected_source_hit_at_5'],
+                      'chunk_hit':r['after'].get('expected_chunk_hit_at_5')} for r in saved.get('questions',[])]}
+    refined=[]
+    for old in refinement['questions']:
+        now=current[old['id']]['after']
+        refined.append({'id':old['id'],'source_before':old['source_hit'],
+                        'source_after':now['expected_source_hit_at_5'],'chunk_before':old['chunk_hit'],
+                        'chunk_after':any(h['chunk_id'] in old['selected_chunk_ids'] for h in now['results']) if old['selected_chunk_ids'] else None})
+    report['search_refinement_baseline']=refinement
+    report['search_refinement_comparison']={
+        'source_before':sum(r['source_before'] for r in refined),
+        'source_after':sum(r['source_after'] for r in refined),
+        'chunk_before':sum(r['chunk_before'] is True for r in refined),
+        'chunk_after':sum(r['chunk_after'] is True for r in refined),
+        'source_regressed':[r['id'] for r in refined if r['source_before'] and not r['source_after']],
+        'chunk_regressed':[r['id'] for r in refined if r['chunk_before'] and not r['chunk_after']],
+        'questions':refined}
     write_json(path,report)
     print(json.dumps({k:report[k] for k in ['question_count','baseline_chunk_count','added_chunk_count','before','after']},ensure_ascii=False))
     return report
@@ -190,6 +210,14 @@ class CoverageTests(unittest.TestCase):
                     if label=='after':
                         span=hit['matched_span']
                         self.assertEqual(span['text'],original['text'][span['start']:span['end']])
+
+    def test_search_refinement_comparison_keeps_selected_ids_and_source_metrics_separate(self):
+        report=json.loads((ROOT/'data/processed/retrieval_evaluation/consumer_coverage_report.json').read_text(encoding='utf-8'))
+        comparison=report['search_refinement_comparison']
+        self.assertEqual(comparison['chunk_after'],sum(r['chunk_after'] is True for r in comparison['questions']))
+        self.assertEqual(comparison['source_after'],sum(r['source_after'] for r in comparison['questions']))
+        self.assertFalse(comparison['source_regressed'])
+        self.assertFalse(comparison['chunk_regressed'])
 
 
 if __name__=='__main__':

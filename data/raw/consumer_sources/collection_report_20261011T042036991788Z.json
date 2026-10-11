@@ -1,0 +1,45 @@
+{
+  "saved": [
+    {
+      "source_id": "easylaw_consumer_small_claim",
+      "title": "소비자분쟁해결: 소액사건심판 신청하기",
+      "source_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=5&cciNo=1&cnpClsNo=1&csmSeq=669",
+      "document_type": "official_guide",
+      "domain": "fitness_refund",
+      "publisher": "법제처 찾기쉬운 생활법령정보",
+      "resolved_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=5&cciNo=1&cnpClsNo=1&csmSeq=669",
+      "raw_file": "data/raw/consumer_sources/easylaw_consumer_small_claim_3650e2b8cbaaccd3.html",
+      "raw_sha256": "3650e2b8cbaaccd3b8fec83cae0e27955d4c76f316c770736e6e90ea46452ca9",
+      "collected_at": "2026-10-11T04:20:35.651231+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "easylaw_consumer_payment_order",
+      "title": "소비자분쟁해결: 지급명령 신청하기",
+      "source_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=5&cciNo=1&cnpClsNo=2&csmSeq=669",
+      "document_type": "official_guide",
+      "domain": "fitness_refund",
+      "publisher": "법제처 찾기쉬운 생활법령정보",
+      "resolved_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=5&cciNo=1&cnpClsNo=2&csmSeq=669",
+      "raw_file": "data/raw/consumer_sources/easylaw_consumer_payment_order_ea994a1979330dba.html",
+      "raw_sha256": "ea994a1979330dba43f686720c4651aba525d64f120ef995bdb27dc39f1b6fdd",
+      "collected_at": "2026-10-11T04:20:36.157671+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "easylaw_payment_order_application",
+      "title": "나홀로 민사소송: 지급명령 신청 절차",
+      "source_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=3&cciNo=3&cnpClsNo=2&csmSeq=568",
+      "document_type": "official_guide",
+      "domain": "fitness_refund",
+      "publisher": "법제처 찾기쉬운 생활법령정보",
+      "resolved_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=3&cciNo=3&cnpClsNo=2&csmSeq=568",
+      "raw_file": "data/raw/consumer_sources/easylaw_payment_order_application_95a740b53c356d13.html",
+      "raw_sha256": "95a740b53c356d13fe35206b6005f73022718bcf5985b481e47db7a73ae56b54",
+      "collected_at": "2026-10-11T04:20:36.675719+00:00",
+      "format": "html"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T04:20:34.808241+00:00"
+}

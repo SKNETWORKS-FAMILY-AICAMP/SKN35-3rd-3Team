@@ -1,0 +1,51 @@
+{
+  "saved": [
+    {
+      "source_id": "kca_fitness_closure_gym",
+      "title": "헬스장 계약·폐업 피해예방 안내",
+      "source_url": "https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003802911",
+      "document_type": "official_guide",
+      "domain": "fitness_refund",
+      "publisher": "한국소비자원",
+      "collection_status": "pending",
+      "review_status": "pending",
+      "resolved_url": "https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003802911",
+      "raw_file": "data/raw/consumer_sources/kca_fitness_closure_gym_c624ab16f714fd3f.html",
+      "raw_sha256": "c624ab16f714fd3ffebcff2a683e0502592338d17da021b41c4abb64ff66940a",
+      "collected_at": "2026-10-11T03:19:12.315741+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "kca_fitness_closure_pilates",
+      "title": "필라테스 폐업 피해예방 및 대응 안내",
+      "source_url": "https://www.kca.go.kr/webzine/board/view?div=kca_2505&linkId=839&menuId=MENU00307",
+      "document_type": "official_guide",
+      "domain": "fitness_refund",
+      "publisher": "한국소비자원",
+      "collection_status": "pending",
+      "review_status": "pending",
+      "resolved_url": "https://www.kca.go.kr/webzine/board/view?div=kca_2505&linkId=839&menuId=MENU00307",
+      "raw_file": "data/raw/consumer_sources/kca_fitness_closure_pilates_0c85b3eaed61bd88.html",
+      "raw_sha256": "0c85b3eaed61bd88aa4f958522b4afde87f3266352849d09b27ebccfb44ddf74",
+      "collected_at": "2026-10-11T03:19:12.835491+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "kca_damage_redress_procedure",
+      "title": "한국소비자원 피해구제 절차 및 처리 제외 안내",
+      "source_url": "https://www.kca.go.kr/odr/pg/ma/pgProcssInfo.do",
+      "document_type": "official_guide",
+      "domain": "fitness_refund",
+      "publisher": "한국소비자원",
+      "collection_status": "pending",
+      "review_status": "pending",
+      "resolved_url": "https://www.kca.go.kr/odr/pg/ma/pgProcssInfo.do",
+      "raw_file": "data/raw/consumer_sources/kca_damage_redress_procedure_a76de09b87f6e095.html",
+      "raw_sha256": "a76de09b87f6e09531234b7ae3c2a4cf5c0939170d95a5f3456d1b9b89dfe863",
+      "collected_at": "2026-10-11T03:19:13.278419+00:00",
+      "format": "html"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T03:19:11.440065+00:00"
+}

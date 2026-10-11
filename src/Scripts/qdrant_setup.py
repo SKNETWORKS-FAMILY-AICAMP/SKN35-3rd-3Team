@@ -15,6 +15,7 @@ import sys
 
 from src.const.env_loader import load_project_env
 from src.const.qdrant_config import load_qdrant_settings
+from src.vector_db.payload_indexes import payload_index_map
 from src.vector_db.qdrant_store import QdrantVectorStore
 from src.vectorstore import VectorStoreError
 
@@ -40,6 +41,10 @@ def check_connection() -> int:
 
     info = store.validate_collection_contract()
     _print_json("[Qdrant 연결·컬렉션 확인]", info.to_dict())
+    _print_json(
+        "[Payload 인덱스 확인]",
+        store.payload_index_status(),
+    )
     return 0
 
 
@@ -53,9 +58,15 @@ def initialize_collection() -> int:
 
     store = QdrantVectorStore.from_settings(settings)
     info, created = store.ensure_collection()
+    created_payload_indexes = store.ensure_payload_indexes()
     _print_json(
         "[Qdrant 컬렉션 준비 완료]",
-        {"created": created, **info.to_dict()},
+        {
+            "created": created,
+            "created_payload_indexes": list(created_payload_indexes),
+            "payload_indexes": payload_index_map(),
+            **info.to_dict(),
+        },
     )
     return 0
 

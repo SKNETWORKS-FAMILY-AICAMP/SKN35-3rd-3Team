@@ -13,6 +13,10 @@ from typing import Protocol
 
 from src.const.qdrant_config import QdrantSettings
 from src.vector_db.ingestion import PreparedPoint
+from src.vector_db.payload_indexes import (
+    CORE_PAYLOAD_INDEXES,
+    PayloadIndexSpec,
+)
 from src.vector_db.validation import StoredPointSnapshot
 from src.vectorstore import (
     VectorCollectionInfo,
@@ -30,6 +34,8 @@ class QdrantClientLike(Protocol):
     def get_collection(self, collection_name: str) -> object: ...
 
     def create_collection(self, **kwargs: object) -> bool: ...
+
+    def create_payload_index(self, **kwargs: object) -> object: ...
 
     def query_points(self, **kwargs: object) -> object: ...
 
@@ -132,6 +138,24 @@ def _default_vector_params_factory(
     return vector_params
 
 
+def _payload_schema_type(schema: str) -> object:
+    """팀 규격 문자열을 Qdrant SDK의 PayloadSchemaType으로 변환합니다."""
+
+    try:
+        from qdrant_client.models import PayloadSchemaType
+    except ModuleNotFoundError as error:
+        raise RuntimeError(
+            "Qdrant Payload 인덱스 생성에는 qdrant-client 설치가 필요합니다."
+        ) from error
+
+    try:
+        return PayloadSchemaType(schema)
+    except ValueError as error:
+        raise ValueError(
+            f"지원하지 않는 Qdrant Payload 인덱스 형식입니다: {schema}"
+        ) from error
+
+
 def _read_value(target: object, name: str, default: object = None) -> object:
     """SDK 객체와 테스트 사전에서 같은 방식으로 값을 읽습니다."""
 
@@ -152,6 +176,28 @@ def _read_path(target: object, *names: str) -> object:
 def _enum_text(value: object) -> str:
     raw_value = getattr(value, "value", value)
     return str(raw_value).lower()
+
+
+def _payload_index_data_type(schema_info: object) -> str | None:
+    """Qdrant Payload Schema 응답에서 비교 가능한 형식 이름을 읽습니다."""
+
+    data_type = _read_value(schema_info, "data_type")
+    return _enum_text(data_type) if data_type is not None else None
+
+
+def _validate_payload_index_schema(
+    index: PayloadIndexSpec,
+    actual_schema: str,
+) -> None:
+    """기존 Payload 인덱스가 팀 규격과 같은지 검사합니다."""
+
+    if actual_schema != index.schema:
+        raise VectorStoreError(
+            "invalid_schema",
+            "Qdrant Payload 인덱스 형식이 팀 규격과 다릅니다: "
+            f"{index.field_name} "
+            f"expected={index.schema}, actual={actual_schema}",
+        )
 
 
 @dataclass
@@ -229,6 +275,68 @@ class QdrantVectorStore:
             ) from error
 
         return self.validate_collection_contract(), True
+
+    def payload_index_status(
+        self,
+        indexes: Sequence[PayloadIndexSpec] = CORE_PAYLOAD_INDEXES,
+    ) -> dict[str, str | None]:
+        """필수 Payload 인덱스의 현재 형식을 읽고 누락은 ``None``으로 표시합니다."""
+
+        try:
+            collection = self.client.get_collection(self.collection_name)
+        except Exception as error:
+            raise VectorStoreError(
+                "connection_error",
+                "Qdrant Payload 인덱스 정보를 읽지 못했습니다.",
+            ) from error
+
+        payload_schema = _read_value(collection, "payload_schema", {})
+        if not isinstance(payload_schema, Mapping):
+            payload_schema = {}
+
+        return {
+            index.field_name: _payload_index_data_type(
+                payload_schema.get(index.field_name)
+            )
+            for index in indexes
+        }
+
+    def _create_payload_index(self, index: PayloadIndexSpec) -> None:
+        """Payload 인덱스 한 건을 만들고 완료될 때까지 기다립니다."""
+
+        try:
+            self.client.create_payload_index(
+                collection_name=self.collection_name,
+                field_name=index.field_name,
+                field_schema=_payload_schema_type(index.schema),
+                wait=True,
+            )
+        except Exception as error:
+            raise VectorStoreError(
+                "connection_error",
+                "Qdrant Payload 인덱스 생성에 실패했습니다: "
+                f"{index.field_name}",
+            ) from error
+
+    def ensure_payload_indexes(
+        self,
+        indexes: Sequence[PayloadIndexSpec] = CORE_PAYLOAD_INDEXES,
+    ) -> tuple[str, ...]:
+        """확정된 Payload 인덱스만 누락 시 생성하고 기존 형식은 검증합니다."""
+
+        current_status = self.payload_index_status(indexes)
+        created_fields: list[str] = []
+
+        for index in indexes:
+            actual_schema = current_status[index.field_name]
+            if actual_schema is not None:
+                _validate_payload_index_schema(index, actual_schema)
+                continue
+
+            self._create_payload_index(index)
+            created_fields.append(index.field_name)
+
+        return tuple(created_fields)
 
     def _vector_params(self, collection: object) -> tuple[object, str | None]:
         vectors = _read_path(collection, "config", "params", "vectors")

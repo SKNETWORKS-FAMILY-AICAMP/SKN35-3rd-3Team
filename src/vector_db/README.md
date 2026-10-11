@@ -32,30 +32,118 @@ uv run python -m src.Scripts.qdrant_setup init
 ```
 
 `init`은 컬렉션이 없을 때만 생성합니다. 기존 컬렉션 삭제·강제 재생성은
-하지 않으며, 이미 존재하면 1536차원·Cosine 규격이 맞는지만 확인합니다.
+하지 않으며, 이미 존재하면 선택한 임베딩 프로필의 차원·Cosine 규격이
+맞는지 확인합니다. 이어서 아래 1차 Payload 인덱스 중 누락된 것만 생성합니다.
+
+## Payload 인덱스 1차 확정
+
+전처리 데이터의 실제 키를 우선으로 하여, 현재 검색·검증 코드에서 사용하는
+세 필드만 인덱싱합니다.
+
+| 실제 입력 JSON 키 | Qdrant Payload 키 | 형식 | 필터 목적 |
+| --- | --- | --- | --- |
+| `document_id` | `document_id` | `Keyword` | 한 문서의 청크 정확 조회·적재 검증 |
+| 폴더명 | `document_type` | `Keyword` | 법령·안내서·판례·소비자 자료 종류 제한 |
+| `title` | `source_name` | `Keyword` | 문서명·사건명 정확 일치 필터 |
+
+`document_type`은 원본 JSON을 바꾸지 않고 `laws`, `guides`, `precedents`,
+`consumer_sources` 폴더에 따라 Vector DB 계층에서 보완합니다. `source_name`도
+최상위 `title`에서 변환합니다.
+
+현재 세 값은 모두 문자열의 정확 일치 검색이므로 `Keyword`가 맞습니다.
+`Datetime`·`Integer` 인덱스는 아직 만들지 않습니다. 법령 조문·사건번호·
+시행일·선고일 등의 실제 JSON 키와 값 형식이 확인된 뒤, 실제 필터 요구가 있는
+필드만 2차로 추가합니다. `text`, `source_url`, `chunk_id`는 현재 필터에 쓰지
+않으므로 인덱스 대상에서 제외합니다.
+
+`check`는 현재 인덱스 상태만 표시하고, `init`만 누락 인덱스를 생성합니다.
+기존 인덱스의 형식이 다르면 자동 변경하지 않고 오류로 알려 줍니다.
 
 ## 전처리 결과 입력 계약
 
-전처리 담당자가 전달하는 `chunks.jsonl`은 한 줄에 청크 한 건을 저장합니다.
-Vector DB 계층은 전처리 결과를 수정하지 않고 아래 필드를 검증한 뒤 임베딩과
-Qdrant Payload를 생성합니다.
+전처리 결과는 프로젝트의 `data/chunk` 아래 네 영역에서 읽습니다.
+
+| 하위 폴더 | 기본 `document_type` |
+| --- | --- |
+| `laws` | `law` |
+| `guides` | `official_guide` |
+| `precedents` | `precedent` |
+| `consumer_sources` | `consumer_source` |
+
+전처리 담당자가 확인한 전체 청크 수는 **3,793건**입니다. 폴더별 수량은
+참고값으로 보고서에 표시하고, 전체 수량만 3,793건인지 검사합니다.
+
+각 폴더의 `.json`과 `.jsonl`을 하위 경로까지 자동 탐색합니다. JSON은 청크
+객체 한 건, 청크 배열 또는 `chunks`·`records`·`items`·`data` 배열을 지원하고,
+JSONL은 비어 있지 않은 한 줄을 청크 한 건으로 읽습니다. 원본 파일은 수정하지
+않습니다.
+
+전처리 결과는 `metadata` 중첩 객체 없이 `title`, `source_url` 등의 출처 필드를
+최상위에 둡니다. Vector DB 계층은 최상위 `title`을 표준 `source_name`으로
+매핑하고, 나머지 최상위 출처 필드도 Payload에서 유지합니다.
+
+Vector DB 계층은 아래 형식을 검증한 뒤 임베딩과 Qdrant Payload를 생성합니다.
 
 ```json
 {
   "document_id": "law-001",
   "chunk_id": "law-001-0001",
   "text": "전처리와 청킹이 끝난 본문",
-  "metadata": {
-    "source_name": "주택임대차보호법.pdf",
-    "domain": "주택임대차",
-    "document_type": "law",
-    "effective_date": "2024-01-01",
-    "source_url": "https://example.com/law/001",
-    "article_label": "제6조의3",
-    "page": 12,
-    "section": "계약갱신 요구"
-  }
+  "title": "사건명 또는 문서명",
+  "source_url": "https://example.com/law/001",
+  "domain": "주택임대차",
+  "effective_date": "2024-01-01",
+  "article_label": "제6조의3",
+  "page": 12,
+  "section": "계약갱신 요구"
 }
+```
+
+현재 코드에서 실제 적재에 필요한 값은 다음과 같습니다.
+
+- `document_id`
+- `chunk_id`
+- `text`
+- `title` (`source_name`으로 변환)
+
+`document_type`이 없으면 입력 폴더에 대응하는 기본값을 메모리의 복사본에만
+보완합니다. 원본 파일은 변경하지 않습니다.
+
+### 실제 파일을 받기 전·후 사전 점검
+
+다음 명령은 임베딩 API와 Qdrant를 호출하지 않습니다. 폴더 존재 여부, 파일
+파싱, 필수 필드, 중복 `document_id/chunk_id`, 전체 3,793건 여부를 확인합니다.
+
+```powershell
+uv run python -m src.Scripts.qdrant_ingest check-input
+```
+
+기본 점검 보고서는 아래에 저장됩니다.
+
+```text
+tests/report/qdrant_input_validation.md
+```
+
+다른 위치에서 데이터를 전달받았다면 `--data-root`만 지정합니다.
+
+```powershell
+uv run python -m src.Scripts.qdrant_ingest check-input `
+  --data-root "C:\path\to\data\chunk"
+```
+
+### 검증 완료 후 실제 적재
+
+입력 점검이 통과한 경우에만 임베딩·Qdrant 적재·저장 결과 재검증을 순서대로
+실행합니다. 기존 컬렉션을 삭제하거나 재생성하지 않습니다.
+
+```powershell
+uv run python -m src.Scripts.qdrant_ingest ingest
+```
+
+기본 적재 검증 보고서는 아래에 저장됩니다.
+
+```text
+tests/report/qdrant_ingestion_validation.md
 ```
 
 검색과 출처 표시에 사용하는 권장 Payload는 다음과 같습니다.
@@ -170,9 +258,9 @@ print("검증 통과:", report.passed)
 
 ## Hybrid 검색 확장 경계
 
-현재 구현은 OpenAI Embedding 기반 Dense Vector 검색입니다. BM25 키워드
-검색과 Dense 검색을 RRF(Reciprocal Rank Fusion)로 결합하는 Hybrid 검색은
-아직 구현하지 않았습니다.
+현재 구현은 선택한 OpenAI 또는 NVIDIA 임베딩 모델을 사용하는 Dense Vector
+검색입니다. BM25 키워드 검색과 Dense 검색을 RRF(Reciprocal Rank Fusion)로
+결합하는 Hybrid 검색은 아직 구현하지 않았습니다.
 
 Hybrid 검색을 추가할 때는 기존 Dense 컬렉션을 삭제하거나 강제로 재생성하지
 않습니다. Sparse Vector 또는 키워드 인덱스 규격을 먼저 확정하고 별도

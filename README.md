@@ -6,7 +6,7 @@ Python 3.12 이상과 uv가 설치된 환경에서 프로젝트 루트로 이동
 
 ```bash
 uv sync --locked
-uv run python -m unittest discover -s src/Scripts/tests -t . -p "test*_pmh.py"
+uv run python -m unittest discover -s src/scripts/tests -t . -p "test*_pmh.py"
 ```
 
 위 테스트는 수집 API를 호출하지 않으며 `LAW_API_OC` 없이 실행할 수 있습니다. 의존성을 처음 설치할 때는 네트워크가 필요할 수 있습니다. 새 법령·판례·행정규칙 수집에는 프로젝트 루트의 로컬 `.env` 또는 환경변수에 `LAW_API_OC`를 설정합니다. 실제 인증값은 커밋하거나 문서에 기록하지 않습니다.
@@ -35,25 +35,25 @@ LAW_API_OC=<발급받은_OC_값>
 
 소비자 12문항·분야별 45문항 보고서는 같은 데이터에 기존 검색(문서당 1개)과 개선 검색을 적용해 비교합니다. 개선·하락 질문을 모두 기록하며, 원문 자료 충분성을 검색 적중률로 판정하지 않습니다. 품질보증 질문에는 별표 Ⅲ·Ⅳ를 추가 검토했지만 구매일 증빙과 표 대조가 남아 부분 확보 상태입니다. 실제 임베딩·Qdrant·LLM 검색 및 답변 품질 검증은 별도 작업입니다.
 
-`src/Scripts/`에는 수집·전처리·청크 실행 스크립트를, `src/Scripts/tests/`에는 `test_*_pmh.py` 검증 파일을 보관합니다. 아래 명령은 프로젝트 루트에서 실행합니다.
+`src/scripts/`에는 수집·전처리·청크 실행 스크립트를, `src/scripts/tests/`에는 `test_*_pmh.py` 검증 파일을 보관합니다. 아래 명령은 프로젝트 루트에서 실행합니다.
 
 전체 테스트:
 
 ```bash
-uv run python -m unittest discover -s src/Scripts/tests -t . -p "test*_pmh.py"
+uv run python -m unittest discover -s src/scripts/tests -t . -p "test*_pmh.py"
 ```
 
 개별 테스트 예시:
 
 ```bash
-uv run python -m unittest src.Scripts.tests.test_preprocess_guides_pmh
+uv run python -m unittest src.scripts.tests.test_preprocess_guides_pmh
 ```
 
 검색 평가 보고서 생성·갱신(BM25 기반이며 임베딩·LLM 평가가 아닙니다):
 
 ```bash
-uv run python -m src.Scripts.tests.test_precedent_retrieval_pmh
-uv run python -m src.Scripts.tests.test_consumer_coverage_pmh
+uv run python -m src.scripts.tests.test_precedent_retrieval_pmh
+uv run python -m src.scripts.tests.test_consumer_coverage_pmh
 ```
 
 검색 평가 모듈은 직접 실행하면 보고서를 갱신하고, 전체 테스트에서는 저장된 데이터와 결과를 검증합니다. 소비자 검색 평가는 같은 테스트 패키지의 판례 평가 모듈에서 BM25 코드를 가져옵니다.
@@ -69,9 +69,9 @@ uv run python -m src.Scripts.tests.test_consumer_coverage_pmh
 특정 소비자 자료만 수집하려면 아래 명령을 사용합니다. 이전 수집 기록과 기존 원본을 유지하며 새 출처는 manifest에 먼저 등록합니다.
 
 ```bash
-uv run python src/Scripts/collect_consumer_sources.py --source-id continual_contract_refund --source-id minimum_wage_2026
+uv run python src/scripts/collect_consumer_sources.py --source-id continual_contract_refund --source-id minimum_wage_2026
 ```
 
 분야 보고서의 `source_supplement_comparison`은 이번 원문 보강 직전 근거 ID를 고정한 검색 비교입니다. 새 근거가 추가된 현재 평가 결과와 구분하며 하락한 질문도 기록합니다.
 
-단순노무직종 고시 재수집: `uv run python src/Scripts/collect_consumer_sources.py --source-id minimum_wage_simple_labor`. 법령 3종은 `collect_laws.py`의 `--name`을 반복 지정해 수집합니다. `delegated_source_comparison`은 이번 4종 보강 직전 선정 근거 ID를 고정한 비교이며 새 근거 연결로 평가가 자동 상승하는 효과와 구분합니다. 최저임금 시행규칙 제2조의 원문 이미지 태그·대체문자와 삭제된 별표1·2의 상태를 보존합니다.
+단순노무직종 고시 재수집: `uv run python src/scripts/collect_consumer_sources.py --source-id minimum_wage_simple_labor`. 법령 3종은 `collect_laws.py`의 `--name`을 반복 지정해 수집합니다. `delegated_source_comparison`은 이번 4종 보강 직전 선정 근거 ID를 고정한 비교이며 새 근거 연결로 평가가 자동 상승하는 효과와 구분합니다. 최저임금 시행규칙 제2조의 원문 이미지 태그·대체문자와 삭제된 별표1·2의 상태를 보존합니다.

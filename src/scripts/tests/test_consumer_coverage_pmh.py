@@ -1,6 +1,6 @@
 """기존 법령·안내서·판례와 보강 소비자 자료의 로컬 BM25 비교.
 
-uv run python -m src.Scripts.tests.test_consumer_coverage_pmh
+uv run python -m src.scripts.tests.test_consumer_coverage_pmh
 LLM 답변 정확도 또는 벡터 검색 평가가 아니다.
 """
 import json

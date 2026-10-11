@@ -2,7 +2,7 @@
 
 ## 현재 상태와 인계 범위
 
-- 검증 시각(UTC): 2026-10-11T07:29:04.005852+00:00
+- 검증 시각(UTC): 2026-10-11T12:56:05.904904+00:00
 - 구조 검증: 통과 · 12개 항목
 - 전체 단위 테스트: 163개 · 통과
 - 수집·정제·청크 생성, 공통 메타데이터, 판례 출처 헤더, 초기 BM25 평가까지 구현했습니다.
@@ -158,7 +158,7 @@ LAW_API_OC=<발급받은_OC_값>
 이미 인계받은 파일로 아래 검증을 실행할 때는 `LAW_API_OC`가 필요하지 않으며 수집 API를 호출하지 않습니다. uv 의존성을 처음 설치할 때는 네트워크가 필요할 수 있습니다.
 
 ```bash
-uv run python -m unittest discover -s src/Scripts/tests -t . -p "test*_pmh.py"
+uv run python -m unittest discover -s src/scripts/tests -t . -p "test*_pmh.py"
 ```
 
 ## 재현 실행 순서
@@ -167,25 +167,25 @@ uv run python -m unittest discover -s src/Scripts/tests -t . -p "test*_pmh.py"
 
 ```bash
 # 원본 및 관련성/시각 검토 기록을 준비한 후 정제
-uv run python src/Scripts/preprocess_laws.py
+uv run python src/scripts/preprocess_laws.py
 # 소비자 안내가 연결할 최신 법령 청크를 먼저 생성
-uv run python src/Scripts/chunk_laws.py
-uv run python src/Scripts/preprocess_precedents.py
-uv run python src/Scripts/preprocess_guides.py
+uv run python src/scripts/chunk_laws.py
+uv run python src/scripts/preprocess_precedents.py
+uv run python src/scripts/preprocess_guides.py
 # 필라테스 시점 비교: 기존 원본으로 오프라인 기록 재생성
-uv run python -m src.Scripts.review_pilates_law_versions
-uv run python src/Scripts/preprocess_consumer_sources.py
+uv run python -m src.scripts.review_pilates_law_versions
+uv run python src/scripts/preprocess_consumer_sources.py
 # 나머지 청크 생성
-uv run python src/Scripts/chunk_guides.py
-uv run python src/Scripts/chunk_consumer_sources.py
-uv run python -m src.Scripts.tests.test_precedent_retrieval_pmh
+uv run python src/scripts/chunk_guides.py
+uv run python src/scripts/chunk_consumer_sources.py
+uv run python -m src.scripts.tests.test_precedent_retrieval_pmh
 # 검색/분야 평가
-uv run python -m src.Scripts.tests.test_consumer_coverage_pmh
-uv run python -m src.Scripts.tests.test_domain_coverage_pmh
+uv run python -m src.scripts.tests.test_consumer_coverage_pmh
+uv run python -m src.scripts.tests.test_domain_coverage_pmh
 # 최종 감사·전체 테스트·인계서 갱신
-uv run python -m src.Scripts.tests.test_data_handoff_pmh
+uv run python -m src.scripts.tests.test_data_handoff_pmh
 # 보고서 생성 없이 전체 테스트만 실행
-uv run python -m unittest discover -s src/Scripts/tests -t . -p "test*_pmh.py"
+uv run python -m unittest discover -s src/scripts/tests -t . -p "test*_pmh.py"
 ```
 
 분야 검토 코드는 선정 근거의 본문 지문이 바뀌면 추가 검토로 표시합니다. 질문·근거 메모와 지문을 내용 확인 없이 갱신하지 않습니다. 원본 추가 시 수집 목록·검토표·보고서에 반영한 뒤 위 순서로 재생성합니다.
@@ -209,5 +209,5 @@ uv run python -m unittest discover -s src/Scripts/tests -t . -p "test*_pmh.py"
 ## 검증 산출물
 
 - [최종 검증 JSON](../data/processed/retrieval_evaluation/data_validation_report_pmh.json): 항목별 결과·파일 크기/해시·테스트 결과·제외 기록.
-- [검증 실행 파일](../src/Scripts/tests/test_data_handoff_pmh.py): 직접 실행 시 보고서와 이 문서를 작성하고 전체 테스트를 실행합니다.
+- [검증 실행 파일](../src/scripts/tests/test_data_handoff_pmh.py): 직접 실행 시 보고서와 이 문서를 작성하고 전체 테스트를 실행합니다.
 - 기존 수집·정제·청크 파일은 최종 감사에서 변경하지 않습니다. 생성 코드·검토 기록·보고서는 재현을 위해 함께 인계합니다.

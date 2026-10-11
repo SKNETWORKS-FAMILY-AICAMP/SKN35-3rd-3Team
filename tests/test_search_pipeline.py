@@ -4,6 +4,7 @@
 """
 import math
 import unittest
+from importlib.util import find_spec
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -13,12 +14,15 @@ from src.multi_query import LLMQueryExpander, MultiQueryRetriever
 from src.retrieval_evaluation import EvaluationCase, compare_retrievers, evaluate_ranking
 from src.retriever import BM25Retriever, DocumentRetriever, HybridRetriever
 from src.rrf import reciprocal_rank_fusion
-from src.vector_db.qdrant_store import QdrantVectorStore
 from src.vector_db.search_bootstrap import load_keyword_documents, create_team_hybrid_retriever
 from src.vectorstore import VectorSearchHit
 
+# 공용 DB 코드를 개인 브랜치에 복사하지 않습니다. dev에서는 실제로 검사합니다.
+HAS_COMMON_DB = find_spec("src.vector_db.qdrant_store") is not None
+
 
 def make_fixture():
+    from src.vector_db.qdrant_store import QdrantVectorStore
     # 실제 API 임베딩이 아닌 2차원 고정 벡터: 연결/계산 검증용입니다.
     client = QdrantClient(location=":memory:")
     client.create_collection("fixture", vectors_config=models.VectorParams(size=2, distance=models.Distance.COSINE))
@@ -30,7 +34,7 @@ def make_fixture():
             payload={"text":text, "document_id":f"d{i+1}", "chunk_id":"c1", "page":i+1, "document_type":"law"},
         ) for i,(text,vector) in enumerate(zip(texts,vectors))
     ])
-    settings = SimpleNamespace(collection=SimpleNamespace(name="fixture", vector_name=None))
+    settings = SimpleNamespace(collection=SimpleNamespace(name="fixture", vector_name=None, sparse_vector_name=None, search_mode="dense"))
     store = QdrantVectorStore(client, settings)
     def embed_query(query):
         return [0.0,1.0] if "택배" in query else [1.0,0.0]
@@ -50,6 +54,7 @@ class SearchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             evaluate_ranking(["a"],[],k=5)
 
+    @unittest.skipUnless(HAS_COMMON_DB, "공용 Qdrant 연동 테스트는 dev에서 실행")
     def test_real_local_qdrant_hybrid_and_multi(self):
         client,hybrid = make_fixture()
         self.addCleanup(client.close)
@@ -100,6 +105,7 @@ class SearchTests(unittest.TestCase):
         self.assertEqual(BM25Retriever([]).search_documents("질문"),())
         self.assertEqual(BM25Retriever(docs).search_documents("환불"),())
 
+    @unittest.skipUnless(HAS_COMMON_DB, "공용 Qdrant 연동 테스트는 dev에서 실행")
     def test_compare_all_methods(self):
         client,hybrid = make_fixture()
         self.addCleanup(client.close)
@@ -115,15 +121,16 @@ class SearchTests(unittest.TestCase):
             self.assertEqual(result["hit_rate"],1)
             self.assertAlmostEqual(result["precision"],1/3)
 
+    @unittest.skipUnless(HAS_COMMON_DB, "공용 Qdrant 연동 테스트는 dev에서 실행")
     def test_empty_remote_corpus_stops_before_embedding(self):
         # 빈 서버를 발견하면 임베딩 API를 생성/호출하지 않아야 합니다.
         settings = SimpleNamespace(validate_for_vector_work=lambda: None)
         store = SimpleNamespace(validate_collection_contract=lambda: None, client=SimpleNamespace(close=lambda: None))
-        with patch("src.vector_db.search_bootstrap.load_project_env"), \
-             patch("src.vector_db.search_bootstrap.load_qdrant_settings", return_value=settings), \
-             patch("src.vector_db.search_bootstrap.QdrantVectorStore.from_settings", return_value=store), \
+        with patch("src.const.env_loader.load_project_env"), \
+             patch("src.const.qdrant_config.load_qdrant_settings", return_value=settings), \
+             patch("src.vector_db.qdrant_store.QdrantVectorStore.from_settings", return_value=store), \
              patch("src.vector_db.search_bootstrap.load_keyword_documents", return_value=()), \
-             patch("src.vector_db.search_bootstrap.create_embedding_provider") as embedding:
+             patch("src.embedder.create_embedding_provider") as embedding:
             with self.assertRaisesRegex(ValueError,"문서가 없습니다"):
                 create_team_hybrid_retriever()
             embedding.assert_not_called()

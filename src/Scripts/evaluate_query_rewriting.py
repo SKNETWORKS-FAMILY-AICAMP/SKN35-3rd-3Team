@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from time import perf_counter
 
-from src.Scripts.try_real_search import load_documents
+from .try_real_search import load_documents
 from src.retriever import BM25Retriever
 from src.retrieval_evaluation import chunk_key, evaluate_ranking
 

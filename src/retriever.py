@@ -19,6 +19,7 @@ from src.vectorstore import (
     VectorSearchHit,
     VectorSearchRequest,
     VectorStore,
+    VectorDocument,
 )
 
 
@@ -57,6 +58,9 @@ class DocumentRetriever:
 
     embedder: QueryEmbedder
     vector_store: VectorStore
+    # dev 공용 bootstrap이 넘기는 옵션을 수용합니다. 기존 두 인자 호출도 유지합니다.
+    expected_dimension: int | None = None
+    sparse_embedder: object | None = None
 
     # embedder는 질문을 숫자 벡터로, vector_store는 그 벡터를 검색 결과로
     # 바꿉니다. 객체를 외부에서 받으므로 OpenAI/NVIDIA 설정을 고정하지 않습니다.
@@ -92,20 +96,33 @@ class DocumentRetriever:
         )
 
         # 1. DB가 사용하는 벡터 차원을 확인합니다.
-        collection_info = self.vector_store.get_collection_info()
+        dimension = self.expected_dimension
+        if dimension is None:
+            dimension = self.vector_store.get_collection_info().vector_size
         # 2. 저장된 문서와 같은 모델로 질문을 임베딩합니다.
         query_vector = self.embedder.embed_query(normalized_query)
+        sparse = self.sparse_embedder.embed_query(normalized_query) if self.sparse_embedder is not None else None
         # 3. 차원과 검색 옵션을 검증해 공용 요청 객체를 만듭니다.
         request = VectorSearchRequest.create(
             query_vector,
             top_k=top_k,
             score_threshold=score_threshold,
             filters=filters,
-            expected_dimension=collection_info.vector_size,
+            expected_dimension=dimension,
+            query_text=normalized_query,
+            sparse_indices=sparse.indices if sparse is not None else None,
+            sparse_values=sparse.values if sparse is not None else None,
         )
         # 4. 실제 검색은 2번 담당자의 DB 구현에 맡깁니다.
         # 반환된 문서 순위, 본문, 점수, 출처를 변경하지 않습니다.
         return self.vector_store.search(request)
+
+    def lookup_document(self, document_id: str, *, limit: int = 20) -> Sequence[VectorDocument]:
+        """dev MCP의 문서 ID 조회를 유지합니다. 임베딩 호출은 하지 않습니다."""
+        if not isinstance(document_id, str) or not document_id.strip():
+            raise ValueError("document_id는 비어 있지 않은 문자열이어야 합니다.")
+        VectorSearchRequest.create([0.0], top_k=limit)
+        return self.vector_store.lookup({"document_id": document_id.strip()}, limit=limit)
 
 # retriver 구현
 def retriever(
@@ -280,6 +297,12 @@ class HybridRetriever:
     keyword: BM25Retriever
     candidate_k: int = 20  # 각 검색의 후보 수. 최종 반환 수 top_k와 다릅니다.
     rank_constant: float = 60.0
+
+    def __post_init__(self) -> None:
+        # dev의 서버 Hybrid 결과에 메모리 BM25를 또 합치면 키워드가 이중 반영됩니다.
+        # 서버 Hybrid는 DocumentRetriever 단독으로, 이 클래스는 Dense+BM25로 씁니다.
+        if getattr(self.dense, "sparse_embedder", None) is not None:
+            raise ValueError("메모리 Hybrid에는 Sparse 검색이 없는 Dense 검색기를 전달하세요.")
 
     def health_check(self) -> bool:
         return self.dense.health_check()

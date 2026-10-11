@@ -9,11 +9,8 @@ import json
 import os
 from pathlib import Path
 
-from src.const.env_loader import load_project_env
-from src.const.qdrant_config import load_qdrant_settings
 from src.multi_query import LLMQueryExpander, MultiQueryRetriever
 from src.retrieval_evaluation import EvaluationCase, compare_retrievers, evaluate_ranking
-from src.vector_db.qdrant_store import QdrantVectorStore
 from src.vector_db.search_bootstrap import create_team_hybrid_retriever
 from src.vectorstore import VectorSearchRequest
 
@@ -29,6 +26,10 @@ def main():
     parser.add_argument("--rerank-candidates", type=int, default=10, help="재정렬할 후보 수(최종 K와 별개)")
     parser.add_argument("--rerank-max-length", type=int, default=512, help="질문+문서 토큰 상한; 짧으면 빨라지지만 근거가 잘릴 수 있음")
     args = parser.parse_args()
+    # --help는 공용 DB 코드 없이도 동작합니다. 실제 연결은 dev 통합 후 실행합니다.
+    from src.const.env_loader import load_project_env
+    from src.const.qdrant_config import load_qdrant_settings
+    from src.vector_db.qdrant_store import QdrantVectorStore
     load_project_env()
     if args.check:
         settings = load_qdrant_settings()

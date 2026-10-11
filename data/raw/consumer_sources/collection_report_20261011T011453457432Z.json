@@ -1,0 +1,30 @@
+{
+  "saved": [
+    {
+      "source_id": "continual_contract_refund",
+      "title": "계속거래 등의 해지·해제에 따른 위약금 및 대금의 환급에 관한 산정기준",
+      "document_type": "administrative_rule",
+      "domain": "fitness_refund",
+      "source_url": "https://www.law.go.kr/admRulLsInfoP.do?admRulId=38299&efYd=0",
+      "raw_file": "data/raw/consumer_sources/continual_contract_refund_6b47303e7142fc41.xml",
+      "raw_sha256": "6b47303e7142fc41b1b0512c02d1b4ad56fa5311134fde4cc4bf974990fcf7d3",
+      "collected_at": "2026-10-11T01:14:52.737349+00:00",
+      "format": "xml"
+    },
+    {
+      "source_id": "minimum_wage_2026",
+      "title": "2026년 적용 최저임금 고시",
+      "document_type": "administrative_rule",
+      "domain": "임금",
+      "administrative_id": "2100000262710",
+      "expected_effective_date": "20260101",
+      "source_url": "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2100000262710",
+      "raw_file": "data/raw/consumer_sources/minimum_wage_2026_c0a8b9413dbfebc6.xml",
+      "raw_sha256": "c0a8b9413dbfebc6e660bb48daa7e20843bced7d5f64a95ed4f0e2542ad139c5",
+      "collected_at": "2026-10-11T01:14:53.147367+00:00",
+      "format": "xml"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T01:14:52.480370+00:00"
+}

@@ -1,0 +1,44 @@
+{
+  "saved": [
+    {
+      "source_id": "consumer_dispute_standard",
+      "title": "소비자분쟁해결기준",
+      "document_type": "administrative_rule",
+      "source_url": "https://www.law.go.kr/행정규칙/소비자분쟁해결기준",
+      "domain": "consumer",
+      "publisher": "공정거래위원회",
+      "raw_file": "data/raw/consumer_sources/consumer_dispute_standard_64e922b28e0d2e2b.xml",
+      "raw_sha256": "64e922b28e0d2e2b79c275cf1acec392e97d60975226d383201511e1a9e9a7f1",
+      "collected_at": "2026-10-10T12:27:17.602276+00:00",
+      "format": "xml"
+    },
+    {
+      "source_id": "ftc_terms_discovery",
+      "title": "공정위 표준약관 목록",
+      "document_type": "discovery",
+      "source_url": "https://www.ftc.go.kr/www/selectBbsNttList.do?bordCd=201&key=202",
+      "domain": "consumer",
+      "publisher": "공정거래위원회",
+      "resolved_url": "https://www.ftc.go.kr/www/selectBbsNttList.do?bordCd=201&key=202",
+      "raw_file": "data/raw/consumer_sources/ftc_terms_discovery_6ed2c75de24f4df8.html",
+      "raw_sha256": "6ed2c75de24f4df856048ff80a28f2cba08e886ee0c77a5a3a194182c0ca3065",
+      "collected_at": "2026-10-10T12:27:19.818644+00:00",
+      "format": "html"
+    }
+  ],
+  "failures": [
+    {
+      "source_id": "kca_pilates_1003941650",
+      "error_type": "SSLError"
+    },
+    {
+      "source_id": "kca_parcel_1003817349",
+      "error_type": "SSLError"
+    },
+    {
+      "source_id": "kca_discovery_fitness",
+      "error_type": "SSLError"
+    }
+  ],
+  "started_at": "2026-10-10T12:27:16.868449+00:00"
+}

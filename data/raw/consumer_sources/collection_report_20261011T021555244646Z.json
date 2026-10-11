@@ -1,0 +1,21 @@
+{
+  "saved": [
+    {
+      "source_id": "minimum_wage_simple_labor",
+      "title": "최저임금법 제5조에 따른 단순노무직종 근로자 지정 고시",
+      "document_type": "administrative_rule",
+      "domain": "임금",
+      "administrative_id": "2100000118064",
+      "source_url": "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2100000118064",
+      "collection_status": "pending",
+      "review_status": "needs_review",
+      "representative_id": null,
+      "raw_file": "data/raw/consumer_sources/minimum_wage_simple_labor_df8550c1d3d7570d.xml",
+      "raw_sha256": "df8550c1d3d7570dd9fe920885c4dbe8a75339f2592ca19a294a546a1c84e848",
+      "collected_at": "2026-10-11T02:15:54.943605+00:00",
+      "format": "xml"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T02:15:54.734578+00:00"
+}

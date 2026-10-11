@@ -1,0 +1,90 @@
+{
+  "processed_at": "2026-10-10T15:42:04.569586+00:00",
+  "saved": [
+    {
+      "file": "guide_383b62bce56bf1ce.json",
+      "source_file": "[pdf]인터넷 쇼핑.pdf",
+      "raw_sha256": "41f96f93f3a9d71182f8e178ef7fe753423753fe4ab8d2c0c296b593329227dc",
+      "page_count": 35,
+      "retrieval_page_count": 32,
+      "ocr_page_count": 0,
+      "manual_review_page_count": 0,
+      "table_count": 14,
+      "image_page_count": 1,
+      "visual_review_page_count": 0
+    },
+    {
+      "file": "guide_23ffe4c8fd5715cb.json",
+      "source_file": "[pdf]주택임대차.pdf",
+      "raw_sha256": "98b42f3b414d49761277ed9dbcadd4569d5c9705963686d22ad8e9a55f7fc7e7",
+      "page_count": 87,
+      "retrieval_page_count": 83,
+      "ocr_page_count": 0,
+      "manual_review_page_count": 0,
+      "table_count": 19,
+      "image_page_count": 2,
+      "visual_review_page_count": 0
+    },
+    {
+      "file": "guide_246eabd0676d5957.json",
+      "source_file": "[pdf]중고거래 피해자.pdf",
+      "raw_sha256": "4880f1019627cc4f690ab62ebe43d81642b0fc5d56c20c907a892eb1ab47e15c",
+      "page_count": 38,
+      "retrieval_page_count": 35,
+      "ocr_page_count": 0,
+      "manual_review_page_count": 0,
+      "table_count": 13,
+      "image_page_count": 14,
+      "visual_review_page_count": 0
+    },
+    {
+      "file": "guide_94e9d4bd30eadf0b.json",
+      "source_file": "[pdf]택배.pdf",
+      "raw_sha256": "d1e7622809cf8e8546f386d673edf0b700d737f62f1d616932138f509fd8416f",
+      "page_count": 32,
+      "retrieval_page_count": 29,
+      "ocr_page_count": 0,
+      "manual_review_page_count": 0,
+      "table_count": 7,
+      "image_page_count": 4,
+      "visual_review_page_count": 0
+    },
+    {
+      "file": "guide_cad7b1de1e4dc64c.json",
+      "source_file": "[pdf]해고근로자.pdf",
+      "raw_sha256": "4c68ec8ed9916cb983a26f719aff85abbb6bf76852c9966185c988df07f0c039",
+      "page_count": 102,
+      "retrieval_page_count": 98,
+      "ocr_page_count": 0,
+      "manual_review_page_count": 0,
+      "table_count": 20,
+      "image_page_count": 5,
+      "visual_review_page_count": 0
+    }
+  ],
+  "failures": [],
+  "raw_input_dir": "data/raw/guides",
+  "input_files": [
+    {
+      "source_file": "[pdf]인터넷 쇼핑.pdf",
+      "raw_sha256": "41f96f93f3a9d71182f8e178ef7fe753423753fe4ab8d2c0c296b593329227dc"
+    },
+    {
+      "source_file": "[pdf]주택임대차.pdf",
+      "raw_sha256": "98b42f3b414d49761277ed9dbcadd4569d5c9705963686d22ad8e9a55f7fc7e7"
+    },
+    {
+      "source_file": "[pdf]중고거래 피해자.pdf",
+      "raw_sha256": "4880f1019627cc4f690ab62ebe43d81642b0fc5d56c20c907a892eb1ab47e15c"
+    },
+    {
+      "source_file": "[pdf]택배.pdf",
+      "raw_sha256": "d1e7622809cf8e8546f386d673edf0b700d737f62f1d616932138f509fd8416f"
+    },
+    {
+      "source_file": "[pdf]해고근로자.pdf",
+      "raw_sha256": "4c68ec8ed9916cb983a26f719aff85abbb6bf76852c9966185c988df07f0c039"
+    }
+  ],
+  "usage": "saved 목록의 JSON을 읽고 pages.embedding_candidate를 확인하세요. 표의 rows와 페이지 번호를 보존한 청크 생성은 별도 단계입니다."
+}

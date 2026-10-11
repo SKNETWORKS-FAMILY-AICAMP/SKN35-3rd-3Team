@@ -1,0 +1,122 @@
+{
+  "saved": [
+    {
+      "source_id": "consumer_dispute_standard",
+      "title": "소비자분쟁해결기준",
+      "document_type": "administrative_rule",
+      "source_url": "https://www.law.go.kr/행정규칙/소비자분쟁해결기준",
+      "domain": "consumer",
+      "publisher": "공정거래위원회",
+      "raw_file": "data/raw/consumer_sources/consumer_dispute_standard_64e922b28e0d2e2b.xml",
+      "raw_sha256": "64e922b28e0d2e2b79c275cf1acec392e97d60975226d383201511e1a9e9a7f1",
+      "collected_at": "2026-10-10T12:32:33.682099+00:00",
+      "format": "xml"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_0",
+      "title": "대상품목",
+      "document_type": "administrative_rule_appendix",
+      "source_url": "https://www.law.go.kr/LSW/flDownload.do?flSeq=159469937",
+      "domain": "consumer",
+      "publisher": "공정거래위원회",
+      "parent_source_id": "consumer_dispute_standard",
+      "raw_file": "data/raw/consumer_sources/consumer_dispute_standard_appendix_0_c9a1aa0c121a5876.pdf",
+      "raw_sha256": "c9a1aa0c121a58767b22f21da16a857df103e5594c9bd6a8b7ab37fdb417c321",
+      "collected_at": "2026-10-10T12:32:34.068107+00:00",
+      "format": "pdf"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_1",
+      "title": "품목별 해결기준",
+      "document_type": "administrative_rule_appendix",
+      "source_url": "https://www.law.go.kr/LSW/flDownload.do?flSeq=159470209",
+      "domain": "consumer",
+      "publisher": "공정거래위원회",
+      "parent_source_id": "consumer_dispute_standard",
+      "raw_file": "data/raw/consumer_sources/consumer_dispute_standard_appendix_1_242401b8ae436e78.pdf",
+      "raw_sha256": "242401b8ae436e786a1b3c33aa5f568d7c8cb3a0927484a25ed933346bf72083",
+      "collected_at": "2026-10-10T12:32:35.656458+00:00",
+      "format": "pdf"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_2",
+      "title": "품목별 품질보증기간 및 부품보유기간",
+      "document_type": "administrative_rule_appendix",
+      "source_url": "https://www.law.go.kr/LSW/flDownload.do?flSeq=159470219",
+      "domain": "consumer",
+      "publisher": "공정거래위원회",
+      "parent_source_id": "consumer_dispute_standard",
+      "raw_file": "data/raw/consumer_sources/consumer_dispute_standard_appendix_2_efd94a7a06c489da.pdf",
+      "raw_sha256": "efd94a7a06c489dab45e1160aa558be638af0176bec932f74fe0385616b11dd7",
+      "collected_at": "2026-10-10T12:32:35.836087+00:00",
+      "format": "pdf"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_3",
+      "title": "품목별 내용연수표",
+      "document_type": "administrative_rule_appendix",
+      "source_url": "https://www.law.go.kr/LSW/flDownload.do?flSeq=159470225",
+      "domain": "consumer",
+      "publisher": "공정거래위원회",
+      "parent_source_id": "consumer_dispute_standard",
+      "raw_file": "data/raw/consumer_sources/consumer_dispute_standard_appendix_3_f6d4e6570d0bd34f.pdf",
+      "raw_sha256": "f6d4e6570d0bd34f527d023e1a5f4ee13ff4a7c0730515b8cb6a7845296704e4",
+      "collected_at": "2026-10-10T12:32:35.941385+00:00",
+      "format": "pdf"
+    },
+    {
+      "source_id": "kca_pilates_1003941650",
+      "title": "필라테스 계약 중도해지에 따른 환급 요구",
+      "document_type": "mediation_case",
+      "source_url": "https://www.kca.go.kr/odr/bj/br/osBjDecisionExamDetW.do?brdId=00000007&dataStts=Y&seq=1003941650",
+      "domain": "fitness_refund",
+      "publisher": "한국소비자원",
+      "resolved_url": "https://www.kca.go.kr/odr/bj/br/osBjDecisionExamDetW.do?brdId=00000007&dataStts=Y&seq=1003941650",
+      "raw_file": "data/raw/consumer_sources/kca_pilates_1003941650_1f2543b259e2d07a.html",
+      "raw_sha256": "1f2543b259e2d07a04bb399316c8a87a99735510dc7cc070a070f28d7d937ef8",
+      "collected_at": "2026-10-10T12:32:36.982061+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "kca_parcel_1003817349",
+      "title": "택배 운송중 분실된 운송물에 대한 구입가 배상 요구",
+      "document_type": "mediation_case",
+      "source_url": "https://www.kca.go.kr/odr/bj/br/osBjDecisionExamDetW.do?brdId=00000007&dataStts=Y&seq=1003817349",
+      "domain": "parcel_loss",
+      "publisher": "한국소비자원",
+      "resolved_url": "https://www.kca.go.kr/odr/bj/br/osBjDecisionExamDetW.do?brdId=00000007&dataStts=Y&seq=1003817349",
+      "raw_file": "data/raw/consumer_sources/kca_parcel_1003817349_b8ab05bc7edde191.html",
+      "raw_sha256": "b8ab05bc7edde191a3fea6a9e91b43267a77127b88a80a6720f7ea71940c65f0",
+      "collected_at": "2026-10-10T12:32:37.530931+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "kca_discovery_fitness",
+      "title": "KCA 헬스장 사례 검색",
+      "document_type": "discovery",
+      "source_url": "https://www.kca.go.kr/odr/cm/in/exmplBjItem.do?searchKeyword=헬스장",
+      "domain": "fitness_refund",
+      "publisher": "한국소비자원",
+      "resolved_url": "https://www.kca.go.kr/odr/cm/in/exmplBjItem.do?searchKeyword=%ED%97%AC%EC%8A%A4%EC%9E%A5",
+      "raw_file": "data/raw/consumer_sources/kca_discovery_fitness_79d51c98701b1151.html",
+      "raw_sha256": "79d51c98701b1151b5e26e4d57c7680f5b3e1b6f606653aeba3c1854bc6880aa",
+      "collected_at": "2026-10-10T12:32:38.836627+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "ftc_terms_discovery",
+      "title": "공정위 표준약관 목록",
+      "document_type": "discovery",
+      "source_url": "https://www.ftc.go.kr/www/selectBbsNttList.do?bordCd=201&key=202",
+      "domain": "consumer",
+      "publisher": "공정거래위원회",
+      "resolved_url": "https://www.ftc.go.kr/www/selectBbsNttList.do?bordCd=201&key=202",
+      "raw_file": "data/raw/consumer_sources/ftc_terms_discovery_220fa118aa638ee0.html",
+      "raw_sha256": "220fa118aa638ee08fccf84b9f52171670fcccb8411be3560da9b41fa4f02ad1",
+      "collected_at": "2026-10-10T12:32:39.641856+00:00",
+      "format": "html"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-10T12:32:32.233372+00:00"
+}

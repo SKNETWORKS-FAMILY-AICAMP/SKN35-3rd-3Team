@@ -1,0 +1,45 @@
+{
+  "saved": [
+    {
+      "source_id": "kca_redress_requirements",
+      "title": "한국소비자원 피해구제 신청 요건 및 신청서 양식 안내",
+      "source_url": "https://www.kca.go.kr/odr/pg/ma/pgProcssInfo1.do",
+      "document_type": "official_guide",
+      "domain": "consumer",
+      "publisher": "한국소비자원",
+      "resolved_url": "https://www.kca.go.kr/odr/pg/ma/pgProcssInfo1.do",
+      "raw_file": "data/raw/consumer_sources/kca_redress_requirements_f5048b0525c401e4.html",
+      "raw_sha256": "f5048b0525c401e490afe2cf7e89fba8f882477c0a5f23a25d89c3cce6668857",
+      "collected_at": "2026-10-11T05:39:30.965711+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "kca_redress_submission",
+      "title": "한국소비자원 피해구제 접수 방법 및 증빙서류 안내",
+      "source_url": "https://www.kca.go.kr/odr/pg/ma/pgProcssInfo2.do",
+      "document_type": "official_guide",
+      "domain": "consumer",
+      "publisher": "한국소비자원",
+      "resolved_url": "https://www.kca.go.kr/odr/pg/ma/pgProcssInfo2.do",
+      "raw_file": "data/raw/consumer_sources/kca_redress_submission_c98aa847ed1f68d5.html",
+      "raw_sha256": "c98aa847ed1f68d56261e4fb49fcd06bc1c32a06e02f6cdab9bd9b7d4bc798c9",
+      "collected_at": "2026-10-11T05:39:31.405384+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "kca_mediation_procedure",
+      "title": "한국소비자원 소비자분쟁조정 절차 및 성립 효력 안내",
+      "source_url": "https://www.kca.go.kr/odr/bj/ma/bjInfo.do",
+      "document_type": "official_guide",
+      "domain": "consumer",
+      "publisher": "한국소비자원",
+      "resolved_url": "https://www.kca.go.kr/odr/bj/ma/bjInfo.do",
+      "raw_file": "data/raw/consumer_sources/kca_mediation_procedure_30422ca02b9d5a45.html",
+      "raw_sha256": "30422ca02b9d5a45a056c8501be866eff5cd3643b83cc3d3ae6baadad9b0e6bb",
+      "collected_at": "2026-10-11T05:39:31.865893+00:00",
+      "format": "html"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T05:39:30.575875+00:00"
+}

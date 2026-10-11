@@ -1,0 +1,18 @@
+{
+  "saved": [],
+  "failures": [
+    {
+      "source_id": "kca_fitness_closure_gym",
+      "error_type": "ConnectionError"
+    },
+    {
+      "source_id": "kca_fitness_closure_pilates",
+      "error_type": "ConnectionError"
+    },
+    {
+      "source_id": "kca_damage_redress_procedure",
+      "error_type": "ConnectionError"
+    }
+  ],
+  "started_at": "2026-10-11T03:18:05.795654+00:00"
+}

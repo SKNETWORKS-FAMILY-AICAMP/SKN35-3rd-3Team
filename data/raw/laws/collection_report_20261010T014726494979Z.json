@@ -1,0 +1,84 @@
+{
+  "as_of": "2026-10-10",
+  "started_at": "2026-10-10T01:47:14.517171+00:00",
+  "requested": [
+    "민법",
+    "형법",
+    "주택임대차보호법",
+    "근로기준법",
+    "근로기준법 시행령",
+    "근로자퇴직급여 보장법",
+    "전자상거래 등에서의 소비자보호에 관한 법률",
+    "공인중개사법"
+  ],
+  "saved": [
+    {
+      "law_name": "민법",
+      "law_id": "001706",
+      "master_id": "284415",
+      "effective_date": "20260317",
+      "article_count": 1337,
+      "file": "001706_284415_20260317.json"
+    },
+    {
+      "law_name": "형법",
+      "law_id": "001692",
+      "master_id": "290185",
+      "effective_date": "20261002",
+      "article_count": 463,
+      "file": "001692_290185_20261002.json"
+    },
+    {
+      "law_name": "주택임대차보호법",
+      "law_id": "001248",
+      "master_id": "276291",
+      "effective_date": "20260102",
+      "article_count": 42,
+      "file": "001248_276291_20260102.json"
+    },
+    {
+      "law_name": "근로기준법",
+      "law_id": "001872",
+      "master_id": "285279",
+      "effective_date": "20261008",
+      "article_count": 145,
+      "file": "001872_285279_20261008.json"
+    },
+    {
+      "law_name": "근로기준법 시행령",
+      "law_id": "003058",
+      "master_id": "270551",
+      "effective_date": "20251023",
+      "article_count": 80,
+      "file": "003058_270551_20251023.json"
+    },
+    {
+      "law_name": "근로자퇴직급여 보장법",
+      "law_id": "009883",
+      "master_id": "284455",
+      "effective_date": "20260918",
+      "article_count": 78,
+      "file": "009883_284455_20260918.json"
+    },
+    {
+      "law_name": "전자상거래 등에서의 소비자보호에 관한 법률",
+      "law_id": "009318",
+      "master_id": "282793",
+      "effective_date": "20260721",
+      "article_count": 64,
+      "file": "009318_282793_20260721.json"
+    },
+    {
+      "law_name": "공인중개사법",
+      "law_id": "001654",
+      "master_id": "283713",
+      "effective_date": "20260828",
+      "article_count": 80,
+      "file": "001654_283713_20260828.json"
+    }
+  ],
+  "skipped": [],
+  "failures": [],
+  "scope": "조회 시점의 현행 법령. 과거 판례 적용 구법은 별도 수집해야 합니다.",
+  "finished_at": "2026-10-10T01:47:26.494979+00:00"
+}

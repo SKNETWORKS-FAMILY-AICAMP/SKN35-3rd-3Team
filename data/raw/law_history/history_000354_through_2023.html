@@ -1,0 +1,1069 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<head>
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="robots" content="noindex, nofollow" />
+
+<link rel="stylesheet" type="text/css" href="/DRF/js/ext/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="/DRF/css/common.css" />
+<link rel="stylesheet" type="text/css" href="/DRF/css/indexCommon.css" />
+<link rel="stylesheet" type="text/css" href="/DRF/css/subCommon.css" />
+<link rel="stylesheet" type="text/css" href="/DRF/css/fonts.css" />
+<link rel="stylesheet" type="text/css" href="/DRF/css/emp.css" />
+<script type="text/javascript" src="/DRF/js/common/jquery/jquery.js"></script>
+<script type="text/javascript" src="/DRF/js/common/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="/DRF/js/ext/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="/DRF/js/ext/ext-all.js"></script>
+<script type="text/javascript" src="/DRF/js/common.js"></script>
+<script type="text/javascript" src="/DRF/js/common-ex.js"></script>
+<script type="text/javascript" src="/DRF/js/CookieUtil.js"></script>
+<title>국가법령통합관리시스템</title>
+
+<script type="text/javascript" src="/DRF/js/couse.js"></script>
+<style type="text/css">
+ .noSearchResult{
+	border:1px solid #ccc;  
+	border-radius:10px;
+/*	height: 50px; */
+	width: 280px; 
+	text-align: left;
+	margin: 0 0 20px;
+/*	padding: 20px 0 0; */
+	padding: 15px;
+	letter-spacing: 0.7px;
+	line-height: 18px;
+ }
+ 
+caption{
+	visibility:hidden; 
+	width:0; 
+	height:0; 
+	overflow:hidden; 
+	font-size:0; 
+}
+
+table.tbl8 th{
+		background:#5a86b0 !important; 
+		color: #fff !important;
+		font-size:0.95em;
+		text-align: center;
+		border-bottom: 0px !important;
+}
+
+ table.tbl8.wd th:nth-child(2),
+ table.tbl8.wd th:nth-child(2) {
+	 min-width: 100px;
+	 word-break: break-word;
+	 word-wrap: break-word;
+ }
+
+ table.tbl8.wd th:nth-child(3),
+ table.tbl8.wd th:nth-child(3) {
+	 min-width: 70px;
+	 word-break: break-word;
+	 word-wrap: break-word;
+ }
+</style>
+<script type="text/javascript">
+	var searchObj = new SearchObj();
+
+	function movePage(pg){		  
+		searchObj.param.page = pg;
+		lsSearch();
+	}
+	
+	/* 검색처리   */
+	function lsSearch(){							
+		var mode = "list";
+		// 검색 param 초기화
+		/**
+		OC 		string(필수) 사용자 이메일의 ID(g4c@korea.kr일경우 OC값=g4c) 
+		target 	string : law(필수) 서비스 대상 
+		search 	int 검색범위(기본 : 1 법령명) 2 : 본문검색 
+		query 		string 법령명에서 검색을 원하는 질의 
+		display 	int 검색된 결과 개수 (default=20 max=100) 
+		page 		int 검색 결과 페이지 (default=1) 
+		sort 		string 정렬옵션(기본 : lasc 법령오름차순) ldes : 법령내림차순 dasc : 공포일자 오름차순 ddes : 공포일자 내림차순 nasc : 공포번호 오름차순 ndes : 공포번호 내림차순  
+		date 		int 법령의 공포일자 검색 
+		efYd 		string 시행일자 범위 검색(20090101~20090130) 
+		ancYd 	string 공포일자 범위 검색(20090101~20090130) 
+		ancNo 	string 공포번호 범위 검색(306~400) 
+		rrClsCd 	string 법령 제개정 종류(300201-제정/300202-일부개정/300203-전부개정/300204-폐지..) 
+		nb 		int 법령의 공포번호 검색 
+		org 		string 소관부처별 검색(소관부처코드 제공) 
+		knd 		string 법령종류(코드제공) 
+		gana 		string 사전식 검색 (ga,na,da…,etc) 
+		type 		char 출력 형태 HTML/XML 생략시 기본값 : HTML 
+		**/
+		searchObj.param.OC = el("OC").value;	
+		searchObj.param.target = el("target").value;		
+		searchObj.param.search = el("search").value;		
+		searchObj.param.query = el("query").value;		
+		searchObj.param.display = el("display").value;		
+		searchObj.param.sort = el("sort").value;		
+		searchObj.param.date = el("date").value;
+		
+		searchObj.param.efYd = el("efYd").value;
+		searchObj.param.ancYd = el("ancYd").value;
+		searchObj.param.ancNo = el("ancNo").value;
+		searchObj.param.rrClsCd = el("rrClsCd").value;
+		
+		searchObj.param.nb = el("nb").value;		
+		searchObj.param.org = el("org").value;		
+		searchObj.param.knd = el("knd").value;		
+		searchObj.param.gana = el("gana").value;		
+		searchObj.param.nw = el("nw").value;		
+		searchObj.param.refAdr = el("refAdr").value;
+		searchObj.param.ID = el("ID").value;
+		searchObj.param.type = "HTML";		
+		searchObj.param.popYn = el("popYn").value;	
+		fLsUpdate("/DRF/lawSearch.do", makeParam(searchObj.param));
+	}
+	
+	function fLsUpdate(urlName,parameter){
+		location.href = "/DRF/lawSearch.do?"+parameter;
+	}
+
+	function openPop(thisUrl){
+		var popUrl = thisUrl;
+		var contentPop = window.open('','', 'scrollbars=no,toolbar=no,resizable=yes,status=no,menubar=no');
+		contentPop.location.href = popUrl;
+
+	}		
+</script>
+</head>
+
+<!-- head //-->
+<body>
+
+<form>
+<div class="conwrap1">
+	<!-- number -->
+	<div class="lelitop">
+		<div class="num">총<strong>52</strong>건</div>
+	</div> 
+	<!-- number //-->
+	<!-- list -->
+	<!-- 
+	<table cellpadding="0" cellspacing="0" class="tbl1 tbd1" summary="순번, 법령명, 소관부처, 제개정구분, 법령종류, 공포번호, 공포일자, 시행일로 구성됨">	
+		<colgroup><col width="8%" /><col width="25%" /><col width="10%" /><col width="10%" /><col width="10%" /><col width="10%" /><col width="10%" /><col width="10%" /><col width="7%"/></colgroup>
+		<caption>펼친화면 목록</caption>
+	
+		<thead>
+			<tr>
+				<th scope="col">순번</th>
+				<th scope="col">법령명</th>
+				<th scope="col">소관부처</th>
+				<th scope="col">제개정구분</th>
+				<th scope="col">법령종류</th>
+				<th scope="col">공포번호</th>
+				<th scope="col">공포일자</th>
+				<th scope="col">시행일</th>
+				<th scope="col" class="bano">현행/연혁</th>
+			</tr>
+		</thead>
+	</table>
+	 -->			
+	<table cellpadding="0" cellspacing="0" class="tbl8 wd" summary="순번, 법령명, 소관부처, 제개정구분, 법령종류, 공포번호, 공포일자, 시행일, 현행연혁구분으로 구성됨">	
+		<colgroup><col width="8%" /><col width="25%" /><col width="10%" /><col width="10%" /><col width="10%" /><col width="10%" /><col width="10%" /><col width="10%" /><col width="7%"/></colgroup>
+		<caption>법령 연혁정보 목록</caption>
+	
+		<thead>
+			<tr>
+				<th scope="col">순번</th>
+				<th scope="col">법령명</th>
+				<th scope="col">소관부처</th>
+				<th scope="col">제개정구분</th>
+				<th scope="col">법령종류</th>
+				<th scope="col">공포번호</th>
+				<th scope="col">공포일자</th>
+				<th scope="col">시행일</th>
+				<th scope="col" class="bano">현행/연혁</th>
+			</tr>
+		</thead>
+		
+			<tbody>
+				
+						<tr>
+						 
+						<td class="ce">1</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=256583&amp;type=HTML&amp;mobileYn=&amp;efYd=20231212"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 33913호</td>
+						<td class="ce">2023.12.12</td>
+						<td class="ce">2023.12.12</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">2</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=252407&amp;type=HTML&amp;mobileYn=&amp;efYd=20230711"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 19531호</td>
+						<td class="ce">2023.7.11</td>
+						<td class="ce">2023.7.11</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">3</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=249019&amp;type=HTML&amp;mobileYn=&amp;efYd=20230321"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 19254호</td>
+						<td class="ce">2023.3.21</td>
+						<td class="ce">2023.3.21</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">4</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=248655&amp;type=HTML&amp;mobileYn=&amp;efYd=20230307"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 33321호</td>
+						<td class="ce">2023.3.7</td>
+						<td class="ce">2023.3.7</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">5</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=246957&amp;type=HTML&amp;mobileYn=&amp;efYd=20221227"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 33143호</td>
+						<td class="ce">2022.12.27</td>
+						<td class="ce">2022.12.27</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">6</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=237455&amp;type=HTML&amp;mobileYn=&amp;efYd=20221208"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 18571호</td>
+						<td class="ce">2021.12.7</td>
+						<td class="ce">2022.12.8</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">7</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=238891&amp;type=HTML&amp;mobileYn=&amp;efYd=20220705"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 18711호</td>
+						<td class="ce">2022.1.4</td>
+						<td class="ce">2022.7.5</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">8</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=243659&amp;type=HTML&amp;mobileYn=&amp;efYd=20220705"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 32765호</td>
+						<td class="ce">2022.7.4</td>
+						<td class="ce">2022.7.5</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">9</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=241233&amp;type=HTML&amp;mobileYn=&amp;efYd=20220308"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 32528호</td>
+						<td class="ce">2022.3.8</td>
+						<td class="ce">2022.3.8</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">10</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=225021&amp;type=HTML&amp;mobileYn=&amp;efYd=20211230"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 17799호</td>
+						<td class="ce">2020.12.29</td>
+						<td class="ce">2021.12.30</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">11</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=238543&amp;type=HTML&amp;mobileYn=&amp;efYd=20211230"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 32274호</td>
+						<td class="ce">2021.12.28</td>
+						<td class="ce">2021.12.30</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">12</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=231731&amp;type=HTML&amp;mobileYn=&amp;efYd=20210521"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 18112호</td>
+						<td class="ce">2021.4.20</td>
+						<td class="ce">2021.5.21</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">13</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=229841&amp;type=HTML&amp;mobileYn=&amp;efYd=20210302"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 31516호</td>
+						<td class="ce">2021.3.2</td>
+						<td class="ce">2021.3.2</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">14</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=224011&amp;type=HTML&amp;mobileYn=&amp;efYd=20201204"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 31218호</td>
+						<td class="ce">2020.12.4</td>
+						<td class="ce">2020.12.4</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">15</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=223955&amp;type=HTML&amp;mobileYn=&amp;efYd=20201204"  >방문판매 등에 관한 법률 시행규칙</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">총리령</td>
+						<td class="ce">제 01657호</td>
+						<td class="ce">2020.12.4</td>
+						<td class="ce">2020.12.4</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">16</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=220471&amp;type=HTML&amp;mobileYn=&amp;efYd=20200805"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 30893호</td>
+						<td class="ce">2020.8.4</td>
+						<td class="ce">2020.8.5</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">17</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=220297&amp;type=HTML&amp;mobileYn=&amp;efYd=20200724"  >방문판매 등에 관한 법률 시행규칙</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">총리령</td>
+						<td class="ce">제 01631호</td>
+						<td class="ce">2020.7.24</td>
+						<td class="ce">2020.7.24</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">18</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=215097&amp;type=HTML&amp;mobileYn=&amp;efYd=20200303"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 30509호</td>
+						<td class="ce">2020.3.3</td>
+						<td class="ce">2020.3.3</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">19</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=122403&amp;type=HTML&amp;mobileYn=&amp;efYd=20190801"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 11212호</td>
+						<td class="ce">2012.1.26</td>
+						<td class="ce">2019.8.1</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">20</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=206132&amp;type=HTML&amp;mobileYn=&amp;efYd=20190101"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 29421호</td>
+						<td class="ce">2018.12.24</td>
+						<td class="ce">2019.1.1</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">21</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=203795&amp;type=HTML&amp;mobileYn=&amp;efYd=20181213"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 15695호</td>
+						<td class="ce">2018.6.12</td>
+						<td class="ce">2018.12.13</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">22</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=205339&amp;type=HTML&amp;mobileYn=&amp;efYd=20181213"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 29334호</td>
+						<td class="ce">2018.12.4</td>
+						<td class="ce">2018.12.13</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">23</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=199183&amp;type=HTML&amp;mobileYn=&amp;efYd=20180529"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 15140호</td>
+						<td class="ce">2017.11.28</td>
+						<td class="ce">2018.5.29</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">24</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=202720&amp;type=HTML&amp;mobileYn=&amp;efYd=20180313"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 28702호</td>
+						<td class="ce">2018.3.13</td>
+						<td class="ce">2018.3.13</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">25</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=194413&amp;type=HTML&amp;mobileYn=&amp;efYd=20170620"  >방문판매 등에 관한 법률 시행규칙</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">총리령</td>
+						<td class="ce">제 01400호</td>
+						<td class="ce">2017.6.20</td>
+						<td class="ce">2017.6.20</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">26</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=193191&amp;type=HTML&amp;mobileYn=&amp;efYd=20170411"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 27988호</td>
+						<td class="ce">2017.4.11</td>
+						<td class="ce">2017.4.11</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">27</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=190470&amp;type=HTML&amp;mobileYn=&amp;efYd=20170101"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 27751호</td>
+						<td class="ce">2016.12.30</td>
+						<td class="ce">2017.1.1</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">28</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=187610&amp;type=HTML&amp;mobileYn=&amp;efYd=20161122"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 27606호</td>
+						<td class="ce">2016.11.22</td>
+						<td class="ce">2016.11.22</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">29</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=182149&amp;type=HTML&amp;mobileYn=&amp;efYd=20160930"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 14138호</td>
+						<td class="ce">2016.3.29</td>
+						<td class="ce">2016.9.30</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">30</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=177620&amp;type=HTML&amp;mobileYn=&amp;efYd=20151222"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 26758호</td>
+						<td class="ce">2015.12.22</td>
+						<td class="ce">2015.12.22</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">31</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=166680&amp;type=HTML&amp;mobileYn=&amp;efYd=20150106"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 26035호</td>
+						<td class="ce">2015.1.6</td>
+						<td class="ce">2015.1.6</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">32</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=166322&amp;type=HTML&amp;mobileYn=&amp;efYd=20150101"  >규제 재검토기한 설정을 위한 방문판매 등에 관한 법률 시행규칙 등 일부개정령</a></td>
+						<td class="ce">국무조정실</td>
+						<td class="ce">일괄개정</td>
+						<td class="ce">총리령</td>
+						<td class="ce">제 01118호</td>
+						<td class="ce">2014.12.31</td>
+						<td class="ce">2015.1.1</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">33</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=164837&amp;type=HTML&amp;mobileYn=&amp;efYd=20150101"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 25840호</td>
+						<td class="ce">2014.12.9</td>
+						<td class="ce">2015.1.1</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">34</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=166282&amp;type=HTML&amp;mobileYn=&amp;efYd=20150101"  >방문판매 등에 관한 법률 시행규칙</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">총리령</td>
+						<td class="ce">제 01118호</td>
+						<td class="ce">2014.12.31</td>
+						<td class="ce">2015.1.1</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">35</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=150736&amp;type=HTML&amp;mobileYn=&amp;efYd=20140729"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 12379호</td>
+						<td class="ce">2014.1.28</td>
+						<td class="ce">2014.7.29</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">36</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=157566&amp;type=HTML&amp;mobileYn=&amp;efYd=20140729"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 25527호</td>
+						<td class="ce">2014.7.28</td>
+						<td class="ce">2014.7.29</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">37</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=149064&amp;type=HTML&amp;mobileYn=&amp;efYd=20140101"  >방문판매 등에 관한 법률 시행규칙</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">총리령</td>
+						<td class="ce">제 01060호</td>
+						<td class="ce">2013.12.31</td>
+						<td class="ce">2014.1.1</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">38</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=140564&amp;type=HTML&amp;mobileYn=&amp;efYd=20130528"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 11839호</td>
+						<td class="ce">2013.5.28</td>
+						<td class="ce">2013.5.28</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">39</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=135932&amp;type=HTML&amp;mobileYn=&amp;efYd=20130323"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 24436호</td>
+						<td class="ce">2013.3.23</td>
+						<td class="ce">2013.3.23</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">40</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=125876&amp;type=HTML&amp;mobileYn=&amp;efYd=20120902"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 11461호</td>
+						<td class="ce">2012.6.1</td>
+						<td class="ce">2012.9.2</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">41</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=128287&amp;type=HTML&amp;mobileYn=&amp;efYd=20120902"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 24076호</td>
+						<td class="ce">2012.8.31</td>
+						<td class="ce">2012.9.2</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">42</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=123212&amp;type=HTML&amp;mobileYn=&amp;efYd=20120818"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">전부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 11324호</td>
+						<td class="ce">2012.2.17</td>
+						<td class="ce">2012.8.18</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">43</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=126879&amp;type=HTML&amp;mobileYn=&amp;efYd=20120818"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">전부개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 23947호</td>
+						<td class="ce">2012.7.10</td>
+						<td class="ce">2012.8.18</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">44</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=127942&amp;type=HTML&amp;mobileYn=&amp;efYd=20120818"  >방문판매 등에 관한 법률 시행규칙</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">전부개정</td>
+						<td class="ce">총리령</td>
+						<td class="ce">제 00992호</td>
+						<td class="ce">2012.8.16</td>
+						<td class="ce">2012.8.18</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">45</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=110215&amp;type=HTML&amp;mobileYn=&amp;efYd=20110124"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 22637호</td>
+						<td class="ce">2011.1.24</td>
+						<td class="ce">2011.1.24</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">46</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=105191&amp;type=HTML&amp;mobileYn=&amp;efYd=20101118"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 10303호</td>
+						<td class="ce">2010.5.17</td>
+						<td class="ce">2010.11.18</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">47</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=108840&amp;type=HTML&amp;mobileYn=&amp;efYd=20101118"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 22493호</td>
+						<td class="ce">2010.11.15</td>
+						<td class="ce">2010.11.18</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">48</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=108613&amp;type=HTML&amp;mobileYn=&amp;efYd=20101102"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 22467호</td>
+						<td class="ce">2010.11.2</td>
+						<td class="ce">2010.11.2</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">49</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=108056&amp;type=HTML&amp;mobileYn=&amp;efYd=20101001"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 22424호</td>
+						<td class="ce">2010.10.1</td>
+						<td class="ce">2010.10.1</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">50</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=106069&amp;type=HTML&amp;mobileYn=&amp;efYd=20100616"  >방문판매 등에 관한 법률 시행규칙</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">총리령</td>
+						<td class="ce">제 00933호</td>
+						<td class="ce">2010.6.16</td>
+						<td class="ce">2010.6.16</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+						<tr>
+						 
+						<td class="ce">51</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=104908&amp;type=HTML&amp;mobileYn=&amp;efYd=20100505"  >방문판매 등에 관한 법률 시행령</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">타법개정</td>
+						<td class="ce">대통령령</td>
+						<td class="ce">제 22151호</td>
+						<td class="ce">2010.5.4</td>
+						<td class="ce">2010.5.5</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+							<tr class="gr">
+						 
+						<td class="ce">52</td>
+						<td><a href="/DRF/lawService.do?OC=REDACTED&amp;target=lsHistory&amp;MST=103835&amp;type=HTML&amp;mobileYn=&amp;efYd=20100322"  >방문판매 등에 관한 법률</a></td>
+						<td class="ce">공정거래위원회</td>
+						<td class="ce">일부개정</td>
+						<td class="ce">법률</td>
+						<td class="ce">제 10171호</td>
+						<td class="ce">2010.3.22</td>
+						<td class="ce">2010.3.22</td>
+						
+							<td class="ce">연혁</td>
+						
+						</tr>
+					
+					
+				
+			
+		</tbody>
+	</table>
+	<input type="hidden" id="OC" value="REDACTED" />
+	<input type="hidden" id="target" value="lsHistory" />
+	<input type="hidden" id="search" value="1" />
+	<input type="hidden" id="query" value='방문판매 등에 관한 법률' />
+	<input type="hidden" id="display" value="100" />
+	<input type="hidden" id="sort" value="efdes" />
+	<input type="hidden" id="date" value="" />
+	
+	<!-- 20140123 추가 -->
+	<input type="hidden" id="efYd" value="20100101~20231231" />
+	<input type="hidden" id="ancYd" value="" />
+	<input type="hidden" id="ancNo" value="" />
+	<input type="hidden" id="rrClsCd" value="" />
+	<input type="hidden" id="type" value="HTML" />
+	<!-- 20140123 추가 //-->
+	
+	<input type="hidden" id="nb" value="" />
+	<input type="hidden" id="org" value="" />
+	<input type="hidden" id="knd" value="" />
+	<input type="hidden" id="gana" value="" />
+	<input type="hidden" id="nw" value="1,2,3,4" />
+	<input type="hidden" id="refAdr" value="" />
+	<input type="hidden" id="ID" value="0" />
+	<input type="hidden" id="popYn" value="N" />
+	
+	<!-- list //-->
+	<!-- paging -->
+	<div class="paging mar5">
+	<!-- paging -->
+<div class="paging">
+
+	
+		
+	 	
+		
+	 		
+	 		
+	 			<img src="/DRF/images/button/page_first.gif" alt="처음으로" />
+	 			<img src="/DRF/images/button/page_prev.gif" alt="이전으로" />
+	 		
+	 	
+		<ol start="1">
+			
+	 			
+	 				
+	 					<li class="on">1</li>
+	 				
+	 				
+	 			
+	 		
+	 	</ol>
+	 	
+	 		
+	 		
+ 				<img src="/DRF/images/button/page_next.gif" alt="다음으로" />
+ 				<img src="/DRF/images/button/page_last.gif" alt="마지막으로" />
+	 		
+	 	
+			
+</div>
+<!-- paging //-->
+	</div>
+	<!-- paging //-->
+</div>
+</form>
+</body>
+</html>
+

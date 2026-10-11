@@ -32,6 +32,7 @@ CHUNK_DIRECTORY_SPECS = (
 EXPECTED_TOTAL_COUNT = 4_932
 
 _SUPPORTED_SUFFIXES = frozenset({".json", ".jsonl"})
+_CHUNKING_REPORT_SUFFIX = "_chunking_report.json"
 _CONTAINER_KEYS = ("chunks", "records", "items", "data")
 _CORE_INPUT_KEYS = frozenset(
     {"document_id", "chunk_id", "text", "vector", "metadata"}
@@ -250,7 +251,11 @@ def _discover_input_files(
         sorted(
             path
             for path in folder.rglob("*")
-            if path.is_file() and path.suffix.lower() in _SUPPORTED_SUFFIXES
+            if (
+                path.is_file()
+                and path.suffix.lower() in _SUPPORTED_SUFFIXES
+                and not path.name.lower().endswith(_CHUNKING_REPORT_SUFFIX)
+            )
         )
     )
     state.file_count += len(input_files)

@@ -3,14 +3,12 @@
 DB에는 읽기 요청만 보냅니다. 컬렉션 생성/삭제, 문서 적재는 수행하지 않습니다.
 BM25에는 Dense 검색 결과 일부가 아니라 컬렉션의 청크 전체를 준비합니다.
 """
+from __future__ import annotations
 from collections.abc import Callable
+from dataclasses import replace
 from pathlib import Path
 
-from src.const.env_loader import load_project_env
-from src.const.qdrant_config import load_qdrant_settings
 from src.retriever import BM25Retriever, DocumentRetriever, HybridRetriever, tokenize_keywords
-from src.vector_db.embedding_provider import create_embedding_provider
-from src.vector_db.qdrant_store import QdrantVectorStore
 from src.vectorstore import VectorSearchHit
 
 
@@ -53,6 +51,12 @@ def create_team_hybrid_retriever(
     tokenizer: Callable[[str], list[str]] = tokenize_keywords,
 ) -> HybridRetriever:
     """설정 확인 → 서버 규격 확인 → 청크 읽기 → Dense/BM25 조립."""
+    # 공용 모듈은 dev에서 공급합니다. jem에 다른 팀원의 파일을 복사하지 않습니다.
+    # import만 하는 단위 테스트와 실제 서버 연결을 분리합니다.
+    from src.const.env_loader import load_project_env
+    from src.const.qdrant_config import load_qdrant_settings
+    from src.embedder import create_embedding_provider
+    from src.vector_db.qdrant_store import QdrantVectorStore
     load_project_env(env_path)
     settings = load_qdrant_settings()
     settings.validate_for_vector_work()
@@ -64,6 +68,10 @@ def create_team_hybrid_retriever(
             # 데이터가 없는데 임베딩 API를 호출하거나 평가 점수를 내지 않습니다.
             raise ValueError("컬렉션에 문서가 없습니다. 2번 담당자의 데이터 적재가 필요합니다.")
         embedding = create_embedding_provider(settings.embedding)
+        # dev의 기본값이 서버 Hybrid여도 이 비교의 Dense는 Dense만 조회합니다.
+        # BM25를 여기서 결합하므로 서버 Sparse까지 동시에 반영하지 않습니다.
+        # 컬렉션/.env는 변경하지 않고 이 조회 객체의 설정만 복사합니다.
+        store.settings = replace(settings, collection=replace(settings.collection, search_mode="dense"))
     except Exception:
         store.client.close()
         raise

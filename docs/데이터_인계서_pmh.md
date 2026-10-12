@@ -2,7 +2,7 @@
 
 ## 현재 상태와 인계 범위
 
-- 검증 시각(UTC): 2026-10-11T12:56:05.904904+00:00
+- 검증 시각(UTC): 2026-10-12T14:15:52.415692+00:00
 - 구조 검증: 통과 · 12개 항목
 - 전체 단위 테스트: 163개 · 통과
 - 수집·정제·청크 생성, 공통 메타데이터, 판례 출처 헤더, 초기 BM25 평가까지 구현했습니다.
@@ -56,9 +56,9 @@
 | `data/raw/guides` | 주택임대차·해고근로자·중고거래 피해자·인터넷 쇼핑·택배 PDF 5개 |
 | `data/raw/law_history` | 필라테스 사례 시점 비교용 원문 JSON 8개·연혁 HTML 4개. 기본 검색 제외 |
 | `data/raw/consumer_sources` | 공정위 약관 HWP/HWPX·행정규칙 XML·KCA 및 고용노동부 HTML·참고 PDF·이전 스냅샷·수집 기록 |
-| `data/processed/{laws,precedents,guides,consumer_sources}` | 정제 본문·구조·검색 후보/제외·검토 정보 |
+| `data/processed/laws, data/processed/precedents, data/processed/guides, data/processed/consumer_sources` | 정제 본문·구조·검색 후보/제외·검토 정보 |
 | `data/processed/retrieval_evaluation` | 검색·분야 충분성·최종 검증 보고서. 원문 데이터와 구분 |
-| `data/chunk/{laws,precedents,guides,consumer_sources}` | 임베딩 입력용 청크. 자료별 형식 유지 |
+| `data/chunk/laws, data/chunk/precedents, data/chunk/guides, data/chunk/consumer_sources` | 임베딩 입력용 청크. 자료별 형식 유지 |
 
 수집 시 인증정보를 저장 전에 제거합니다. 이미 저장한 raw는 추가 정제를 위해 덮어쓰지 않습니다. 갱신본은 새 원본 식별자·해시·시점을 기록하고 processed와 chunk를 다시 생성합니다. raw 스냅샷은 인증정보 제거 이전의 최초 응답과 바이트 단위로 동일하다는 뜻이 아닙니다.
 폴더 개수는 같을 필요가 없습니다. 별표는 법령 정제/청크로 합류하며, 평가 보고서는 별도 위치에 있습니다. 이전 raw 수집 보고서의 실패는 현재 최신 보고서 실패와 구분합니다.

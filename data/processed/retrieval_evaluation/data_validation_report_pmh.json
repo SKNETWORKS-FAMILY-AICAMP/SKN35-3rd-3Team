@@ -2983,7 +2983,7 @@
     {
       "path": "data/processed/retrieval_evaluation/domain_coverage_report_pmh.md",
       "bytes": 457637,
-      "sha256": "9d77d0e08d4788b2f7878cb40b5243fd00d605ef99b9af318114225c3f8f4d3d"
+      "sha256": "dd6bb5c629f2ca50b112154ec29c2bdc365e2f3b968d8325609f7065ee4fd4ae"
     },
     {
       "path": "data/chunk/__init__.py",
@@ -3066,14 +3066,14 @@
       "sha256": "bcde044c4869f50feada1cead23474dace126c89416bb4f76e717ac41898a921"
     }
   ],
-  "inventory_sha256": "c612be7b37b63229948ab97aa6acf2104ac898a00f28d62e2b70ed9d89fedbe1",
+  "inventory_sha256": "3beed12bd1a3fe7df51a906988545dc69be3ce46ae83ce43500d26e29c6788f0",
   "remaining_limits": [
     "분야 내용 검토 상태: {\"supported\": 37, \"partial\": 7, \"restricted\": 1}",
     "자료 추가·개정 후 분야별 내용 검토와 평가 보고서를 다시 갱신해야 함",
     "PDF 모든 이미지/원문 시각 요소 및 신규 현행 개정의 전수 검증은 아님",
     "공통 서비스 로더·임베딩·Qdrant 저장/검색·LLM 답변·MCP 연결은 미구현"
   ],
-  "validated_at": "2026-10-11T07:29:04.005852+00:00",
+  "validated_at": "2026-10-12T14:15:52.415692+00:00",
   "test_suite": {
     "tests_run": 163,
     "successful": true,

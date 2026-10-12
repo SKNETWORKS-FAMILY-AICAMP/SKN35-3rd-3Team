@@ -14,7 +14,7 @@ from pathlib import Path
 
 from src.const.config import CHUNK_DATA_PATH, TEST_REPORT_PATH
 from src.const.qdrant_config import load_qdrant_settings
-from src.const.model import create_vector_embedding
+from src.embedder import create_embedding_provider
 from src.vector_db.chunk_loader import LoadedChunkSet, load_chunk_tree
 from src.vector_db.ingestion import (
     generate_document_vectors,
@@ -76,7 +76,7 @@ def ingest(args: argparse.Namespace) -> int:
         )
         return 2
 
-    embedder = create_vector_embedding(settings.embedding)
+    embedder = create_embedding_provider(settings.embedding)
     store = QdrantVectorStore.from_settings(settings)
     collection_info = store.validate_collection_contract()
 

@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Final
 from urllib.parse import urlparse
 
-from src.const.config import load_project_environment
+from src.const.env_loader import load_project_env
 from src.const.vector_db_defaults import (
     API_EMBEDDING_PROFILES,
     TEAM_EMBEDDING_DIMENSION,
@@ -494,5 +494,5 @@ def load_qdrant_settings(
 ) -> QdrantSettings:
     """공용 ``.env``에서 설정을 읽되 서버 연결은 하지 않습니다."""
 
-    load_project_environment(env_path)
+    load_project_env(env_path)
     return QdrantSettings.from_env()

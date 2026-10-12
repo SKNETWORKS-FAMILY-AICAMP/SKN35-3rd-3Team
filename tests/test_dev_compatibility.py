@@ -5,7 +5,6 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from src.const.config import CHUNK_DATA_PATH, ENV_PATH, PROJECT_PATH
-from src.const.model import create_embedding, create_vector_embedding
 from src.const.qdrant_config import QdrantSettings
 from src.retriever import DocumentRetriever
 from src.vectorstore import VectorSearchRequest, VectorDocument, VectorCollectionInfo
@@ -15,33 +14,6 @@ class DevCompatibilityTests(unittest.TestCase):
     def test_common_project_paths_have_one_root(self):
         self.assertEqual(CHUNK_DATA_PATH, PROJECT_PATH / "data" / "chunk")
         self.assertEqual(ENV_PATH, PROJECT_PATH / ".env")
-
-    def test_openai_factory_uses_openai_key_and_model(self):
-        environment = {
-            "OPENAI_API_KEY": "openai-test-key",
-            "OPENAI_EMBEDDING_MODEL": "text-embedding-3-small",
-        }
-        with patch.dict(os.environ, environment, clear=True), patch(
-            "src.const.model.load_project_environment"
-        ), patch("src.const.model.OpenAIEmbeddings") as constructor:
-            create_embedding()
-
-        constructor.assert_called_once_with(
-            model="text-embedding-3-small",
-            api_key="openai-test-key",
-        )
-
-    def test_vector_factory_delegates_to_existing_embedder(self):
-        embedding_settings = SimpleNamespace(provider="openai")
-        expected = object()
-        with patch(
-            "src.embedder.create_embedding_provider",
-            return_value=expected,
-        ) as constructor:
-            actual = create_vector_embedding(embedding_settings)
-
-        self.assertIs(actual, expected)
-        constructor.assert_called_once_with(embedding_settings)
 
     def test_sparse_request_and_expected_dimension(self):
         requests = []

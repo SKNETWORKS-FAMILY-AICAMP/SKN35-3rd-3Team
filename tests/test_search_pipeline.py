@@ -129,7 +129,7 @@ class SearchTests(unittest.TestCase):
         with patch("src.const.qdrant_config.load_qdrant_settings", return_value=settings), \
              patch("src.vector_db.qdrant_store.QdrantVectorStore.from_settings", return_value=store), \
              patch("src.vector_db.search_bootstrap.load_keyword_documents", return_value=()), \
-             patch("src.const.model.create_vector_embedding") as embedding:
+             patch("src.embedder.create_embedding_provider") as embedding:
             with self.assertRaisesRegex(ValueError,"문서가 없습니다"):
                 create_team_hybrid_retriever()
             embedding.assert_not_called()

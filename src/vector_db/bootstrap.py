@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from src.const.qdrant_config import load_qdrant_settings
-from src.const.model import create_vector_embedding
+from src.embedder import create_embedding_provider
 from src.retriever import DocumentRetriever
 from src.vector_db.qdrant_store import QdrantVectorStore
 from src.vector_db.sparse_embedder import create_sparse_embedding_provider
@@ -26,7 +26,7 @@ def create_team_retriever(
     settings = load_qdrant_settings(env_path)
     settings.validate_for_vector_work()
 
-    embedder = create_vector_embedding(settings.embedding)
+    embedder = create_embedding_provider(settings.embedding)
     vector_store = QdrantVectorStore.from_settings(settings)
     expected_dimension = settings.embedding.dimension
     if validate_collection_on_startup:

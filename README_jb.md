@@ -118,6 +118,8 @@ data/chunk/
 ```
 
 - 전체 예상 레코드: **4,932건**
+- 실제 폴더별 수량: `laws` 3,826건, `guides` 488건,
+  `precedents` 359건, `consumer_sources` 259건
 - 인코딩: UTF-8, BOM 없음 확인
 - JSONL: 한 줄에 청크 한 건
 - 안내서 JSON: `chunks` 배열 등 여러 청크 포함 가능
@@ -239,6 +241,11 @@ HF_TOKEN=개인_Hugging_Face_토큰
 - Datetime 범위 검색
 - 별도 `article_label`·`case_number` 필드 기반 정확 조회
 - RAG·LangGraph 담당자에게 MCP Tool 입력·출력 계약 인계
+
+현재 추적 중인 `src/graph/mcp_graph.py`는 `START → END` 자리표시자입니다.
+MCP Server와 네 Tool은 구현됐지만, LangGraph에서 실제 MCP Client로 Tool을
+호출해 State에 연결하는 작업은 아직 완료되지 않았습니다. 로컬 미추적
+`mcp_search_node.py`, `mcp_state.py`는 공용 구현으로 간주하지 않습니다.
 
 MCP 로컬 서버는 다음 명령으로 실행합니다. MCP Host에서는 같은 명령을
 `stdio` 서버로 등록하고 `search_documents`, `lookup_document`,

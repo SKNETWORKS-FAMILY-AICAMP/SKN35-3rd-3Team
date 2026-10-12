@@ -76,9 +76,15 @@ uv run python -m src.scripts.qdrant_setup init
 | `precedents` | `precedent` |
 | `consumer_sources` | `consumer_source` |
 
-전처리 담당자가 확인한 전체 청크 수는 **4,932건**입니다. 최신 폴더별
-수량은 아직 제공되지 않아 보고서에는 실제 발견 수량을 표시하고, 전체
-수량만 4,932건인지 검사합니다.
+전처리 담당자가 확인한 전체 청크 수는 **4,932건**입니다. 2026-10-12 실제
+`check-input` 결과는 파일 8개, 유효 4,932건이며 폴더별 수량은 다음과 같습니다.
+
+| 폴더 | 청크 수 |
+| --- | ---: |
+| `laws` | 3,826 |
+| `guides` | 488 |
+| `precedents` | 359 |
+| `consumer_sources` | 259 |
 
 각 폴더의 `.json`과 `.jsonl`을 하위 경로까지 자동 탐색합니다. JSON은 청크
 객체 한 건, 청크 배열 또는 `chunks`·`records`·`items`·`data` 배열을 지원하고,

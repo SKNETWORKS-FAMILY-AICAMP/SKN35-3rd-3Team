@@ -1,5 +1,5 @@
 import streamlit as st
-from src.App.Chat import render_chat
+from src.app.Chat import render_chat
 
 def main():
     # set_page_config는 첫 번째 Streamlit 명령이어야 해서 여기서 호출

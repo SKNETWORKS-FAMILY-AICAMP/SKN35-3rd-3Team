@@ -1,77 +1,93 @@
-# rrf 구현
-
-def rrf(state):
-    # state에 따라서 rrf를 수행하는 기능을 구현
-    return {}
-
-
-# 기존 그래프용 자리 함수는 유지하고, 실제 순위 통합은 아래 함수로 제공합니다.
+"""여러 질문의 검색 결과를 순위 기반 RRF로 통합합니다."""
 import math
-from collections.abc import Mapping, Sequence
 
 from src.vectorstore import VectorSearchHit
 
+# 검색기와 RRF의 상호 참조를 피하고, 직접 실행할 때만 검색기를 가져옵니다.
+if __name__ == "__main__":
+    from src.vector_db.bootstrap import create_team_retriever
 
-def reciprocal_rank_fusion(
-    rankings: Mapping[str, Sequence[VectorSearchHit]],
-    *,
-    top_k: int = 5,
-    rank_constant: float = 60.0,
-) -> tuple[VectorSearchHit, ...]:
-    """점수 단위가 다른 검색 목록을 순위로 통합합니다.
 
-    입력 예: {'dense': dense_hits, 'bm25': keyword_hits}.
-    각 목록은 이미 관련성이 높은 순으로 정렬되어 있어야 합니다.
-    RRF 점수 = 각 목록에서 1 / (rank_constant + 순위)를 더한 값.
-    순위는 1부터 시작합니다. 60은 조정 가능한 초기값이며 통과 기준이 아닙니다.
-    """
-    if isinstance(top_k, bool) or not isinstance(top_k, int):
-        raise TypeError("top_k는 정수여야 합니다.")
-    if not 1 <= top_k <= 100:
-        raise ValueError("top_k는 1 이상 100 이하여야 합니다.")
-    if isinstance(rank_constant, bool) or not isinstance(rank_constant, (int, float)):
-        raise TypeError("rank_constant는 숫자여야 합니다.")
-    if not math.isfinite(rank_constant) or rank_constant <= 0:
+# 질문별 검색 순위를 RRF 점수로 합치고, 중복 청크를 제거해 상위 결과를 반환합니다.
+def reciprocal_rank_fusion(rankings, *, top_k=5, rank_constant=60.0):
+    """질문별 검색 목록을 받아 상위 청크를 반환합니다. 점수는 확률이 아닙니다."""
+    if type(top_k) is not int or not 1 <= top_k <= 100:
+        raise ValueError("top_k는 1~100 정수여야 합니다.")
+    if (isinstance(rank_constant, bool) or not isinstance(rank_constant, (int, float))
+            or not math.isfinite(rank_constant) or rank_constant <= 0):
         raise ValueError("rank_constant는 유한한 양수여야 합니다.")
 
-    scores = {}
-    originals = {}
-    evidence = {}
-    for source, hits in rankings.items():
-        if not isinstance(source, str) or not source.strip():
+    scores, documents, sources = {}, {}, {}
+    for name, hits in rankings.items():
+        if not isinstance(name, str) or not name.strip():
             raise ValueError("검색 목록 이름은 비어 있지 않은 문자열이어야 합니다.")
         seen = set()
-        for rank, hit in enumerate(hits, start=1):
-            document_id = hit.metadata.get("document_id")
-            chunk_id = hit.metadata.get("chunk_id")
-            # 같은 원본 문서의 서로 다른 청크는 합치지 않습니다.
-            # 양쪽 모두 팀의 고유 식별자를 보존해야 정확히 중복을 제거합니다.
-            if isinstance(document_id, str) and document_id and isinstance(chunk_id, str) and chunk_id:
-                key = ("chunk", document_id, chunk_id)
-            else:
-                key = ("point", hit.point_id)
-            # 한 검색 목록의 중복 결과가 점수를 여러 번 올리지 않게 합니다.
+        for rank, hit in enumerate(hits, 1):
+            # 문서 ID와 청크 ID로 같은 청크를 식별합니다. 없으면 Qdrant ID를 씁니다.
+            ids = (hit.metadata.get("document_id"), hit.metadata.get("chunk_id"))
+            key = ("chunk", *ids) if all(isinstance(x, str) and x for x in ids) else ("point", hit.point_id)
+            # 한 검색 목록에 같은 청크가 반복돼도 점수는 한 번만 더합니다.
             if key in seen:
                 continue
             seen.add(key)
-            if key in originals and originals[key].text != hit.text:
-                raise ValueError("동일한 청크 ID의 본문이 다릅니다. 두 색인을 동기화하세요.")
-            if key not in originals:
-                originals[key] = hit
-                scores[key] = 0.0
-                evidence[key] = {}
-            scores[key] += 1.0 / (rank_constant + rank)
-            # 원점수는 통합에 쓰지 않고 디버깅/평가를 위해 함께 보존합니다.
-            evidence[key][source] = {"rank": rank, "score": float(hit.score)}
+            if key in documents and documents[key].text != hit.text:
+                raise ValueError("같은 청크 ID의 본문이 다릅니다. 색인을 확인하세요.")
+            documents.setdefault(key, hit)
+            # 높은 순위일수록 점수가 높고, 여러 목록에 등장하면 점수가 누적됩니다.
+            scores[key] = scores.get(key, 0.0) + 1 / (rank_constant + rank)
+            sources.setdefault(key, {})[name] = {"rank": rank, "score": float(hit.score)}
 
-    # 동점은 식별자로 정렬하여 실행할 때마다 순위가 바뀌지 않게 합니다.
+    # 통합 점수순으로 정렬합니다. 동점이면 ID로 순서를 고정합니다.
     ordered = sorted(scores, key=lambda key: (-scores[key], key))[:top_k]
-    results = []
+    response = []
     for key in ordered:
-        original = originals[key]
-        metadata = dict(original.metadata)
-        metadata["retrieval_method"] = "rrf"
-        metadata["rrf_sources"] = evidence[key]
-        # 본문과 출처는 유지하고 score만 RRF 통합 점수로 바꿉니다.
-        results.append(VectorSearchHit(original.point_id, scores[key], original.text, metadata))
-    return tuple(results)
+        hit = documents[key]
+        # 원본 본문·출처는 보존하고 통합 점수와 검색별 순위를 기록합니다.
+        metadata = {**hit.metadata, "retrieval_method": "rrf", "rrf_sources": sources[key]}
+        response.append(VectorSearchHit(hit.point_id, scores[key], hit.text, metadata))
+    response = tuple(response)
+    #print(response)
+    return response
+
+
+# 그래프 State의 rankings를 받아 RRF를 실행하고, documents 형태로 반환합니다.
+def rrf(state):
+    # 그래프 State의 질문별 결과를 통합해 다음 rerank 노드에 전달합니다.
+    hits = reciprocal_rank_fusion(state["rankings"], top_k=20)
+    response = {"documents": [hit.to_document() for hit in hits]}
+    #print(response)
+    return response
+
+
+if __name__ == "__main__":
+    # RRF 자체는 LLM을 사용하지 않습니다. 비교할 검색 표현들을 직접 입력합니다.
+    queries = [query.strip() for query in input("검색 표현을 ;로 구분해 입력하세요: ").split(";") if query.strip()]
+    if not queries:
+        raise ValueError("검색 표현을 하나 이상 입력하세요.")
+    # 실제 원격 Qdrant 검색 결과를 받아 RRF를 실행합니다.
+    searcher = create_team_retriever(search_mode="hybrid")
+    try:
+        rankings = {f"query_{i}": searcher.search_documents(query, top_k=20)
+                    for i, query in enumerate(queries)}
+        hits = reciprocal_rank_fusion(rankings, top_k=3)
+        # 질문 번호와 검색 표현을 먼저 보여 줍니다.
+        print("\n[검색 표현]")
+        for i, query in enumerate(queries):
+            print(f"query_{i}: {query}")
+
+        # 각 문서가 질문별 검색에서 몇 위였는지 통합 점수와 함께 비교합니다.
+        print("\n[질문별 순위 비교 — 통합 상위 3개]")
+        print("'-'는 해당 질문의 검색 후보 20개에 없었다는 뜻입니다.")
+        for hit in hits:
+            sources = hit.metadata["rrf_sources"]
+            ranks = " | ".join(
+                f"{name}_rank={sources.get(name, {}).get('rank', '-')}"
+                for name in rankings
+            )
+            print(f"id={hit.point_id} | {ranks} | RRF={hit.score:.6f}")
+
+        print("\n[통합 상위 3개 본문]")
+        for i, hit in enumerate(hits, 1):
+            print(f"[{i}] id={hit.point_id}, RRF={hit.score:.6f}\n{hit.text[:200]}\n")
+    finally:
+        searcher.vector_store.client.close()

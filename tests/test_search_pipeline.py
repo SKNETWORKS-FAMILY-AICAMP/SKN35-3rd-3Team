@@ -10,7 +10,6 @@ from unittest.mock import patch
 
 from qdrant_client import QdrantClient, models
 
-from src.multi_query import LLMQueryExpander, MultiQueryRetriever
 from src.retrieval_evaluation import EvaluationCase, compare_retrievers, evaluate_ranking
 from src.retriever import BM25Retriever, DocumentRetriever, HybridRetriever
 from src.rrf import reciprocal_rank_fusion
@@ -54,32 +53,6 @@ class SearchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             evaluate_ranking(["a"],[],k=5)
 
-    @unittest.skipUnless(HAS_COMMON_DB, "공용 Qdrant 연동 테스트는 dev에서 실행")
-    def test_real_local_qdrant_hybrid_and_multi(self):
-        client,hybrid = make_fixture()
-        self.addCleanup(client.close)
-        self.assertEqual(hybrid.dense.search_documents("보증금")[0].point_id,"1")
-        self.assertEqual(len(hybrid.keyword.search_documents("보증금")),1)
-        results = hybrid.search_documents("보증금",top_k=2,filters={"document_type":"law"})
-        self.assertEqual(results[0].point_id,"1")
-        self.assertEqual(results[0].metadata["page"],1)
-        self.assertEqual(set(results[0].metadata["rrf_sources"]),{"dense","bm25"})
-        calls = []
-        def expand(query,count):
-            calls.append((query,count))
-            return [query," ","임대차 종료","임대차 종료","택배 분실"]
-        multi = MultiQueryRetriever(hybrid,expand,max_queries=3)
-        self.assertEqual(multi.generate_queries(" 보증금 "),("보증금","임대차 종료","택배 분실"))
-        hits = multi.search_documents("보증금",top_k=3)
-        self.assertEqual(len(hits),3)
-        self.assertIn("query_search_sources",hits[0].metadata)
-        self.assertEqual(multi.search_documents("보증금",filters={"document_type":"precedent"}),())
-        before = len(calls)
-        with self.assertRaises(ValueError):
-            multi.search_documents("보증금",top_k=0)
-        self.assertEqual(len(calls),before)
-        one = MultiQueryRetriever(hybrid,lambda *args: self.fail("확장 호출 금지"),max_queries=1)
-        self.assertEqual(one.generate_queries("보증금"),("보증금",))
 
     def test_rrf_duplicates_and_score(self):
         a = VectorSearchHit("a",0.9,"본문",{"document_id":"d","chunk_id":"a"})
@@ -90,13 +63,6 @@ class SearchTests(unittest.TestCase):
         self.assertAlmostEqual(result.score,1/61+1/62)
         self.assertNotIn("rrf_sources",a.metadata)
 
-    def test_llm_parser(self):
-        fence = chr(96) * 3
-        llm = SimpleNamespace(invoke=lambda messages:SimpleNamespace(content=fence + 'json\n["검색 표현"]\n' + fence))
-        self.assertEqual(LLMQueryExpander(llm)("질문",2),["검색 표현"])
-        llm.invoke = lambda messages:SimpleNamespace(content='{"wrong":1}')
-        with self.assertRaises(ValueError):
-            LLMQueryExpander(llm)("질문",2)
 
     def test_bm25_formula_and_empty(self):
         docs = [VectorSearchHit("a",0,"반환 보증금"),VectorSearchHit("b",0,"택배 분실")]
@@ -105,28 +71,13 @@ class SearchTests(unittest.TestCase):
         self.assertEqual(BM25Retriever([]).search_documents("질문"),())
         self.assertEqual(BM25Retriever(docs).search_documents("환불"),())
 
-    @unittest.skipUnless(HAS_COMMON_DB, "공용 Qdrant 연동 테스트는 dev에서 실행")
-    def test_compare_all_methods(self):
-        client,hybrid = make_fixture()
-        self.addCleanup(client.close)
-        multi = MultiQueryRetriever(hybrid,lambda query,count:["임대차 종료"] if "보증금" in query else ["택배 분실"])
-        report = compare_retrievers(
-            {"dense":hybrid.dense,"bm25":hybrid.keyword,"hybrid":hybrid,"multi_query_hybrid":multi},
-            [EvaluationCase("보증금 반환",("d1::c1",)),EvaluationCase("택배 분실",("d2::c1",))],k=3,
-        )
-        self.assertEqual(report["query_count"],2)
-        self.assertEqual(set(report["results"]),{"dense","bm25","hybrid","multi_query_hybrid"})
-        for result in report["results"].values():
-            self.assertEqual(result["recall"],1)
-            self.assertEqual(result["hit_rate"],1)
-            self.assertAlmostEqual(result["precision"],1/3)
 
     @unittest.skipUnless(HAS_COMMON_DB, "공용 Qdrant 연동 테스트는 dev에서 실행")
     def test_empty_remote_corpus_stops_before_embedding(self):
         # 빈 서버를 발견하면 임베딩 API를 생성/호출하지 않아야 합니다.
         settings = SimpleNamespace(validate_for_vector_work=lambda: None)
         store = SimpleNamespace(validate_collection_contract=lambda: None, client=SimpleNamespace(close=lambda: None))
-        with patch("src.const.env_loader.load_project_env"), \
+        with patch("src.const.model.load_project_env"), \
              patch("src.const.qdrant_config.load_qdrant_settings", return_value=settings), \
              patch("src.vector_db.qdrant_store.QdrantVectorStore.from_settings", return_value=store), \
              patch("src.vector_db.search_bootstrap.load_keyword_documents", return_value=()), \

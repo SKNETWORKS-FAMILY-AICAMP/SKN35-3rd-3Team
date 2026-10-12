@@ -9,7 +9,8 @@ import os
 from pathlib import Path
 from time import perf_counter
 
-from src.rerank import CrossEncoderScorer, DEFAULT_RERANK_MODEL
+from src.const.model import create_rerank_model
+from src.const.config import PROJECT_PATH
 
 
 def memory_mib():
@@ -56,20 +57,20 @@ def main():
         "근로 계약 종료와 해고에 관한 자료입니다.",
     ]
     start = perf_counter()
-    scorer = CrossEncoderScorer.from_pretrained(batch_size=1, max_length=512)
+    scorer = create_rerank_model()
     load_seconds = perf_counter() - start
-    scorer.score_pairs(query, documents[:1])  # 최초 실행 준비 시간을 본 측정과 분리
+    scorer.predict([(query, text) for text in documents[:1]], batch_size=1)  # 최초 실행 준비 시간을 본 측정과 분리
     runs = []
     for _ in range(2):
         start = perf_counter()
-        scores = list(scorer.score_pairs(query, documents))
+        scores = list(scorer.predict([(query, text) for text in documents], batch_size=1))
         runs.append(perf_counter() - start)
     # 짧은 문장만으로 실제 청크 처리 속도를 낙관하지 않도록 긴 입력도 측정합니다.
     start = perf_counter()
-    scorer.score_pairs(query, [text * 20 for text in documents])
+    scorer.predict([(query, text * 20) for text in documents], batch_size=1)
     long_seconds = perf_counter() - start
     report = {
-        "model":DEFAULT_RERANK_MODEL, "device":"cpu", "threads":4,
+        "model":os.environ["RERANK_MODEL"], "device":"cpu", "threads":4,
         "candidate_count":len(documents), "batch_size":1, "max_length":512,
         "load_seconds":round(load_seconds,3),
         "short_input_runs_seconds":[round(value,3) for value in runs],
@@ -78,7 +79,7 @@ def main():
         "ranked_sample_indices":sorted(range(len(scores)),key=lambda index:-scores[index]),
         "evaluation_type":"CPU benchmark with synthetic text; not legal retrieval quality",
     }
-    output = Path(__file__).resolve().parents[2] / "docs" / "rerank-cpu-benchmark.json"
+    output = PROJECT_PATH / "docs" / "rerank-cpu-benchmark.json"
     output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
     print(json.dumps(report,ensure_ascii=False,indent=2),flush=True)
 

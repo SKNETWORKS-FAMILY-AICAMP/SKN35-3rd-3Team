@@ -1,9 +1,11 @@
 from src.graph.state import State
-# 노드 입니다.
+from src.multi_query import multi_query
 
-# state에 따라서 노드의 상태를 정의합니다.
 
-def multi_query_node(state : State):
-    # multi_query.py에서 정의한 함수의 리턴값만 받아서 다룰 예정
-    query = "ddd"
-    return {'rewrite_query': query}
+def multi_query_node(state: State):
+    # 재작성 질문이 있으면 사용하고, 없으면 원본 질문을 사용합니다.
+    question = state.get("rewrite_query") or state["origin_query"]
+    # 질문 확장과 검색을 실행하고, 질문 목록과 질문별 결과를 State에 저장합니다.
+    response = multi_query(question)
+    print(response)
+    return response

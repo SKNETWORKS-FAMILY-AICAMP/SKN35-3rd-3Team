@@ -1956,7 +1956,7 @@
   "reviewer": "Codex의 수집 자료 내용 검토. 전문가 법률 검증 아님",
   "chunk_count": 4932,
   "question_count": 45,
-  "input_fingerprint": "43694c8f80134a9f455df7397ec89e5d454512ba8e8ca8e1a55da9d7cfb5fd1e",
+  "input_fingerprint": "0761d86a568f0182de6e5ea00b371c1c020978068538d2fd0583be0ecdc0ba5b",
   "search_policy": {
     "evidence_mode": true,
     "max_per_document": 2,

@@ -12,7 +12,6 @@ import json
 import sys
 from pathlib import Path
 
-from src.const.model import env_loader
 from src.const.config import CHUNK_DATA_PATH, TEST_REPORT_PATH
 from src.const.qdrant_config import load_qdrant_settings
 from src.embedder import create_embedding_provider

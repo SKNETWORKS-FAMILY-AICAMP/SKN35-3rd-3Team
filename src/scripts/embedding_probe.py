@@ -9,9 +9,7 @@ import math
 import os
 from dataclasses import asdict, dataclass
 
-from src.const.model import env_loader
-from src.const.qdrant_config import EmbeddingSettings
-from src.const.vector_data_contract import get_api_embedding_profile
+from src.const.qdrant_config import EmbeddingSettings, get_api_embedding_profile
 from src.embedder import create_embedding_provider
 
 DEFAULT_QUERY = "주택 임대차보호법에서 계약 갱신은 어떻게 하나요?"
@@ -163,7 +161,6 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     args = _build_parser().parse_args()
-    env_loader()
     providers = (
         ("openai", "nvidia", "local_huggingface")
         if args.provider == "all"

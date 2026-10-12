@@ -350,9 +350,7 @@ def create_nvidia_embedder(settings: EmbeddingSettings) -> NvidiaEmbedder:
 def embedder(text: str) -> Sequence[float]:
     """기존 호출부와 호환되는 질문 임베딩 편의 함수."""
 
-    from src.const.model import load_project_env
     from src.const.qdrant_config import load_qdrant_settings
 
-    load_project_env()
     settings = load_qdrant_settings()
     return create_embedding_provider(settings.embedding).embed_query(text)

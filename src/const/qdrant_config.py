@@ -13,8 +13,12 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Final
+from pathlib import Path
 from urllib.parse import urlparse
 
+from dotenv import load_dotenv
+
+# model을 import하면 .env가 한 번 로드됩니다.
 from src.const import config , model
 
 # ---------------------------------------------------------------------------
@@ -535,7 +539,12 @@ class QdrantSettings:
 def load_qdrant_settings(
     env_path: str | Path | None = None,
 ) -> QdrantSettings:
-    """공용 ``.env``에서 설정을 읽되 서버 연결은 하지 않습니다."""
+    """환경변수에서 설정을 읽되 서버 연결은 하지 않습니다.
 
-    load_project_env(env_path)
+    기본 ``.env``는 ``model`` import 시 이미 로드되어 있으므로 다시 읽지 않습니다.
+    ``env_path``로 별도 파일을 지정한 경우에만 그 파일을 추가로 읽습니다.
+    """
+
+    if env_path is not None:
+        load_dotenv(env_path)
     return QdrantSettings.from_env()

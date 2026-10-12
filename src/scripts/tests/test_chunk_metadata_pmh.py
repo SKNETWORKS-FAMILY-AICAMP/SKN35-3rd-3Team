@@ -14,6 +14,7 @@ from src.const.config import (
     PROCESSED_LAWS_DATA_PATH,
     PROCESSED_PRECEDENTS_DATA_PATH,
     PROJECT_PATH,
+    RAW_LAWS_DATA_PATH,
 )
 
 from src.scripts.chunk_metadata import normalize_chunk, validate_chunk, normalize_date
@@ -124,7 +125,7 @@ class MetadataTests(unittest.TestCase):
                  "law_name": "민법", "source_file": "v1.json", "text": "목적", "embedding_text": "목적"}
         normalized = normalize_chunk(value)
         self.assertEqual(normalized["domains"], ["civil_general"])
-        self.assertEqual(normalized["source_path"], "data/raw/laws/v1.json")
+        self.assertEqual(normalized["source_path"], (RAW_LAWS_DATA_PATH / "v1.json").relative_to(PROJECT_PATH).as_posix())
         self.assertEqual(normalized["document_id"], "law:v1")
 
     def test_new_delegated_laws_keep_body_and_version_with_document_level_domains(self):

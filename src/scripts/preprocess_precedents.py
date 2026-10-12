@@ -263,7 +263,7 @@ def preprocess(row, raw):
         "judgment_type": clean_text(detail.get("판결유형", "")),
         "source": raw.get("source", "국가법령정보센터"),
         "source_url": f"https://www.law.go.kr/LSW/precInfoP.do?precSeq={identifier}",
-        "source_file": f"data/raw/precedents/{identifier}.json",
+        "source_file": (RAW_PRECEDENTS_DATA_PATH / f"{identifier}.json").relative_to(PROJECT_PATH).as_posix(),
         "source_collected_at": raw.get("collected_at"),
         "collection_query": None if raw.get('collection_mode')=='explicit_id' else raw.get("query"), "domain": row["domain"],
         "relevance_status": row["status"], "relevance_reason": row["reason"],

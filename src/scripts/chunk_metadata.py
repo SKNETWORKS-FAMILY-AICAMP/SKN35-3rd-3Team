@@ -4,7 +4,13 @@ domains는 문서/기존 분류 수준의 후보 태그이며 개별 조문의 �
 임베딩 본문·헤더·경고·원래 날짜 및 domain 값은 변경하지 않는다.
 """
 from datetime import date
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
+import sys
+
+if not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import PROJECT_PATH, RAW_LAWS_DATA_PATH
 
 METADATA_VERSION = 1
 DOCUMENT_TYPES = frozenset({"law", "precedent", "official_guide",
@@ -102,7 +108,7 @@ def normalize_chunk(chunk, document=None):
         if filename:
             filename = str(filename).replace("\\", "/")
             if kind == "law" and PurePosixPath(filename).name == filename:
-                filename = "data/raw/laws/" + filename
+                filename = (RAW_LAWS_DATA_PATH / filename).relative_to(PROJECT_PATH).as_posix()
             source_path = filename
     if source_path:
         source_path = str(source_path).replace("\\", "/")

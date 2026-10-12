@@ -7,6 +7,7 @@ from src.const import config
 load_dotenv()
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
+LAW_API = os.getenv("LAW_API_OC")
 
 # 임베딩 모델 정의
 def create_embedding():

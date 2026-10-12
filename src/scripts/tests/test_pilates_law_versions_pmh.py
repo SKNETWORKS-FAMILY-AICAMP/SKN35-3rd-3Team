@@ -2,11 +2,13 @@
 import copy
 import json
 import unittest
+from pathlib import PurePosixPath
 from unittest.mock import patch
 
 from src.const.config import (
     CHUNK_LAWS_DATA_PATH,
     PROCESSED_CONSUMER_SOURCES_DATA_PATH,
+    RAW_LAW_HISTORY_DATA_PATH,
 )
 
 from src.scripts.review_pilates_law_versions import (
@@ -89,11 +91,11 @@ class PilatesLawVersionTests(unittest.TestCase):
         with patch('src.scripts.review_pilates_law_versions.build_report',return_value={}):
             with self.assertRaisesRegex(ValueError,'현재 입력 불일치'):verified_case(doc)
         with self.assertRaises(ValueError):checked('../outside.json')
-        with self.assertRaises(ValueError):checked('data/raw/law_history/225063_20211230.json','bad')
+        with self.assertRaises(ValueError):checked(RAW_LAW_HISTORY_DATA_PATH / '225063_20211230.json','bad')
 
     def test_historical_sources_are_references_not_default_law_chunks(self):
         chunks=[json.loads(s) for s in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if s.strip()]
-        self.assertTrue(all('law_history' not in c['source_path'] for c in chunks))
+        self.assertTrue(all(not PurePosixPath(c['source_path']).is_relative_to(PurePosixPath(RAW_LAW_HISTORY_DATA_PATH.relative_to(ROOT).as_posix())) for c in chunks))
         self.assertEqual(self.report['refund_notice']['notice_number'],'2019-9')
         self.assertEqual(self.report['refund_notice']['effective_date'],'20191119')
         for case in self.report['cases']:

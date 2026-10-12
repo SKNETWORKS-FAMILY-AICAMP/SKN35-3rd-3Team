@@ -13,9 +13,9 @@ from urllib.parse import urlparse
 
 from dotenv import dotenv_values
 
-from src.const.env_loader import DEFAULT_ENV_PATH, PROJECT_ROOT
+from src.const.config import DEFAULT_ENV_PATH, PROJECT_PATH
 
-ENV_EXAMPLE_PATH = PROJECT_ROOT / ".env.example"
+ENV_EXAMPLE_PATH = PROJECT_PATH / ".env.example"
 LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 
 

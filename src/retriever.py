@@ -369,7 +369,6 @@ class BM25Retriever:
         hits.sort(key=lambda hit: (-hit.score, hit.point_id))
         return tuple(hits[:top_k])
 
-
 # --------------------------------------------------------------------------
 # Hybrid 검색 (Dense + 메모리 BM25 → RRF)
 # [택1-B] 아래 HybridRetriever는 Qdrant Sparse([택1-A])와 동시에 쓰면 안 되어

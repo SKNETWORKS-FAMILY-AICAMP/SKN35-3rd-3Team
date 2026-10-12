@@ -6,7 +6,6 @@ from src.graph.rag_graph import build_rag_graph
 from src.graph.mcp_graph import build_mcp_graph
 from src.graph.general_agent import general_agent
 from src.const.model import create_llm , create_llm_gmn
-from src.const.config import EMBED_MODEL
 from src.prompt.classify_prompt import CLASSIFY_PROMPT
 
 def route_start(state: State) -> str:

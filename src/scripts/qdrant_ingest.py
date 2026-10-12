@@ -12,7 +12,8 @@ import json
 import sys
 from pathlib import Path
 
-from src.const.env_loader import PROJECT_ROOT, load_project_env
+from src.const.config import PROJECT_PATH
+from src.const.model import env_loader
 from src.const.qdrant_config import load_qdrant_settings
 from src.embedder import create_embedding_provider
 from src.vector_db.chunk_loader import LoadedChunkSet, load_chunk_tree
@@ -26,12 +27,12 @@ from src.vector_db.validation import validate_qdrant_ingestion
 from src.vectorstore import VectorStoreError
 
 
-DEFAULT_CHUNK_ROOT = PROJECT_ROOT / "data" / "chunk"
+DEFAULT_CHUNK_ROOT = PROJECT_PATH / "data" / "chunk"
 DEFAULT_INPUT_REPORT = (
-    PROJECT_ROOT / "tests" / "report" / "qdrant_input_validation.md"
+    PROJECT_PATH / "tests" / "report" / "qdrant_input_validation.md"
 )
 DEFAULT_INGESTION_REPORT = (
-    PROJECT_ROOT / "tests" / "report" / "qdrant_ingestion_validation.md"
+    PROJECT_PATH / "tests" / "report" / "qdrant_ingestion_validation.md"
 )
 
 
@@ -69,7 +70,7 @@ def ingest(args: argparse.Namespace) -> int:
         )
         return 2
 
-    load_project_env(args.env_file)
+    env_loader()
     settings = load_qdrant_settings()
     settings.validate_for_vector_work()
     if settings.collection.search_mode != "hybrid":

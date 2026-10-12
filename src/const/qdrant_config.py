@@ -1,33 +1,97 @@
-"""Qdrant 연결 및 컬렉션 설정.
+"""Qdrant 연결·컬렉션 설정과 팀 공통 Vector DB 규격.
 
-이 모듈은 환경변수를 설정 객체로 변환하고 값의 유효성만 검사합니다.
+이 모듈은 팀 고정 규격(기본값, API 제공자별 임베딩 프로필)을 정의하고,
+환경변수를 설정 객체로 변환하며 값의 유효성만 검사합니다.
+비밀값은 이 파일에 두지 않으며 개인 ``.env``에서만 관리합니다.
 Qdrant 연결, 컬렉션 생성, 데이터 적재는 수행하지 않습니다.
 """
 
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from dataclasses import dataclass
+from types import MappingProxyType
 from typing import Final
 from urllib.parse import urlparse
 
-from src.const.vector_db_defaults import (
-    API_EMBEDDING_PROFILES,
-    TEAM_EMBEDDING_DIMENSION,
-    TEAM_EMBEDDING_MODEL,
-    TEAM_EMBEDDING_NORMALIZED,
-    TEAM_EMBEDDING_PROVIDER,
-    TEAM_QDRANT_COLLECTION,
-    TEAM_QDRANT_DISTANCE,
-    TEAM_HYBRID_PREFETCH_LIMIT,
-    TEAM_QDRANT_SPARSE_MODEL,
-    TEAM_QDRANT_SPARSE_VECTOR_NAME,
-    TEAM_QDRANT_URL,
-    TEAM_QDRANT_VECTOR_NAME,
-    TEAM_SEARCH_MODE,
-    ApiEmbeddingProfile,
-    get_api_embedding_profile,
+from src.const import config , model
+
+# ---------------------------------------------------------------------------
+# 팀 고정 규격
+# ---------------------------------------------------------------------------
+
+# 팀 공용 Qdrant Cloud 주소입니다. 비밀 키는 개인 ``.env``에서만 관리합니다.
+TEAM_QDRANT_URL: Final = (
+    "https://31ff3cbb-4b6c-42a7-b0c1-09a7f3d59d65."
+    "us-west-1-0.aws.cloud.qdrant.io"
 )
+TEAM_QDRANT_VECTOR_NAME: Final[str | None] = None
+TEAM_QDRANT_DISTANCE: Final = "cosine"
+TEAM_SEARCH_MODE: Final = "hybrid"
+TEAM_QDRANT_SPARSE_VECTOR_NAME: Final = "bm25"
+TEAM_QDRANT_SPARSE_MODEL: Final = "Qdrant/bm25"
+TEAM_HYBRID_PREFETCH_LIMIT: Final = 100
+
+NVIDIA_EMBEDDING_BASE_URL: Final = "https://integrate.api.nvidia.com/v1"
+
+
+@dataclass(frozen=True)
+class ApiEmbeddingProfile:
+    """API 제공자와 전용 Qdrant 컬렉션의 팀 고정 규격."""
+
+    provider: str
+    model: str
+    dimension: int
+    collection: str
+    normalized: bool = True
+
+
+API_EMBEDDING_PROFILES: Final[Mapping[str, ApiEmbeddingProfile]] = (
+    MappingProxyType(
+        {
+            "openai": ApiEmbeddingProfile(
+                provider="openai",
+                model=model.OPENAI_EMBED_MODEL,
+                dimension=config.EMBED_DIMENSION,
+                collection="team_documents_openai_dev",
+                normalized=config.EMBED_NORMALIZED,
+            ),
+            "nvidia": ApiEmbeddingProfile(
+                provider="nvidia",
+                model="nvidia/nemotron-3-embed-1b",
+                dimension=2048,
+                collection="team_documents_nvidia_dev",
+            ),
+        }
+    )
+)
+
+
+def get_api_embedding_profile(provider: str) -> ApiEmbeddingProfile:
+    """API 제공자에 대응하는 팀 고정 임베딩 규격을 반환합니다."""
+
+    normalized_provider = provider.strip().lower().replace("-", "_")
+    try:
+        return API_EMBEDDING_PROFILES[normalized_provider]
+    except KeyError as error:
+        supported = ", ".join(sorted(API_EMBEDDING_PROFILES))
+        raise ValueError(
+            f"고정 API 프로필은 다음만 지원합니다: {supported}"
+        ) from error
+
+
+# 팀 기본값은 OpenAI 프로필에서 가져와 같은 값을 두 번 적지 않습니다.
+_TEAM_DEFAULT_PROFILE: Final = API_EMBEDDING_PROFILES["openai"]
+TEAM_QDRANT_COLLECTION: Final = _TEAM_DEFAULT_PROFILE.collection
+TEAM_EMBEDDING_PROVIDER: Final = _TEAM_DEFAULT_PROFILE.provider
+TEAM_EMBEDDING_MODEL: Final = _TEAM_DEFAULT_PROFILE.model
+TEAM_EMBEDDING_DIMENSION: Final = _TEAM_DEFAULT_PROFILE.dimension
+TEAM_EMBEDDING_NORMALIZED: Final = _TEAM_DEFAULT_PROFILE.normalized
+
+# ---------------------------------------------------------------------------
+# 환경변수 기반 설정
+# ---------------------------------------------------------------------------
 
 DEFAULT_QDRANT_URL: Final = TEAM_QDRANT_URL
 DEFAULT_DISTANCE: Final = TEAM_QDRANT_DISTANCE
@@ -45,6 +109,7 @@ SUPPORTED_SEARCH_MODES: Final = frozenset({"dense", "hybrid"})
 
 TRUE_VALUES: Final = frozenset({"1", "true", "yes", "on"})
 FALSE_VALUES: Final = frozenset({"0", "false", "no", "off"})
+
 
 def _optional_env(name: str) -> str | None:
     """공백 문자열을 ``None``으로 바꿔 반환합니다."""
@@ -99,24 +164,6 @@ def _boolean_env(name: str, default: bool) -> bool:
     value = _optional_env(name)
     if value is None:
         return default
-
-    normalized_value = value.lower()
-    if normalized_value in TRUE_VALUES:
-        return True
-    if normalized_value in FALSE_VALUES:
-        return False
-
-    raise ValueError(
-        f"{name}은 true/false, yes/no, on/off 또는 1/0이어야 합니다."
-    )
-
-
-def _optional_boolean_env(name: str) -> bool | None:
-    """선택 불리언 환경변수를 변환합니다."""
-
-    value = _optional_env(name)
-    if value is None:
-        return None
 
     normalized_value = value.lower()
     if normalized_value in TRUE_VALUES:
@@ -366,10 +413,9 @@ class EmbeddingSettings:
                 _optional_positive_int("EMBEDDING_DIMENSION")
                 or TEAM_EMBEDDING_DIMENSION
             ),
-            normalized=(
-                _optional_boolean_env("EMBEDDING_NORMALIZED")
-                if _optional_env("EMBEDDING_NORMALIZED") is not None
-                else TEAM_EMBEDDING_NORMALIZED
+            normalized=_boolean_env(
+                "EMBEDDING_NORMALIZED",
+                TEAM_EMBEDDING_NORMALIZED,
             ),
         )
 

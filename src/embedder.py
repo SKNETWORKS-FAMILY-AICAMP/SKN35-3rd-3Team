@@ -14,7 +14,7 @@ from typing import Protocol, cast
 
 from src.const.qdrant_config import EmbeddingSettings
 from src.const.vector_data_contract import normalize_vector
-from src.const.vector_db_defaults import NVIDIA_EMBEDDING_BASE_URL
+from src.const.qdrant_config import NVIDIA_EMBEDDING_BASE_URL
 
 
 class EmbeddingResponseItemLike(Protocol):

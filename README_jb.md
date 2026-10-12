@@ -52,6 +52,8 @@ uv run python -m src.scripts.environment_setup
 패키지만 설치합니다. `.env`와 API 키는 동기화하지 않습니다. 위 초기화 명령은
 `.env`가 없을 때만 `.env.example`을 복사하며 기존 파일은 덮어쓰지 않습니다.
 명령이 표시한 누락 키를 `.env`에 입력한 뒤 아래 상태 확인을 실행합니다.
+모델명은 `.env.example`에 공용값으로 제공되므로 일반적으로 개인 API 키만
+입력하면 됩니다. 다른 모델을 선택하면 별도 차원과 Qdrant 컬렉션이 필요합니다.
 
 ```powershell
 uv run python -m src.scripts.environment_setup --check

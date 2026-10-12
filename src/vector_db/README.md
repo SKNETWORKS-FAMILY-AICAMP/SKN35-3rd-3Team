@@ -1,16 +1,17 @@
 # 팀 Qdrant 사용 방법
 
-팀 공용 값은 `src/const/vector_db_defaults.py`에 있습니다. 개인 PC의
-`.env`에는 비밀 키만 입력합니다.
+검증된 모델·차원·컬렉션 기본 조합은
+`src/const/vector_db_defaults.py`에서 관리합니다. 모델명은 `.env.example`에
+공유하고 개인 `.env`에는 비밀 키를 입력합니다.
 
 ```dotenv
 QDRANT_API_KEY=개인별_Qdrant_키_또는_manage_JWT
 EMBEDDING_API_KEY=개인별_임베딩_API_키
 ```
 
-`OPENAI_API_KEY` 또는 `NVIDIA_API_KEY` 중 하나를 입력하면 해당 API의 팀 고정
-모델·차원·컬렉션을 자동으로 사용합니다. 모델 정보를 개인이 반복해서 입력할
-필요가 없습니다.
+`OPENAI_API_KEY` 또는 `NVIDIA_API_KEY` 중 하나를 입력하면 `.env`의 제공자별
+모델명과 팀 기본 차원·컬렉션을 자동으로 사용합니다. `.env.example`을 복사한
+경우 모델 정보를 개인이 다시 입력할 필요가 없습니다.
 키 문자열은 사용자마다 달라도 같은 제공자·모델이면 동일한 벡터 공간을
 사용하므로 문제가 없습니다.
 
@@ -291,9 +292,10 @@ BM25는 로컬에서 생성하므로 Qdrant Cloud의 유료 Inference에 의존�
 Dense와 Sparse를 모두 보유하므로 동일 컬렉션에서 Dense 단독 검색과 Hybrid
 검색을 비교할 수 있습니다.
 
-팀 공용 Qdrant Cloud 주소는 `src/const/vector_db_defaults.py`에 고정되어
-있습니다. 팀원은 URL·컬렉션명·모델·차원을 반복 입력하지 않고 개인
-`QDRANT_API_KEY`만 사용합니다. 로컬 Docker를 사용할 때만 `.env`에서
+팀 공용 Qdrant Cloud 주소와 모델별 컬렉션 규격은
+`src/const/vector_db_defaults.py`에 있습니다. 팀원은 URL·컬렉션명·차원을
+반복 입력하지 않고 `.env.example`의 모델명과 개인 키를 사용합니다. 로컬
+Docker를 사용할 때만 `.env`에서
 `QDRANT_URL=http://localhost:6333`으로 덮어씁니다.
 
 팀원의 manage JWT는 컬렉션 변경 권한이 있으므로 개인별로 발급하고, Qdrant

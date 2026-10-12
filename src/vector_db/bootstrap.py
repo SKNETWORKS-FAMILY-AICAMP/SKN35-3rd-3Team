@@ -4,9 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.const.env_loader import load_project_env
 from src.const.qdrant_config import load_qdrant_settings
-from src.embedder import create_embedding_provider
+from src.const.model import create_vector_embedding
 from src.retriever import DocumentRetriever
 from src.vector_db.qdrant_store import QdrantVectorStore
 from src.vector_db.sparse_embedder import create_sparse_embedding_provider
@@ -24,11 +23,10 @@ def create_team_retriever(
     지연하고 설정에 확정된 벡터 차원을 검색 요청 검증에 사용합니다.
     """
 
-    load_project_env(env_path)
-    settings = load_qdrant_settings()
+    settings = load_qdrant_settings(env_path)
     settings.validate_for_vector_work()
 
-    embedder = create_embedding_provider(settings.embedding)
+    embedder = create_vector_embedding(settings.embedding)
     vector_store = QdrantVectorStore.from_settings(settings)
     expected_dimension = settings.embedding.dimension
     if validate_collection_on_startup:

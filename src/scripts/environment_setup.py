@@ -13,14 +13,14 @@ from urllib.parse import urlparse
 
 from dotenv import dotenv_values
 
-from src.const.env_loader import DEFAULT_ENV_PATH, PROJECT_ROOT
+from src.const.config import ENV_EXAMPLE_PATH, ENV_PATH
 
-ENV_EXAMPLE_PATH = PROJECT_ROOT / ".env.example"
+
 LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 
 
 def prepare_env_file(
-    env_path: Path = DEFAULT_ENV_PATH,
+    env_path: Path = ENV_PATH,
     example_path: Path = ENV_EXAMPLE_PATH,
 ) -> bool:
     """누락된 ``.env``를 예제에서 만들고 생성 여부를 반환합니다."""
@@ -41,7 +41,7 @@ def _configured(values: dict[str, str | None], name: str) -> bool:
 
 
 def missing_required_names(
-    env_path: Path = DEFAULT_ENV_PATH,
+    env_path: Path = ENV_PATH,
 ) -> tuple[str, ...]:
     """현재 제공자에서 입력이 필요한 설정 이름만 반환합니다."""
 
@@ -85,7 +85,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=".env를 만들고 비밀값 설정 여부만 확인합니다.",
     )
-    parser.add_argument("--env-file", type=Path, default=DEFAULT_ENV_PATH)
+    parser.add_argument("--env-file", type=Path, default=ENV_PATH)
     parser.add_argument(
         "--example-file",
         type=Path,

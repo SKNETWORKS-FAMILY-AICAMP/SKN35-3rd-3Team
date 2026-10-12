@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from src.const.config import ENV_PATH, PROJECT_PATH, load_project_environment
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_ENV_PATH = PROJECT_ROOT / ".env"
+
+PROJECT_ROOT = PROJECT_PATH
+DEFAULT_ENV_PATH = ENV_PATH
 
 
 def load_project_env(env_path: str | Path | None = None) -> Path:
@@ -15,14 +17,4 @@ def load_project_env(env_path: str | Path | None = None) -> Path:
     반환값은 실제로 확인한 경로입니다. 키의 값은 출력하지 않습니다.
     """
 
-    try:
-        from dotenv import load_dotenv
-    except ModuleNotFoundError as error:
-        raise RuntimeError(
-            ".env 로딩에는 python-dotenv 설치가 필요합니다. "
-            "프로젝트 루트에서 `uv sync`를 실행하세요."
-        ) from error
-
-    resolved_path = Path(env_path) if env_path is not None else DEFAULT_ENV_PATH
-    load_dotenv(dotenv_path=resolved_path, override=False)
-    return resolved_path
+    return load_project_environment(env_path)

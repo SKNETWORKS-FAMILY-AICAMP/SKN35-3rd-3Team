@@ -56,6 +56,9 @@ Point를 생성·수정·삭제하지 않습니다.
 시작되며, 실제 연결 상태는 `health_check`로 확인합니다. 현재 OpenAI 개발
 컬렉션에는 4,934개 Point가 적재되어 있습니다.
 
+MCP가 사용하는 임베딩 모델명과 개인 키는 프로젝트 루트의 `.env`에서
+읽습니다.
+
 MCP Tool의 입력·출력 형식은 Dense에서 Hybrid로 전환해도 바뀌지 않습니다.
 검색 구현은 `src.vector_db`와 `src.retriever`에 있으며, MCP는 같은
 `search_documents` Tool로 결과를 전달합니다.

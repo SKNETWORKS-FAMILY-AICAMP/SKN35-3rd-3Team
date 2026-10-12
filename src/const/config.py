@@ -17,12 +17,7 @@ CLEAN_DATA_PATH = DATA_PATH / "processed"
 RAW_DATA_PATH = DATA_PATH / "raw"
 
 
-# 모델 이름 여기에 정의
+ENV_PATH = PROJECT_PATH / ".env"
 
-EMBED_MODEL = "text-embedding-3-small"
-
-# 모델 이름 여기에 정의
-# LLM_MODEL = "gpt-4o-mini"
-LLM_MODEL = "gemini-3.8-flash"
-# EMBED_MODEL = "text-embedding-3-small"
-EMBED_MODEL = "gemini-embedding-001"
+# 재정렬 모델 다운로드 파일을 보관하는 공통 경로입니다.
+RERANK_CACHE_PATH = PROJECT_PATH / ".cache" / "rerank"

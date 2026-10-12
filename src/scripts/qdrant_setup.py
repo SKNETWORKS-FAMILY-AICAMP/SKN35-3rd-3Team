@@ -13,7 +13,7 @@ import argparse
 import json
 import sys
 
-from src.const.env_loader import load_project_env
+from src.const.model import load_project_env
 from src.const.qdrant_config import load_qdrant_settings
 from src.vector_db.payload_indexes import payload_index_map
 from src.vector_db.qdrant_store import QdrantVectorStore

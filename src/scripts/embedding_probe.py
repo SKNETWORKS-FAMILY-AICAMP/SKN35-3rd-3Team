@@ -9,7 +9,7 @@ import math
 import os
 from dataclasses import asdict, dataclass
 
-from src.const.env_loader import load_project_env
+from src.const.model import load_project_env
 from src.const.qdrant_config import EmbeddingSettings
 from src.const.vector_db_defaults import get_api_embedding_profile
 from src.embedder import create_embedding_provider

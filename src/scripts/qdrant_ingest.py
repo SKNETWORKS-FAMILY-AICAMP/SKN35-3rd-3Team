@@ -12,7 +12,8 @@ import json
 import sys
 from pathlib import Path
 
-from src.const.env_loader import PROJECT_ROOT, load_project_env
+from src.const.config import PROJECT_PATH as PROJECT_ROOT
+from src.const.model import load_project_env
 from src.const.qdrant_config import load_qdrant_settings
 from src.embedder import create_embedding_provider
 from src.vector_db.chunk_loader import LoadedChunkSet, load_chunk_tree

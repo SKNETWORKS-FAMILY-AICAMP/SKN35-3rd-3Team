@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from pathlib import Path
+from dataclasses import replace
 
-from src.const.env_loader import load_project_env
+from src.const.model import load_project_env
 from src.const.qdrant_config import load_qdrant_settings
 from src.embedder import create_embedding_provider
 from src.retriever import DocumentRetriever
@@ -16,6 +17,7 @@ def create_team_retriever(
     env_path: str | Path | None = None,
     *,
     validate_collection_on_startup: bool = True,
+    search_mode: str | None = None,
 ) -> DocumentRetriever:
     """개인 키와 팀 공용 규격으로 바로 사용할 검색기를 만듭니다.
 
@@ -26,6 +28,8 @@ def create_team_retriever(
 
     load_project_env(env_path)
     settings = load_qdrant_settings()
+    if search_mode is not None:
+        settings = replace(settings, collection=replace(settings.collection, search_mode=search_mode))
     settings.validate_for_vector_work()
 
     embedder = create_embedding_provider(settings.embedding)

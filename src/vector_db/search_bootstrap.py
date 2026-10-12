@@ -53,7 +53,7 @@ def create_team_hybrid_retriever(
     """설정 확인 → 서버 규격 확인 → 청크 읽기 → Dense/BM25 조립."""
     # 공용 모듈은 dev에서 공급합니다. jem에 다른 팀원의 파일을 복사하지 않습니다.
     # import만 하는 단위 테스트와 실제 서버 연결을 분리합니다.
-    from src.const.env_loader import load_project_env
+    from src.const.model import load_project_env
     from src.const.qdrant_config import load_qdrant_settings
     from src.embedder import create_embedding_provider
     from src.vector_db.qdrant_store import QdrantVectorStore
@@ -88,27 +88,25 @@ def create_team_multi_query_retriever(llm: object, env_path: str | Path | None =
     LLM 모델/키를 이 파일에 고정하지 않습니다. 원격 문서가 비어 있다면
     Hybrid 초기화에서 중단하므로 질문 확장 API는 호출하지 않습니다.
     """
-    from src.multi_query import LLMQueryExpander, MultiQueryRetriever
+    from src.multi_query import create_multi_query_searcher
 
     hybrid = create_team_hybrid_retriever(env_path)
-    return MultiQueryRetriever(hybrid, LLMQueryExpander(llm))
+    return create_multi_query_searcher(hybrid, llm)
 
 
-def create_team_reranking_retriever(env_path=None, *, llm=None, candidate_k=10):
-    """Hybrid(또는 Multi-Query Hybrid) 뒤에 CPU Reranker를 붙입니다.
+def create_team_reranking_retriever(env_path=None, *, llm=None, candidate_k=20):
+    from types import SimpleNamespace
+    from src.vector_db.bootstrap import create_team_retriever
+    from src.multi_query import create_multi_query_searcher
+    from src.rerank import rerank
+    base = create_team_retriever(env_path, search_mode="hybrid")
+    searcher = create_multi_query_searcher(base, llm) if llm is not None else base
 
-    서버 데이터부터 확인하므로 빈 컬렉션 때문에 큰 모델을 내려받지 않습니다.
-    llm=None이면 질문 확장 없이 Hybrid + Rerank로 사용할 수 있습니다.
-    """
-    from src.rerank import CrossEncoderScorer, RerankingRetriever
+    def search_documents(query, *, top_k=5, score_threshold=None, filters=None):
+        from src.vectorstore import VectorSearchHit
+        hits = searcher.search_documents(query, top_k=max(candidate_k, top_k), filters=filters)
+        result = rerank({"origin_query": query, "documents": [hit.to_document() for hit in hits]}, top_k)
+        return tuple(VectorSearchHit(**doc) for doc in result["documents"]
+                     if score_threshold is None or doc["score"] >= score_threshold)
 
-    base = create_team_hybrid_retriever(env_path)
-    try:
-        scorer = CrossEncoderScorer.from_pretrained()
-    except Exception:
-        base.dense.vector_store.client.close()
-        raise
-    if llm is not None:
-        from src.multi_query import LLMQueryExpander, MultiQueryRetriever
-        base = MultiQueryRetriever(base, LLMQueryExpander(llm))
-    return RerankingRetriever(base, scorer, candidate_k=candidate_k)
+    return SimpleNamespace(search_documents=search_documents, vector_store=base.vector_store)

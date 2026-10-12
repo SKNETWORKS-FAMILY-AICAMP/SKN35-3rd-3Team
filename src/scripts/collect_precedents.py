@@ -29,9 +29,18 @@ from dotenv import load_dotenv
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-OUTPUT_DIR = PROJECT_ROOT / "data" / "raw" / "precedents"
+from src.const.config import (
+    PROJECT_PATH,
+    RAW_PRECEDENTS_DATA_PATH,
+)
+
+
+PROJECT_ROOT = PROJECT_PATH
+OUTPUT_DIR = RAW_PRECEDENTS_DATA_PATH
 API_BASE = "https://www.law.go.kr/DRF/"
 
 

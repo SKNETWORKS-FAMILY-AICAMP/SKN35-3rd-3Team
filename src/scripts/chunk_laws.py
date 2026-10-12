@@ -9,14 +9,30 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    CHUNK_LAWS_DATA_PATH,
+    PROCESSED_DATA_PATH,
+    PROCESSED_LAWS_DATA_PATH,
+    PROJECT_PATH,
+)
+
+ROOT = PROJECT_PATH
+
 if __package__:
     from .chunk_metadata import normalize_chunk, METADATA_VERSION
-    from .preprocess_laws import ROOT, OUTPUT_DIR as INPUT_DIR, REPORT_NAME, ensure_output, sha256, write_json
+    from .preprocess_laws import REPORT_NAME, ensure_output, sha256, write_json
 else:
     from chunk_metadata import normalize_chunk, METADATA_VERSION
-    from preprocess_laws import ROOT, OUTPUT_DIR as INPUT_DIR, REPORT_NAME, ensure_output, sha256, write_json
+    from preprocess_laws import REPORT_NAME, ensure_output, sha256, write_json
 
-OUTPUT_DIR = ROOT / "data/chunk/laws"
+INPUT_DIR = PROCESSED_LAWS_DATA_PATH
+OUTPUT_DIR = CHUNK_LAWS_DATA_PATH
 
 
 def make_chunks(document, article, size=1200, overlap=120):
@@ -179,7 +195,7 @@ def make_aux_chunks(document, unit, size=1200, overlap=120):
 
 def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
     input_dir, output_dir = ensure_output(input_dir, output_dir)
-    if output_dir.is_relative_to(ROOT / "data/processed"):
+    if output_dir.is_relative_to(PROCESSED_DATA_PATH):
         raise ValueError("processed를 덮어쓰지 않도록 chunk 폴더를 지정해주세요.")
     manifest = json.loads((input_dir / REPORT_NAME).read_text(encoding="utf-8"))
     if manifest["failures"]:

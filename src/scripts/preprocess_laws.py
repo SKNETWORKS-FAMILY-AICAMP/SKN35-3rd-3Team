@@ -15,12 +15,26 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit
 
-ROOT = Path(__file__).resolve().parents[2]
-INPUT_DIR = ROOT / "data/raw/laws"
-OUTPUT_DIR = ROOT / "data/processed/laws"
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    PROCESSED_LAWS_DATA_PATH,
+    PROJECT_PATH,
+    RAW_DATA_PATH,
+    RAW_LAWS_DATA_PATH,
+    RAW_LAW_APPENDICES_DATA_PATH,
+)
+
+ROOT = PROJECT_PATH
+INPUT_DIR = RAW_LAWS_DATA_PATH
+OUTPUT_DIR = PROCESSED_LAWS_DATA_PATH
 REPORT_NAME = "law_preprocessing_report.json"
 LEVELS = ("항", "호", "목")
-APPENDIX_DIR = ROOT / "data/raw/law_appendices"
+APPENDIX_DIR = RAW_LAW_APPENDICES_DATA_PATH
 
 
 def appendix_url(unit):
@@ -111,7 +125,7 @@ def write_json(path, data):
 
 def ensure_output(input_dir, output_dir):
     input_dir, output_dir = Path(input_dir).resolve(), Path(output_dir).resolve()
-    if output_dir.is_relative_to(input_dir) or output_dir.is_relative_to(ROOT / "data/raw"):
+    if output_dir.is_relative_to(input_dir) or output_dir.is_relative_to(RAW_DATA_PATH):
         raise ValueError("원본 폴더 또는 data/raw 아래에 결과를 저장할 수 없습니다.")
     return input_dir, output_dir
 

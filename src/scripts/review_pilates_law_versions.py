@@ -16,13 +16,29 @@ from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
-if __package__:
-    from .collect_consumer_sources import ROOT, HTMLTree, write_json
-else:
-    from collect_consumer_sources import ROOT, HTMLTree, write_json
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
 
-RAW = ROOT/'data/raw/law_history'
-REPORT = ROOT/'data/processed/consumer_sources/pilates_law_version_comparison_pmh.json'
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    CHUNK_LAWS_DATA_PATH,
+    PROCESSED_CONSUMER_SOURCES_DATA_PATH,
+    PROJECT_PATH,
+    RAW_LAWS_DATA_PATH,
+    RAW_LAW_HISTORY_DATA_PATH,
+)
+
+ROOT = PROJECT_PATH
+
+if __package__:
+    from .collect_consumer_sources import HTMLTree, write_json
+else:
+    from collect_consumer_sources import HTMLTree, write_json
+
+RAW = RAW_LAW_HISTORY_DATA_PATH
+REPORT = PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'pilates_law_version_comparison_pmh.json'
 LAW = '방문판매 등에 관한 법률'
 DECREE = LAW+' 시행령'
 RULE = LAW+' 시행규칙'
@@ -204,7 +220,7 @@ def build_report():
             raise ValueError('원문 버전의 공식 연혁 목록 연결 누락')
     current={}
     for master in ['290239','286997','284567']:
-        paths=list((ROOT/'data/raw/laws').glob(f'*_{master}_*.json'))
+        paths=list(RAW_LAWS_DATA_PATH.glob(f'*_{master}_*.json'))
         if len(paths)!=1:raise ValueError('수집본 대조 버전 누락/중복')
         p=paths[0];d=json.loads(track(p));root=ET.fromstring(d['response_xml'])
         name=root.findtext('기본정보/법령명_한글');effective=root.findtext('기본정보/시행일자')
@@ -229,7 +245,7 @@ def build_report():
                     raise ValueError('예상하지 못한 조문 변경: 추가 내용 검토 필요')
     cases=[]
     for sid,events in CASE_EVENTS.items():
-        doc=read(ROOT/f'data/processed/consumer_sources/{sid}.json')
+        doc=read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / f'{sid}.json')
         track(ROOT/doc['raw_file'])
         if digest(checked(doc['raw_file']))!=doc['raw_sha256'] or doc['decision_date'] is not None:
             raise ValueError('사례 원본 지문/미확인 조정일 상태 변경: 재검토 필요')
@@ -248,7 +264,7 @@ def build_report():
             timings.append({'event':kind,'value':value,'precision':precision,'evidence_unit_id':uid,
                             'evidence_start':start,'evidence_end':start+len(anchor),'evidence_text':anchor,'law_versions':selections})
         requested={LAW:{'2','31','32','52'},DECREE:{'13','40','41'},RULE:{'22'}}
-        law_chunks=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        law_chunks=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
         linked=[c['chunk_id'] for c in law_chunks if c.get('law_name') in requested
                 and str(c.get('article_number')) in requested[c['law_name']]]
         found={(c.get('law_name'),str(c.get('article_number'))) for c in law_chunks if c['chunk_id'] in linked}
@@ -266,7 +282,7 @@ def build_report():
             'warnings':['계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.',
                         '폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.',
                         '2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님.']})
-    notice=read(ROOT/'data/processed/consumer_sources/continual_contract_refund.json')
+    notice=read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'continual_contract_refund.json')
     notice_xml=ET.fromstring(track(ROOT/notice['raw_file']))
     meta=notice['administrative_metadata']
     if meta.get('시행일자')!='20191119' or not any('2019' in (e.text or '') and '9' in (e.text or '') for e in notice_xml.iter() if '발령번호' in e.tag):

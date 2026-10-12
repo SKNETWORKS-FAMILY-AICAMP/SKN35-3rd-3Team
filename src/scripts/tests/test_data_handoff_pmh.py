@@ -11,12 +11,32 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+from src.const.config import (
+    CHUNK_CONSUMER_SOURCES_DATA_PATH,
+    CHUNK_DATA_PATH,
+    CHUNK_GUIDES_DATA_PATH,
+    CHUNK_LAWS_DATA_PATH,
+    DATA_PATH,
+    PROCESSED_CONSUMER_SOURCES_DATA_PATH,
+    PROCESSED_DATA_PATH,
+    PROCESSED_GUIDES_DATA_PATH,
+    PROCESSED_LAWS_DATA_PATH,
+    PROCESSED_PRECEDENTS_DATA_PATH,
+    PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH,
+    PROJECT_PATH,
+    RAW_CONSUMER_SOURCES_DATA_PATH,
+    RAW_LAWS_DATA_PATH,
+    RAW_LAW_APPENDICES_DATA_PATH,
+    RAW_LAW_HISTORY_DATA_PATH,
+    RAW_PRECEDENTS_DATA_PATH,
+)
+
 from src.scripts.chunk_metadata import validate_chunk
 from src.scripts.preprocess_guides import validate_source_coverage
 from src.scripts.tests.test_chunk_metadata_pmh import corpus
 
-ROOT = Path(__file__).resolve().parents[3]
-REPORT_PATH = ROOT / "data/processed/retrieval_evaluation/data_validation_report_pmh.json"
+ROOT = PROJECT_PATH
+REPORT_PATH = PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'data_validation_report_pmh.json'
 HANDOFF_PATH = ROOT / "docs/데이터_인계서_pmh.md"
 
 
@@ -54,16 +74,16 @@ def audit():
             checks.append({"name": name, "passed": False, "error": str(exc)})
 
     chunks = corpus()
-    laws = read("data/processed/laws/law_preprocessing_report.json")
-    guides = read("data/processed/guides/guide_preprocessing_report.json")
-    precedents = read("data/processed/precedent_preprocessing_report.json")
-    review = read("data/processed/precedent_relevance_review.json")
-    consumer = read("data/processed/consumer_sources/consumer_preprocessing_report.json")
-    collected = read("data/processed/consumer_sources/consumer_collection_report.json")
-    law_docs = [read("data/processed/laws/" + e["file"]) for e in laws["saved"]]
-    guide_docs = [read("data/processed/guides/" + e["file"]) for e in guides["saved"]]
-    precedent_docs = [read(f"data/processed/precedents/{identifier}.json") for identifier in precedents["saved"]]
-    consumer_docs = [read("data/processed/consumer_sources/" + e["file"]) for e in consumer["saved"]]
+    laws = read(PROCESSED_LAWS_DATA_PATH / 'law_preprocessing_report.json')
+    guides = read(PROCESSED_GUIDES_DATA_PATH / 'guide_preprocessing_report.json')
+    precedents = read(PROCESSED_DATA_PATH / 'precedent_preprocessing_report.json')
+    review = read(PROCESSED_DATA_PATH / 'precedent_relevance_review.json')
+    consumer = read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'consumer_preprocessing_report.json')
+    collected = read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'consumer_collection_report.json')
+    law_docs = [read(PROCESSED_LAWS_DATA_PATH / e["file"]) for e in laws["saved"]]
+    guide_docs = [read(PROCESSED_GUIDES_DATA_PATH / e["file"]) for e in guides["saved"]]
+    precedent_docs = [read(PROCESSED_PRECEDENTS_DATA_PATH / f'{identifier}.json') for identifier in precedents["saved"]]
+    consumer_docs = [read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / e["file"]) for e in consumer["saved"]]
 
     def current_reports():
         for name, report in [("법령", laws), ("안내서", guides), ("판례", precedents), ("소비자 정제", consumer), ("소비자 수집", collected)]:
@@ -72,23 +92,23 @@ def audit():
     check("current_pipeline_failures", current_reports)
 
     def raw_coverage():
-        law_raw = {p.name for p in (ROOT/"data/raw/laws").glob("*.json") if p.stem[0].isdigit()}
+        law_raw = {p.name for p in RAW_LAWS_DATA_PATH.glob("*.json") if p.stem[0].isdigit()}
         require(law_raw == {e["source_file"] for e in laws["saved"]}, "법령 원본 처리 기록 누락/추가")
         for entry in laws["saved"]:
-            checked_file("data/raw/laws/" + entry["source_file"], entry["raw_sha256"])
+            checked_file(RAW_LAWS_DATA_PATH / entry["source_file"], entry["raw_sha256"])
         validate_source_coverage(guides)
         for doc in guide_docs:
             checked_file(doc["source_path"], doc["raw_sha256"])
-        raw_ids = {p.stem for p in (ROOT/"data/raw/precedents").glob("*.json") if p.stem.isdigit()}
+        raw_ids = {p.stem for p in RAW_PRECEDENTS_DATA_PATH.glob("*.json") if p.stem.isdigit()}
         require(raw_ids == {e["precedent_id"] for e in review["records"]}, "원본 판례 관련성 검토 기록 누락/추가")
         require(len(review["records"]) == len(raw_ids), "판례 검토 기록 중복")
         for row in review["records"]:
             require(bool(row.get("reason")), "판례 제외/선정 사유 누락")
         for identifier, digest in precedents["raw_sha256"].items():
-            checked_file(f"data/raw/precedents/{identifier}.json", digest)
+            checked_file(RAW_PRECEDENTS_DATA_PATH / f"{identifier}.json", digest)
         referenced = set()
         history = []
-        for path in sorted((ROOT/"data/raw/consumer_sources").glob("collection_report_*.json")):
+        for path in sorted(RAW_CONSUMER_SOURCES_DATA_PATH.glob("collection_report_*.json")):
             report = json.loads(path.read_text(encoding="utf-8"))
             for entry in report["saved"]:
                 checked_file(entry["raw_file"], entry["raw_sha256"])
@@ -97,7 +117,7 @@ def audit():
         for entry in collected["saved"]:
             checked_file(entry["raw_file"], entry["raw_sha256"])
             referenced.add(entry["raw_file"])
-        files = {p.relative_to(ROOT).as_posix() for p in (ROOT/"data/raw/consumer_sources").iterdir()
+        files = {p.relative_to(ROOT).as_posix() for p in RAW_CONSUMER_SOURCES_DATA_PATH.iterdir()
                  if p.is_file() and p.name != "__init__.py" and not p.name.startswith("collection_report_")}
         require(files == referenced, "소비자 원본 중 수집 기록이 없거나 현재 파일이 없는 자료")
         return {"law_originals": len(law_raw), "guide_originals": len(guides["saved"]),
@@ -107,7 +127,7 @@ def audit():
     check("raw_source_coverage_and_hashes", raw_coverage)
 
     def appendix_sources():
-        directory = ROOT/"data/raw/law_appendices"
+        directory = RAW_LAW_APPENDICES_DATA_PATH
         pdfs = {p.name for p in directory.glob("*.pdf")}
         records = {p.with_suffix(".pdf").name for p in directory.glob("*.json")}
         require(pdfs == records, "별표 PDF/원본 메타데이터 짝 불일치")
@@ -116,13 +136,13 @@ def audit():
         for path in directory.glob("*.json"):
             meta = json.loads(path.read_text(encoding="utf-8"))
             checked_file(path.with_suffix(".pdf").relative_to(ROOT), meta["sha256"])
-            checked_file("data/raw/laws/"+meta["source_json"], meta["source_json_sha256"])
+            checked_file(RAW_LAWS_DATA_PATH / meta["source_json"], meta["source_json_sha256"])
         return {"pdf_metadata_pairs": len(pdfs)}
     check("law_appendix_provenance", appendix_sources)
 
     def consumer_appendix_review():
         import xml.etree.ElementTree as ET
-        record_file='data/processed/consumer_sources/consumer_appendix_review_pmh.json'
+        record_file=(PROCESSED_CONSUMER_SOURCES_DATA_PATH / "consumer_appendix_review_pmh.json").relative_to(ROOT).as_posix()
         record=read(record_file)
         record_hash=checked_file(record_file)
         checked_file(record['parent_raw_file'],record['parent_raw_sha256'])
@@ -165,7 +185,7 @@ def audit():
         require(comparison==build_report(),'필라테스 시점 대조 기록 불일치')
         for relative,sha in comparison['inputs'].items():
             checked_file(relative,sha)
-        historical={p.relative_to(ROOT).as_posix() for p in (ROOT/'data/raw/law_history').iterdir() if p.is_file()}
+        historical={p.relative_to(ROOT).as_posix() for p in RAW_LAW_HISTORY_DATA_PATH.iterdir() if p.is_file()}
         require(historical=={p for p in comparison['inputs'] if p.startswith('data/raw/law_history/')},'과거 원문 대조 처리 누락')
         require(not any('law_history' in c['source_path'] for c in chunks),'과거 원문 기본 검색 편입')
         record_hash=checked_file(REPORT.relative_to(ROOT))
@@ -193,10 +213,10 @@ def audit():
                 ("guides", {e["file"] for e in guides["saved"]}, "guide_*.json"),
                 ("precedents", {identifier+".json" for identifier in precedents["saved"]}, "[0-9]*.json")]:
             controls = {"guide_preprocessing_report.json", "guide_visual_review.json"} if folder == "guides" else set()
-            actual = {p.name for p in (ROOT/"data/processed"/folder).glob(pattern) if p.name not in controls}
+            actual = {p.name for p in (PROCESSED_DATA_PATH/folder).glob(pattern) if p.name not in controls}
             require(actual == expected, f"{folder} 정제 파일/보고서 불일치")
         control = {"consumer_collection_report.json", "consumer_preprocessing_report.json", "source_manifest.json", "parcel_terms_revision_comparison.json", "consumer_appendix_review_pmh.json", "pilates_law_version_comparison_pmh.json"}
-        actual = {p.name for p in (ROOT/"data/processed/consumer_sources").glob("*.json") if p.name not in control}
+        actual = {p.name for p in PROCESSED_CONSUMER_SOURCES_DATA_PATH.glob("*.json") if p.name not in control}
         require(actual == {e["file"] for e in consumer["saved"]}, "소비자 정제 파일/보고서 불일치")
         aliases = {e["source_id"] for e in consumer["duplicate_aliases"]}
         require({d["source_id"] for d in consumer_docs} | aliases == {e["source_id"] for e in collected["saved"]}, "현재 수집 자료의 정제/별칭 기록 누락")
@@ -226,28 +246,28 @@ def audit():
     check("chunk_metadata_and_duplicates", metadata)
 
     def chunk_reports():
-        lr=read("data/chunk/laws/law_chunking_report.json")
-        gr=read("data/chunk/guides/guide_chunking_report.json")
-        cr=read("data/chunk/consumer_sources/consumer_chunking_report.json")
+        lr=read(CHUNK_LAWS_DATA_PATH / 'law_chunking_report.json')
+        gr=read(CHUNK_GUIDES_DATA_PATH / 'guide_chunking_report.json')
+        cr=read(CHUNK_CONSUMER_SOURCES_DATA_PATH / 'consumer_chunking_report.json')
         counts=Counter(c["document_type"] for c in chunks)
-        checked_file("data/chunk/laws/chunks.jsonl",lr["chunks_sha256"])
-        checked_file("data/chunk/consumer_sources/chunks.jsonl",cr["chunks_sha256"])
+        checked_file(CHUNK_LAWS_DATA_PATH / "chunks.jsonl",lr["chunks_sha256"])
+        checked_file(CHUNK_CONSUMER_SOURCES_DATA_PATH / "chunks.jsonl",cr["chunks_sha256"])
         require(lr["chunk_count"] == counts["law"], "법령 청크 집계 불일치")
-        consumer_records=[json.loads(line) for line in (ROOT/"data/chunk/consumer_sources/chunks.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
+        consumer_records=[json.loads(line) for line in (CHUNK_CONSUMER_SOURCES_DATA_PATH / 'chunks.jsonl').read_text(encoding="utf-8").splitlines() if line.strip()]
         pdf_records=[c for c in chunks if c["document_type"]=="official_guide" and not c.get("source_id")]
         require(cr["chunk_count"] == len(consumer_records), "소비자·공식 HTML 청크 집계 불일치")
         require(gr["chunk_count"] == len(pdf_records), "PDF 안내서 청크 집계 불일치")
         for entry in lr["laws"]:
-            checked_file("data/processed/laws/"+entry["file"],entry["processed_sha256"])
+            checked_file(PROCESSED_LAWS_DATA_PATH / entry["file"],entry["processed_sha256"])
         for entry in cr["inputs"]:
-            checked_file("data/processed/consumer_sources/"+entry["file"],entry["processed_sha256"])
+            checked_file(PROCESSED_CONSUMER_SOURCES_DATA_PATH / entry["file"],entry["processed_sha256"])
         guide_files={e["file"] for e in gr["saved"]}
-        require(guide_files == {p.name for p in (ROOT/"data/chunk/guides").glob("*_chunks.json")}, "안내서 청크 파일/보고서 불일치")
+        require(guide_files == {p.name for p in CHUNK_GUIDES_DATA_PATH.glob("*_chunks.json")}, "안내서 청크 파일/보고서 불일치")
         for entry in gr["saved"]:
-            guide_chunk=read("data/chunk/guides/"+entry["file"])
-            checked_file("data/processed/guides/"+guide_chunk["guide_id"]+".json",entry["processed_sha256"])
+            guide_chunk=read(CHUNK_GUIDES_DATA_PATH / entry["file"])
+            checked_file(PROCESSED_GUIDES_DATA_PATH / (guide_chunk["guide_id"] + ".json"),entry["processed_sha256"])
             require(entry["chunk_count"] == len(guide_chunk["chunks"]), "PDF별 청크 집계 불일치")
-        baseline=read("data/processed/retrieval_evaluation/baseline_report.json")
+        baseline=read(PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'baseline_report.json')
         require(baseline["chunk_count"] == counts["precedent"], "판례 평가/청크 집계 불일치")
         return {"by_document_type":dict(counts),"guide_files":sorted(guide_files),"by_storage_group":{"laws":lr["chunk_count"],"precedents":counts["precedent"],"guides":len(pdf_records),"consumer_sources":len(consumer_records)},"html_official_guide_chunks":sum(c["document_type"]=="official_guide" for c in consumer_records),"total":len(chunks)}
     check("chunk_reports_and_input_fingerprints", chunk_reports)
@@ -321,12 +341,12 @@ def audit():
 
     inventory=[]
     for folder in ["raw","processed","chunk"]:
-        for p in sorted((ROOT/"data"/folder).rglob("*")):
+        for p in sorted((DATA_PATH/folder).rglob("*")):
             if p.is_file() and p.resolve()!=REPORT_PATH.resolve() and "__pycache__" not in p.parts:
                 inventory.append({"path":p.relative_to(ROOT).as_posix(),"bytes":p.stat().st_size,"sha256":file_hash(p)})
-    coverage=read("data/processed/retrieval_evaluation/domain_coverage_report_pmh.json")
+    coverage=read(PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'domain_coverage_report_pmh.json')
     current_chunk_fingerprint=hashlib.sha256(json.dumps(
-        [(p.relative_to(ROOT).as_posix(),file_hash(p)) for p in sorted((ROOT/"data/chunk").rglob("*")) if p.is_file()],
+        [(p.relative_to(ROOT).as_posix(),file_hash(p)) for p in sorted(CHUNK_DATA_PATH.rglob("*")) if p.is_file()],
         ensure_ascii=False,sort_keys=True).encode()).hexdigest()
     check("domain_review_snapshot",lambda: (require(coverage["input_fingerprint"]==current_chunk_fingerprint,"분야 검토 이후 청크 변경: 재검토 필요") or {"question_count":coverage["question_count"],"review_statuses":dict(Counter(q["review_status"] for q in coverage["questions"]))}))
     return {"validation_scope":"수집본의 구조·출처·처리 기록·청크 일관성. 법률 답변 품질/현행 적용 검증 아님",
@@ -343,10 +363,10 @@ def render_handoff(report):
     stored=report["details"]["chunk_reports_and_input_fingerprints"]["by_storage_group"]
     html_guides=report["details"]["chunk_reports_and_input_fingerprints"]["html_official_guide_chunks"]
     suite=report.get("test_suite",{})
-    coverage=read("data/processed/retrieval_evaluation/domain_coverage_report_pmh.json")
+    coverage=read(PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'domain_coverage_report_pmh.json')
     review_counts=Counter(q["review_status"] for q in coverage["questions"])
-    baseline=read("data/processed/retrieval_evaluation/baseline_report.json")
-    consumer_eval=read("data/processed/retrieval_evaluation/consumer_coverage_report.json")
+    baseline=read(PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'baseline_report.json')
+    consumer_eval=read(PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'consumer_coverage_report.json')
     docs=report['details']['processed_document_inventory']
     eligibility=report['details']['eligibility_and_exclusion_records']
     lines=["# 데이터 수집·전처리 인계서", "", "## 현재 상태와 인계 범위", "",
@@ -513,7 +533,7 @@ def evaluate():
 class HandoffTests(unittest.TestCase):
     def test_simple_labor_notice_reprocesses_as_binding_notice_not_dispute_guideline(self):
         from src.scripts.preprocess_consumer_sources import preprocess
-        collected=read('data/processed/consumer_sources/consumer_collection_report.json')
+        collected=read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'consumer_collection_report.json')
         source=next(s for s in collected['saved'] if s['source_id']=='minimum_wage_simple_labor')
         doc=preprocess(source)
         self.assertTrue(doc['embedding_candidate'])
@@ -549,7 +569,7 @@ class HandoffTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             checked_file("../outside_workspace.json")
         with self.assertRaises(ValueError):
-            checked_file("data/chunk/laws/chunks.jsonl","wrong_hash")
+            checked_file(CHUNK_LAWS_DATA_PATH / "chunks.jsonl","wrong_hash")
 
 
 if __name__=="__main__":

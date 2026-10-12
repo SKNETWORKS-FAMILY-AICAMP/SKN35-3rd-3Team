@@ -5,7 +5,14 @@ LLM 답변 정확도 또는 벡터 검색 평가가 아니다.
 """
 import json
 import unittest
-from pathlib import Path
+
+from src.const.config import (
+    CHUNK_CONSUMER_SOURCES_DATA_PATH,
+    CHUNK_GUIDES_DATA_PATH,
+    CHUNK_LAWS_DATA_PATH,
+    CHUNK_PRECEDENTS_DATA_PATH,
+    PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH,
+)
 
 from src.scripts.collect_consumer_sources import ROOT, write_json
 from src.scripts.tests.test_precedent_retrieval_pmh import BM25
@@ -60,12 +67,12 @@ def normalize(chunk):
 
 def load_chunks(include_consumer=True):
     chunks=[]
-    for folder in ['laws','precedents']+(['consumer_sources'] if include_consumer else []):
-        path=ROOT/'data/chunk'/folder/'chunks.jsonl'
+    for directory in [CHUNK_LAWS_DATA_PATH, CHUNK_PRECEDENTS_DATA_PATH] + ([CHUNK_CONSUMER_SOURCES_DATA_PATH] if include_consumer else []):
+        path=directory / 'chunks.jsonl'
         if not path.exists():
             raise ValueError('청크 파일 누락: '+str(path))
         chunks.extend(normalize(json.loads(line)) for line in path.read_text(encoding='utf-8').splitlines() if line)
-    path=ROOT/'data/chunk/guides'
+    path=CHUNK_GUIDES_DATA_PATH
     manifest=json.loads((path/'guide_chunking_report.json').read_text(encoding='utf-8'))
     for entry in manifest['saved']:
         chunks.extend(normalize(c) for c in json.loads((path/entry['file']).read_text(encoding='utf-8'))['chunks'])
@@ -78,7 +85,7 @@ def compact(hit):
 
 def evaluate():
     base=load_chunks(False)
-    added=[normalize(json.loads(line)) for line in (ROOT/'data/chunk/consumer_sources/chunks.jsonl').read_text(encoding='utf-8').splitlines()]
+    added=[normalize(json.loads(line)) for line in (CHUNK_CONSUMER_SOURCES_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines()]
     before,legacy,after=BM25(base),BM25(base+added),BM25(base+added,evidence_mode=True)
     records=[]
     for question in QUESTIONS:
@@ -106,7 +113,7 @@ def evaluate():
         report[label]['questions_with_selected_chunks']=len(reviewed)
     report['search_changes']={'source_improved':[r['id'] for r in records if not r['legacy_after']['expected_source_hit_at_5'] and r['after']['expected_source_hit_at_5']],
                               'source_regressed':[r['id'] for r in records if r['legacy_after']['expected_source_hit_at_5'] and not r['after']['expected_source_hit_at_5']]}
-    path=ROOT/'data/processed/retrieval_evaluation/consumer_coverage_report.json'
+    path=PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'consumer_coverage_report.json'
     saved=json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
     frozen=saved.get('preprocessing_baseline') or {
         'added_chunk_count':saved.get('added_chunk_count'),
@@ -170,7 +177,7 @@ class CoverageTests(unittest.TestCase):
             self.assertTrue(ids.intersection(question['expected_ids']),question['id'])
 
     def test_saved_evaluation_counts_and_boolean_metrics(self):
-        path=ROOT/'data/processed/retrieval_evaluation/consumer_coverage_report.json'
+        path=PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'consumer_coverage_report.json'
         report=json.loads(path.read_text(encoding='utf-8'))
         self.assertEqual(report['question_count'],len(QUESTIONS))
         self.assertEqual(report['baseline_chunk_count'],len(load_chunks(False)))
@@ -194,7 +201,7 @@ class CoverageTests(unittest.TestCase):
 
     def test_saved_policy_and_selected_chunk_diagnostics_are_independent_of_source_hits(self):
         chunks={c['chunk_id']:c for c in load_chunks()}
-        report=json.loads((ROOT/'data/processed/retrieval_evaluation/consumer_coverage_report.json').read_text(encoding='utf-8'))
+        report=json.loads((PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'consumer_coverage_report.json').read_text(encoding='utf-8'))
         self.assertEqual(report['search_policy'],SEARCH_POLICY)
         for row in report['questions']:
             for identifier in row['selected_chunk_ids']:
@@ -212,7 +219,7 @@ class CoverageTests(unittest.TestCase):
                         self.assertEqual(span['text'],original['text'][span['start']:span['end']])
 
     def test_search_refinement_comparison_keeps_selected_ids_and_source_metrics_separate(self):
-        report=json.loads((ROOT/'data/processed/retrieval_evaluation/consumer_coverage_report.json').read_text(encoding='utf-8'))
+        report=json.loads((PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH / 'consumer_coverage_report.json').read_text(encoding='utf-8'))
         comparison=report['search_refinement_comparison']
         self.assertEqual(comparison['chunk_after'],sum(r['chunk_after'] is True for r in comparison['questions']))
         self.assertEqual(comparison['source_after'],sum(r['source_after'] for r in comparison['questions']))

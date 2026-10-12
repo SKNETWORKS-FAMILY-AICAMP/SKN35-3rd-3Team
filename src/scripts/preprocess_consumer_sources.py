@@ -10,12 +10,29 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 
-if __package__:
-    from .collect_consumer_sources import ROOT, RAW_DIR, MANIFEST, HTMLTree, decode_html, digest, write_json
-else:
-    from collect_consumer_sources import ROOT, RAW_DIR, MANIFEST, HTMLTree, decode_html, digest, write_json
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
 
-OUTPUT_DIR = MANIFEST.parent
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    CHUNK_LAWS_DATA_PATH,
+    PROCESSED_CONSUMER_SOURCES_DATA_PATH,
+    PROJECT_PATH,
+    RAW_CONSUMER_SOURCES_DATA_PATH,
+)
+
+ROOT = PROJECT_PATH
+
+if __package__:
+    from .collect_consumer_sources import HTMLTree, decode_html, digest, write_json
+else:
+    from collect_consumer_sources import HTMLTree, decode_html, digest, write_json
+
+RAW_DIR = RAW_CONSUMER_SOURCES_DATA_PATH
+OUTPUT_DIR = PROCESSED_CONSUMER_SOURCES_DATA_PATH
+MANIFEST = OUTPUT_DIR / "source_manifest.json"
 APPENDIX_REVIEW_FILE = OUTPUT_DIR/'consumer_appendix_review_pmh.json'
 
 PARCEL_VERSIONS = {
@@ -443,7 +460,7 @@ def apply_reviewed_consumer_appendices(source, units, review=None):
         if original['appendix_title']!=spec['title'] or spec['pdf_source_url']!='https://www.law.go.kr'+link:
             raise ValueError('별표 PDF 제목·원문 XML 첨부 링크 불일치')
         path=(ROOT/spec['pdf_file']).resolve()
-        if not path.is_relative_to((ROOT/'data/raw/consumer_sources').resolve()) or not path.is_file():
+        if not path.is_relative_to(RAW_CONSUMER_SOURCES_DATA_PATH.resolve()) or not path.is_file():
             raise ValueError('검토 별표 PDF 경로 불일치')
         if digest(path.read_bytes())!=spec['pdf_sha256']:
             raise ValueError('검토 별표 PDF 원본 변경')
@@ -788,7 +805,7 @@ def housing_law_context(identifier):
             '민사집행법':{'제84조','제88조','제145조','제148조'},
             '민사집행규칙':{'제48조'},
             '주택임대차보호법':{'제3조의2','제3조의3','제3조의5','제8조'},'민법':{'제536조'}}}[identifier]
-    records=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+    records=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
     result=[]
     for name,labels in scope.items():
         found=[c for c in records if c.get('law_name')==name and c.get('article_label') in labels]
@@ -807,7 +824,7 @@ def consumer_redress_context(identifier):
     """피해구제와 조정의 서로 다른 기간·효력을 현행 조문에 연결한다."""
     labels=({'제55조','제57조','제58조','제61조','제63조','제65조','제66조','제67조'}
             if identifier=='kca_mediation_procedure' else {'제55조','제57조','제58조'})
-    records=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+    records=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
     result=[]
     for name,expected in [('소비자기본법',labels),('소비자기본법 시행령',{'제44조'})]:
         found=[c for c in records if c.get('law_name')==name and c.get('article_label') in expected]
@@ -899,7 +916,7 @@ def extract_consumer_redress_guide(source,data):
 
 def installment_context():
     """각 요건의 조문을 버전 단위로 연결하고 누락·혼합을 거부한다."""
-    records=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+    records=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
     scope={'할부거래에 관한 법률':{'제2조','제3조','제4조','제16조'},
            '할부거래에 관한 법률 시행령':{'제2조','제4조','제11조'}}
     selected=[]
@@ -1111,7 +1128,7 @@ def extract_overseas_guide(source, data):
         if not all(word in unit['text'] for word in ['국내소재의 구매대행은 국내법', '7일', '반품', '배송비용']):
             raise ValueError('국내 구매대행 적용 범위 또는 비용 조건 누락')
         lawname='전자상거래 등에서의 소비자보호에 관한 법률'
-        records=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        records=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
         context=[c['chunk_id'] for c in records if c.get('law_name')==lawname and c.get('article_label') in {'제17조','제18조'}]
         if not context or {c.get('article_label') for c in records if c['chunk_id'] in context}!={'제17조','제18조'}:
             raise ValueError('전자상거래법 청약철회·비용 청크 연결 누락')

@@ -8,14 +8,21 @@ import math
 import re
 import unittest
 from collections import Counter
-from pathlib import Path
+
+from src.const.config import (
+    CHUNK_PRECEDENTS_DATA_PATH,
+    PROCESSED_DATA_PATH,
+    PROCESSED_PRECEDENTS_DATA_PATH,
+    PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH,
+    PROJECT_PATH,
+)
 
 from src.scripts.chunk_metadata import normalize_chunk
 
 
-ROOT = Path(__file__).resolve().parents[3]
-CHUNKS_DIR = ROOT / "data/chunk/precedents"
-EVALUATION_DIR = ROOT / "data/processed/retrieval_evaluation"
+ROOT = PROJECT_PATH
+CHUNKS_DIR = CHUNK_PRECEDENTS_DATA_PATH
+EVALUATION_DIR = PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH
 # 소규모 수동 정의 질문. expected_ids는 최소 한 건의 관련 판례 기준이며 모든 정답의 목록은 아니다.
 QUESTIONS = [
     ("rent_guarantee", "전세계약이 끝났는데 보증금을 못 받았어요. 주택도시보증공사에 지급을 청구했는데 늦어지면 지연손해금을 받을 수 있나요?", ["622247", "622837", "622971"]),
@@ -185,10 +192,10 @@ class BM25:
 
 
 def evaluate():
-    manifest = json.loads((ROOT / "data/processed/precedent_preprocessing_report.json").read_text(encoding="utf-8"))
+    manifest = json.loads((PROCESSED_DATA_PATH / 'precedent_preprocessing_report.json').read_text(encoding="utf-8"))
     documents = []
     for identifier in manifest["saved"]:
-        doc = json.loads((ROOT / "data/processed/precedents" / f"{identifier}.json").read_text(encoding="utf-8"))
+        doc = json.loads((PROCESSED_PRECEDENTS_DATA_PATH / f"{identifier}.json").read_text(encoding="utf-8"))
         if doc["embedding_candidate"] and not doc["needs_manual_review"]:
             documents.append(doc)
     chunks = [c for d in documents for c in make_chunks(d)]
@@ -308,7 +315,7 @@ class RetrievalTests(unittest.TestCase):
 
     def test_partial_chunks_keep_roles_and_do_not_cross_spans(self):
         for identifier in ("227759", "234477", "605583", "147076"):
-            doc = json.loads((ROOT / "data/processed/precedents" / f"{identifier}.json").read_text(encoding="utf-8"))
+            doc = json.loads((PROCESSED_PRECEDENTS_DATA_PATH / f"{identifier}.json").read_text(encoding="utf-8"))
             for chunk in make_chunks(doc):
                 segment = next(s for s in doc["retrieval_segments"] if s["start"] <= chunk["start"] < s["end"])
                 self.assertLessEqual(chunk["end"], segment["end"])
@@ -334,7 +341,7 @@ class RetrievalTests(unittest.TestCase):
                     self.assertIn(warning,chunk['embedding_text'])
                 if chunk["section_context_header"]:
                     self.assertIn(chunk["section_context_header"], chunk["context_header"].splitlines())
-                doc = json.loads((ROOT / "data/processed/precedents" / f"{chunk['precedent_id']}.json").read_text(encoding="utf-8"))
+                doc = json.loads((PROCESSED_PRECEDENTS_DATA_PATH / f"{chunk['precedent_id']}.json").read_text(encoding="utf-8"))
                 self.assertIn(doc["source"], chunk["context_header"])
 
     def test_header_does_not_invent_missing_provenance_or_replace_argument_role(self):

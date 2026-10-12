@@ -8,14 +8,20 @@ import hashlib
 import json
 import unittest
 from collections import Counter
-from pathlib import Path
 from unittest.mock import patch
+
+from src.const.config import (
+    CHUNK_DATA_PATH,
+    DATA_PATH,
+    PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH,
+    PROJECT_PATH,
+)
 
 from src.scripts.tests.test_consumer_coverage_pmh import load_chunks, SEARCH_OPTIONS, SEARCH_POLICY
 from src.scripts.tests.test_precedent_retrieval_pmh import BM25
 
-ROOT = Path(__file__).resolve().parents[3]
-OUTPUT = ROOT / "data/processed/retrieval_evaluation"
+ROOT = PROJECT_PATH
+OUTPUT = PROCESSED_RETRIEVAL_EVALUATION_DATA_PATH
 REPORT_JSON = OUTPUT / "domain_coverage_report_pmh.json"
 REPORT_MD = OUTPUT / "domain_coverage_report_pmh.md"
 STATUS_LABELS = {"supported": "기본 근거 확보", "partial": "근거 일부·자료 보완",
@@ -27,7 +33,7 @@ def sha(value):
 
 
 def source_fingerprint():
-    files = sorted(p for p in (ROOT / "data/chunk").rglob("*") if p.is_file())
+    files = sorted(p for p in CHUNK_DATA_PATH.rglob("*") if p.is_file())
     return sha([(p.relative_to(ROOT).as_posix(), hashlib.sha256(p.read_bytes()).hexdigest()) for p in files])
 
 
@@ -606,7 +612,7 @@ class DomainCoverageTests(unittest.TestCase):
     def test_audit_itself_does_not_write_to_existing_data(self):
         def fingerprints():
             return [(p.relative_to(ROOT).as_posix(), hashlib.sha256(p.read_bytes()).hexdigest())
-                    for p in sorted((ROOT / "data").rglob("*")) if p.is_file()]
+                    for p in sorted(DATA_PATH.rglob("*")) if p.is_file()]
         before = fingerprints()
         audit()
         self.assertEqual(before, fingerprints())

@@ -8,14 +8,30 @@ import json
 from collections import Counter
 from pathlib import Path
 
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    CHUNK_GUIDES_DATA_PATH,
+    PROCESSED_GUIDES_DATA_PATH,
+    PROJECT_PATH,
+    RAW_DATA_PATH,
+)
+
+ROOT = PROJECT_PATH
+
 if __package__:
     from .chunk_metadata import normalize_chunk, METADATA_VERSION
-    from .preprocess_guides import ROOT, OUTPUT_DIR as INPUT_DIR, sha256, write_json, validate_source_coverage
+    from .preprocess_guides import sha256, write_json, validate_source_coverage
 else:
     from chunk_metadata import normalize_chunk, METADATA_VERSION
-    from preprocess_guides import ROOT, OUTPUT_DIR as INPUT_DIR, sha256, write_json, validate_source_coverage
+    from preprocess_guides import sha256, write_json, validate_source_coverage
 
-OUTPUT_DIR = ROOT / "data/chunk/guides"
+INPUT_DIR = PROCESSED_GUIDES_DATA_PATH
+OUTPUT_DIR = CHUNK_GUIDES_DATA_PATH
 
 
 def make_chunks(document, size=1200, overlap=120):
@@ -78,7 +94,7 @@ def make_chunks(document, size=1200, overlap=120):
 
 def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
     input_dir, output_dir = Path(input_dir).resolve(), Path(output_dir).resolve()
-    if (output_dir.is_relative_to(ROOT / "data/raw") or output_dir.is_relative_to(input_dir)
+    if (output_dir.is_relative_to(RAW_DATA_PATH) or output_dir.is_relative_to(input_dir)
             or input_dir.is_relative_to(output_dir)):
         raise ValueError("출력은 원본·정제 입력과 분리해야 합니다.")
     manifest = json.loads((input_dir / "guide_preprocessing_report.json").read_text(encoding="utf-8"))

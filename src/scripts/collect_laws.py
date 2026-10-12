@@ -18,9 +18,20 @@ from dotenv import load_dotenv
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
 
-ROOT = Path(__file__).resolve().parents[2]
-OUTPUT_DIR = ROOT / "data/raw/laws"
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    PROJECT_PATH,
+    RAW_LAWS_DATA_PATH,
+)
+
+
+ROOT = PROJECT_PATH
+OUTPUT_DIR = RAW_LAWS_DATA_PATH
 LAW_NAMES = ["민법", "형법", "주택임대차보호법", "근로기준법", "근로기준법 시행령",
              "근로자퇴직급여 보장법", "전자상거래 등에서의 소비자보호에 관한 법률", "공인중개사법",
              "방문판매 등에 관한 법률", "전자상거래 등에서의 소비자보호에 관한 법률 시행령",

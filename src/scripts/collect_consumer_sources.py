@@ -19,9 +19,21 @@ import requests
 from dotenv import load_dotenv
 from requests.adapters import HTTPAdapter
 
-ROOT = Path(__file__).resolve().parents[2]
-RAW_DIR = ROOT / 'data/raw/consumer_sources'
-MANIFEST = ROOT / 'data/processed/consumer_sources/source_manifest.json'
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    PROCESSED_CONSUMER_SOURCES_DATA_PATH,
+    PROJECT_PATH,
+    RAW_CONSUMER_SOURCES_DATA_PATH,
+)
+
+ROOT = PROJECT_PATH
+RAW_DIR = RAW_CONSUMER_SOURCES_DATA_PATH
+MANIFEST = PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'source_manifest.json'
 HOSTS = {'www.kca.go.kr', 'www.ftc.go.kr', 'www.law.go.kr', 'law.go.kr', 'news.seoul.go.kr', 'labor.moel.go.kr', '1350.moel.go.kr', 'www.easylaw.go.kr'}
 
 

@@ -4,6 +4,12 @@ import hashlib
 import json
 import unittest
 
+from src.const.config import (
+    PROCESSED_DATA_PATH,
+    PROCESSED_PRECEDENTS_DATA_PATH,
+    RAW_PRECEDENTS_DATA_PATH,
+)
+
 from src.scripts.preprocess_precedents import (
     ROOT, TEXT_FIELDS, clean_text, get_sections, partial_spans, preprocess, text_digest,
 )
@@ -11,7 +17,7 @@ from src.scripts.preprocess_precedents import (
 
 class PreprocessingTests(unittest.TestCase):
     def test_restoration_case_scope_individual_amounts_and_historical_interest_are_preserved(self):
-        d=json.loads((ROOT/'data/processed/precedents/147076.json').read_text(encoding='utf-8'))
+        d=json.loads((PROCESSED_PRECEDENTS_DATA_PATH / '147076.json').read_text(encoding='utf-8'))
         self.assertEqual(len(d['selected_spans']),4)
         self.assertEqual(d['review_resolution']['review_date'],'2026-10-11')
         self.assertFalse(d['needs_manual_review'])
@@ -24,9 +30,9 @@ class PreprocessingTests(unittest.TestCase):
         for c in make_chunks(d):
             for warning in d['warnings']:
                 self.assertIn(warning,c['embedding_text'])
-        raw=json.loads((ROOT/'data/raw/precedents/147076.json').read_text(encoding='utf-8'))
+        raw=json.loads((RAW_PRECEDENTS_DATA_PATH / '147076.json').read_text(encoding='utf-8'))
         raw['detail']['판례내용'] += '<br/>changed'
-        review=json.loads((ROOT/'data/processed/precedent_relevance_review.json').read_text(encoding='utf-8'))
+        review=json.loads((PROCESSED_DATA_PATH / 'precedent_relevance_review.json').read_text(encoding='utf-8'))
         row=next(r for r in review['records'] if r['precedent_id']=='147076')
         self.assertTrue(preprocess(row,raw)['needs_manual_review'])
 
@@ -49,19 +55,19 @@ class PreprocessingTests(unittest.TestCase):
             partial_spans('605583', '제목이 달라진 새로운 본문')
 
     def test_all_reviewed_sources_and_provenance(self):
-        report = json.loads((ROOT / 'data/processed/precedent_preprocessing_report.json').read_text(encoding='utf-8'))
-        review = json.loads((ROOT / 'data/processed/precedent_relevance_review.json').read_text(encoding='utf-8'))
+        report = json.loads((PROCESSED_DATA_PATH / 'precedent_preprocessing_report.json').read_text(encoding='utf-8'))
+        review = json.loads((PROCESSED_DATA_PATH / 'precedent_relevance_review.json').read_text(encoding='utf-8'))
         selected = {r['precedent_id']: r for r in review['records'] if r['status'] in {'포함', '부분 사용'}}
         self.assertEqual(set(selected), set(report['saved']))
         self.assertFalse(report['failures'])
         for identifier, row in selected.items():
             with self.subTest(identifier=identifier):
-                raw_path = ROOT / 'data/raw/precedents' / f'{identifier}.json'
+                raw_path = RAW_PRECEDENTS_DATA_PATH / f'{identifier}.json'
                 raw_bytes = raw_path.read_bytes()
                 self.assertEqual(hashlib.sha256(raw_bytes).hexdigest(), report['raw_sha256'][identifier])
                 raw = json.loads(raw_bytes.decode('utf-8'))
                 regenerated = preprocess(row, raw)
-                saved = json.loads((ROOT / 'data/processed/precedents' / f'{identifier}.json').read_text(encoding='utf-8'))
+                saved = json.loads((PROCESSED_PRECEDENTS_DATA_PATH / f'{identifier}.json').read_text(encoding='utf-8'))
                 self.assertEqual(saved['texts'], regenerated['texts'])
                 self.assertEqual(saved['retrieval_text'], regenerated['retrieval_text'])
                 self.assertTrue(saved['retrieval_text'].strip())
@@ -79,7 +85,7 @@ class PreprocessingTests(unittest.TestCase):
             '227759': ('퇴직금', ['가. 제1 원심판결[', '3) 위계공무집행방해의 점에 관한 판단', '선고형의 결정:징역 6년']),
         }
         for identifier, (included, excluded) in expected.items():
-            data = json.loads((ROOT / 'data/processed/precedents' / f'{identifier}.json').read_text(encoding='utf-8'))
+            data = json.loads((PROCESSED_PRECEDENTS_DATA_PATH / f'{identifier}.json').read_text(encoding='utf-8'))
             self.assertIn(included, data['retrieval_text'])
             for text in excluded:
                 self.assertNotIn(text, data['retrieval_text'])
@@ -91,7 +97,7 @@ class PreprocessingTests(unittest.TestCase):
                 'court_recorded_criminal_facts', 'evidence', 'applied_law'} for s in data['selected_spans']))
 
     def test_duplicate_is_excluded_only_when_cleaned_content_matches(self):
-        load = lambda identifier: json.loads((ROOT / 'data/processed/precedents' / f'{identifier}.json').read_text(encoding='utf-8'))
+        load = lambda identifier: json.loads((PROCESSED_PRECEDENTS_DATA_PATH / f'{identifier}.json').read_text(encoding='utf-8'))
         original, duplicate = load('606973'), load('614721')
         self.assertEqual(duplicate['duplicate_of'], original['precedent_id'])
         self.assertFalse(duplicate['embedding_candidate'])
@@ -104,9 +110,9 @@ class PreprocessingTests(unittest.TestCase):
         self.assertFalse(representative['needs_manual_review'])
 
     def test_changed_reviewed_body_requires_review_again(self):
-        review = json.loads((ROOT / 'data/processed/precedent_relevance_review.json').read_text(encoding='utf-8'))
+        review = json.loads((PROCESSED_DATA_PATH / 'precedent_relevance_review.json').read_text(encoding='utf-8'))
         row = next(r for r in review['records'] if r['precedent_id'] == '605583')
-        raw = json.loads((ROOT / 'data/raw/precedents/605583.json').read_text(encoding='utf-8'))
+        raw = json.loads((RAW_PRECEDENTS_DATA_PATH / '605583.json').read_text(encoding='utf-8'))
         raw['detail']['판례내용'] += '<br/>변경된 본문'
         document = preprocess(row, raw)
         self.assertTrue(document['needs_manual_review'])

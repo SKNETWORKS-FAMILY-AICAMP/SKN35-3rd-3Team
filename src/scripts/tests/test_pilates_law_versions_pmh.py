@@ -4,6 +4,11 @@ import json
 import unittest
 from unittest.mock import patch
 
+from src.const.config import (
+    CHUNK_LAWS_DATA_PATH,
+    PROCESSED_CONSUMER_SOURCES_DATA_PATH,
+)
+
 from src.scripts.review_pilates_law_versions import (
     ROOT, RAW, REPORT, LAW, DECREE, RULE, TERMS, HISTORY_IDS,
     article, build_report, checked, digest, history_rows, read, select_at, validate_body, verified_case, sanitize_response,
@@ -49,7 +54,7 @@ class PilatesLawVersionTests(unittest.TestCase):
         self.assertEqual(assigned['events'][1]['law_versions'][RULE],'223955')
         for c in cases.values():
             self.assertIsNone(c['decision_date'])
-            doc=read(ROOT/f"data/processed/consumer_sources/{c['source_id']}.json")
+            doc=read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / f"{c['source_id']}.json")
             units={u['unit_id']:u['text'] for u in doc['units']}
             for e in c['events']:
                 self.assertEqual(units[e['evidence_unit_id']][e['evidence_start']:e['evidence_end']],e['evidence_text'])
@@ -78,7 +83,7 @@ class PilatesLawVersionTests(unittest.TestCase):
         with self.assertRaises(ValueError):validate_body(data['response_xml'],TERMS,'20230101')
         root=validate_body(data['response_xml'],TERMS,'20211230')
         with self.assertRaises(ValueError):article(root,'999')
-        doc=read(ROOT/'data/processed/consumer_sources/kca_case_1003640779.json')
+        doc=read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'kca_case_1003640779.json')
         changed=copy.deepcopy(doc);changed['units'][0]['text']+='changed'
         with self.assertRaisesRegex(ValueError,'본문 변경'):verified_case(changed)
         with patch('src.scripts.review_pilates_law_versions.build_report',return_value={}):
@@ -87,7 +92,7 @@ class PilatesLawVersionTests(unittest.TestCase):
         with self.assertRaises(ValueError):checked('data/raw/law_history/225063_20211230.json','bad')
 
     def test_historical_sources_are_references_not_default_law_chunks(self):
-        chunks=[json.loads(s) for s in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if s.strip()]
+        chunks=[json.loads(s) for s in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if s.strip()]
         self.assertTrue(all('law_history' not in c['source_path'] for c in chunks))
         self.assertEqual(self.report['refund_notice']['notice_number'],'2019-9')
         self.assertEqual(self.report['refund_notice']['effective_date'],'20191119')

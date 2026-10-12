@@ -14,6 +14,7 @@ from src.vector_db.chunk_loader import (
 from src.vector_db.ingestion import (
     DocumentEmbeddingProvider,
     PreparedPoint,
+    expand_embedding_records,
     generate_document_vectors,
     prepare_upsert_points,
 )
@@ -57,6 +58,7 @@ __all__ = [
     "create_qdrant_client",
     "create_sparse_embedding_provider",
     "create_team_retriever",
+    "expand_embedding_records",
     "expected_chunk_count",
     "generate_document_vectors",
     "load_chunk_tree",

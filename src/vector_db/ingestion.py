@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
@@ -17,6 +18,7 @@ import tiktoken
 from src.const.qdrant_config import EmbeddingSettings
 from src.const.vector_data_contract import (
     PreparedChunk,
+    create_content_hash,
     infer_vector_dimension,
     normalize_vector,
     validate_unique_records,
@@ -25,6 +27,9 @@ from src.vector_db.sparse_embedder import SparseEmbedding
 
 
 _OPENAI_EMBEDDING_TOKEN_LIMIT = 8_191
+_OFFICIAL_PDF_PAGE_MARKER = re.compile(
+    r"(?m)^\[공식 PDF 페이지 (\d+) 공통기준\]"
+)
 
 
 @runtime_checkable
@@ -90,6 +95,193 @@ def _embedding_input(
         text=encoding.decode(tokens[:_OPENAI_EMBEDDING_TOKEN_LIMIT]),
         original_token_count=len(tokens),
     )
+
+
+def _split_passages(
+    passages: object,
+    *,
+    source_text: str,
+    part_start: int,
+    part_end: int,
+) -> list[dict[str, object]]:
+    """부모 본문의 passage를 분할 본문 기준 위치로 옮깁니다."""
+
+    if not isinstance(passages, Sequence) or isinstance(
+        passages,
+        (str, bytes),
+    ):
+        return []
+
+    selected: list[dict[str, object]] = []
+    for value in passages:
+        if not isinstance(value, Mapping):
+            continue
+        start = value.get("start")
+        end = value.get("end")
+        if not isinstance(start, int) or not isinstance(end, int):
+            continue
+
+        overlap_start = max(start, part_start)
+        overlap_end = min(end, part_end)
+        if overlap_start >= overlap_end:
+            continue
+
+        passage = dict(value)
+        passage.update(
+            {
+                "parent_start": start,
+                "parent_end": end,
+                "start": overlap_start - part_start,
+                "end": overlap_end - part_start,
+                "text": source_text[overlap_start:overlap_end],
+            }
+        )
+        if overlap_start != start or overlap_end != end:
+            passage.pop("search_text", None)
+        selected.append(passage)
+    return selected
+
+
+def _page_tables(value: object, page_number: int) -> object:
+    """페이지 번호가 있는 표 목록을 현재 파생 청크에 맞게 제한합니다."""
+
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+        return value
+    return [
+        item
+        for item in value
+        if not isinstance(item, Mapping)
+        or item.get("page_number") in (None, page_number)
+    ]
+
+
+def _split_openai_oversized_record(
+    record: PreparedChunk,
+    *,
+    model: str,
+) -> tuple[PreparedChunk, ...]:
+    """페이지 경계가 있는 OpenAI 초과 청크를 안정적인 ID로 분할합니다.
+
+    페이지 경계를 식별할 수 없는 청크는 기존 입력 제한 처리에 맡겨 이전
+    동작을 유지합니다.
+    """
+
+    if record.vector is not None:
+        return (record,)
+
+    encoding = _openai_encoding(model)
+    embedding_text = record.embedding_input_text
+    original_token_count = len(encoding.encode(embedding_text))
+    if original_token_count <= _OPENAI_EMBEDDING_TOKEN_LIMIT:
+        return (record,)
+
+    if not embedding_text.endswith(record.text):
+        return (record,)
+    context_prefix = embedding_text[: -len(record.text)]
+    markers = list(_OFFICIAL_PDF_PAGE_MARKER.finditer(record.text))
+    if len(markers) < 2 or markers[0].start() != 0:
+        return (record,)
+
+    spans = [
+        (
+            int(marker.group(1)),
+            marker.start(),
+            (
+                markers[index + 1].start()
+                if index + 1 < len(markers)
+                else len(record.text)
+            ),
+        )
+        for index, marker in enumerate(markers)
+    ]
+    parent_metadata = dict(record.extra_metadata)
+    parent_start = parent_metadata.get("start", 0)
+    if not isinstance(parent_start, int):
+        parent_start = 0
+
+    split_records: list[PreparedChunk] = []
+    for split_index, (page_number, part_start, part_end) in enumerate(
+        spans,
+        start=1,
+    ):
+        part_text = record.text[part_start:part_end]
+        part_embedding_text = context_prefix + part_text
+        part_token_count = len(encoding.encode(part_embedding_text))
+        if part_token_count > _OPENAI_EMBEDDING_TOKEN_LIMIT:
+            raise ValueError(
+                "페이지 단위 분할 후에도 OpenAI 입력 한도를 초과합니다: "
+                f"chunk_id={record.chunk_id}, page={page_number}, "
+                f"tokens={part_token_count}"
+            )
+
+        part_metadata = dict(parent_metadata)
+        part_metadata.update(
+            {
+                "embedding_text": part_embedding_text,
+                "page_numbers": [page_number],
+                "start": parent_start + part_start,
+                "end": parent_start + part_end,
+                "atomic": False,
+                "oversize_atomic_unit": False,
+                "split_from_chunk_id": record.chunk_id,
+                "split_index": split_index,
+                "split_count": len(spans),
+                "split_reason": "openai_embedding_token_limit",
+                "embedding_input_original_token_count": (
+                    original_token_count
+                ),
+                "embedding_input_token_limit": (
+                    _OPENAI_EMBEDDING_TOKEN_LIMIT
+                ),
+            }
+        )
+        part_metadata["search_passages"] = _split_passages(
+            parent_metadata.get("search_passages"),
+            source_text=record.text,
+            part_start=part_start,
+            part_end=part_end,
+        )
+        if "pdf_tables" in part_metadata:
+            part_metadata["pdf_tables"] = _page_tables(
+                part_metadata["pdf_tables"],
+                page_number,
+            )
+
+        split_records.append(
+            replace(
+                record,
+                chunk_id=f"{record.chunk_id}__page_{page_number:04d}",
+                text=part_text,
+                page=page_number,
+                content_hash=create_content_hash(part_text),
+                extra_metadata=part_metadata,
+            )
+        )
+    return tuple(split_records)
+
+
+def expand_embedding_records(
+    records: Iterable[PreparedChunk],
+    *,
+    settings: EmbeddingSettings,
+) -> tuple[PreparedChunk, ...]:
+    """제공자 입력 제한에 맞춰 적재용 청크를 결정적으로 확장합니다."""
+
+    record_list = list(records)
+    validate_unique_records(record_list)
+    if settings.provider != "openai" or settings.model is None:
+        return tuple(record_list)
+
+    expanded_records = tuple(
+        child
+        for record in record_list
+        for child in _split_openai_oversized_record(
+            record,
+            model=settings.model,
+        )
+    )
+    validate_unique_records(expanded_records)
+    return expanded_records
 
 
 def _utc_now_iso() -> str:
@@ -158,8 +350,9 @@ def generate_document_vectors(
     assert settings.dimension is not None
 
     validated_batch_size = _validated_batch_size(batch_size)
-    record_list = list(records)
-    validate_unique_records(record_list)
+    record_list = list(
+        expand_embedding_records(records, settings=settings)
+    )
 
     generated_records = list(record_list)
     pending_indexes: list[int] = []

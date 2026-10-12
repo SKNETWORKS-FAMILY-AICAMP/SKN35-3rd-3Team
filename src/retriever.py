@@ -14,6 +14,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
+from src.const.vector_data_contract import create_content_hash
 from src.rrf import reciprocal_rank_fusion
 from src.vectorstore import (
     VectorCollectionInfo,
@@ -106,6 +107,152 @@ def _validate_filters(filters: Mapping[str, object] | None) -> dict[str, object]
     return conditions
 
 
+def _split_parent_id(metadata: Mapping[str, object]) -> str | None:
+    """물리 분할 Point가 속한 논리 청크 ID를 반환합니다."""
+
+    value = metadata.get("split_from_chunk_id")
+    if not isinstance(value, str) or not value.strip():
+        return None
+    return value.strip()
+
+
+def _split_index(document: VectorDocument) -> tuple[int, str]:
+    """분할 문서를 원문 순서로 정렬할 수 있는 키를 반환합니다."""
+
+    value = document.metadata.get("split_index")
+    index = value if isinstance(value, int) and not isinstance(value, bool) else 0
+    chunk_id = document.metadata.get("chunk_id")
+    return index, str(chunk_id or document.point_id)
+
+
+def _merge_split_hit(
+    hit: VectorSearchHit,
+    siblings: Sequence[VectorDocument],
+    *,
+    parent_id: str,
+) -> VectorSearchHit:
+    """같은 부모에서 파생된 물리 Point를 검색 결과 한 건으로 복원합니다."""
+
+    ordered = sorted(siblings, key=_split_index)
+    expected_count = hit.metadata.get("split_count")
+    if (
+        not isinstance(expected_count, int)
+        or isinstance(expected_count, bool)
+        or expected_count < 1
+    ):
+        expected_count = len(ordered)
+    if len(ordered) != expected_count:
+        return hit
+
+    child_chunk_ids = [
+        str(document.metadata.get("chunk_id") or "") for document in ordered
+    ]
+    if any(not chunk_id for chunk_id in child_chunk_ids):
+        return hit
+
+    merged_text = "".join(document.text for document in ordered)
+    metadata = dict(hit.metadata)
+    pages = sorted(
+        {
+            page
+            for document in ordered
+            for page in (
+                document.metadata.get("page"),
+                *(document.metadata.get("page_numbers") or ()),
+            )
+            if isinstance(page, int) and not isinstance(page, bool)
+        }
+    )
+    starts = [
+        value
+        for document in ordered
+        if isinstance(
+            value := document.metadata.get("start"),
+            int,
+        )
+        and not isinstance(value, bool)
+    ]
+    ends = [
+        value
+        for document in ordered
+        if isinstance(
+            value := document.metadata.get("end"),
+            int,
+        )
+        and not isinstance(value, bool)
+    ]
+    metadata.update(
+        {
+            "chunk_id": parent_id,
+            "logical_chunk_id": parent_id,
+            "child_chunk_ids": child_chunk_ids,
+            "child_point_ids": [document.point_id for document in ordered],
+            "split_count": len(ordered),
+            "merged_split_chunks": True,
+            "content_hash": create_content_hash(merged_text),
+        }
+    )
+    metadata.pop("split_index", None)
+    metadata.pop("embedding_text", None)
+    if pages:
+        metadata["pages"] = pages
+        metadata["page_numbers"] = pages
+        metadata["page"] = pages[0]
+        metadata["page_start"] = pages[0]
+        metadata["page_end"] = pages[-1]
+    if starts:
+        metadata["start"] = min(starts)
+    if ends:
+        metadata["end"] = max(ends)
+
+    return VectorSearchHit(
+        point_id=hit.point_id,
+        score=hit.score,
+        text=merged_text,
+        metadata=metadata,
+    )
+
+
+def _merge_split_hits(
+    hits: Sequence[VectorSearchHit],
+    *,
+    vector_store: VectorStore,
+    top_k: int,
+) -> tuple[VectorSearchHit, ...]:
+    """검색된 분할 Point를 부모 청크 한 건으로 묶고 순위를 보존합니다."""
+
+    results: list[VectorSearchHit] = []
+    merged_by_parent: dict[str, VectorSearchHit] = {}
+    for hit in hits:
+        parent_id = _split_parent_id(hit.metadata)
+        if parent_id is None:
+            results.append(hit)
+        elif parent_id not in merged_by_parent:
+            document_id = hit.metadata.get("document_id")
+            siblings: Sequence[VectorDocument] = ()
+            if isinstance(document_id, str) and document_id.strip():
+                document_chunks = vector_store.lookup(
+                    {"document_id": document_id.strip()},
+                    limit=100,
+                )
+                siblings = tuple(
+                    document
+                    for document in document_chunks
+                    if _split_parent_id(document.metadata) == parent_id
+                )
+            merged = _merge_split_hit(
+                hit,
+                siblings,
+                parent_id=parent_id,
+            )
+            merged_by_parent[parent_id] = merged
+            results.append(merged)
+
+        if len(results) >= top_k:
+            break
+    return tuple(results)
+
+
 # --------------------------------------------------------------------------
 # Dense 검색
 # --------------------------------------------------------------------------
@@ -194,7 +341,12 @@ class DocumentRetriever:
                 sparse_vector.values if sparse_vector is not None else None
             ),
         )
-        return self.vector_store.search(request)
+        hits = self.vector_store.search(request)
+        return _merge_split_hits(
+            hits,
+            vector_store=self.vector_store,
+            top_k=top_k,
+        )
 
     def lookup_document(
         self,

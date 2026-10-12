@@ -5,7 +5,7 @@
 
 ## 현재 Vector DB 상태
 
-2026-10-11 기준 확인 결과입니다.
+2026-10-12 기준 확인 결과입니다.
 
 | 항목 | 상태 |
 | --- | --- |
@@ -16,8 +16,10 @@
 | Sparse 모델 | FastEmbed `Qdrant/bm25` |
 | 거리 방식 | Cosine |
 | 컬렉션 상태 | green |
-| Point 수 | 12 (문서 유형별 샘플 적재·검증 완료) |
+| 입력 청크 | 4,932건 |
+| Point 수 | 4,934 (토큰 제한 초과 청크 1건을 3개 Point로 분할) |
 | Payload 인덱스 | Cloud 적용 완료 (`document_id`, `document_type`, `source_name`) |
+| 적재 검증 | 누락·잔여·불일치·중복 0건 |
 
 실제 Qdrant URL과 API 키는 `.env`에서 관리하며 Git에 올리지 않습니다.
 
@@ -176,7 +178,7 @@ uv run python -m src.scripts.embedding_probe --provider all
 | 프로필 | 상태 | 확인 내용 |
 | --- | --- | --- |
 | NVIDIA | 실제 검증 완료 | 2048차원, 정규화 벡터 길이 1.0 |
-| OpenAI | 실제 검증 완료 | 1536차원 문서 샘플 12건 적재 및 Hybrid 검색 확인 |
+| OpenAI | 실제 검증 완료 | 1536차원 전체 4,932건 임베딩, 4,934 Point 적재·Hybrid 검색 확인 |
 | 개인 GPU | 실제 호출 대기 | 고정 모델·차원 및 `torch`, `sentence-transformers` 필요 |
 
 ### OpenAI API
@@ -235,12 +237,15 @@ HF_TOKEN=개인_Hugging_Face_토큰
 - 로컬 `stdio` Transport와 선택적 Streamable HTTP 실행
 - 인증 없는 Streamable HTTP의 비로컬 주소 바인딩 차단
 - 실제 MCP Client의 Tool 조회 및 원격 Qdrant 상태 확인
+- 실제 Cloud Point를 대상으로 MCP 네 Tool 연결 확인
+- 토큰 제한으로 분할된 Point를 검색 결과에서 원본 논리 청크로 병합
 
-실제 데이터 수령 후 검증할 항목:
+남은 평가·선택 확장 항목:
 
+- 법령·판례·안내서·소비자 자료의 대표 질문 검색 품질 평가
 - Datetime 범위 검색
-- 실제 4,932건 적재와 검색 품질 평가
 - 별도 `article_label`·`case_number` 필드 기반 정확 조회
+- RAG·LangGraph 담당자에게 MCP Tool 입력·출력 계약 인계
 
 MCP 로컬 서버와 연결 상태 점검은 다음 명령으로 실행합니다.
 
@@ -258,6 +263,12 @@ uv run python -m src.scripts.mcp_probe --transport stdio `
 임베딩을 만든 뒤 Qdrant RRF Hybrid 검색을 호출합니다.
 `document_id` 조회는 임베딩 API를 호출하지 않고 Payload 인덱스를 사용합니다.
 Point가 없는 상태에서는 `empty_result`가 정상입니다.
+
+OpenAI 입력 제한을 초과한 청크는 적재 시 페이지 단위의 여러 물리 Point로
+나눕니다. 검색된 Point에 `split_from_chunk_id`가 있으면 같은 부모의 조각을
+순서대로 합쳐 원래 `chunk_id` 한 건으로 반환합니다. 반환 Metadata의
+`merged_split_chunks`, `child_chunk_ids`, `pages`로 병합 여부와 범위를 확인할
+수 있습니다.
 
 팀 적재 명령은 Dense와 Sparse Vector 누락을 방지하기 위해
 `SEARCH_MODE=hybrid`에서만 실행됩니다. `SEARCH_MODE=dense`는 Hybrid 적재가

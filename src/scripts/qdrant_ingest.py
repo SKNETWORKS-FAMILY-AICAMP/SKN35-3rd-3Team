@@ -120,6 +120,7 @@ def ingest(args: argparse.Namespace) -> int:
             "collection": collection_info.name,
             "embedding": settings.embedding.safe_summary(),
             "input_count": len(loaded.records),
+            "ingestion_count": len(embedded_records),
             "saved_count": saved_count,
             "validation_passed": report.passed,
             "validation_report": str(report_path),

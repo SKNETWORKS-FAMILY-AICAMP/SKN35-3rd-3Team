@@ -46,20 +46,10 @@ uv run python -m src.scripts.mcp_server `
 `::1` 이외의 주소 바인딩을 거부합니다. 팀 공유는 기본 `stdio`를 사용하고,
 원격 HTTP가 필요하면 인증·TLS 게이트웨이를 먼저 구성합니다.
 
-실제 MCP Client가 `stdio` 하위 프로세스를 실행해 Tool 목록과 Qdrant 상태를
-읽을 수 있는지는 다음 명령으로 확인합니다. Point를 생성·수정·삭제하지 않는
-읽기 전용 점검입니다.
-
-```powershell
-uv run python -m src.scripts.mcp_probe
-```
-
-특정 문서 ID의 청크를 정확 조회하려면 다음처럼 점검합니다.
-
-```powershell
-uv run python -m src.scripts.mcp_probe `
-  --document-id "precedent:240967"
-```
+MCP Host에는 위 `stdio` 실행 명령을 서버로 등록합니다. 연결 후에는
+`health_check`로 Qdrant 상태를 확인하고, `search_documents`로 Hybrid 검색,
+`lookup_document`로 `document_id` 정확 조회를 수행합니다. 이 조회 Tool들은
+Point를 생성·수정·삭제하지 않습니다.
 
 서버 시작 시 `.env`의 Qdrant·임베딩 설정을 읽되 Qdrant 원격 검증은
 지연합니다. 따라서 Qdrant가 일시적으로 응답하지 않아도 MCP 서버와 Tool은

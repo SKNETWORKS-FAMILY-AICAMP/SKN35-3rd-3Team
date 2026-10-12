@@ -166,13 +166,6 @@ API 방식은 개인 키를 입력하면 팀 고정 모델·차원·컬렉션을
 세 방식의 벡터는 같은 컬렉션에 섞지 않습니다. 모델을 바꾸면 문서를 다시
 임베딩하고 해당 모델 전용 컬렉션에 적재해야 합니다.
 
-세 질문 임베딩 프로필의 실제 준비 상태는 다음 명령으로 한 번에 확인합니다.
-API 키 값이나 벡터 원문은 출력하지 않습니다.
-
-```powershell
-uv run python -m src.scripts.embedding_probe --provider all
-```
-
 현재 검증 상태:
 
 | 프로필 | 상태 | 확인 내용 |
@@ -247,16 +240,12 @@ HF_TOKEN=개인_Hugging_Face_토큰
 - 별도 `article_label`·`case_number` 필드 기반 정확 조회
 - RAG·LangGraph 담당자에게 MCP Tool 입력·출력 계약 인계
 
-MCP 로컬 서버와 연결 상태 점검은 다음 명령으로 실행합니다.
+MCP 로컬 서버는 다음 명령으로 실행합니다. MCP Host에서는 같은 명령을
+`stdio` 서버로 등록하고 `search_documents`, `lookup_document`,
+`health_check`, `get_collection_info` Tool을 호출합니다.
 
 ```powershell
 uv run python -m src.scripts.mcp_server
-uv run python -m src.scripts.mcp_probe --transport stdio
-uv run python -m src.scripts.mcp_probe --transport stdio `
-  --query "주택 임대차보호법에서 계약 갱신은 어떻게 하나요?" `
-  --document-type law
-uv run python -m src.scripts.mcp_probe --transport stdio `
-  --document-id "precedent:240967"
 ```
 
 질문 검색 명령은 선택한 provider의 Dense 질문 임베딩과 로컬 BM25 Sparse

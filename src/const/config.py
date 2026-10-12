@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+
 PROJECT_PATH = Path(__file__).resolve().parent.parent.parent
 # print(PROJECT_PATH) # 확인용
 DEFAULT_ENV_PATH = PROJECT_PATH / ".env"
@@ -31,6 +32,14 @@ RAW_LAW_APPENDICES_DATA_PATH = RAW_DATA_PATH / "law_appendices"
 RAW_LAW_HISTORY_DATA_PATH = RAW_DATA_PATH / "law_history"
 RAW_LAWS_DATA_PATH = RAW_DATA_PATH / "laws"
 RAW_PRECEDENTS_DATA_PATH = RAW_DATA_PATH / "precedents"
+
+# 테스트 결과 경로
+TEST_PATH = PROJECT_PATH / "tests"
+TEST_REPORT_PATH = TEST_PATH / "report"
+
+# 환경 파일 경로
+ENV_PATH = PROJECT_PATH / ".env"
+ENV_EXAMPLE_PATH = PROJECT_PATH / ".env.example"
 
 
 # ==========================================================================================

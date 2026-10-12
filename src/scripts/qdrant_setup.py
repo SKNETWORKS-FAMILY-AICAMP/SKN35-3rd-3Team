@@ -13,7 +13,7 @@ import argparse
 import json
 import sys
 
-from src.const.model import env_loader
+from src.const.config import ENV_PATH
 from src.const.qdrant_config import load_qdrant_settings
 from src.vector_db.payload_indexes import payload_index_map
 from src.vector_db.qdrant_store import QdrantVectorStore
@@ -28,11 +28,10 @@ def _print_json(title: str, value: object) -> None:
 def check_connection() -> int:
     """키를 노출하지 않고 연결 및 컬렉션 규격을 확인합니다."""
 
-    env_path = env_loader()
     settings = load_qdrant_settings()
     settings.validate_for_vector_work()
     _print_json("[공용 설정 확인]", settings.safe_summary())
-    print(f".env 확인 경로: {env_path}")
+    print(f".env 확인 경로: {ENV_PATH}")
 
     store = QdrantVectorStore.from_settings(settings)
     if not store.health_check():
@@ -51,10 +50,9 @@ def check_connection() -> int:
 def initialize_collection() -> int:
     """컬렉션이 없을 때만 생성하고 최종 규격을 검증합니다."""
 
-    env_path = env_loader()
     settings = load_qdrant_settings()
     settings.validate_for_vector_work()
-    print(f".env 확인 경로: {env_path}")
+    print(f".env 확인 경로: {ENV_PATH}")
 
     store = QdrantVectorStore.from_settings(settings)
     info, created = store.ensure_collection()

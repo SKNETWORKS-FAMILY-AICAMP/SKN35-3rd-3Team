@@ -6,5 +6,8 @@ __pycache__/
 .env
 tests_vb/
 
+# Qdrant 적재 명령이 생성하는 로컬 검증 보고서는 커밋하지 않습니다.
+/tests/report/
+
 # 무료 로컬 Reranker 모델 캐시(대용량 가중치)는 저장소에 올리지 않습니다.
 .cache/

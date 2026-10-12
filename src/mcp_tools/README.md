@@ -46,26 +46,23 @@ uv run python -m src.scripts.mcp_server `
 `::1` 이외의 주소 바인딩을 거부합니다. 팀 공유는 기본 `stdio`를 사용하고,
 원격 HTTP가 필요하면 인증·TLS 게이트웨이를 먼저 구성합니다.
 
-실제 MCP Client가 `stdio` 하위 프로세스를 실행해 Tool 목록과 Qdrant 상태를
-읽을 수 있는지는 다음 명령으로 확인합니다. Point를 생성·수정·삭제하지 않는
-읽기 전용 점검입니다.
-
-```powershell
-uv run python -m src.scripts.mcp_probe
-```
-
-특정 문서 ID의 청크를 정확 조회하려면 다음처럼 점검합니다.
-
-```powershell
-uv run python -m src.scripts.mcp_probe `
-  --document-id "precedent:240967"
-```
+MCP Host에는 위 `stdio` 실행 명령을 서버로 등록합니다. 연결 후에는
+`health_check`로 Qdrant 상태를 확인하고, `search_documents`로 Hybrid 검색,
+`lookup_document`로 `document_id` 정확 조회를 수행합니다. 이 조회 Tool들은
+Point를 생성·수정·삭제하지 않습니다.
 
 서버 시작 시 `.env`의 Qdrant·임베딩 설정을 읽되 Qdrant 원격 검증은
 지연합니다. 따라서 Qdrant가 일시적으로 응답하지 않아도 MCP 서버와 Tool은
-시작되며, 실제 연결 상태는 `health_check`로 확인합니다. 실제 청크가 아직
-적재되지 않았다면 `search_documents` 결과는 `empty_result`가 됩니다.
+시작되며, 실제 연결 상태는 `health_check`로 확인합니다. 현재 OpenAI 개발
+컬렉션에는 4,934개 Point가 적재되어 있습니다.
+
+MCP가 사용하는 임베딩 모델명과 개인 키는 프로젝트 루트의 `.env`에서
+읽습니다.
 
 MCP Tool의 입력·출력 형식은 Dense에서 Hybrid로 전환해도 바뀌지 않습니다.
 검색 구현은 `src.vector_db`와 `src.retriever`에 있으며, MCP는 같은
 `search_documents` Tool로 결과를 전달합니다.
+
+현재 추적 중인 `src/graph/mcp_graph.py`는 `START → END` 자리표시자입니다.
+따라서 MCP Tool 제공까지는 완료됐지만 LangGraph의 실제 MCP Client 호출과
+State 연결은 별도 통합 작업으로 남아 있습니다.

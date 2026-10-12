@@ -53,12 +53,10 @@ def create_team_hybrid_retriever(
     """설정 확인 → 서버 규격 확인 → 청크 읽기 → Dense/BM25 조립."""
     # 공용 모듈은 dev에서 공급합니다. jem에 다른 팀원의 파일을 복사하지 않습니다.
     # import만 하는 단위 테스트와 실제 서버 연결을 분리합니다.
-    from src.const.model import env_loader
     from src.const.qdrant_config import load_qdrant_settings
     from src.embedder import create_embedding_provider
     from src.vector_db.qdrant_store import QdrantVectorStore
-    env_loader()
-    settings = load_qdrant_settings()
+    settings = load_qdrant_settings(env_path)
     settings.validate_for_vector_work()
     store = QdrantVectorStore.from_settings(settings)
     try:

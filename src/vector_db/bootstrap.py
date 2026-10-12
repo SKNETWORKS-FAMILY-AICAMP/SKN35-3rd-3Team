@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.const.model import env_loader
 from src.const.qdrant_config import load_qdrant_settings
 from src.embedder import create_embedding_provider
 from src.retriever import DocumentRetriever
@@ -24,8 +23,7 @@ def create_team_retriever(
     지연하고 설정에 확정된 벡터 차원을 검색 요청 검증에 사용합니다.
     """
 
-    env_loader()
-    settings = load_qdrant_settings()
+    settings = load_qdrant_settings(env_path)
     settings.validate_for_vector_work()
 
     embedder = create_embedding_provider(settings.embedding)

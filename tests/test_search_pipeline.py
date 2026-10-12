@@ -77,8 +77,7 @@ class SearchTests(unittest.TestCase):
         # 빈 서버를 발견하면 임베딩 API를 생성/호출하지 않아야 합니다.
         settings = SimpleNamespace(validate_for_vector_work=lambda: None)
         store = SimpleNamespace(validate_collection_contract=lambda: None, client=SimpleNamespace(close=lambda: None))
-        with patch("src.const.model.load_project_env"), \
-             patch("src.const.qdrant_config.load_qdrant_settings", return_value=settings), \
+        with patch("src.const.qdrant_config.load_qdrant_settings", return_value=settings), \
              patch("src.vector_db.qdrant_store.QdrantVectorStore.from_settings", return_value=store), \
              patch("src.vector_db.search_bootstrap.load_keyword_documents", return_value=()), \
              patch("src.embedder.create_embedding_provider") as embedding:

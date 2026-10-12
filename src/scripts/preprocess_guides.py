@@ -12,9 +12,22 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-INPUT_DIR = ROOT / "data/raw/guides"
-OUTPUT_DIR = ROOT / "data/processed/guides"
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    PROCESSED_GUIDES_DATA_PATH,
+    PROJECT_PATH,
+    RAW_DATA_PATH,
+    RAW_GUIDES_DATA_PATH,
+)
+
+ROOT = PROJECT_PATH
+INPUT_DIR = RAW_GUIDES_DATA_PATH
+OUTPUT_DIR = PROCESSED_GUIDES_DATA_PATH
 TOC_LINE = re.compile(r"(?:\.\s*){5,}\d+\s*$")
 HEADING = re.compile(r"^\d+(?:\.\d+)*\.\s+\S")
 REVIEW_PATH = OUTPUT_DIR / "guide_visual_review.json"
@@ -205,7 +218,7 @@ def write_json(path, data):
 
 def validate_source_coverage(report, input_dir=None):
     """추가·삭제·변경된 원본 또는 처리 상태 누락을 감지한다."""
-    directory = Path(input_dir) if input_dir is not None else ROOT / report.get('raw_input_dir', 'data/raw/guides')
+    directory = Path(input_dir) if input_dir is not None else (ROOT / report['raw_input_dir'] if report.get('raw_input_dir') else RAW_GUIDES_DATA_PATH)
     current = {p.name:p for p in directory.glob('*.pdf')}
     records = report['saved'] + report['failures']
     names = [entry['source_file'] for entry in records]
@@ -226,7 +239,7 @@ def validate_source_coverage(report, input_dir=None):
 
 def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
     input_dir, output_dir = Path(input_dir).resolve(), Path(output_dir).resolve()
-    if output_dir.is_relative_to(input_dir) or output_dir.is_relative_to(ROOT / "data/raw"):
+    if output_dir.is_relative_to(input_dir) or output_dir.is_relative_to(RAW_DATA_PATH):
         raise ValueError("원본 폴더 및 data/raw 아래에는 결과를 저장할 수 없습니다.")
     paths = sorted(input_dir.glob("*.pdf"))
     if not paths:

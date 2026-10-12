@@ -2,21 +2,34 @@
 import copy
 import json
 import unittest
-from pathlib import Path
+
+from src.const.config import (
+    CHUNK_CONSUMER_SOURCES_DATA_PATH,
+    CHUNK_GUIDES_DATA_PATH,
+    CHUNK_LAWS_DATA_PATH,
+    CHUNK_PRECEDENTS_DATA_PATH,
+    PROCESSED_CONSUMER_SOURCES_DATA_PATH,
+    PROCESSED_DATA_PATH,
+    PROCESSED_GUIDES_DATA_PATH,
+    PROCESSED_LAWS_DATA_PATH,
+    PROCESSED_PRECEDENTS_DATA_PATH,
+    PROJECT_PATH,
+    RAW_LAWS_DATA_PATH,
+)
 
 from src.scripts.chunk_metadata import normalize_chunk, validate_chunk, normalize_date
 from src.scripts import chunk_laws, chunk_guides, chunk_consumer_sources
 from src.scripts.tests.test_precedent_retrieval_pmh import make_chunks as precedent_chunks
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = PROJECT_PATH
 
 
 def corpus():
     result = []
-    for folder in ("laws", "precedents", "consumer_sources"):
-        path = ROOT / "data/chunk" / folder / "chunks.jsonl"
+    for directory in (CHUNK_LAWS_DATA_PATH, CHUNK_PRECEDENTS_DATA_PATH, CHUNK_CONSUMER_SOURCES_DATA_PATH):
+        path = directory / "chunks.jsonl"
         result.extend(json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip())
-    root = ROOT / "data/chunk/guides"
+    root = CHUNK_GUIDES_DATA_PATH
     manifest = json.loads((root / "guide_chunking_report.json").read_text(encoding="utf-8"))
     for entry in manifest["saved"]:
         result.extend(json.loads((root / entry["file"]).read_text(encoding="utf-8"))["chunks"])
@@ -37,9 +50,9 @@ class MetadataTests(unittest.TestCase):
 
     def test_unknown_purchase_date_rule_and_its_exception_stay_in_one_chunk(self):
         import re
-        report=json.loads((ROOT/'data/processed/laws/law_preprocessing_report.json').read_text(encoding='utf-8'))
+        report=json.loads((PROCESSED_LAWS_DATA_PATH / 'law_preprocessing_report.json').read_text(encoding='utf-8'))
         entry=next(e for e in report['saved'] if e['law_name']=='소비자기본법 시행령')
-        d=json.loads((ROOT/'data/processed/laws'/entry['file']).read_text(encoding='utf-8'))
+        d=json.loads((PROCESSED_LAWS_DATA_PATH/entry['file']).read_text(encoding='utf-8'))
         u=next(u for u in d['appendices'] if u['title'].startswith('일반적 소비자분쟁해결기준'))
         generated=chunk_laws.make_aux_chunks(d,u,size=300,overlap=30)
         self.assertEqual(len(generated),1)
@@ -112,7 +125,7 @@ class MetadataTests(unittest.TestCase):
                  "law_name": "민법", "source_file": "v1.json", "text": "목적", "embedding_text": "목적"}
         normalized = normalize_chunk(value)
         self.assertEqual(normalized["domains"], ["civil_general"])
-        self.assertEqual(normalized["source_path"], "data/raw/laws/v1.json")
+        self.assertEqual(normalized["source_path"], (RAW_LAWS_DATA_PATH / "v1.json").relative_to(PROJECT_PATH).as_posix())
         self.assertEqual(normalized["document_id"], "law:v1")
 
     def test_new_delegated_laws_keep_body_and_version_with_document_level_domains(self):
@@ -179,22 +192,22 @@ class MetadataTests(unittest.TestCase):
     def test_saved_chunks_match_all_four_generators(self):
         stored = {c["chunk_id"]: c for c in corpus()}
         generated = []
-        manifest = json.loads((ROOT / "data/processed/laws/law_preprocessing_report.json").read_text(encoding="utf-8"))
+        manifest = json.loads((PROCESSED_LAWS_DATA_PATH / 'law_preprocessing_report.json').read_text(encoding="utf-8"))
         for entry in manifest["saved"]:
-            doc = json.loads((ROOT / "data/processed/laws" / entry["file"]).read_text(encoding="utf-8"))
+            doc = json.loads((PROCESSED_LAWS_DATA_PATH / entry["file"]).read_text(encoding="utf-8"))
             generated.extend(c for a in doc["articles"] for c in chunk_laws.make_chunks(doc, a))
             generated.extend(c for u in doc["supplements"] + doc["appendices"] for c in chunk_laws.make_aux_chunks(doc, u))
-        manifest = json.loads((ROOT / "data/processed/guides/guide_preprocessing_report.json").read_text(encoding="utf-8"))
+        manifest = json.loads((PROCESSED_GUIDES_DATA_PATH / 'guide_preprocessing_report.json').read_text(encoding="utf-8"))
         for entry in manifest["saved"]:
-            doc = json.loads((ROOT / "data/processed/guides" / entry["file"]).read_text(encoding="utf-8"))
+            doc = json.loads((PROCESSED_GUIDES_DATA_PATH / entry["file"]).read_text(encoding="utf-8"))
             generated.extend(chunk_guides.make_chunks(doc))
-        manifest = json.loads((ROOT / "data/processed/consumer_sources/consumer_preprocessing_report.json").read_text(encoding="utf-8"))
+        manifest = json.loads((PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'consumer_preprocessing_report.json').read_text(encoding="utf-8"))
         for entry in manifest["saved"]:
-            doc = json.loads((ROOT / "data/processed/consumer_sources" / entry["file"]).read_text(encoding="utf-8"))
+            doc = json.loads((PROCESSED_CONSUMER_SOURCES_DATA_PATH / entry["file"]).read_text(encoding="utf-8"))
             generated.extend(chunk_consumer_sources.make_chunks(doc))
-        manifest = json.loads((ROOT / "data/processed/precedent_preprocessing_report.json").read_text(encoding="utf-8"))
+        manifest = json.loads((PROCESSED_DATA_PATH / 'precedent_preprocessing_report.json').read_text(encoding="utf-8"))
         for identifier in manifest["saved"]:
-            doc = json.loads((ROOT / "data/processed/precedents" / f"{identifier}.json").read_text(encoding="utf-8"))
+            doc = json.loads((PROCESSED_PRECEDENTS_DATA_PATH / f"{identifier}.json").read_text(encoding="utf-8"))
             if doc["embedding_candidate"] and not doc["needs_manual_review"]:
                 generated.extend(precedent_chunks(doc))
         self.assertEqual(len(generated), len(stored))

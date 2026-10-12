@@ -10,6 +10,11 @@ import xml.etree.ElementTree as ET
 from collections import Counter
 from pathlib import Path
 
+from src.const.config import (
+    CHUNK_LAWS_DATA_PATH,
+    PROCESSED_LAWS_DATA_PATH,
+)
+
 from src.scripts.collect_consumer_sources import ROOT, MANIFEST, digest, preserve, safe_url, collect_admin, fetch
 from src.scripts.preprocess_consumer_sources import (OUTPUT_DIR, PARCEL_VERSIONS, extract_case,
     extract_admin, preprocess, hwp_paragraph_text, compare_parcel_versions, refund_table_rows, extract_labor_guide, extract_overseas_guide, extract_fitness_closure_guide, installment_context,
@@ -40,7 +45,7 @@ class ConsumerSourceTests(unittest.TestCase):
 
     def test_consumer_redress_units_reproduce_sources_and_keep_warnings_and_law_links(self):
         by_id={d['source_id']:d for d in self.documents}
-        law_ids={json.loads(line)['chunk_id'] for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()}
+        law_ids={json.loads(line)['chunk_id'] for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()}
         for identifier,count in [('kca_redress_requirements',2),('kca_redress_submission',5),('kca_mediation_procedure',7)]:
             d=by_id[identifier]
             self.assertEqual(len(d['units']),count)
@@ -79,7 +84,7 @@ class ConsumerSourceTests(unittest.TestCase):
         acceptance=by_id['kca_mediation_procedure_acceptance_0000']
         for phrase in ['통지를 받은 날부터 15일','의사표시가 없는','재판상 화해']:
             self.assertIn(phrase,acceptance['text'])
-        laws=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        laws=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
         actual=[c for c in laws if c['chunk_id'] in acceptance['required_context_chunk_ids'] and c.get('article_label')=='제67조']
         self.assertEqual(len(actual),1)
         self.assertEqual(actual[0]['law_name'],'소비자기본법')
@@ -98,7 +103,7 @@ class ConsumerSourceTests(unittest.TestCase):
                     extract_consumer_redress_guide(d,damaged.encode('utf-8'))
 
     def test_general_warranty_rule_preserves_unknown_purchase_date_exception_and_pdf_comparison(self):
-        laws=[json.loads(p.read_text(encoding='utf-8')) for p in (ROOT/'data/processed/laws').glob('[0-9]*.json')]
+        laws=[json.loads(p.read_text(encoding='utf-8')) for p in PROCESSED_LAWS_DATA_PATH.glob('[0-9]*.json')]
         d=next(d for d in laws if d['law_name']=='소비자기본법 시행령')
         unit=next(u for u in d['appendices'] if u['appendix_key']=='000100E')
         compact=re.sub(r'\s+','',unit['body_text'])
@@ -106,7 +111,7 @@ class ConsumerSourceTests(unittest.TestCase):
                        '사업자가그판매일자를입증하여야한다','계약일과인도일','교환받은날부터']:
             self.assertIn(phrase,compact)
         self.assertTrue(unit['pdf_comparison']['character_inventory_match'])
-        chunks=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        chunks=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
         selected=[c for c in chunks if c.get('unit_id')==unit['unit_id']]
         self.assertTrue(selected)
         self.assertTrue(any('판매일자를' in c['text'] for c in selected))
@@ -114,7 +119,7 @@ class ConsumerSourceTests(unittest.TestCase):
     def test_housing_guides_keep_conditions_exceptions_provenance_and_law_links(self):
         from src.scripts.collect_consumer_sources import HTMLTree,decode_html
         docs={d['source_id']:d for d in self.documents}
-        law_ids={json.loads(line)['chunk_id'] for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()}
+        law_ids={json.loads(line)['chunk_id'] for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()}
         for identifier,scope in HOUSING_GUIDES.items():
             d=docs[identifier]
             self.assertEqual(d['information_as_of'],'2026-09-15')
@@ -162,7 +167,7 @@ class ConsumerSourceTests(unittest.TestCase):
         cls.chunks=[json.loads(line) for line in (CHUNK_DIR/'chunks.jsonl').read_text(encoding='utf-8').splitlines()]
 
     def test_installment_law_context_covers_definition_exceptions_notice_remaining_amount_and_threshold(self):
-        records=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        records=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
         by_id={c['chunk_id']:c for c in records}
         context=installment_context()
         referenced=[by_id[i] for i in context['required_context_chunk_ids']]
@@ -256,7 +261,7 @@ class ConsumerSourceTests(unittest.TestCase):
         self.assertFalse(expected & set(by_id['kca_fitness_closure_pilates_card_objection_0000']['required_context_chunk_ids']))
 
     def test_installment_link_rejects_missing_article_and_mixed_version(self):
-        data=(ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8')
+        data=(CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8')
         records=[json.loads(line) for line in data.splitlines() if line.strip()]
         missing=[c for c in records if not (c.get('law_name')=='할부거래에 관한 법률 시행령' and c.get('article_label')=='제11조')]
         mixed=copy.deepcopy(records)
@@ -368,7 +373,7 @@ class ConsumerSourceTests(unittest.TestCase):
                     extract_overseas_guide(source,changed.encode('utf-8'))
 
     def test_purchase_agent_caveat_and_related_law_chunks_survive_chunking(self):
-        laws=[json.loads(line) for line in (ROOT/'data/chunk/laws/chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        laws=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
         by_id={c['chunk_id']:c for c in laws}
         c=next(c for c in self.chunks if c['chunk_id']=='kca_overseas_checklist_purchase_agent_0000')
         self.assertEqual(c['trade_types'],['purchase_agent'])

@@ -11,11 +11,24 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
 
-ROOT = Path(__file__).resolve().parents[2]
-REVIEW_PATH = ROOT / "data/processed/precedent_relevance_review.json"
-OUTPUT_DIR = ROOT / "data/processed/precedents"
-REPORT_PATH = ROOT / "data/processed/precedent_preprocessing_report.json"
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    PROCESSED_DATA_PATH,
+    PROCESSED_PRECEDENTS_DATA_PATH,
+    PROJECT_PATH,
+    RAW_PRECEDENTS_DATA_PATH,
+)
+
+
+ROOT = PROJECT_PATH
+REVIEW_PATH = PROCESSED_DATA_PATH / 'precedent_relevance_review.json'
+OUTPUT_DIR = PROCESSED_PRECEDENTS_DATA_PATH
+REPORT_PATH = PROCESSED_DATA_PATH / 'precedent_preprocessing_report.json'
 TEXT_FIELDS = {
     "issues": "판시사항", "summary": "판결요지", "referenced_laws": "참조조문",
     "referenced_precedents": "참조판례", "full_text": "판례내용",
@@ -250,7 +263,7 @@ def preprocess(row, raw):
         "judgment_type": clean_text(detail.get("판결유형", "")),
         "source": raw.get("source", "국가법령정보센터"),
         "source_url": f"https://www.law.go.kr/LSW/precInfoP.do?precSeq={identifier}",
-        "source_file": f"data/raw/precedents/{identifier}.json",
+        "source_file": (RAW_PRECEDENTS_DATA_PATH / f"{identifier}.json").relative_to(PROJECT_PATH).as_posix(),
         "source_collected_at": raw.get("collected_at"),
         "collection_query": None if raw.get('collection_mode')=='explicit_id' else raw.get("query"), "domain": row["domain"],
         "relevance_status": row["status"], "relevance_reason": row["reason"],
@@ -287,7 +300,7 @@ def main():
     for row in rows:
         identifier = row["precedent_id"]
         try:
-            path = ROOT / "data/raw/precedents" / f"{identifier}.json"
+            path = RAW_PRECEDENTS_DATA_PATH / f"{identifier}.json"
             raw_bytes = path.read_bytes()
             report["raw_sha256"][identifier] = hashlib.sha256(raw_bytes).hexdigest()
             documents.append(preprocess(row, json.loads(raw_bytes.decode("utf-8"))))

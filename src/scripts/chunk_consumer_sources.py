@@ -2,17 +2,30 @@
 import json
 from pathlib import Path
 
+# 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
+if not __package__:
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from src.const.config import (
+    CHUNK_CONSUMER_SOURCES_DATA_PATH,
+    PROCESSED_CONSUMER_SOURCES_DATA_PATH,
+    PROJECT_PATH,
+)
+
 if __package__:
     from .chunk_metadata import normalize_chunk, METADATA_VERSION
-    from .preprocess_consumer_sources import OUTPUT_DIR as INPUT_DIR, CIVIL_RECOVERY_GUIDES, HOUSING_GUIDES, CONSUMER_REDRESS_GUIDES
-    from .collect_consumer_sources import ROOT, digest, write_json
+    from .preprocess_consumer_sources import CIVIL_RECOVERY_GUIDES, HOUSING_GUIDES, CONSUMER_REDRESS_GUIDES
+    from .collect_consumer_sources import digest, write_json
 else:
     from chunk_metadata import normalize_chunk, METADATA_VERSION
-    from preprocess_consumer_sources import OUTPUT_DIR as INPUT_DIR, CIVIL_RECOVERY_GUIDES, HOUSING_GUIDES, CONSUMER_REDRESS_GUIDES
-    from collect_consumer_sources import ROOT, digest, write_json
+    from preprocess_consumer_sources import CIVIL_RECOVERY_GUIDES, HOUSING_GUIDES, CONSUMER_REDRESS_GUIDES
+    from collect_consumer_sources import digest, write_json
 
-OUTPUT_DIR=ROOT/'data/chunk/consumer_sources'
-
+ROOT = PROJECT_PATH
+INPUT_DIR = PROCESSED_CONSUMER_SOURCES_DATA_PATH
+OUTPUT_DIR = CHUNK_CONSUMER_SOURCES_DATA_PATH
 
 def search_passages(text, size=700, overlap=120):
     """검색 점수용 본문 창. 표 셀을 해석하지 않으며 원문 청크를 대체하지 않는다."""

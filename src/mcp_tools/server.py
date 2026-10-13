@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Mapping
 from dataclasses import dataclass
 
@@ -17,6 +18,9 @@ from src.mcp_tools.contracts import (
 )
 from src.retriever import SearchBackend
 from src.vectorstore import VectorStoreError
+
+
+logger = logging.getLogger(__name__)
 
 
 def _external_error_status(error_code: str) -> str:
@@ -44,12 +48,22 @@ def _vector_store_error_response(
     )
 
 
+def _invalid_request_response(error: Exception) -> str:
+    """잘못된 Tool 입력을 일관된 MCP JSON 응답으로 변환합니다."""
+
+    return serialize_tool_response(
+        "invalid_request",
+        error={"message": str(error)},
+    )
+
+
 def _internal_error_response(
     message: str,
     **fields: object,
 ) -> str:
     """예상하지 못한 내부 오류의 안전한 MCP JSON 응답을 만듭니다."""
 
+    logger.exception(message)
     return serialize_tool_response(
         "internal_error",
         **fields,
@@ -87,10 +101,7 @@ class MCPToolService:
                 filters=request.filters,
             )
         except (TypeError, ValueError) as error:
-            return serialize_tool_response(
-                "invalid_request",
-                error={"message": str(error)},
-            )
+            return _invalid_request_response(error)
         except VectorStoreError as error:
             return _vector_store_error_response(error)
         except Exception:
@@ -131,10 +142,7 @@ class MCPToolService:
                 limit=request.limit,
             )
         except (TypeError, ValueError) as error:
-            return serialize_tool_response(
-                "invalid_request",
-                error={"message": str(error)},
-            )
+            return _invalid_request_response(error)
         except VectorStoreError as error:
             return _vector_store_error_response(error)
         except Exception:

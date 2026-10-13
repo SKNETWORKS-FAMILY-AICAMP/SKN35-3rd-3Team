@@ -6,6 +6,8 @@ uv run python src/scripts/collect_laws.py --name 민법
 
 import argparse
 import json
+import math
+from contextlib import nullcontext
 import os
 import re
 import time
@@ -123,18 +125,42 @@ def write_json(path, data):
     tmp.replace(path)
 
 
-def collect(names, as_of, delay):
-    load_dotenv(ROOT / ".env")
-    oc = os.environ.get("LAW_API_OC", "").strip()
-    if not oc:
+def collect(names=None, as_of=None, delay=0.5, *, output_dir=None, env_path=None,
+            oc=None, client=None, progress=None):
+    """현행 법령을 수집·보존하고 수집 보고서 딕셔너리를 반환한다.
+
+    API 호출 및 파일 저장을 수행한다. 제공한 client는 닫지 않는다.
+    같은 버전의 다른 원문은 덮어쓰지 않고 failures에 기록한다.
+    progress에는 진행 메시지를 받을 함수를 전달할 수 있다.
+    """
+    names = list(LAW_NAMES) if names is None else names
+    if isinstance(names, (str, bytes)):
+        raise TypeError("names는 법령명 목록이어야 합니다.")
+    names = list(names)
+    if not names or any(not isinstance(name, str) or not name.strip() for name in names):
+        raise ValueError("수집할 법령명이 필요합니다.")
+    as_of = korea_today() if as_of is None else as_of
+    if not isinstance(as_of, date) or isinstance(as_of, datetime):
+        raise TypeError("as_of는 date 객체여야 합니다.")
+    if isinstance(delay, bool) or not isinstance(delay, (int, float)) or not math.isfinite(delay) or delay < 0:
+        raise ValueError("delay는 유한한 0 이상의 숫자여야 합니다.")
+    if progress is not None and not callable(progress):
+        raise TypeError("progress는 호출 가능한 함수여야 합니다.")
+    output_dir = Path(output_dir if output_dir is not None else OUTPUT_DIR).resolve()
+    if oc is None:
+        load_dotenv(Path(env_path) if env_path is not None else ROOT / ".env")
+        oc = os.environ.get("LAW_API_OC", "")
+    if not isinstance(oc, str) or not oc.strip():
         raise ValueError("LAW_API_OC 환경변수가 필요합니다.")
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    oc = oc.strip()
+    output_dir.mkdir(parents=True, exist_ok=True)
     report = {"as_of": as_of.isoformat(), "started_at": datetime.now(timezone.utc).isoformat(),
               "requested": names, "saved": [], "skipped": [], "failures": [],
               "scope": "조회 시점의 현행 법령. 과거 판례 적용 구법은 별도 수집해야 합니다."}
-    with requests.Session() as session:
-        session.mount("https://", HTTPAdapter(max_retries=Retry(
-            total=2, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])))
+    with (requests.Session() if client is None else nullcontext(client)) as session:
+        if client is None:
+            session.mount("https://", HTTPAdapter(max_retries=Retry(
+                total=2, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])))
         for name in names:
             try:
                 root, _ = request_xml(session, "lawSearch.do", oc,
@@ -146,7 +172,7 @@ def collect(names, as_of, delay):
                     MST=listing["법령일련번호"], efYd=listing["시행일자"])
                 metadata, article_count = validate_body(body, listing, as_of)
                 filename = f"{listing['법령ID']}_{listing['법령일련번호']}_{listing['시행일자']}.json"
-                path = OUTPUT_DIR / filename
+                path = output_dir / filename
                 item = {"law_name": metadata["법령명_한글"], "law_id": listing["법령ID"],
                         "master_id": listing["법령일련번호"], "effective_date": listing["시행일자"],
                         "article_count": article_count, "file": filename}
@@ -154,7 +180,8 @@ def collect(names, as_of, delay):
                     previous = json.loads(path.read_text(encoding="utf-8"))
                     if previous.get("response_xml") == original_xml:
                         report["skipped"].append(item)
-                        print(f"[건너뜀] {name}")
+                        if progress is not None:
+                            progress(f"[건너뜀] {name}")
                         continue
                     raise ValueError("같은 버전의 기존 원문과 새 응답이 다릅니다. 자동 덮어쓰기를 중단합니다.")
                 write_json(path, {"schema_version": 1, "document_type": "law", "source": "국가법령정보센터",
@@ -164,33 +191,39 @@ def collect(names, as_of, delay):
                     "metadata": metadata, "article_count": article_count,
                     "detail": xml_to_data(body), "response_xml": original_xml})
                 report["saved"].append(item)
-                print(f"[저장] {name}: 조문단위 {article_count}개, 시행일 {listing['시행일자']}")
+                if progress is not None:
+                    progress(f"[저장] {name}: 조문단위 {article_count}개, 시행일 {listing['시행일자']}")
             except (RuntimeError, ValueError, OSError) as exc:
                 report["failures"].append({"law_name": name, "error": str(exc)})
-                print(f"[실패] {name}: {exc}")
+                if progress is not None:
+                    progress(f"[실패] {name}: {exc}")
             time.sleep(delay)
     report["finished_at"] = datetime.now(timezone.utc).isoformat()
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    write_json(OUTPUT_DIR / f"collection_report_{stamp}.json", report)
-    print(f"완료: 저장 {len(report['saved'])}, 건너뜀 {len(report['skipped'])}, 실패 {len(report['failures'])}")
-    return 1 if report["failures"] else 0
+    write_json(output_dir / f"collection_report_{stamp}.json", report)
+    return report
 
 
 def korea_today():
     return datetime.now(timezone(timedelta(hours=9))).date()
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--name", action="append", help="수집할 법령명. 여러 번 지정 가능")
     parser.add_argument("--as-of", type=date.fromisoformat, default=korea_today(),
                         help="미래 시행 법령을 제외하는 기준일(기본: 한국의 오늘). 과거 버전 조회 기능은 아님.")
     parser.add_argument("--delay", type=float, default=0.5)
-    args = parser.parse_args()
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    parser.add_argument("--env-file", type=Path, default=None)
+    args = parser.parse_args(argv)
     if args.delay < 0:
         parser.error("delay는 0 이상이어야 합니다.")
     try:
-        return collect(args.name or LAW_NAMES, args.as_of, args.delay)
+        report = collect(args.name or LAW_NAMES, args.as_of, args.delay,
+                         output_dir=args.output_dir, env_path=args.env_file, progress=print)
+        print(f"완료: 저장 {len(report['saved'])}, 건너뜀 {len(report['skipped'])}, 실패 {len(report['failures'])}")
+        return 1 if report["failures"] else 0
     except (ValueError, OSError) as exc:
         print(f"수집 시작 실패: {exc}")
         return 1

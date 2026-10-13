@@ -437,10 +437,9 @@ class EmbeddingSettings:
                     _optional_positive_int("EMBEDDING_DIMENSION")
                     or api_profile.dimension
                 ),
-                normalized=(
-                    _boolean_env("EMBEDDING_NORMALIZED", api_profile.normalized)
-                    if _optional_env("EMBEDDING_NORMALIZED") is not None
-                    else api_profile.normalized
+                normalized=_boolean_env(
+                    "EMBEDDING_NORMALIZED",
+                    api_profile.normalized,
                 ),
             )
 

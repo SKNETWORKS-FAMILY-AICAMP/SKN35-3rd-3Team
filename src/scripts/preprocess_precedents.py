@@ -4,7 +4,9 @@ uv run python src/scripts/preprocess_precedents.py
 원본은 보존하고 data/processed/precedents에 결과를 저장한다.
 """
 
+import argparse
 import hashlib
+import sys
 import json
 import re
 from datetime import datetime, timezone
@@ -289,21 +291,43 @@ def write_json(path, data):
     temporary.replace(path)
 
 
-def main():
-    review = json.loads(REVIEW_PATH.read_text(encoding="utf-8"))
+def run(input_dir=RAW_PRECEDENTS_DATA_PATH, output_dir=OUTPUT_DIR,
+        review_path=REVIEW_PATH, report_path=None):
+    """검토표에 선정된 판례를 정제·저장하고 결과 보고서 딕셔너리를 반환한다.
+
+    API를 호출하지 않는다. 입력/검토표는 읽기만 하며 결과와 보고서는 저장한다.
+    개별 원본의 처리 오류는 failures에 기록하고, 검토표·저장 오류는 전달한다.
+    사용자 지정 출력 폴더에서는 보고서도 그 폴더에 저장하는 것이 기본값이다.
+    """
+    input_dir = Path(input_dir).resolve()
+    output_dir = Path(output_dir).resolve()
+    review_path = Path(review_path).resolve()
+    report_path = (Path(report_path).resolve() if report_path is not None else
+                   REPORT_PATH.resolve() if output_dir == OUTPUT_DIR.resolve() else
+                   output_dir / REPORT_PATH.name)
+    if not input_dir.is_dir():
+        raise FileNotFoundError(f"원본 판례 폴더가 없습니다: {input_dir}")
+    if (output_dir.is_relative_to(input_dir) or input_dir.is_relative_to(output_dir)
+            or report_path.is_relative_to(input_dir) or report_path == review_path):
+        raise ValueError("결과 경로는 원본 폴더 및 검토표를 덮어쓸 수 없습니다.")
+    if not input_dir.is_relative_to(ROOT.resolve()):
+        raise ValueError("출처 기록을 위해 원본 폴더는 프로젝트 안에 있어야 합니다.")
+    review = json.loads(review_path.read_text(encoding="utf-8"))
     rows = [r for r in review["records"] if r["status"] in {"포함", "부분 사용"}]
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    report = {"processed_at": datetime.now(timezone.utc).isoformat(), "review_file": str(REVIEW_PATH),
+    output_dir.mkdir(parents=True, exist_ok=True)
+    report = {"processed_at": datetime.now(timezone.utc).isoformat(), "review_file": str(review_path),
               "selected_count": len(rows), "saved": [], "failures": [], "duplicates": [],
               "duplicate_candidates_retained": [], "manual_review": [], "raw_sha256": {}}
     documents = []
     for row in rows:
         identifier = row["precedent_id"]
         try:
-            path = RAW_PRECEDENTS_DATA_PATH / f"{identifier}.json"
+            path = input_dir / f"{identifier}.json"
             raw_bytes = path.read_bytes()
             report["raw_sha256"][identifier] = hashlib.sha256(raw_bytes).hexdigest()
-            documents.append(preprocess(row, json.loads(raw_bytes.decode("utf-8"))))
+            document = preprocess(row, json.loads(raw_bytes.decode("utf-8")))
+            document["source_file"] = path.relative_to(ROOT).as_posix()
+            documents.append(document)
         except (ValueError, KeyError, OSError, TypeError) as exc:
             report["failures"].append({"precedent_id": identifier, "error": str(exc)})
     representatives = {}
@@ -335,7 +359,7 @@ def main():
                 doc["needs_manual_review"] = True
                 doc["warnings"].append("같은 사건 메타데이터의 다른 자료와 본문이 달라 병합하지 않았습니다.")
                 report["duplicate_candidates_retained"].append(doc["precedent_id"])
-        write_json(OUTPUT_DIR / f"{doc['precedent_id']}.json", doc)
+        write_json(output_dir / f"{doc['precedent_id']}.json", doc)
         report["saved"].append(doc["precedent_id"])
         if doc["needs_manual_review"]:
             report["manual_review"].append(doc["precedent_id"])
@@ -344,10 +368,27 @@ def main():
     report["ready_without_manual_review_count"] = sum(
         d["embedding_candidate"] and not d["needs_manual_review"] for d in documents)
     report["usage"] = "saved 목록의 JSON만 읽고 embedding_candidate 및 needs_manual_review를 확인한 뒤 retrieval_text를 청크로 분할하세요. texts.full_text는 부분 사용 사건의 검색 입력으로 쓰지 마세요."
-    write_json(REPORT_PATH, report)
-    print(f"정제 완료: 대상 {len(rows)}, 저장 {len(documents)}, 실패 {len(report['failures'])}")
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    write_json(report_path, report)
+    return report
+
+
+def main(argv=None):
+    """CLI 실행과 출력·종료 코드를 담당한다."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input-dir", type=Path, default=RAW_PRECEDENTS_DATA_PATH)
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    parser.add_argument("--review-file", type=Path, default=REVIEW_PATH)
+    parser.add_argument("--report-file", type=Path, default=None)
+    args = parser.parse_args(argv)
+    try:
+        report = run(args.input_dir, args.output_dir, args.review_file, args.report_file)
+    except (ValueError, KeyError, OSError, TypeError) as error:
+        print(f"정제를 실행할 수 없습니다: {error}", file=sys.stderr)
+        return 1
+    print(f"정제 완료: 대상 {report['selected_count']}, 저장 {len(report['saved'])}, 실패 {len(report['failures'])}")
     print(f"중복 제외 {len(report['duplicates'])}, 추가 검토 {len(report['manual_review'])}")
-    print(f"저장 위치: {OUTPUT_DIR}")
+    print(f"저장 위치: {args.output_dir}")
     return 1 if report["failures"] else 0
 
 

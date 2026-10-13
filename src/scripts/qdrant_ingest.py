@@ -47,17 +47,30 @@ def _load_and_report(
     return loaded, loaded.report.passed
 
 
-def check_input(args: argparse.Namespace) -> int:
+def check_input(
+    data_root: Path = DEFAULT_CHUNK_ROOT,
+    input_report: Path = DEFAULT_INPUT_REPORT,
+) -> int:
     """외부 API 호출 없이 전처리 입력만 점검합니다."""
 
-    _, passed = _load_and_report(args.data_root, args.input_report)
+    _, passed = _load_and_report(data_root, input_report)
     return 0 if passed else 2
 
 
-def ingest(args: argparse.Namespace) -> int:
+def ingest(
+    *,
+    data_root: Path = DEFAULT_CHUNK_ROOT,
+    input_report: Path = DEFAULT_INPUT_REPORT,
+    ingestion_report: Path = DEFAULT_INGESTION_REPORT,
+    env_file: Path | None = None,
+    embedding_batch_size: int = 64,
+    upsert_batch_size: int = 64,
+    parallel: int = 2,
+    max_retries: int = 3,
+) -> int:
     """검증된 청크를 임베딩하고 기존 Qdrant 컬렉션에 적재합니다."""
 
-    loaded, passed = _load_and_report(args.data_root, args.input_report)
+    loaded, passed = _load_and_report(data_root, input_report)
     if not passed:
         print(
             "입력 점검에 실패해 임베딩과 Qdrant 적재를 중단했습니다.",
@@ -65,7 +78,7 @@ def ingest(args: argparse.Namespace) -> int:
         )
         return 2
 
-    settings = load_qdrant_settings(args.env_file)
+    settings = load_qdrant_settings(env_file)
     settings.validate_for_vector_work()
     if settings.collection.search_mode != "hybrid":
         print(
@@ -84,7 +97,7 @@ def ingest(args: argparse.Namespace) -> int:
         loaded.records,
         embedder=embedder,
         settings=settings.embedding,
-        batch_size=args.embedding_batch_size,
+        batch_size=embedding_batch_size,
     )
     assert settings.collection.sparse_model is not None
     sparse_embedder = create_sparse_embedding_provider(
@@ -92,7 +105,7 @@ def ingest(args: argparse.Namespace) -> int:
     )
     sparse_vectors = sparse_embedder.embed_documents(
         [record.embedding_input_text for record in embedded_records],
-        batch_size=args.embedding_batch_size,
+        batch_size=embedding_batch_size,
     )
     points = prepare_upsert_points(
         embedded_records,
@@ -102,12 +115,12 @@ def ingest(args: argparse.Namespace) -> int:
     )
     saved_count = store.upsert_points(
         points,
-        batch_size=args.upsert_batch_size,
-        parallel=args.parallel,
-        max_retries=args.max_retries,
+        batch_size=upsert_batch_size,
+        parallel=parallel,
+        max_retries=max_retries,
     )
     report = validate_qdrant_ingestion(store, points)
-    report_path = report.write_markdown(args.ingestion_report)
+    report_path = report.write_markdown(ingestion_report)
 
     _print_json(
         "[Qdrant 적재 완료]",
@@ -161,8 +174,17 @@ def main() -> int:
     args = build_parser().parse_args()
     try:
         if args.command == "check-input":
-            return check_input(args)
-        return ingest(args)
+            return check_input(args.data_root, args.input_report)
+        return ingest(
+            data_root=args.data_root,
+            input_report=args.input_report,
+            ingestion_report=args.ingestion_report,
+            env_file=args.env_file,
+            embedding_batch_size=args.embedding_batch_size,
+            upsert_batch_size=args.upsert_batch_size,
+            parallel=args.parallel,
+            max_retries=args.max_retries,
+        )
     except VectorStoreError as error:
         print(
             f"Qdrant 오류 [{error.code}]: {error.safe_message}",

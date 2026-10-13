@@ -331,6 +331,42 @@ def _validate_existing_vector_metadata(
             )
 
 
+def _with_embedding(
+    record: PreparedChunk,
+    embedding_input: _EmbeddingInput,
+    vector: Sequence[float],
+    settings: EmbeddingSettings,
+) -> PreparedChunk:
+    """생성한 벡터와 임베딩 정보를 원본 청크에 반영합니다."""
+
+    extra_metadata = dict(record.extra_metadata)
+    if embedding_input.truncated:
+        extra_metadata.update(
+            {
+                "embedding_input_truncated": True,
+                "embedding_input_token_count": (
+                    embedding_input.original_token_count
+                ),
+                "embedding_input_token_limit": _OPENAI_EMBEDDING_TOKEN_LIMIT,
+            }
+        )
+
+    embedded_record = replace(
+        record,
+        vector=normalize_vector(vector),
+        embedding_provider=settings.provider,
+        embedding_model=settings.model,
+        embedding_dimension=settings.dimension,
+        embedding_normalized=settings.normalized,
+        extra_metadata=extra_metadata,
+    )
+    embedded_record.validate(
+        require_vector=True,
+        expected_dimension=settings.dimension,
+    )
+    return embedded_record
+
+
 def generate_document_vectors(
     records: Iterable[PreparedChunk],
     *,
@@ -355,13 +391,11 @@ def generate_document_vectors(
     )
 
     generated_records = list(record_list)
-    pending_indexes: list[int] = []
-    embedding_inputs: dict[int, _EmbeddingInput] = {}
+    pending_records: list[tuple[int, _EmbeddingInput]] = []
     for index, record in enumerate(record_list):
         record.validate(require_vector=False)
         if record.vector is None:
-            pending_indexes.append(index)
-            embedding_inputs[index] = _embedding_input(record, settings)
+            pending_records.append((index, _embedding_input(record, settings)))
             continue
 
         record.validate(
@@ -370,54 +404,30 @@ def generate_document_vectors(
         )
         _validate_existing_vector_metadata(record, settings)
 
-    for start in range(0, len(pending_indexes), validated_batch_size):
-        batch_indexes = pending_indexes[
+    for start in range(0, len(pending_records), validated_batch_size):
+        batch = pending_records[
             start : start + validated_batch_size
         ]
-        batch_texts = [
-            embedding_inputs[index].text for index in batch_indexes
-        ]
+        batch_texts = [embedding_input.text for _, embedding_input in batch]
         batch_vectors = list(embedder.embed_documents(batch_texts))
 
-        if len(batch_vectors) != len(batch_indexes):
+        if len(batch_vectors) != len(batch):
             raise RuntimeError(
                 "임베딩 응답 개수가 입력 문서 개수와 다릅니다: "
-                f"expected={len(batch_indexes)}, actual={len(batch_vectors)}"
+                f"expected={len(batch)}, actual={len(batch_vectors)}"
             )
 
-        for record_index, vector in zip(
-            batch_indexes,
+        for (record_index, embedding_input), vector in zip(
+            batch,
             batch_vectors,
             strict=True,
         ):
-            embedding_input = embedding_inputs[record_index]
-            extra_metadata = dict(record_list[record_index].extra_metadata)
-            if embedding_input.truncated:
-                extra_metadata.update(
-                    {
-                        "embedding_input_truncated": True,
-                        "embedding_input_token_count": (
-                            embedding_input.original_token_count
-                        ),
-                        "embedding_input_token_limit": (
-                            _OPENAI_EMBEDDING_TOKEN_LIMIT
-                        ),
-                    }
-                )
-            embedded_record = replace(
+            generated_records[record_index] = _with_embedding(
                 record_list[record_index],
-                vector=normalize_vector(vector),
-                embedding_provider=settings.provider,
-                embedding_model=settings.model,
-                embedding_dimension=settings.dimension,
-                embedding_normalized=settings.normalized,
-                extra_metadata=extra_metadata,
+                embedding_input,
+                vector,
+                settings,
             )
-            embedded_record.validate(
-                require_vector=True,
-                expected_dimension=settings.dimension,
-            )
-            generated_records[record_index] = embedded_record
 
     return tuple(generated_records)
 

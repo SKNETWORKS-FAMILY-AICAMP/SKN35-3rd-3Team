@@ -16,6 +16,8 @@ uv run python src/scripts/collect_precedents.py --id 147076
 
 import argparse
 import json
+import math
+from contextlib import nullcontext
 import os
 import sys
 import time
@@ -105,17 +107,40 @@ def valid_saved(path, identifier):
         return False
 
 
-def collect(query, limit, delay, identifiers=None):
+def collect(query="보증금반환", limit=20, delay=0.5, identifiers=None, *,
+            output_dir=None, env_path=None, oc=None, client=None, progress=None):
+    """검색 또는 지정 ID의 판례를 보존하고 수집 보고서 딕셔너리를 반환한다.
+
+    API 호출과 파일 저장을 수행한다. 전달된 client는 닫지 않는다.
+    자료별 실패는 failures에 기록하며 원본 파일은 덮어쓰지 않는다.
+    progress에 메시지 처리 함수를 전달하면 수집 진행을 받을 수 있다.
+    """
+    if not isinstance(query, str) or not query.strip():
+        raise ValueError("query는 비어 있지 않은 문자열이어야 합니다.")
+    if type(limit) is not int or limit <= 0:
+        raise ValueError("limit은 양의 정수여야 합니다.")
+    if isinstance(delay, bool) or not isinstance(delay, (int, float)) or not math.isfinite(delay) or delay < 0:
+        raise ValueError("delay는 유한한 0 이상의 숫자여야 합니다.")
+    if progress is not None and not callable(progress):
+        raise TypeError("progress는 호출 가능한 함수여야 합니다.")
     if identifiers is not None:
+        if isinstance(identifiers, (str, bytes)):
+            raise TypeError("identifiers는 판례 ID 문자열 목록이어야 합니다.")
+        identifiers = list(identifiers)
+        if any(not isinstance(identifier, str) for identifier in identifiers):
+            raise ValueError("판례 ID는 ASCII 숫자 문자열이어야 합니다.")
         identifiers=list(dict.fromkeys(identifiers))
         if not identifiers or any(not i.isascii() or not i.isdigit() for i in identifiers):
             raise ValueError('판례 ID는 ASCII 숫자여야 합니다.')
         limit=len(identifiers)
-    load_dotenv(PROJECT_ROOT / ".env")
-    oc = os.environ.get("LAW_API_OC", "").strip()
-    if not oc:
+    if oc is None:
+        load_dotenv(Path(env_path) if env_path is not None else PROJECT_ROOT / ".env")
+        oc = os.environ.get("LAW_API_OC", "")
+    if not isinstance(oc, str) or not oc.strip():
         raise RuntimeError(".env 또는 환경변수에 LAW_API_OC를 설정해주세요.")
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    oc = oc.strip()
+    output_dir = Path(output_dir if output_dir is not None else OUTPUT_DIR).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
     report = {
         "query": query if identifiers is None else None,
         "requested_ids": identifiers,
@@ -127,9 +152,10 @@ def collect(query, limit, delay, identifiers=None):
     }
     seen = set()
     page = 1
-    with requests.Session() as session:
-        retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
-        session.mount("https://", HTTPAdapter(max_retries=retry))
+    with (requests.Session() if client is None else nullcontext(client)) as session:
+        if client is None:
+            retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+            session.mount("https://", HTTPAdapter(max_retries=retry))
         try:
             while len(seen) < limit:
                 if identifiers is not None:
@@ -158,10 +184,11 @@ def collect(query, limit, delay, identifiers=None):
                     if identifier in seen:
                         continue
                     seen.add(identifier)
-                    path = OUTPUT_DIR / f"{identifier}.json"
+                    path = output_dir / f"{identifier}.json"
                     if valid_saved(path, identifier):
                         report["skipped"].append(identifier)
-                        print(f"[건너뜀] {identifier}")
+                        if progress is not None:
+                            progress(f"[건너뜀] {identifier}")
                         continue
                     if path.exists():
                         report['failures'].append({'precedent_id':identifier,'error':'기존 raw 검증 실패: 덮어쓰기 금지'})
@@ -189,36 +216,43 @@ def collect(query, limit, delay, identifiers=None):
                             "detail": detail,
                         })
                         report["saved"].append(identifier)
-                        print(f"[저장] {identifier}")
+                        if progress is not None:
+                            progress(f"[저장] {identifier}")
                     except (RuntimeError, OSError) as exc:
                         report["failures"].append({"precedent_id": identifier, "error": str(exc)})
-                        print(f"[실패] {identifier}: {exc}")
+                        if progress is not None:
+                            progress(f"[실패] {identifier}: {exc}")
                 if len(seen) == before:
                     break
                 page += 1
                 time.sleep(delay)
         except RuntimeError as exc:
             report["failures"].append({"page": page, "error": str(exc)})
-            print(f"[목록 조회 실패] {exc}")
+            if progress is not None:
+                progress(f"[목록 조회 실패] {exc}")
     report["finished_at"] = datetime.now(timezone.utc).isoformat()
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    write_json(OUTPUT_DIR / f"collection_report_{stamp}.json", report)
-    print(f"완료: 저장 {len(report['saved'])}, 건너뜀 {len(report['skipped'])}, 실패 {len(report['failures'])}")
-    print(f"저장 경로: {OUTPUT_DIR}")
-    return 1 if report["failures"] else 0
+    write_json(output_dir / f"collection_report_{stamp}.json", report)
+    return report
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--query", default="보증금반환", help="판례 본문 검색어")
     parser.add_argument("--id", action="append", help="확인한 판례일련번호로 직접 수집; 반복 지정 가능")
     parser.add_argument("--limit", type=int, default=20, help="검색 결과 중 처리할 최대 판례 수")
     parser.add_argument("--delay", type=float, default=0.5, help="요청 간 대기 시간(초)")
-    args = parser.parse_args()
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    parser.add_argument("--env-file", type=Path, default=None)
+    args = parser.parse_args(argv)
     if args.limit <= 0 or args.delay < 0 or not args.query.strip():
         parser.error("limit은 양수, delay는 0 이상, query는 비어 있지 않아야 합니다.")
     try:
-        return collect(args.query, args.limit, args.delay, args.id)
+        report = collect(args.query, args.limit, args.delay, args.id,
+                         output_dir=args.output_dir, env_path=args.env_file, progress=print)
+        print(f"완료: 저장 {len(report['saved'])}, 건너뜀 {len(report['skipped'])}, 실패 {len(report['failures'])}")
+        print(f"저장 경로: {args.output_dir}")
+        return 1 if report["failures"] else 0
     except (RuntimeError, OSError, ValueError) as exc:
         print(f"수집을 시작할 수 없습니다: {exc}", file=sys.stderr)
         return 1

@@ -17,16 +17,22 @@ class PrecedentCollectionTests(unittest.TestCase):
             with patch('src.scripts.collect_precedents.OUTPUT_DIR',folder), patch.dict('os.environ',{'LAW_API_OC':'test'}), \
                  patch('src.scripts.collect_precedents.load_dotenv'), patch('src.scripts.collect_precedents.requests.Session'), \
                  patch('src.scripts.collect_precedents.time.sleep'), patch('src.scripts.collect_precedents.request_xml',return_value=detail) as request:
-                self.assertEqual(collect('unused',20,0,['123','123']),0)
+                result = collect('unused',20,0,['123','123'])
+                self.assertEqual(result['saved'], ['123'])
+                self.assertFalse(result['failures'])
                 self.assertEqual(request.call_count,1)
                 self.assertEqual(request.call_args.args[1],'lawService.do')
                 raw=json.loads((folder/'123.json').read_text(encoding='utf-8'))
                 self.assertEqual(raw['list_metadata'],{})
                 self.assertIsNone(raw['query'])
-                self.assertEqual(collect('unused',20,0,['123']),0)
+                result = collect('unused',20,0,['123'])
+                self.assertEqual(result['skipped'], ['123'])
+                self.assertFalse(result['failures'])
                 self.assertEqual(request.call_count,1)
                 (folder/'456.json').write_text('broken raw',encoding='utf-8')
-                self.assertEqual(collect('unused',20,0,['456']),1)
+                result = collect('unused',20,0,['456'])
+                self.assertEqual(len(result['failures']), 1)
+                self.assertEqual(result['failures'][0]['precedent_id'], '456')
                 self.assertEqual((folder/'456.json').read_text(encoding='utf-8'),'broken raw')
                 self.assertEqual(request.call_count,1)
         with self.assertRaises(ValueError):

@@ -48,34 +48,47 @@ def appendix_url(unit):
     return url
 
 
-def appendix_path(version_id, unit):
+def appendix_path(version_id, unit, *, appendix_dir=None):
     key = unit.get("@별표키", "")
     if not re.fullmatch(r"[0-9A-Za-z]+", key) or not re.fullmatch(r"\d+_\d+_\d{8}", version_id):
         raise ValueError("별표 또는 법령 버전 식별번호가 유효하지 않습니다.")
-    return APPENDIX_DIR / f"{version_id}_appendix_{key}.pdf"
+    directory = Path(appendix_dir if appendix_dir is not None else APPENDIX_DIR).resolve()
+    return directory / f"{version_id}_appendix_{key}.pdf"
 
 
-def download_appendices(input_dir=INPUT_DIR):
-    """승인된 수집 단계. 기존 PDF 및 출처 기록은 덮어쓰지 않는다."""
+def download_appendices(input_dir=INPUT_DIR, *, appendix_dir=None, client=None, progress=None):
+    """별표 PDF를 수집하고 saved/skipped 보고서를 반환한다. 기존 원본은 보존한다.
+
+    명시적으로 호출할 때만 HTTP 요청을 수행한다. 전달받은 client는 종료하지 않는다.
+    """
     import requests
 
-    APPENDIX_DIR.mkdir(parents=True, exist_ok=True)
+    appendix_dir = Path(appendix_dir if appendix_dir is not None else APPENDIX_DIR).resolve()
+    input_dir = Path(input_dir).resolve()
+    if appendix_dir.is_relative_to(input_dir) or input_dir.is_relative_to(appendix_dir):
+        raise ValueError("별표 저장 폴더는 법령 원본 입력 폴더와 분리해야 합니다.")
+    if progress is not None and not callable(progress):
+        raise TypeError("progress는 호출 가능한 함수여야 합니다.")
+    client = client if client is not None else requests
+    result = {"saved": [], "skipped": []}
+    appendix_dir.mkdir(parents=True, exist_ok=True)
     for source in sorted(Path(input_dir).glob("[0-9]*.json")):
         raw = json.loads(source.read_text(encoding="utf-8"))
         listing = raw["list_metadata"]
         version = f"{listing['법령ID']}_{listing['법령일련번호']}_{listing['시행일자']}"
         for unit in as_list(raw["detail"].get("별표", {}).get("별표단위")):
-            path, url = appendix_path(version, unit), appendix_url(unit)
+            path, url = appendix_path(version, unit, appendix_dir=appendix_dir), appendix_url(unit)
             record_path = path.with_suffix(".json")
             if path.exists():
                 record = json.loads(record_path.read_text(encoding="utf-8"))
                 if record["source_url"] != url or record["sha256"] != sha256(path):
                     raise ValueError("기존 별표 PDF의 출처 또는 해시가 다릅니다. 자동 덮어쓰기 중단")
+                result["skipped"].append(str(path))
                 continue
             if record_path.exists():
                 raise ValueError("PDF 없이 출처 기록만 남아 있습니다. 수동 확인 필요")
             try:
-                response = requests.get(url, timeout=(10, 45))
+                response = client.get(url, timeout=(10, 45))
                 response.raise_for_status()
             except requests.RequestException as exc:
                 raise RuntimeError(f"별표 PDF 다운로드 실패: {type(exc).__name__}") from None
@@ -93,7 +106,10 @@ def download_appendices(input_dir=INPUT_DIR):
                                     "appendix_key": unit["@별표키"], "sha256": sha256(path),
                                     "source_json": source.name, "source_json_sha256": sha256(source),
                                     "downloaded_at": datetime.now(timezone.utc).isoformat()})
-            print(f"[별표 수집] {unit['별표제목']}", flush=True)
+            result["saved"].append(str(path))
+            if progress is not None:
+                progress(f"[별표 수집] {unit['별표제목']}")
+    return result
 
 
 def sha256(path):
@@ -268,13 +284,16 @@ def content_inventory(text):
     return Counter(re.findall(r"[가-힣A-Za-z0-9]", text))
 
 
-def preprocess_appendices(raw, version_id, source_hash=None):
+def preprocess_appendices(raw, version_id, source_hash=None, *, appendix_dir=None, project_root=ROOT):
     import pdfplumber
 
+    project_root = Path(project_root).resolve()
     result, seen = [], set()
     for index, unit in enumerate(as_list(raw["detail"].get("별표", {}).get("별표단위"))):
         key = unit["@별표키"]
-        path = appendix_path(version_id, unit)
+        path = appendix_path(version_id, unit, appendix_dir=appendix_dir)
+        if not path.is_relative_to(project_root):
+            raise ValueError("출처 기록을 위해 별표 PDF는 project_root 안에 있어야 합니다.")
         if key in seen:
             raise ValueError("중복 별표 식별번호입니다.")
         seen.add(key)
@@ -338,7 +357,7 @@ def preprocess_appendices(raw, version_id, source_hash=None):
                        "title": unit["별표제목"], "appendix_number": unit["별표번호"],
                        "branch_number": unit["별표가지번호"], "effective_date": effective,
                        "body_text": text, "body_segments": segments, "tables": tables,
-                       "structure": unit, "pdf_file": path.relative_to(ROOT).as_posix(),
+                       "structure": unit, "pdf_file": path.relative_to(project_root).as_posix(),
                        "pdf_sha256": pdf_hash, "source_url": source_url,
                        "downloaded_at": record["downloaded_at"], "pdf_pages": pages,
                        "pdf_comparison": {"character_inventory_match": inventory_match,
@@ -355,7 +374,10 @@ def preprocess_appendices(raw, version_id, source_hash=None):
     return result
 
 
-def preprocess(path):
+def preprocess(path, *, appendix_dir=None, project_root=ROOT):
+    """법령 파일 하나를 정제해 반환한다. 별표가 있으면 지정한 PDF를 읽어 검증한다."""
+    if isinstance(path, str):
+        path = Path(path)
     original_hash = sha256(path)
     raw = json.loads(path.read_text(encoding="utf-8"))
     if raw.get("document_type") != "law":
@@ -431,7 +453,7 @@ def preprocess(path):
                          "embedding_candidate": not deleted and not needs_review,
                          "warnings": warnings})
     supplements = preprocess_supplements(raw, version_id)
-    appendices = preprocess_appendices(raw, version_id, original_hash) if raw["detail"].get("별표") else []
+    appendices = preprocess_appendices(raw, version_id, original_hash, appendix_dir=appendix_dir, project_root=project_root) if raw["detail"].get("별표") else []
     if sha256(path) != original_hash:
         raise ValueError("전처리 중 원본이 변경됐습니다.")
     return {"schema_version": 1, "document_type": "law", "version_id": version_id,
@@ -449,8 +471,15 @@ def preprocess(path):
             "warnings": ["수집 당시 현행 버전. 과거 사건에 적용할 구법 버전은 별도 확인 필요"]}
 
 
-def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
+def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, *, appendix_dir=None,
+        project_root=ROOT, progress=None):
+    """법령을 일괄 정제·저장하고 보고서를 반환한다. 별표 다운로드는 수행하지 않는다."""
+    if progress is not None and not callable(progress):
+        raise TypeError("progress는 호출 가능한 함수여야 합니다.")
     input_dir, output_dir = ensure_output(input_dir, output_dir)
+    appendix_dir = Path(appendix_dir if appendix_dir is not None else APPENDIX_DIR).resolve()
+    if output_dir.is_relative_to(appendix_dir) or appendix_dir.is_relative_to(output_dir):
+        raise ValueError("출력 폴더는 별표 원본 폴더와 분리해야 합니다.")
     paths = sorted(input_dir.glob("[0-9]*.json"))
     if not paths:
         raise ValueError("법령 원본 파일이 없습니다.")
@@ -458,7 +487,7 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
     report = {"processed_at": datetime.now(timezone.utc).isoformat(), "saved": [], "failures": []}
     for path in paths:
         try:
-            doc = preprocess(path)
+            doc = preprocess(path, appendix_dir=appendix_dir, project_root=project_root)
             filename = f"{doc['version_id']}.json"
             write_json(output_dir / filename, doc)
             entry = {"file": filename, "law_name": doc["law_name"], "version_id": doc["version_id"],
@@ -471,7 +500,8 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
                           "supplement_candidate_count": sum(u["embedding_candidate"] for u in doc["supplements"]),
                           "appendix_candidate_count": sum(u["embedding_candidate"] for u in doc["appendices"])})
             report["saved"].append(entry)
-            print(f"[정제] {doc['law_name']}: 조문 {entry['article_count']}개 / 검색 후보 {entry['embedding_candidate_count']}개")
+            if progress is not None:
+                progress(f"[정제] {doc['law_name']}: 조문 {entry['article_count']}개 / 검색 후보 {entry['embedding_candidate_count']}개")
         except (KeyError, TypeError, ValueError, OSError, ET.ParseError) as exc:
             report["failures"].append({"source_file": path.name, "error": f"{type(exc).__name__}: {exc}"})
     report["usage"] = "saved 목록의 articles/supplements/appendices에서 embedding_candidate를 확인하세요. 부칙 공포일과 시행일을 구분하고 별표 표 전체를 보존합니다."
@@ -479,16 +509,19 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
     return report
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-dir", type=Path, default=INPUT_DIR)
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     parser.add_argument("--download-appendices", action="store_true", help="별표 PDF 신규 수집. 기존 원본은 덮어쓰지 않음")
-    args = parser.parse_args()
+    parser.add_argument("--appendix-dir", type=Path, default=APPENDIX_DIR)
+    parser.add_argument("--project-root", type=Path, default=ROOT)
+    args = parser.parse_args(argv)
     try:
         if args.download_appendices:
-            download_appendices(args.input_dir)
-        report = run(args.input_dir, args.output_dir)
+            download_appendices(args.input_dir, appendix_dir=args.appendix_dir, progress=print)
+        report = run(args.input_dir, args.output_dir, appendix_dir=args.appendix_dir,
+                     project_root=args.project_root, progress=print)
     except (ValueError, OSError, RuntimeError) as exc:
         print(f"정제 실패: {exc}")
         return 1

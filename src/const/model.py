@@ -12,6 +12,7 @@ load_dotenv(dotenv_path=ENV_PATH, override=False)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
+
 OPENAI_LLM_MODEL = os.getenv("OPENAI_LLM_MODEL") or os.getenv("LLM_MODEL")
 OPENAI_EMBED_MODEL = os.getenv("OPENAI_EMBED_MODEL")
 RERANK_MODEL = os.getenv("RERANK_MODEL")
@@ -72,7 +73,6 @@ def create_llm_gmn(temperature: float = 0):
         temperature=temperature,
         google_api_key=GOOGLE_API_KEY,
     )
-
 
 # 기존 LLM을 재사용하고, 생성 시 출력 길이와 JSON 형식을 지정합니다.
 def create_generator_llm():

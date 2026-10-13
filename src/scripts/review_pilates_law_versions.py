@@ -5,6 +5,9 @@ uv run python -m src.scripts.review_pilates_law_versions
 두 번째 명령은 네트워크 없이 수집본으로 비교 기록을 재생성한다.
 """
 import argparse
+from contextlib import nullcontext
+from dataclasses import dataclass
+import sys
 import hashlib
 import json
 import os
@@ -39,6 +42,25 @@ else:
 
 RAW = RAW_LAW_HISTORY_DATA_PATH
 REPORT = PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'pilates_law_version_comparison_pmh.json'
+
+@dataclass(frozen=True)
+class ReviewPaths:
+    """시점 대조의 원본·정제·청크·보고서 위치. 기본값은 config.py 경로다."""
+    project_root: Path = ROOT
+    history_dir: Path = RAW
+    current_laws_dir: Path = RAW_LAWS_DATA_PATH
+    consumer_dir: Path = PROCESSED_CONSUMER_SOURCES_DATA_PATH
+    law_chunk_path: Path = CHUNK_LAWS_DATA_PATH / "chunks.jsonl"
+    report_path: Path = REPORT
+
+    def __post_init__(self):
+        for name in ("project_root", "history_dir", "current_laws_dir", "consumer_dir", "law_chunk_path", "report_path"):
+            object.__setattr__(self, name, Path(getattr(self, name)).resolve())
+        for name in ("history_dir", "current_laws_dir", "consumer_dir", "law_chunk_path", "report_path"):
+            if not getattr(self, name).is_relative_to(self.project_root):
+                raise ValueError("출처 기록의 경로는 project_root 안에 있어야 합니다.")
+
+
 LAW = '방문판매 등에 관한 법률'
 DECREE = LAW+' 시행령'
 RULE = LAW+' 시행규칙'
@@ -65,9 +87,10 @@ def read(path):
     return json.loads(path.read_text(encoding='utf-8'))
 
 
-def checked(relative, expected=None):
-    path=(ROOT/relative).resolve()
-    if not path.is_relative_to(ROOT.resolve()) or not path.is_file():
+def checked(relative, expected=None, *, project_root=ROOT):
+    project_root = Path(project_root).resolve()
+    path=(project_root/relative).resolve()
+    if not path.is_relative_to(project_root) or not path.is_file():
         raise ValueError('대조 입력 경로 오류/누락')
     data=path.read_bytes()
     if expected is not None and digest(data)!=expected:
@@ -152,14 +175,23 @@ def preserve(path, data):
     path.write_bytes(data)
 
 
-def collect():
-    load_dotenv(ROOT/'.env')
-    oc=os.getenv('LAW_API_OC','').strip()
-    if not oc:
+def collect(*, paths=None, env_path=None, oc=None, client=None):
+    """지정 위치에 연혁·구법 원본을 수집하고 saved/skipped 보고서를 반환한다.
+
+    실제 API 요청과 저장을 수행한다. 전달된 client는 닫지 않는다.
+    오류는 호출부로 전달하며 기존 원본을 덮어쓰지 않는다.
+    """
+    paths = paths if paths is not None else ReviewPaths()
+    if oc is None:
+        load_dotenv(Path(env_path) if env_path is not None else paths.project_root / '.env')
+        oc = os.getenv('LAW_API_OC', '')
+    if not isinstance(oc, str) or not oc.strip():
         raise ValueError('LAW_API_OC 필요')
-    with requests.Session() as session:
+    oc = oc.strip()
+    result = {'saved': [], 'skipped': []}
+    with (requests.Session() if client is None else nullcontext(client)) as session:
         for name,identifier in HISTORY_IDS.items():
-            path=RAW/f'history_{identifier}_through_2023.html'
+            path=paths.history_dir/f'history_{identifier}_through_2023.html'
             if not path.exists():
                 text=request(session,oc,'lawSearch.do',target='lsHistory',type='HTML',query=name,
                              display=100,page=1,efYd='20100101~20231231',sort='efdes')
@@ -167,10 +199,15 @@ def collect():
                 if len(rows)>=100:
                     raise ValueError('연혁 페이지 추가 조회 필요')
                 preserve(path,text.encode('utf-8'))
+                result['saved'].append(path.relative_to(paths.project_root).as_posix())
+            else:
+                history_rows(path.read_text(encoding='utf-8'), name)
+                result['skipped'].append(path.relative_to(paths.project_root).as_posix())
         for master,(name,effective) in VERSIONS.items():
-            path=RAW/f'{master}_{effective}.json'
+            path=paths.history_dir/f'{master}_{effective}.json'
             if path.exists():
                 validate_body(read(path)['response_xml'],name,effective)
+                result['skipped'].append(path.relative_to(paths.project_root).as_posix())
                 continue
             text=request(session,oc,'lawService.do',target='law',type='XML',MST=master)
             root=validate_body(text,name,effective)
@@ -179,6 +216,8 @@ def collect():
                   'collected_at':datetime.now(timezone.utc).isoformat(),'version_scope':'case_date_comparison_only',
                   'embedding_candidate':False,'law_id':root.findtext('기본정보/법령ID'),'response_xml':text}
             write_json(path,data)
+            result['saved'].append(path.relative_to(paths.project_root).as_posix())
+    return result
 
 
 def article(root, number, subclause=None):
@@ -196,36 +235,42 @@ def article(root, number, subclause=None):
     return '\n'.join(e.text or '' for e in node.iter() if e.tag in {'조문내용','항내용','호내용','목내용'})
 
 
-def build_report():
+def build_report(*, paths=None, law_chunks=None, documents=None):
+    """원본과 사례 근거를 검증해 대조 보고서를 반환한다. 저장·API 호출은 없다.
+
+    law_chunks와 documents(사례·고시 ID를 키로 가진 딕셔너리)를 전달하면
+    해당 정제 자료를 재사용한다. 원본 파일 지문 검증은 유지한다.
+    """
+    paths = paths if paths is not None else ReviewPaths()
     inputs={}
     def track(path):
-        relative=path.relative_to(ROOT).as_posix()
-        data=checked(relative)
+        relative=path.relative_to(paths.project_root).as_posix()
+        data=checked(relative, project_root=paths.project_root)
         inputs[relative]=digest(data)
         return data
     roots={}
     refs={}
     histories={}
     for name,identifier in HISTORY_IDS.items():
-        p=RAW/f'history_{identifier}_through_2023.html'
+        p=paths.history_dir/f'history_{identifier}_through_2023.html'
         histories[name]=history_rows(track(p).decode('utf-8'),name)
     for master,(name,effective) in VERSIONS.items():
-        p=RAW/f'{master}_{effective}.json';data=json.loads(track(p))
+        p=paths.history_dir/f'{master}_{effective}.json';data=json.loads(track(p))
         if data['master_id']!=master or data['embedding_candidate']:
             raise ValueError('과거 원문 식별/기본 검색 제외 불일치')
         roots[master]=validate_body(data['response_xml'],name,effective)
-        refs[master]={'raw_file':p.relative_to(ROOT).as_posix(),'raw_sha256':inputs[p.relative_to(ROOT).as_posix()],
+        refs[master]={'raw_file':p.relative_to(paths.project_root).as_posix(),'raw_sha256':inputs[p.relative_to(paths.project_root).as_posix()],
                       'law_name':name,'master_id':master,'effective_date':effective,'source_url':data['source_url']}
         if master!='260021' and not any(r['master_id']==master and r['effective_date']==effective for r in histories[name]):
             raise ValueError('원문 버전의 공식 연혁 목록 연결 누락')
     current={}
     for master in ['290239','286997','284567']:
-        paths=list(RAW_LAWS_DATA_PATH.glob(f'*_{master}_*.json'))
-        if len(paths)!=1:raise ValueError('수집본 대조 버전 누락/중복')
-        p=paths[0];d=json.loads(track(p));root=ET.fromstring(d['response_xml'])
+        matches=list(paths.current_laws_dir.glob(f'*_{master}_*.json'))
+        if len(matches)!=1:raise ValueError('수집본 대조 버전 누락/중복')
+        p=matches[0];d=json.loads(track(p));root=ET.fromstring(d['response_xml'])
         name=root.findtext('기본정보/법령명_한글');effective=root.findtext('기본정보/시행일자')
         current[name]=(validate_body(d['response_xml'],name,effective),master)
-        refs[master]={'raw_file':p.relative_to(ROOT).as_posix(),'raw_sha256':inputs[p.relative_to(ROOT).as_posix()],
+        refs[master]={'raw_file':p.relative_to(paths.project_root).as_posix(),'raw_sha256':inputs[p.relative_to(paths.project_root).as_posix()],
                       'law_name':name,'master_id':master,'effective_date':effective,'source_url':d['source_url']}
     current[TERMS]=(roots['260021'],'260021')
     comparisons=[]
@@ -245,9 +290,9 @@ def build_report():
                     raise ValueError('예상하지 못한 조문 변경: 추가 내용 검토 필요')
     cases=[]
     for sid,events in CASE_EVENTS.items():
-        doc=read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / f'{sid}.json')
-        track(ROOT/doc['raw_file'])
-        if digest(checked(doc['raw_file']))!=doc['raw_sha256'] or doc['decision_date'] is not None:
+        doc=documents[sid] if documents is not None else read(paths.consumer_dir / f'{sid}.json')
+        track(paths.project_root/doc['raw_file'])
+        if digest(checked(doc['raw_file'], project_root=paths.project_root))!=doc['raw_sha256'] or doc['decision_date'] is not None:
             raise ValueError('사례 원본 지문/미확인 조정일 상태 변경: 재검토 필요')
         units={u['unit_id']:u for u in doc['units']}
         timings=[]
@@ -264,7 +309,8 @@ def build_report():
             timings.append({'event':kind,'value':value,'precision':precision,'evidence_unit_id':uid,
                             'evidence_start':start,'evidence_end':start+len(anchor),'evidence_text':anchor,'law_versions':selections})
         requested={LAW:{'2','31','32','52'},DECREE:{'13','40','41'},RULE:{'22'}}
-        law_chunks=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        if law_chunks is None:
+            law_chunks=[json.loads(line) for line in paths.law_chunk_path.read_text(encoding='utf-8').splitlines() if line.strip()]
         linked=[c['chunk_id'] for c in law_chunks if c.get('law_name') in requested
                 and str(c.get('article_number')) in requested[c['law_name']]]
         found={(c.get('law_name'),str(c.get('article_number'))) for c in law_chunks if c['chunk_id'] in linked}
@@ -282,8 +328,8 @@ def build_report():
             'warnings':['계약·해지 시점의 관련 조문 대조. 조정일은 확인되지 않아 null 유지.',
                         '폐강·양도 사례의 귀책사유·환급액·연 15% 지급 조건을 일반 계약에 자동 적용하지 않음.',
                         '2023년 조문과 수집본의 일치는 법령 전체 동일·최신 개정 전수 검증·개별 계약 적용 확정이 아님.']})
-    notice=read(PROCESSED_CONSUMER_SOURCES_DATA_PATH / 'continual_contract_refund.json')
-    notice_xml=ET.fromstring(track(ROOT/notice['raw_file']))
+    notice=documents['continual_contract_refund'] if documents is not None else read(paths.consumer_dir / 'continual_contract_refund.json')
+    notice_xml=ET.fromstring(track(paths.project_root/notice['raw_file']))
     meta=notice['administrative_metadata']
     if meta.get('시행일자')!='20191119' or not any('2019' in (e.text or '') and '9' in (e.text or '') for e in notice_xml.iter() if '발령번호' in e.tag):
         raise ValueError('사례 인용 2019-9호와 수집 고시 버전 불일치')
@@ -295,24 +341,65 @@ def build_report():
             'search_policy':'law_history는 시점 대조 참고 원문. 기본 법령 청크에 자동 편입하지 않고 사례 메타데이터·원문 링크에 연결.'}
 
 
-def verified_case(doc):
-    report=read(REPORT)
-    if report!=build_report():raise ValueError('법령 시점 대조 기록과 현재 입력 불일치: 재대조 필요')
-    case=next(c for c in report['cases'] if c['source_id']==doc['source_id'])
+def verified_case(doc, *, paths=None, report=None, law_chunks=None, documents=None):
+    """검증된 사례 메타데이터를 반환한다. report는 재사용할 보고서 딕셔너리다.
+
+    기록의 정확한 지문을 보존하기 위해 보고서 파일을 읽고 전달된 report와도
+    비교한다. 현재 원본·조문·사례 근거 검증을 생략하지 않는다.
+    """
+    paths = paths if paths is not None else ReviewPaths()
+    report_bytes = checked(paths.report_path, project_root=paths.project_root)
+    stored = json.loads(report_bytes)
+    if report is None:
+        report = stored
+    elif report != stored:
+        raise ValueError('전달한 보고서와 저장된 대조 기록 불일치')
+    if report != build_report(paths=paths, law_chunks=law_chunks, documents=documents):
+        raise ValueError('법령 시점 대조 기록과 현재 입력 불일치: 재대조 필요')
+    matches = [case for case in report['cases'] if case['source_id'] == doc['source_id']]
+    if len(matches) != 1:
+        raise ValueError('사례 대조 기록 누락 또는 중복')
+    case = matches[0]
     if (doc['raw_file'],doc['raw_sha256'],doc['decision_date'])!=(case['case_raw_file'],case['case_raw_sha256'],None):
         raise ValueError('사례 출처/미확인 조정일 변경: 재검토 필요')
     if case['unit_text_sha256']!={u['unit_id']:digest(u['text'].encode()) for u in doc['units']}:
         raise ValueError('사례 본문 변경: 시점 재검토 필요')
-    return {**case,'review_record_file':REPORT.relative_to(ROOT).as_posix(),'review_record_sha256':digest(REPORT.read_bytes()),
-            'law_sources':report['law_sources'],'refund_notice':report['refund_notice']}
+    return {**case,'review_record_file':paths.report_path.relative_to(paths.project_root).as_posix(),
+            'review_record_sha256':digest(report_bytes),'law_sources':report['law_sources'],
+            'refund_notice':report['refund_notice']}
 
 
-def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--collect',action='store_true');args=parser.parse_args()
-    if args.collect:collect()
-    report=build_report();write_json(REPORT,report)
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--collect', action='store_true')
+    parser.add_argument('--history-dir', type=Path, default=RAW)
+    parser.add_argument('--laws-dir', type=Path, default=RAW_LAWS_DATA_PATH)
+    parser.add_argument('--consumer-dir', type=Path, default=PROCESSED_CONSUMER_SOURCES_DATA_PATH)
+    parser.add_argument('--law-chunks', type=Path, default=CHUNK_LAWS_DATA_PATH / 'chunks.jsonl')
+    parser.add_argument('--report-file', type=Path, default=REPORT)
+    parser.add_argument('--env-file', type=Path, default=None)
+    args = parser.parse_args(argv)
+    paths = ReviewPaths(history_dir=args.history_dir, current_laws_dir=args.laws_dir,
+                        consumer_dir=args.consumer_dir, law_chunk_path=args.law_chunks,
+                        report_path=args.report_file)
+    try:
+        if args.collect:
+            collect(paths=paths, env_path=args.env_file)
+        report = build_report(paths=paths)
+        if (paths.report_path.is_relative_to(paths.history_dir)
+                or paths.report_path.is_relative_to(paths.current_laws_dir)
+                or paths.report_path == paths.law_chunk_path
+                or paths.report_path in [paths.consumer_dir / f'{sid}.json' for sid in (*CASE_EVENTS, 'continual_contract_refund')]):
+            raise ValueError('보고서가 원본·청크 자료를 덮어쓸 수 없습니다.')
+        write_json(paths.report_path, report)
+    except (ValueError, OSError, KeyError, ET.ParseError, RuntimeError):
+        print('법령 대조 실패: 입력 자료와 설정을 확인하세요.', file=sys.stderr)
+        return 1
     print(json.dumps({'cases':len(report['cases']),'law_versions':len(report['law_sources']),
-                      'comparisons':len(report['comparisons']),'changed_rows':sum(r['status']!='same_except_whitespace' for r in report['comparisons'])},ensure_ascii=False))
+                     'comparisons':len(report['comparisons']),
+                     'changed_rows':sum(r['status']!='same_except_whitespace' for r in report['comparisons'])},ensure_ascii=False))
+    return 0
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    raise SystemExit(main())

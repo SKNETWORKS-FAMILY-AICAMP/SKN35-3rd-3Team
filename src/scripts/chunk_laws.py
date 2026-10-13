@@ -194,6 +194,9 @@ def make_aux_chunks(document, unit, size=1200, overlap=120):
 
 
 def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
+    """정제 법령을 청크로 저장하고 결과 보고서를 반환한다. 출력·API 호출은 없다."""
+    if type(size) is not int or type(overlap) is not int or size <= 0 or not 0 <= overlap < size:
+        raise ValueError("size는 양의 정수, overlap은 0 이상 size 미만 정수여야 합니다.")
     input_dir, output_dir = ensure_output(input_dir, output_dir)
     if output_dir.is_relative_to(PROCESSED_DATA_PATH):
         raise ValueError("processed를 덮어쓰지 않도록 chunk 폴더를 지정해주세요.")
@@ -248,24 +251,25 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
               "scope": "본칙·개정별 부칙·별표 포함. 표는 크기를 초과해도 통째로 보존. 개정문·제개정이유는 검색 제외",
               "warnings": ["조문 청크 준비 완료이며 임베딩·Qdrant 적재·검색 평가는 아직 수행하지 않음"]}
     write_json(output_dir / "law_chunking_report.json", report)
-    print(f"청크 생성: 법령 {len(reports)}종 / 조문 {report['chunked_article_count']}개 / 청크 {len(chunks)}개")
     return report
 
 
-def main():
+def main(argv=None):
+    """명령행 인자, 결과 출력 및 종료 코드를 처리한다."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-dir", type=Path, default=INPUT_DIR)
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     parser.add_argument("--size", type=int, default=1200)
     parser.add_argument("--overlap", type=int, default=120)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if args.size <= 0 or not 0 <= args.overlap < args.size:
         parser.error("size는 양수이고 overlap은 size보다 작은 0 이상의 값이어야 합니다.")
     try:
-        run(args.input_dir, args.output_dir, args.size, args.overlap)
+        report = run(args.input_dir, args.output_dir, args.size, args.overlap)
     except (KeyError, TypeError, ValueError, OSError) as exc:
         print(f"청크 생성 실패: {exc}")
         return 1
+    print(f"청크 생성: 법령 {report['law_count']}종 / 조문 {report['chunked_article_count']}개 / 청크 {report['chunk_count']}개")
     return 0
 
 

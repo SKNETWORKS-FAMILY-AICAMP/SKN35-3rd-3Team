@@ -237,8 +237,32 @@ def validate_source_coverage(report, input_dir=None):
     return True
 
 
-def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
+def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, *, review_path=None,
+        review_data=None, use_visual_review=True, report_path=None, progress=None):
+    """PDF를 정제·저장하고 처리 보고서를 반환한다. API 호출은 하지 않는다.
+
+    review_path 또는 review_data로 시각 검토 기록을 전달한다. 둘 다 생략하면
+    기존 REVIEW_PATH를 사용하며 기본 검토 파일이 없으면 미검토 상태를 유지한다.
+    명시한 파일이 없거나 형식이 잘못되면 오류를 전달한다. 입력 PDF는 변경하지 않는다.
+    """
+    if review_path is not None and review_data is not None:
+        raise ValueError("review_path와 review_data 중 하나만 지정하세요.")
+    if progress is not None and not callable(progress):
+        raise TypeError("progress는 호출 가능한 함수여야 합니다.")
     input_dir, output_dir = Path(input_dir).resolve(), Path(output_dir).resolve()
+    report_path = Path(report_path).resolve() if report_path is not None else output_dir / "guide_preprocessing_report.json"
+    selected_review_path = Path(review_path).resolve() if review_path is not None else REVIEW_PATH.resolve()
+    if (report_path.is_relative_to(input_dir) or report_path.is_relative_to(RAW_DATA_PATH)
+            or report_path == selected_review_path):
+        raise ValueError("보고서가 입력 원본 또는 검토 기록을 덮어쓸 수 없습니다.")
+    review = None
+    if use_visual_review:
+        if review_data is not None:
+            review = review_data
+        elif review_path is not None or selected_review_path.exists():
+            review = json.loads(selected_review_path.read_text(encoding="utf-8"))
+        if review is not None and (not isinstance(review, dict) or not isinstance(review.get("reviews", []), list)):
+            raise ValueError("시각 검토 기록은 reviews 목록을 가진 딕셔너리여야 합니다.")
     if output_dir.is_relative_to(input_dir) or output_dir.is_relative_to(RAW_DATA_PATH):
         raise ValueError("원본 폴더 및 data/raw 아래에는 결과를 저장할 수 없습니다.")
     paths = sorted(input_dir.glob("*.pdf"))
@@ -249,11 +273,12 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
               "raw_input_dir": input_dir.relative_to(ROOT).as_posix() if input_dir.is_relative_to(ROOT) else str(input_dir),
               "input_files": [{"source_file":p.name,"raw_sha256":sha256(p)} for p in paths]}
     for path in paths:
-        print(f"[추출 시작] {path.name}", flush=True)
+        if progress is not None:
+            progress(f"[추출 시작] {path.name}")
         try:
             doc = preprocess(path, output_dir / "images")
-            if REVIEW_PATH.exists():
-                apply_visual_review(doc, json.loads(REVIEW_PATH.read_text(encoding="utf-8")))
+            if review is not None:
+                apply_visual_review(doc, review)
             filename = f"{doc['guide_id']}.json"
             write_json(output_dir / filename, doc)
             entry = {"file": filename, "source_file": path.name, "raw_sha256": doc["raw_sha256"],
@@ -265,22 +290,29 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR):
                      "image_page_count": sum(bool(p["images"]) for p in doc["pages"])}
             entry["visual_review_page_count"] = sum(p["visual_review_required"] for p in doc["pages"])
             report["saved"].append(entry)
-            print(f"[완료] {path.name}: {entry['page_count']}페이지 / 표 {entry['table_count']}개", flush=True)
+            if progress is not None:
+                progress(f"[완료] {path.name}: {entry['page_count']}페이지 / 표 {entry['table_count']}개")
         except Exception as exc:
             report["failures"].append({"source_file": path.name, "error": f"{type(exc).__name__}: {exc}"})
     report["usage"] = "saved 목록의 JSON을 읽고 pages.embedding_candidate를 확인하세요. 표의 rows와 페이지 번호를 보존한 청크 생성은 별도 단계입니다."
     validate_source_coverage(report, input_dir)
-    write_json(output_dir / "guide_preprocessing_report.json", report)
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    write_json(report_path, report)
     return report
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-dir", type=Path, default=INPUT_DIR)
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
-    args = parser.parse_args()
+    parser.add_argument("--review-file", type=Path, default=None)
+    parser.add_argument("--report-file", type=Path, default=None)
+    parser.add_argument("--no-visual-review", action="store_true")
+    args = parser.parse_args(argv)
     try:
-        report = run(args.input_dir, args.output_dir)
+        report = run(args.input_dir, args.output_dir, review_path=args.review_file,
+                     report_path=args.report_file, use_visual_review=not args.no_visual_review,
+                     progress=lambda message: print(message, flush=True))
     except (ImportError, OSError, ValueError) as exc:
         print(f"전처리 실패: {exc}")
         return 1

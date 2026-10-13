@@ -5,6 +5,7 @@ uv run python src/scripts/chunk_guides.py
 import argparse
 import hashlib
 import json
+import sys
 from collections import Counter
 from pathlib import Path
 
@@ -19,6 +20,7 @@ from src.const.config import (
     PROCESSED_GUIDES_DATA_PATH,
     PROJECT_PATH,
     RAW_DATA_PATH,
+    RAW_GUIDES_DATA_PATH,
 )
 
 ROOT = PROJECT_PATH
@@ -92,21 +94,45 @@ def make_chunks(document, size=1200, overlap=120):
     return [normalize_chunk(c, document) for c in chunks]
 
 
-def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
+def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120, *,
+        project_root=ROOT, raw_input_dir=None, report_path=None):
+    """정제 문서와 원본 지문을 검증해 청크를 저장하고 보고서를 반환한다.
+
+    project_root는 기록된 출처 상대 경로의 기준이다. 원본 폴더는 보고서의
+    raw_input_dir 또는 명시한 raw_input_dir로 지정한다. API 호출은 없다.
+    """
+    if type(size) is not int or type(overlap) is not int or size <= 0 or not 0 <= overlap < size:
+        raise ValueError("size는 양의 정수, overlap은 0 이상 size 미만 정수여야 합니다.")
     input_dir, output_dir = Path(input_dir).resolve(), Path(output_dir).resolve()
-    if (output_dir.is_relative_to(RAW_DATA_PATH) or output_dir.is_relative_to(input_dir)
+    project_root = Path(project_root).resolve()
+    raw_root = (project_root / RAW_DATA_PATH.relative_to(ROOT)).resolve()
+    report_path = Path(report_path).resolve() if report_path is not None else output_dir / "guide_chunking_report.json"
+    if report_path.is_relative_to(input_dir) or report_path.is_relative_to(raw_root):
+        raise ValueError("청크 보고서가 원본 또는 정제 입력을 덮어쓸 수 없습니다.")
+    if (output_dir.is_relative_to(raw_root) or output_dir.is_relative_to(input_dir)
             or input_dir.is_relative_to(output_dir)):
         raise ValueError("출력은 원본·정제 입력과 분리해야 합니다.")
     manifest = json.loads((input_dir / "guide_preprocessing_report.json").read_text(encoding="utf-8"))
-    validate_source_coverage(manifest)
+    recorded_dir = manifest.get("raw_input_dir") or RAW_GUIDES_DATA_PATH.relative_to(ROOT)
+    source_dir = (Path(raw_input_dir).resolve() if raw_input_dir is not None else
+                  (project_root / recorded_dir).resolve())
+    if (output_dir.is_relative_to(source_dir) or source_dir.is_relative_to(output_dir)
+            or report_path.is_relative_to(source_dir)):
+        raise ValueError("출력은 지정한 원본 PDF 폴더와 분리해야 합니다.")
+    validate_source_coverage(manifest, source_dir)
     if manifest["failures"]:
         raise ValueError("전처리 실패를 먼저 확인하세요.")
     # 쓰기 전에 모든 입력과 원본 지문을 검증한다.
     prepared = []
     for entry in manifest["saved"]:
-        path = input_dir / entry["file"]
+        path = (input_dir / entry["file"]).resolve()
+        if not path.is_relative_to(input_dir):
+            raise ValueError("정제 보고서의 파일 경로가 입력 폴더를 벗어났습니다.")
         doc = json.loads(path.read_text(encoding="utf-8"))
-        if doc["raw_sha256"] != sha256(ROOT / doc["source_path"]):
+        source_path = (project_root / doc["source_path"]).resolve()
+        if not source_path.is_relative_to(source_dir):
+            raise ValueError("문서의 원본 출처 경로가 지정한 PDF 폴더를 벗어났습니다.")
+        if doc["raw_sha256"] != sha256(source_path):
             raise ValueError("PDF 원본이 정제 당시와 다릅니다.")
         if (entry['source_file'] != doc['source_file'] or entry['raw_sha256'] != doc['raw_sha256']):
             raise ValueError('정제 보고서와 문서 출처 불일치')
@@ -127,20 +153,30 @@ def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120):
                                     for p in doc['pages'] if not p['embedding_candidate']]})
     report["chunk_count"] = sum(e["chunk_count"] for e in report["saved"])
     report["counts"] = dict(sum((Counter(e["counts"]) for e in report["saved"]), Counter()))
-    write_json(output_dir / "guide_chunking_report.json", report)
+    write_json(report_path, report)
     return report
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-dir", type=Path, default=INPUT_DIR)
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     parser.add_argument("--size", type=int, default=1200)
     parser.add_argument("--overlap", type=int, default=120)
-    args = parser.parse_args()
-    report = run(args.input_dir, args.output_dir, args.size, args.overlap)
+    parser.add_argument("--project-root", type=Path, default=ROOT)
+    parser.add_argument("--raw-input-dir", type=Path, default=None)
+    parser.add_argument("--report-file", type=Path, default=None)
+    args = parser.parse_args(argv)
+    try:
+        report = run(args.input_dir, args.output_dir, args.size, args.overlap,
+                     project_root=args.project_root, raw_input_dir=args.raw_input_dir,
+                     report_path=args.report_file)
+    except (ValueError, KeyError, OSError, TypeError) as error:
+        print(f"청크 생성 실패: {error}", file=sys.stderr)
+        return 1
     print(json.dumps({"chunk_count": report["chunk_count"], "counts": report["counts"]}, ensure_ascii=False))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -1,10 +1,13 @@
 import os
 import openai
+import torch
+from functools import lru_cache
 from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings , ChatOpenAI
-from src.const import config
+from src.const.config import ENV_PATH, EMBED_DIMENSION, RERANK_CACHE_PATH
+from sentence_transformers import CrossEncoder
 
-load_dotenv(dotenv_path=config.ENV_PATH, override=False)
+load_dotenv(dotenv_path=ENV_PATH, override=False)
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -22,7 +25,7 @@ LAW_API = os.getenv("LAW_API_OC")
 def create_embedding():
     return OpenAIEmbeddings(
         model=OPENAI_EMBED_MODEL,
-        dimensions=config.EMBED_DIMENSION,
+        dimensions=EMBED_DIMENSION,
         api_key=OPENAI_API_KEY,
     )
 
@@ -45,12 +48,10 @@ def create_rerank_model():
     if not RERANK_MODEL:
         raise ValueError(".env에 RERANK_MODEL을 지정해야 합니다.")
     # 선택 의존성이라 모델을 사용하는 시점에만 로딩합니다.
-    from sentence_transformers import CrossEncoder
-    import torch
     torch.set_num_threads(4)
     return CrossEncoder(
         RERANK_MODEL, device="cpu", max_length=512,
-        cache_folder=str(config.RERANK_CACHE_PATH), trust_remote_code=False,
+        cache_folder=str(RERANK_CACHE_PATH), trust_remote_code=False,
     )
 
 # ============================================================================================================

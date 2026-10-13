@@ -17,6 +17,8 @@ dependencies = [
     "tiktoken>=0.12,<1",
     "pdfplumber>=0.11.10",
     "requests>=2.34.2",
+    "sentence-transformers>=6.1.0",
+    "torchvision>=0.29.1",
 ]
 
 [project.optional-dependencies]

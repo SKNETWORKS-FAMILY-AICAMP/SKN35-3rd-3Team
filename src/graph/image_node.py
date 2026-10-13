@@ -1,10 +1,10 @@
 from src.graph.state import State
 from langchain_core.messages import HumanMessage
 from src.prompt.image_prompt import IMAGE_PROMPT
-from src.const.model import create_llm_gmn
+from src.const.model import create_llm
 # 노드 입니다.
 
-llm = create_llm_gmn()
+llm = create_llm()
 
 # 이미지를 판단하는 함수를 가져와서 실행
 

@@ -16,6 +16,9 @@ from src.multi_query import multi_query
 from src.rerank import rerank
 from src.rrf import reciprocal_rank_fusion
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 # 재정렬 순서를 유지하고, 출처·중복·토큰 한도·잘림 정보를 가진 컨텍스트를 만듭니다.
 def build_context(documents: list[dict], model_name: str, token_budget: int) -> dict:
@@ -116,9 +119,11 @@ def generator(state: dict, *, llm=None, verbose: bool = True) -> dict:
                 model = create_generator_llm() if llm is None else llm
                 message = (prompt | model).invoke({"question": question, "context": prepared["context"]})
                 response["token_usage"] = getattr(message, "usage_metadata", None) or {}
+
             except Exception as error:
+                logger.exception("generator LLM 호출 실패")
                 response.update(answer="답변 생성 서비스 호출에 실패했습니다.", generation_status="llm_error",
-                                error_type=type(error).__name__)
+                    error_type=type(error).__name__, output_validation_error=str(error))
             else:
                 output = None
                 try:

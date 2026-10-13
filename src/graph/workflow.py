@@ -9,7 +9,7 @@ from src.const.model import create_llm , create_llm_gmn
 from src.prompt.classify_prompt import CLASSIFY_PROMPT
 
 def route_start(state: State) -> str:
-    llm = create_llm_gmn()
+    llm = create_llm()
     message = [
         ("system", CLASSIFY_PROMPT),
         ("user", state["origin_query"])

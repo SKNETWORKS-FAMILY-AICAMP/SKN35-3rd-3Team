@@ -8,8 +8,7 @@ def query_rewrite_node(state:State):
     # query_rewrite.py에서 정의한 함수의 리턴값만 받아서 다룰 예정
     query = state["origin_query"]
 
-    if not state["documents"]:
-        state["retry_count"] += 1
+    state["retry_count"] += 1
 
     response = query_rewriter(query)
 

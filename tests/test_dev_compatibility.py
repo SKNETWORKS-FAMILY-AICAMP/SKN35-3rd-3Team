@@ -1,12 +1,14 @@
 """dev 공용 bootstrap/MCP가 전달하는 입력과 검색기 사이의 계약 검사."""
 import os
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from src.const.config import CHUNK_DATA_PATH, ENV_PATH, PROJECT_PATH
 from src.const.qdrant_config import QdrantSettings
 from src.retriever import DocumentRetriever
+from src.scripts import mcp_server, qdrant_ingest, qdrant_setup
 from src.vectorstore import VectorSearchRequest, VectorDocument, VectorCollectionInfo
 
 
@@ -104,6 +106,70 @@ class DevCompatibilityTests(unittest.TestCase):
         with patch.dict(os.environ, environment, clear=True):
             with self.assertRaisesRegex(ValueError, "EMBEDDING_DIMENSION"):
                 QdrantSettings.from_env()
+
+    def test_qdrant_ingest_main_passes_explicit_function_arguments(self):
+        args = SimpleNamespace(
+            command="ingest",
+            data_root=Path("data/chunk"),
+            input_report=Path("input.md"),
+            ingestion_report=Path("ingestion.md"),
+            env_file=Path("team.env"),
+            embedding_batch_size=32,
+            upsert_batch_size=16,
+            parallel=3,
+            max_retries=4,
+        )
+        parser = Mock()
+        parser.parse_args.return_value = args
+
+        with (
+            patch.object(qdrant_ingest, "build_parser", return_value=parser),
+            patch.object(qdrant_ingest, "ingest", return_value=0) as ingest,
+        ):
+            result = qdrant_ingest.main()
+
+        self.assertEqual(result, 0)
+        ingest.assert_called_once_with(
+            data_root=args.data_root,
+            input_report=args.input_report,
+            ingestion_report=args.ingestion_report,
+            env_file=args.env_file,
+            embedding_batch_size=32,
+            upsert_batch_size=16,
+            parallel=3,
+            max_retries=4,
+        )
+
+    def test_qdrant_setup_dispatches_command_and_env_file(self):
+        env_file = Path("team.env")
+        with patch.object(
+            qdrant_setup,
+            "check_connection",
+            return_value=0,
+        ) as check_connection:
+            result = qdrant_setup.run_command("check", env_file)
+
+        self.assertEqual(result, 0)
+        check_connection.assert_called_once_with(env_file)
+
+    def test_mcp_server_runner_keeps_transport_boundary(self):
+        env_file = Path("team.env")
+        server = Mock()
+        with patch.object(
+            mcp_server,
+            "create_team_mcp_server",
+            return_value=server,
+        ) as create_server:
+            mcp_server.run_server(transport="stdio", env_file=env_file)
+
+        create_server.assert_called_once_with(env_file)
+        server.run.assert_called_once_with()
+
+        with self.assertRaises(SystemExit):
+            mcp_server.run_server(
+                transport="streamable-http",
+                host="0.0.0.0",
+            )
 
 
 if __name__ == "__main__":

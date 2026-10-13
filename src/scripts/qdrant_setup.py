@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from src.const.config import ENV_PATH
 from src.const.qdrant_config import load_qdrant_settings
@@ -25,13 +26,13 @@ def _print_json(title: str, value: object) -> None:
     print(json.dumps(value, ensure_ascii=False, indent=2))
 
 
-def check_connection() -> int:
+def check_connection(env_file: Path | None = None) -> int:
     """키를 노출하지 않고 연결 및 컬렉션 규격을 확인합니다."""
 
-    settings = load_qdrant_settings()
+    settings = load_qdrant_settings(env_file)
     settings.validate_for_vector_work()
     _print_json("[공용 설정 확인]", settings.safe_summary())
-    print(f".env 확인 경로: {ENV_PATH}")
+    print(f".env 확인 경로: {env_file or ENV_PATH}")
 
     store = QdrantVectorStore.from_settings(settings)
     if not store.health_check():
@@ -47,12 +48,12 @@ def check_connection() -> int:
     return 0
 
 
-def initialize_collection() -> int:
+def initialize_collection(env_file: Path | None = None) -> int:
     """컬렉션이 없을 때만 생성하고 최종 규격을 검증합니다."""
 
-    settings = load_qdrant_settings()
+    settings = load_qdrant_settings(env_file)
     settings.validate_for_vector_work()
-    print(f".env 확인 경로: {ENV_PATH}")
+    print(f".env 확인 경로: {env_file or ENV_PATH}")
 
     store = QdrantVectorStore.from_settings(settings)
     info, created = store.ensure_collection()
@@ -69,6 +70,19 @@ def initialize_collection() -> int:
     return 0
 
 
+def run_command(
+    command: str,
+    env_file: Path | None = None,
+) -> int:
+    """Qdrant 준비 명령을 재사용 가능한 함수로 실행합니다."""
+
+    if command == "check":
+        return check_connection(env_file)
+    if command == "init":
+        return initialize_collection(env_file)
+    raise ValueError(f"지원하지 않는 Qdrant 명령입니다: {command}")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="팀 Qdrant 연결과 컬렉션 규격을 안전하게 준비합니다.",
@@ -78,15 +92,19 @@ def build_parser() -> argparse.ArgumentParser:
         choices=("check", "init"),
         help="check: 읽기 확인, init: 없을 때만 컬렉션 생성",
     )
+    parser.add_argument(
+        "--env-file",
+        type=Path,
+        default=None,
+        help="기본 .env 대신 읽을 환경변수 파일 경로입니다.",
+    )
     return parser
 
 
 def main() -> int:
     args = build_parser().parse_args()
     try:
-        if args.command == "check":
-            return check_connection()
-        return initialize_collection()
+        return run_command(args.command, args.env_file)
     except VectorStoreError as error:
         print(
             f"Qdrant 오류 [{error.code}]: {error.safe_message}",

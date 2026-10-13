@@ -34,15 +34,24 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main() -> None:
-    args = _build_parser().parse_args()
-    transport = cast(Transport, args.transport)
-    if transport == "streamable-http" and args.host not in LOOPBACK_HOSTS:
+def run_server(
+    *,
+    transport: Transport = "stdio",
+    env_file: Path | None = None,
+    host: str = "127.0.0.1",
+    port: int = 8000,
+    path: str = "/mcp",
+) -> None:
+    """전달받은 설정으로 팀 MCP Server를 실행합니다."""
+
+    if transport not in {"stdio", "streamable-http"}:
+        raise ValueError(f"지원하지 않는 MCP transport입니다: {transport}")
+    if transport == "streamable-http" and host not in LOOPBACK_HOSTS:
         raise SystemExit(
             "인증이 없는 MCP HTTP 서버는 로컬 호스트에만 바인딩할 수 있습니다. "
             "외부 공개가 필요하면 인증·TLS를 제공하는 별도 게이트웨이를 구성하세요."
         )
-    mcp = create_team_mcp_server(args.env_file)
+    mcp = create_team_mcp_server(env_file)
 
     if transport == "stdio":
         mcp.run()
@@ -50,9 +59,20 @@ def main() -> None:
 
     mcp.run(
         transport="streamable-http",
+        host=host,
+        port=port,
+        streamable_http_path=path,
+    )
+
+
+def main() -> None:
+    args = _build_parser().parse_args()
+    run_server(
+        transport=cast(Transport, args.transport),
+        env_file=args.env_file,
         host=args.host,
         port=args.port,
-        streamable_http_path=args.path,
+        path=args.path,
     )
 
 

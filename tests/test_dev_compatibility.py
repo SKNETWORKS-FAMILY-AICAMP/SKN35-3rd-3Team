@@ -58,6 +58,29 @@ class DevCompatibilityTests(unittest.TestCase):
             "team_documents_openai_dev",
         )
 
+    def test_openai_profile_uses_default_model_when_model_env_is_missing(self):
+        environment = {"OPENAI_API_KEY": "test-key"}
+        with patch.dict(os.environ, environment, clear=True):
+            settings = QdrantSettings.from_env()
+
+        self.assertEqual(settings.embedding.model, "text-embedding-3-small")
+        self.assertEqual(settings.embedding.dimension, 1536)
+
+    def test_embedding_normalized_uses_profile_default_or_env_override(self):
+        default_environment = {"OPENAI_API_KEY": "test-key"}
+        with patch.dict(os.environ, default_environment, clear=True):
+            default_settings = QdrantSettings.from_env()
+
+        override_environment = {
+            "OPENAI_API_KEY": "test-key",
+            "EMBEDDING_NORMALIZED": "false",
+        }
+        with patch.dict(os.environ, override_environment, clear=True):
+            override_settings = QdrantSettings.from_env()
+
+        self.assertTrue(default_settings.embedding.normalized)
+        self.assertFalse(override_settings.embedding.normalized)
+
     def test_nvidia_model_name_comes_from_provider_environment(self):
         environment = {
             "NVIDIA_API_KEY": "test-key",

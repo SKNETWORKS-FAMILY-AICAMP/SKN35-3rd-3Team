@@ -5,6 +5,8 @@ uv run python src/scripts/collect_consumer_sources.py
 import argparse
 import hashlib
 import json
+import math
+import sys
 import os
 import re
 import ssl
@@ -156,9 +158,10 @@ def fetch(client, url, params=None):
     return response
 
 
-def preserve(data, source, suffix, output_dir=RAW_DIR):
+def preserve(data, source, suffix, output_dir=RAW_DIR, *, project_root=ROOT):
     """기존 raw는 덮어쓰지 않는다. 동일 응답은 동일 파일을 재사용한다."""
-    output_dir = Path(output_dir)
+    output_dir = Path(output_dir).resolve()
+    project_root = Path(project_root).resolve()
     if not re.fullmatch(r'[a-zA-Z0-9_-]+', source['source_id']):
         raise ValueError('잘못된 출처 ID')
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -169,14 +172,20 @@ def preserve(data, source, suffix, output_dir=RAW_DIR):
             raise ValueError('기존 원본 해시 불일치')
     else:
         path.write_bytes(data)
-    return {**source, 'raw_file': path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else str(path),
+    return {**source, 'raw_file': path.relative_to(project_root).as_posix() if path.is_relative_to(project_root) else str(path),
             'raw_sha256': fingerprint, 'collected_at': datetime.now(timezone.utc).isoformat(),
             'format': suffix}
 
 
-def collect_admin(client, source):
-    load_dotenv(ROOT / '.env')
-    oc = os.environ['LAW_API_OC']
+def collect_admin(client, source, *, output_dir=RAW_DIR, project_root=ROOT,
+                  env_path=None, oc=None):
+    """행정규칙과 첨부 원본을 지정한 위치에 보존하고 수집 기록 목록을 반환한다."""
+    if oc is None:
+        load_dotenv(Path(env_path) if env_path is not None else Path(project_root) / '.env')
+        oc = os.environ['LAW_API_OC']
+    if not isinstance(oc, str) or not oc.strip():
+        raise ValueError("LAW_API_OC 인증값이 필요합니다.")
+    oc = oc.strip()
     response = fetch(client, 'https://www.law.go.kr/DRF/lawService.do',
                      {'OC':oc, 'target':'admrul', 'type':'XML',
                       **({'ID':source['administrative_id']} if source.get('administrative_id') else {'LM':source['title']})})
@@ -195,7 +204,7 @@ def collect_admin(client, source):
         raise ValueError('행정규칙 시행일 확인 필요 또는 시행예정 자료')
     if source.get('expected_effective_date') and effective != source['expected_effective_date']:
         raise ValueError('고정한 적용 연도의 시행일과 응답이 다릅니다.')
-    record = preserve(text.encode('utf-8'), source, 'xml')
+    record = preserve(text.encode('utf-8'), source, 'xml', output_dir, project_root=project_root)
     attachments = []
     for index, unit in enumerate(root.findall('.//별표단위')):
         link = unit.findtext('별표서식PDF파일링크')
@@ -208,7 +217,7 @@ def collect_admin(client, source):
         item = {**source, 'source_id':source['source_id']+f'_appendix_{index}',
                 'title':unit.findtext('별표제목') or '별표', 'source_url':safe_url(url),
                 'parent_source_id':source['source_id'], 'document_type':'administrative_rule_appendix'}
-        attachments.append(preserve(pdf.content, item, 'pdf'))
+        attachments.append(preserve(pdf.content, item, 'pdf', output_dir, project_root=project_root))
     if source['source_id']=='minimum_wage_2026':
         pairs=[];name=None
         for n in root.find('첨부파일'):
@@ -223,7 +232,7 @@ def collect_admin(client, source):
             raise ValueError('최저임금 고시 본문 PDF 응답이 아닙니다.')
         attachment=preserve(response.content,{**source,'source_id':source['source_id']+'_attachment_body',
             'title':pairs[0][0],'source_url':safe_url(url),'parent_source_id':source['source_id'],
-            'document_type':'administrative_rule_appendix'},'pdf')
+            'document_type':'administrative_rule_appendix'},'pdf', output_dir, project_root=project_root)
         record['body_pdf_file']=attachment['raw_file']
         record['body_pdf_sha256']=attachment['raw_sha256']
         record['body_pdf_url']=attachment['source_url']
@@ -270,37 +279,68 @@ def attachments(source, data):
     return found
 
 
-def run(source_ids=None):
-    manifest = json.loads(MANIFEST.read_text(encoding='utf-8'))
+def run(source_ids=None, *, manifest_path=None, output_dir=None, report_path=None,
+        project_root=ROOT, env_path=None, oc=None, client=None, delay=0.3,
+        progress=None):
+    """원본을 수집·보존하고 누적 수집 보고서 딕셔너리를 반환한다.
+
+    실제 HTTP 요청과 파일 저장을 수행한다. client를 전달하면 재사용하며 닫지 않는다.
+    자체 생성한 세션은 종료 시 닫는다. progress에는 진행 ID를 받을 함수를 전달한다.
+    자료별 오류는 failures에 인증값 없이 기록한다. 입력·보고서 저장 오류는 전달한다.
+    """
+    if isinstance(delay, bool) or not isinstance(delay, (int, float)) or not math.isfinite(delay) or delay < 0:
+        raise ValueError("delay는 유한한 0 이상의 숫자여야 합니다.")
+    if progress is not None and not callable(progress):
+        raise TypeError("progress는 호출 가능한 함수여야 합니다.")
+    if source_ids is not None:
+        if isinstance(source_ids, (str, bytes)):
+            raise TypeError("source_ids는 문자열 목록이어야 합니다.")
+        source_ids = list(source_ids)
+        if not source_ids or any(not isinstance(identifier, str) or not identifier for identifier in source_ids):
+            raise ValueError("source_ids에는 비어 있지 않은 출처 ID가 필요합니다.")
+    manifest_path = Path(manifest_path if manifest_path is not None else MANIFEST).resolve()
+    output_dir = Path(output_dir if output_dir is not None else RAW_DIR).resolve()
+    project_root = Path(project_root).resolve()
+    report_path = Path(report_path).resolve() if report_path is not None else manifest_path.parent / 'consumer_collection_report.json'
+    if manifest_path.is_relative_to(output_dir) or report_path.is_relative_to(output_dir) or report_path == manifest_path:
+        raise ValueError("manifest와 현재 보고서는 원본 저장 폴더 밖에 별도로 지정해야 합니다.")
+    manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
     report = {'saved': [], 'failures': [], 'started_at':datetime.now(timezone.utc).isoformat()}
-    client = session()
     queue = [s for s in manifest['sources'] if source_ids is None or s['source_id'] in source_ids]
     if source_ids and set(source_ids) != {s['source_id'] for s in queue}:
         raise ValueError('manifest에 없는 수집 ID')
+    owns_client = client is None
+    if owns_client:
+        client = session()
     seen = set()
-    for source in queue:
-        if source['source_id'] in seen:
-            continue
-        seen.add(source['source_id'])
-        print('[수집] '+source['source_id'], flush=True)
-        try:
-            if source['document_type'] == 'administrative_rule':
-                report['saved'].extend(collect_admin(client, source))
-            else:
-                response = fetch(client, source['source_url'])
-                data = response.content
-                suffix = ('pdf' if data.startswith(b'%PDF') else 'hwpx' if data.startswith(b'PK')
-                          else 'hwp' if data.startswith(b'\xd0\xcf\x11\xe0') else 'html')
-                report['saved'].append(preserve(data, {**source,'resolved_url':safe_url(response.url)}, suffix))
-                if suffix == 'html':
-                    queue.extend(discover(source,data) if source['document_type']=='discovery' else attachments(source,data))
-        except (requests.RequestException, ValueError, OSError, KeyError, ET.ParseError, RuntimeError) as exc:
-            # 예외 문자열에는 인증값/요청 URL이 포함될 수 있으므로 기록하지 않는다.
-            report['failures'].append({'source_id':source['source_id'], 'error_type':type(exc).__name__})
-        time.sleep(0.3)
+    try:
+        for source in queue:
+            if source['source_id'] in seen:
+                continue
+            seen.add(source['source_id'])
+            if progress is not None:
+                progress(source['source_id'])
+            try:
+                if source['document_type'] == 'administrative_rule':
+                    report['saved'].extend(collect_admin(client, source, output_dir=output_dir, project_root=project_root, env_path=env_path, oc=oc))
+                else:
+                    response = fetch(client, source['source_url'])
+                    data = response.content
+                    suffix = ('pdf' if data.startswith(b'%PDF') else 'hwpx' if data.startswith(b'PK')
+                              else 'hwp' if data.startswith(b'\xd0\xcf\x11\xe0') else 'html')
+                    report['saved'].append(preserve(data, {**source,'resolved_url':safe_url(response.url)}, suffix, output_dir, project_root=project_root))
+                    if suffix == 'html':
+                        queue.extend(discover(source,data) if source['document_type']=='discovery' else attachments(source,data))
+            except (requests.RequestException, ValueError, OSError, KeyError, ET.ParseError, RuntimeError) as exc:
+                # 예외 문자열에는 인증값/요청 URL이 포함될 수 있으므로 기록하지 않는다.
+                report['failures'].append({'source_id':source['source_id'], 'error_type':type(exc).__name__})
+            time.sleep(delay)
+    finally:
+        if owns_client:
+            client.close()
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
-    write_json(RAW_DIR / f'collection_report_{stamp}.json', report)
-    current_path=MANIFEST.parent / 'consumer_collection_report.json'
+    write_json(output_dir / f'collection_report_{stamp}.json', report)
+    current_path=report_path
     if source_ids and current_path.exists():
         previous=json.loads(current_path.read_text(encoding='utf-8'))
         replaced={s['source_id'] for s in report['saved']}
@@ -308,13 +348,30 @@ def run(source_ids=None):
         report['failures']=[s for s in previous['failures'] if s['source_id'] not in set(source_ids)]+report['failures']
     write_json(current_path, report)
     manifest['sources'] = list({s['source_id']:s for s in manifest['sources']+queue}.values())
-    write_json(MANIFEST,manifest)
-    print(f"수집 {len(report['saved'])} / 실패 {len(report['failures'])}")
+    write_json(manifest_path,manifest)
     return report
 
 
+def main(argv=None):
+    """명령행 실행, 진행 출력과 종료 코드 처리."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source-id', action='append', help='특정 자료만 수집하고 기존 기록 유지')
+    parser.add_argument('--manifest-file', type=Path, default=MANIFEST)
+    parser.add_argument('--output-dir', type=Path, default=RAW_DIR)
+    parser.add_argument('--report-file', type=Path, default=None)
+    parser.add_argument('--env-file', type=Path, default=None)
+    parser.add_argument('--delay', type=float, default=0.3)
+    args = parser.parse_args(argv)
+    try:
+        report = run(args.source_id, manifest_path=args.manifest_file, output_dir=args.output_dir,
+                     report_path=args.report_file, env_path=args.env_file, delay=args.delay,
+                     progress=lambda identifier: print('[수집] ' + identifier, flush=True))
+    except (ValueError, TypeError, KeyError, OSError):
+        print('수집 설정 또는 입력 파일을 확인하세요.', file=sys.stderr)
+        return 1
+    print(f"수집 {len(report['saved'])} / 실패 {len(report['failures'])}")
+    return 1 if report['failures'] else 0
+
+
 if __name__ == '__main__':
-    parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--source-id',action='append',help='manifest의 특정 자료만 수집하고 기존 수집 기록 유지')
-    args=parser.parse_args()
-    raise SystemExit(bool(run(args.source_id)['failures']))
+    raise SystemExit(main())

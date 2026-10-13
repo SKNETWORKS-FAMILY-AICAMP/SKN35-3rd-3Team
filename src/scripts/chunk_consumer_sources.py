@@ -1,5 +1,7 @@
 """소비자 자료의 역할·표·수식·출처를 보존한 청크 생성."""
+import argparse
 import json
+import sys
 from pathlib import Path
 
 # 파일 직접 실행에서도 프로젝트 패키지를 불러옵니다.
@@ -12,6 +14,7 @@ from src.const.config import (
     CHUNK_CONSUMER_SOURCES_DATA_PATH,
     PROCESSED_CONSUMER_SOURCES_DATA_PATH,
     PROJECT_PATH,
+    RAW_DATA_PATH,
 )
 
 if __package__:
@@ -188,39 +191,78 @@ def make_chunks(doc,size=1200,overlap=120):
     return [normalize_chunk(c, doc) for c in chunks]
 
 
-def run():
-    report=json.loads((INPUT_DIR/'consumer_preprocessing_report.json').read_text(encoding='utf-8'))
+def run(input_dir=INPUT_DIR, output_dir=OUTPUT_DIR, size=1200, overlap=120, *,
+        project_root=ROOT, report_path=None):
+    """검증된 정제 문서를 청크로 저장하고 결과 보고서를 반환한다.
+
+    API 호출은 하지 않는다. 원본·정제·변환 PDF는 읽기만 하며,
+    chunks.jsonl과 청크 보고서를 output_dir에 저장한다.
+    출처의 상대 경로는 project_root 기준으로 해석한다.
+    """
+    if type(size) is not int or type(overlap) is not int or size <= 0 or not 0 <= overlap < size:
+        raise ValueError("size는 양의 정수, overlap은 0 이상 size 미만 정수여야 합니다.")
+    input_dir, output_dir = Path(input_dir).resolve(), Path(output_dir).resolve()
+    project_root = Path(project_root).resolve()
+    report_path = Path(report_path).resolve() if report_path is not None else output_dir / "consumer_chunking_report.json"
+    raw_dir = (project_root / RAW_DATA_PATH.relative_to(ROOT)).resolve()
+    if (output_dir.is_relative_to(input_dir) or input_dir.is_relative_to(output_dir)
+            or output_dir.is_relative_to(raw_dir) or report_path.is_relative_to(raw_dir)
+            or report_path.is_relative_to(input_dir) or report_path == output_dir / "chunks.jsonl"):
+        raise ValueError("출력 결과가 원본·정제 입력 또는 청크 파일을 덮어쓸 수 없습니다.")
+
+    report=json.loads((input_dir/'consumer_preprocessing_report.json').read_text(encoding='utf-8'))
     if report['failures']:
         raise ValueError('정제 실패를 먼저 확인하세요.')
     chunks=[]
     inputs=[]
     for entry in report['saved']:
-        path=INPUT_DIR/entry['file']
+        path=(input_dir/entry['file']).resolve()
+        if not path.is_relative_to(input_dir):
+            raise ValueError('정제 보고서의 파일 경로가 입력 폴더를 벗어났습니다.')
         data=path.read_bytes()
         doc=json.loads(data)
-        if digest((ROOT/doc['raw_file']).read_bytes())!=doc['raw_sha256']:
+        if digest((project_root/doc['raw_file']).read_bytes())!=doc['raw_sha256']:
             raise ValueError('정제 후 원본 변경')
-        if doc.get('derived_pdf_file') and digest((ROOT/doc['derived_pdf_file']).read_bytes())!=doc['derived_pdf_sha256']:
+        if doc.get('derived_pdf_file') and digest((project_root/doc['derived_pdf_file']).read_bytes())!=doc['derived_pdf_sha256']:
             raise ValueError('정제 후 변환 PDF 변경')
-        chunks.extend(make_chunks(doc))
+        chunks.extend(make_chunks(doc, size=size, overlap=overlap))
         inputs.append({'file':entry['file'],'processed_sha256':digest(data)})
     if len({c['chunk_id'] for c in chunks})!=len(chunks):
         raise ValueError('청크 ID 중복')
-    OUTPUT_DIR.mkdir(parents=True,exist_ok=True)
+    output_dir.mkdir(parents=True,exist_ok=True)
     content=''.join(json.dumps(c,ensure_ascii=False)+'\n' for c in chunks)
-    path=OUTPUT_DIR/'chunks.jsonl'
+    path=output_dir/'chunks.jsonl'
     temporary=path.with_suffix('.jsonl.tmp')
     temporary.write_text(content,encoding='utf-8')
     temporary.replace(path)
     result={'metadata_version':METADATA_VERSION,'document_count':len({c['source_id'] for c in chunks}),'chunk_count':len(chunks),
-            'size':1200,'overlap':120,'chunks_sha256':digest(path.read_bytes()),'inputs':inputs,
+            'size':size,'overlap':overlap,'chunks_sha256':digest(path.read_bytes()),'inputs':inputs,
             'oversize_atomic_count':sum(c['oversize_atomic_unit'] for c in chunks),
             'usage':'embedding_text 사용. 표·약관 조문은 원자 단위 유지. 실제 임베딩 전 모델 토큰 제한 확인.',
             'excluded':report['excluded'],'duplicate_aliases':report['duplicate_aliases']}
-    write_json(OUTPUT_DIR/'consumer_chunking_report.json',result)
-    print(f"문서 {result['document_count']} / 청크 {len(chunks)}")
+    write_json(report_path,result)
     return result
 
 
+def main(argv=None):
+    """명령행 인자 처리, 결과 출력 및 종료 코드."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input-dir", type=Path, default=INPUT_DIR)
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    parser.add_argument("--size", type=int, default=1200)
+    parser.add_argument("--overlap", type=int, default=120)
+    parser.add_argument("--project-root", type=Path, default=ROOT)
+    parser.add_argument("--report-file", type=Path, default=None)
+    args = parser.parse_args(argv)
+    try:
+        result = run(args.input_dir, args.output_dir, args.size, args.overlap,
+                     project_root=args.project_root, report_path=args.report_file)
+    except (ValueError, KeyError, OSError, TypeError) as error:
+        print(f"청크를 생성할 수 없습니다: {error}", file=sys.stderr)
+        return 1
+    print(f"문서 {result['document_count']} / 청크 {result['chunk_count']}")
+    return 0
+
+
 if __name__=='__main__':
-    run()
+    raise SystemExit(main())

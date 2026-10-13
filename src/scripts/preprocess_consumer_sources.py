@@ -1,5 +1,8 @@
 """공식 소비자 자료를 유형·역할·시점·출처를 보존하며 정제한다."""
+import argparse
 import json
+from dataclasses import dataclass
+from collections.abc import Callable, Sequence
 import re
 import struct
 import zlib
@@ -34,6 +37,32 @@ RAW_DIR = RAW_CONSUMER_SOURCES_DATA_PATH
 OUTPUT_DIR = PROCESSED_CONSUMER_SOURCES_DATA_PATH
 MANIFEST = OUTPUT_DIR / "source_manifest.json"
 APPENDIX_REVIEW_FILE = OUTPUT_DIR/'consumer_appendix_review_pmh.json'
+
+
+@dataclass(frozen=True)
+class ProcessingContext:
+    """참조 자료와 출력 위치를 분리하고 원본·검토 기록·법령 청크를 명시적으로 전달한다."""
+    project_root: Path = ROOT
+    processed_dir: Path = OUTPUT_DIR
+    raw_dir: Path = RAW_DIR
+    appendix_review_path: Path = APPENDIX_REVIEW_FILE
+    manifest_path: Path = MANIFEST
+    law_chunk_path: Path = CHUNK_LAWS_DATA_PATH / "chunks.jsonl"
+    law_records: Sequence[dict] | None = None
+    case_verifier: Callable[[dict], dict] | None = None
+
+    def __post_init__(self):
+        for name in ("project_root", "processed_dir", "raw_dir", "appendix_review_path", "manifest_path", "law_chunk_path"):
+            object.__setattr__(self, name, Path(getattr(self, name)).resolve())
+        if self.case_verifier is not None and not callable(self.case_verifier):
+            raise TypeError("case_verifier는 호출 가능한 함수여야 합니다.")
+
+
+def _law_records(context):
+    if context.law_records is not None:
+        return context.law_records
+    return [json.loads(line) for line in context.law_chunk_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
 
 PARCEL_VERSIONS = {
     'ftc_terms_11185_file_a321590d': ('ftc_parcel_terms_14849', '2020-06-05', 26, 'preferred_collected_version'),
@@ -155,10 +184,11 @@ def normalized_text(text):
     return re.sub(r'\s+', '', text)
 
 
-def extract_parcel_pdf(source, data):
+def extract_parcel_pdf(source, data, *, context=None):
+    context = context if context is not None else ProcessingContext()
     import pdfplumber
     basename, revision, article_count, version_role = PARCEL_VERSIONS[source['source_id']]
-    pdf_path = OUTPUT_DIR/'converted'/(basename+'.pdf')
+    pdf_path = context.processed_dir/'converted'/(basename+'.pdf')
     metadata = json.loads(pdf_path.with_suffix('.conversion.json').read_text(encoding='utf-8'))
     if (Path(metadata['raw_source'].replace('\\', '/')) != Path(source['raw_file'])
             or metadata['raw_sha256'] != source['raw_sha256']
@@ -223,7 +253,7 @@ def extract_parcel_pdf(source, data):
             anomalies.append({'unit_id':item['unit_id'], 'warning':warning,
                               'confirmed_in':'raw HWP paragraph text and converted PDF'})
     return {'units':units, 'extracted_text':text, 'hwp_validation_text':raw_text,
-            'derived_pdf_file':pdf_path.relative_to(ROOT).as_posix(),
+            'derived_pdf_file':pdf_path.relative_to(context.project_root).as_posix(),
             'derived_pdf_sha256':metadata['pdf_sha256'], 'pdf_page_count':len(pages),
             'terms_revision_date':revision, 'version_role':version_role,
             'conversion_validation':{'body_character_counts_match':True,
@@ -436,14 +466,15 @@ def reviewed_pdf_table(page, layout):
             'derivation':'reviewed_pdf_coordinates_and_spans'}
 
 
-def apply_reviewed_consumer_appendices(source, units, review=None):
+def apply_reviewed_consumer_appendices(source, units, review=None, *, context=None):
+    context = context if context is not None else ProcessingContext()
     import pdfplumber
-    record_bytes=APPENDIX_REVIEW_FILE.read_bytes()
+    record_bytes=context.appendix_review_path.read_bytes()
     review=json.loads(record_bytes) if review is None else review
     if (review['parent_source_id']!=source['source_id'] or review['parent_raw_file']!=source['raw_file']
             or review['parent_raw_sha256']!=source['raw_sha256']):
         raise ValueError('별표 검토 기록의 상위 XML 원본 지문 불일치')
-    xml=ET.fromstring((ROOT/source['raw_file']).read_bytes())
+    xml=ET.fromstring((context.project_root/source['raw_file']).read_bytes())
     if review['effective_date']!=xml.findtext('.//시행일자'):
         raise ValueError('별표 PDF 검토와 상위 고시 시행본 불일치')
     if {a['appendix_number'] for a in review['appendices']}!={'0003','0004'} or len(review['appendices'])!=2:
@@ -459,8 +490,8 @@ def apply_reviewed_consumer_appendices(source, units, review=None):
         link=node.findtext('별표서식PDF파일링크')
         if original['appendix_title']!=spec['title'] or spec['pdf_source_url']!='https://www.law.go.kr'+link:
             raise ValueError('별표 PDF 제목·원문 XML 첨부 링크 불일치')
-        path=(ROOT/spec['pdf_file']).resolve()
-        if not path.is_relative_to(RAW_CONSUMER_SOURCES_DATA_PATH.resolve()) or not path.is_file():
+        path=(context.project_root/spec['pdf_file']).resolve()
+        if not path.is_relative_to(context.raw_dir.resolve()) or not path.is_file():
             raise ValueError('검토 별표 PDF 경로 불일치')
         if digest(path.read_bytes())!=spec['pdf_sha256']:
             raise ValueError('검토 별표 PDF 원본 변경')
@@ -491,7 +522,7 @@ def apply_reviewed_consumer_appendices(source, units, review=None):
             'source_xml_offset_basis':original['offset_basis'],'source_xml_start':original['start'],'source_xml_end':original['end'],
             'pdf_file':spec['pdf_file'],'pdf_sha256':spec['pdf_sha256'],'pdf_source_url':spec['pdf_source_url'],
             'pdf_source_id':spec['pdf_source_id'],'pdf_tables':tables,'page_numbers':[t['page_number'] for t in tables],
-            'review_record_file':APPENDIX_REVIEW_FILE.relative_to(ROOT).as_posix(),'review_record_sha256':digest(record_bytes),
+            'review_record_file':context.appendix_review_path.relative_to(context.project_root).as_posix(),'review_record_sha256':digest(record_bytes),
             **({'required_context_chunk_ids':['consumer_dispute_standard_appendix_0003_0000']} if number=='0004' else {}),
             'source_comparison':{'status':'reviewed_against_collected_official_pdf','reviewed_on':review['reviewed_on'],
                 'source_effective_date':review['effective_date'],'xml_question_mark_count':original_text.count('?'),
@@ -617,8 +648,9 @@ def extract_hwpx(data_path):
     return text,attach_refund_tables(units),tables
 
 
-def extract_supporting_admin(source, data):
+def extract_supporting_admin(source, data, *, context=None):
     """추가 고시의 전체 조문·별표를 보존하며 적용 범위를 확대 해석하지 않는다."""
+    context = context if context is not None else ProcessingContext()
     root=ET.fromstring(data)
     info=root.find('행정규칙기본정보')
     if info is None or info.findtext('행정규칙명')!=source['title']:
@@ -640,7 +672,7 @@ def extract_supporting_admin(source, data):
             warnings=['XML 문자 표 전체 보존. ? 등 원문 문자를 보정하지 않으며 셀 관계·원문 대조 필요.']))
     if source['source_id']=='minimum_wage_2026':
         import pdfplumber
-        path=ROOT/source['body_pdf_file']
+        path=context.project_root/source['body_pdf_file']
         if digest(path.read_bytes())!=source['body_pdf_sha256']:
             raise ValueError('고시 본문 PDF 지문 불일치')
         with pdfplumber.open(path) as pdf:
@@ -698,8 +730,9 @@ HOUSING_GUIDES = {
         ('delivery','임차주택의 인도',1)]}
 
 
-def extract_civil_recovery_guide(source, data):
+def extract_civil_recovery_guide(source, data, *, context=None):
     """검토한 소제목 단위로 조건·예외를 묶고 안내 기준일과 개정 공지를 보존한다."""
+    context = context if context is not None else ProcessingContext()
     identifier=source['source_id']
     configuration = HOUSING_GUIDES if identifier in HOUSING_GUIDES else CIVIL_RECOVERY_GUIDES
     if identifier not in configuration:
@@ -763,7 +796,7 @@ def extract_civil_recovery_guide(source, data):
         raise ValueError('민사 회수 조건·예외 누락: '+identifier)
     included={h for _,h,_ in configuration[identifier]}
     if identifier in HOUSING_GUIDES:
-        context = housing_law_context(identifier)
+        context = housing_law_context(identifier, context=context)
         for unit in units:
             unit['required_context_chunk_ids'] = context
         if identifier == 'easylaw_housing_distribution':
@@ -792,8 +825,9 @@ def extract_civil_recovery_guide(source, data):
             'warnings':warnings}
 
 
-def housing_law_context(identifier):
+def housing_law_context(identifier, *, context=None):
     """검토한 현행 조문을 연결한다. 계약 당시 버전으로 간주하지 않는다."""
+    context = context if context is not None else ProcessingContext()
     scope = {
         'easylaw_housing_termination': {
             '민법':{'제379조','제387조','제397조','제460조','제536조'},
@@ -805,7 +839,7 @@ def housing_law_context(identifier):
             '민사집행법':{'제84조','제88조','제145조','제148조'},
             '민사집행규칙':{'제48조'},
             '주택임대차보호법':{'제3조의2','제3조의3','제3조의5','제8조'},'민법':{'제536조'}}}[identifier]
-    records=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+    records = _law_records(context)
     result=[]
     for name,labels in scope.items():
         found=[c for c in records if c.get('law_name')==name and c.get('article_label') in labels]
@@ -820,11 +854,12 @@ FITNESS_CLOSURE_GUIDES={'kca_fitness_closure_gym','kca_fitness_closure_pilates',
 CONSUMER_REDRESS_GUIDES={'kca_redress_requirements','kca_redress_submission','kca_mediation_procedure'}
 
 
-def consumer_redress_context(identifier):
+def consumer_redress_context(identifier, *, context=None):
     """피해구제와 조정의 서로 다른 기간·효력을 현행 조문에 연결한다."""
+    context = context if context is not None else ProcessingContext()
     labels=({'제55조','제57조','제58조','제61조','제63조','제65조','제66조','제67조'}
             if identifier=='kca_mediation_procedure' else {'제55조','제57조','제58조'})
-    records=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+    records = _law_records(context)
     result=[]
     for name,expected in [('소비자기본법',labels),('소비자기본법 시행령',{'제44조'})]:
         found=[c for c in records if c.get('law_name')==name and c.get('article_label') in expected]
@@ -834,7 +869,8 @@ def consumer_redress_context(identifier):
     return result
 
 
-def extract_consumer_redress_guide(source,data):
+def extract_consumer_redress_guide(source,data, *, context=None):
+    context = context if context is not None else ProcessingContext()
     tree=HTMLTree(decode_html(data)).root
     clean=lambda node:' '.join(node.text().split())
     identifier=source['source_id']
@@ -899,7 +935,7 @@ def extract_consumer_redress_guide(source,data):
                ('completion',['30일','정당한 사유','연장'])]
         for node,(key,required) in zip(steps,scope):
             add(key,node,'mediation_step','h4: 분쟁조정 절차 안내 > li.step_li: '+key,required)
-    links=consumer_redress_context(identifier)
+    links=consumer_redress_context(identifier, context=context)
     for u in units:
         u['required_context_chunk_ids']=links+(['kca_damage_redress_procedure_redress_exclusions_0000']
             if identifier!='kca_mediation_procedure' else [])
@@ -914,9 +950,10 @@ def extract_consumer_redress_guide(source,data):
                         '피해구제 합의권고와 분쟁조정 성립의 효력은 다름. 접수·상담·조정 신청이 환급이나 강제집행을 보장하지 않음.']}
 
 
-def installment_context():
+def installment_context(*, context=None):
     """각 요건의 조문을 버전 단위로 연결하고 누락·혼합을 거부한다."""
-    records=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+    context = context if context is not None else ProcessingContext()
+    records = _law_records(context)
     scope={'할부거래에 관한 법률':{'제2조','제3조','제4조','제16조'},
            '할부거래에 관한 법률 시행령':{'제2조','제4조','제11조'}}
     selected=[]
@@ -931,7 +968,8 @@ def installment_context():
             'review_note':'안내 원문의 3개월 할부 표현을 보존하고 법 제2조의 2개월 이상에 걸쳐 3회 이상 지급 요건을 함께 확인. 법 제16조의 사유·신용제공자 통지·당시 미지급 잔여금·서면 효력 및 시행령 제11조의 금액 조건, 적용제외·다른 법률 관계를 연결. 연결본은 수집 시점 현행 법령이며 2024/2025 안내 당시 구법·개별 계약일의 적용을 확정하지 않음.'}
 
 
-def extract_fitness_closure_guide(source,data):
+def extract_fitness_closure_guide(source,data, *, context=None):
+    context = context if context is not None else ProcessingContext()
     tree=HTMLTree(decode_html(data)).root
     clean=lambda n:' '.join(n.text().split())
     units=[]
@@ -1023,7 +1061,7 @@ def extract_fitness_closure_guide(source,data):
         raise ValueError('검토하지 않은 폐업 공식 안내 ID')
     legal_basis={}
     if identifier in {'kca_fitness_closure_gym','kca_fitness_closure_pilates'}:
-        legal_basis=installment_context()
+        legal_basis=installment_context(context=context)
         for u in units:
             if u['role'] in {'payment_and_evidence','card_objection','closure_action','closure_evidence'}:
                 u['required_context_chunk_ids']=legal_basis['required_context_chunk_ids']
@@ -1047,8 +1085,9 @@ def extract_fitness_closure_guide(source,data):
 OVERSEAS_GUIDES = {'kca_overseas_types', 'kca_overseas_checklist', 'kca_overseas_returns'}
 
 
-def extract_overseas_guide(source, data):
+def extract_overseas_guide(source, data, *, context=None):
     """본문 영역과 확인한 단위를 지정하여 유형·조건·원문 표를 보존한다."""
+    context = context if context is not None else ProcessingContext()
     tree = HTMLTree(decode_html(data)).root
     mains = tree.find(lambda n: n.attrs.get('id') == 'contents')
     if len(mains) != 1:
@@ -1128,7 +1167,7 @@ def extract_overseas_guide(source, data):
         if not all(word in unit['text'] for word in ['국내소재의 구매대행은 국내법', '7일', '반품', '배송비용']):
             raise ValueError('국내 구매대행 적용 범위 또는 비용 조건 누락')
         lawname='전자상거래 등에서의 소비자보호에 관한 법률'
-        records=[json.loads(line) for line in (CHUNK_LAWS_DATA_PATH / 'chunks.jsonl').read_text(encoding='utf-8').splitlines() if line.strip()]
+        records = _law_records(context)
         context=[c['chunk_id'] for c in records if c.get('law_name')==lawname and c.get('article_label') in {'제17조','제18조'}]
         if not context or {c.get('article_label') for c in records if c['chunk_id'] in context}!={'제17조','제18조'}:
             raise ValueError('전자상거래법 청약철회·비용 청크 연결 누락')
@@ -1211,8 +1250,9 @@ def extract_labor_guide(source, data):
     raise ValueError('정제 범위가 검토되지 않은 공식 안내 ID')
 
 
-def preprocess(source):
-    path=ROOT/source['raw_file']
+def preprocess(source, *, context=None):
+    context = context if context is not None else ProcessingContext()
+    path=context.project_root/source['raw_file']
     data=path.read_bytes()
     if digest(data)!=source['raw_sha256']:
         raise ValueError('수집 원본 지문 불일치')
@@ -1221,10 +1261,10 @@ def preprocess(source):
          'warnings':[],'processed_at':datetime.now(timezone.utc).isoformat()}
     kind=source['document_type']
     if kind=='official_guide':
-        doc.update(extract_consumer_redress_guide(source,data) if source['source_id'] in CONSUMER_REDRESS_GUIDES
-                   else extract_civil_recovery_guide(source,data) if source['source_id'] in CIVIL_RECOVERY_GUIDES or source['source_id'] in HOUSING_GUIDES
-                   else extract_fitness_closure_guide(source,data) if source['source_id'] in FITNESS_CLOSURE_GUIDES
-                   else extract_overseas_guide(source,data) if source['source_id'] in OVERSEAS_GUIDES
+        doc.update(extract_consumer_redress_guide(source,data, context=context) if source['source_id'] in CONSUMER_REDRESS_GUIDES
+                   else extract_civil_recovery_guide(source,data, context=context) if source['source_id'] in CIVIL_RECOVERY_GUIDES or source['source_id'] in HOUSING_GUIDES
+                   else extract_fitness_closure_guide(source,data, context=context) if source['source_id'] in FITNESS_CLOSURE_GUIDES
+                   else extract_overseas_guide(source,data, context=context) if source['source_id'] in OVERSEAS_GUIDES
                    else extract_labor_guide(source, data))
         doc['guide_id']=source['source_id']
         if source['source_id'] not in OVERSEAS_GUIDES | FITNESS_CLOSURE_GUIDES | CONSUMER_REDRESS_GUIDES | CIVIL_RECOVERY_GUIDES.keys() | HOUSING_GUIDES.keys():
@@ -1244,15 +1284,16 @@ def preprocess(source):
                 from .review_pilates_law_versions import verified_case
             else:
                 from review_pilates_law_versions import verified_case
-            doc['law_version_review']=verified_case(doc)
+            verifier = context.case_verifier if context.case_verifier is not None else verified_case
+            doc['law_version_review']=verifier(doc)
             doc['warnings']+=doc['law_version_review']['warnings']
     elif kind=='administrative_rule':
         if source['source_id'] in {'continual_contract_refund','minimum_wage_2026','minimum_wage_simple_labor'}:
-            units,meta,extra=extract_supporting_admin(source,data)
+            units,meta,extra=extract_supporting_admin(source,data, context=context)
             doc.update(extra)
         else:
             units,meta=extract_admin(data)
-            units=apply_reviewed_consumer_appendices(source,units)
+            units=apply_reviewed_consumer_appendices(source,units, context=context)
         doc.update(units=units,administrative_metadata=meta,effective_date=meta.get('시행일자'))
         doc['warnings']=(['공식 고시. 적용 범위·예외·유효 기간과 상위 법령을 함께 확인. 계산 자동화는 별도 검증.']
                          if source['source_id'] in {'continual_contract_refund','minimum_wage_2026','minimum_wage_simple_labor'}
@@ -1265,7 +1306,7 @@ def preprocess(source):
         doc['warnings']=['공식 표준약관이며 모든 계약에 자동 적용되는 법률은 아님. 계약 약관 확인 필요.']
         doc['warnings'].append('HWPX 표 행·열 및 병합 범위 보존. 수식은 HWP 표기 원문이며 계산하지 않음.')
     elif source['source_id'] in PARCEL_VERSIONS and source['format']=='hwp':
-        doc.update(extract_parcel_pdf(source, data))
+        doc.update(extract_parcel_pdf(source, data, context=context))
         doc['status']='processed_historical' if doc['historical_reference'] else 'processed'
         doc['warnings']=['공식 표준약관이며 모든 계약에 자동 적용되는 법률은 아님. 계약 약관 확인 필요.',
                          '2020년본은 수집한 두 버전 중 우선 사용본. 최신 현행 여부는 별도 확인 필요.']
@@ -1280,14 +1321,33 @@ def preprocess(source):
     return doc
 
 
-def run():
-    report=json.loads((OUTPUT_DIR/'consumer_collection_report.json').read_text(encoding='utf-8'))
+def run(collection_report=None, output_dir=OUTPUT_DIR, *, context=None,
+        report_path=None, update_manifest=True):
+    """정제 결과를 저장하고 보고서 딕셔너리를 반환한다. API를 호출하지 않는다.
+
+    context는 읽을 참조 자료, output_dir는 저장 위치다. 사용자 지정 출력에서는
+    갱신된 manifest도 출력 폴더에 저장하여 기존 참조 manifest를 보호한다.
+    자료별 오류는 failures에 기록하며 입력 보고서·저장 오류는 호출부에 전달한다.
+    """
+    context = context if context is not None else ProcessingContext()
+    output_dir = Path(output_dir).resolve()
+    collection_report = (Path(collection_report).resolve() if collection_report is not None else
+                         context.processed_dir / "consumer_collection_report.json")
+    report_path = Path(report_path).resolve() if report_path is not None else output_dir / "consumer_preprocessing_report.json"
+    manifest_output = context.manifest_path if output_dir == OUTPUT_DIR.resolve() else output_dir / "source_manifest.json"
+    if (output_dir.is_relative_to(context.raw_dir) or context.raw_dir.is_relative_to(output_dir)
+            or report_path.is_relative_to(context.raw_dir)
+            or (update_manifest and manifest_output.is_relative_to(context.raw_dir))):
+        raise ValueError("정제 결과가 원본 자료 폴더를 덮어쓸 수 없습니다.")
+    if report_path in (collection_report, context.manifest_path, context.appendix_review_path):
+        raise ValueError("결과 보고서가 입력·검토 기록을 덮어쓸 수 없습니다.")
+    report=json.loads(collection_report.read_text(encoding='utf-8'))
     result={'saved':[],'failures':[],'excluded':[],'duplicate_aliases':[]}
     seen={}
     parcel_documents=[]
     for source in report['saved']:
         try:
-            doc=preprocess(source)
+            doc=preprocess(source, context=context)
             if doc['source_id'] in PARCEL_VERSIONS:
                 parcel_documents.append(doc)
             fingerprint=digest(json.dumps([(u['role'],u['text']) for u in doc['units']],ensure_ascii=False).encode())
@@ -1296,7 +1356,7 @@ def run():
                 continue
             if doc['units']:
                 seen[fingerprint]=doc['source_id']
-            write_json(OUTPUT_DIR/(doc['source_id']+'.json'),doc)
+            write_json(output_dir/(doc['source_id']+'.json'),doc)
             result['saved'].append({'file':doc['source_id']+'.json','source_id':doc['source_id'],
                 'document_type':doc['document_type'],'embedding_candidate':doc['embedding_candidate'],
                 'domain':doc['domain'],'unit_count':len(doc['units']),'raw_sha256':doc['raw_sha256']})
@@ -1306,10 +1366,12 @@ def run():
             result['failures'].append({'source_id':source['source_id'],'error':str(exc)})
     if len(parcel_documents)==len(PARCEL_VERSIONS):
         comparison=compare_parcel_versions(parcel_documents)
-        write_json(OUTPUT_DIR/'parcel_terms_revision_comparison.json',comparison)
+        write_json(output_dir/'parcel_terms_revision_comparison.json',comparison)
         result['parcel_revision_comparison']={'file':'parcel_terms_revision_comparison.json','counts':comparison['counts']}
-    write_json(OUTPUT_DIR/'consumer_preprocessing_report.json',result)
-    manifest=json.loads(MANIFEST.read_text(encoding='utf-8'))
+    write_json(report_path,result)
+    if not update_manifest:
+        return result
+    manifest=json.loads(context.manifest_path.read_text(encoding='utf-8'))
     entries={e['source_id']:e for e in result['saved']}
     aliases={e['source_id']:e['representative_id'] for e in result['duplicate_aliases']}
     originals={e['source_id']:e for e in report['saved']}
@@ -1325,10 +1387,30 @@ def run():
                                  else 'duplicate_alias' if source['source_id'] in aliases
                                  else 'reference_or_conversion_required')
         source['representative_id']=aliases.get(source['source_id'])
-    write_json(MANIFEST,manifest)
-    print(f"정제 {len(result['saved'])} / 실패 {len(result['failures'])} / 검색 제외 {len(result['excluded'])}")
+    if update_manifest:
+        write_json(manifest_output,manifest)
     return result
 
 
+
+def main(argv=None):
+    """CLI 인자 처리·요약 출력·종료 코드."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--collection-report", type=Path, default=None)
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    parser.add_argument("--reference-dir", type=Path, default=OUTPUT_DIR)
+    parser.add_argument("--manifest-file", type=Path, default=MANIFEST)
+    parser.add_argument("--appendix-review-file", type=Path, default=APPENDIX_REVIEW_FILE)
+    parser.add_argument("--law-chunks", type=Path, default=CHUNK_LAWS_DATA_PATH / "chunks.jsonl")
+    parser.add_argument("--no-update-manifest", action="store_true")
+    args = parser.parse_args(argv)
+    context = ProcessingContext(processed_dir=args.reference_dir, manifest_path=args.manifest_file,
+                                appendix_review_path=args.appendix_review_file, law_chunk_path=args.law_chunks)
+    result = run(args.collection_report, args.output_dir, context=context,
+                 update_manifest=not args.no_update_manifest)
+    print(f"정제 {len(result['saved'])} / 실패 {len(result['failures'])} / 검색 제외 {len(result['excluded'])}")
+    return 1 if result['failures'] else 0
+
+
 if __name__=='__main__':
-    raise SystemExit(bool(run()['failures']))
+    raise SystemExit(main())

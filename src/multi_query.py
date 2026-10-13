@@ -62,7 +62,7 @@ def multi_query(question, llm=None, searcher=None, *, candidate_k=20, filters=No
     # 공통 설정으로 두 검색을 Qdrant 서버에서 실행합니다.
     owns_searcher = searcher is None
     if owns_searcher:
-        searcher = create_team_retriever(search_mode="hybrid")
+        searcher = create_team_retriever()
     try:
         queries = create_queries(question, llm)
         rankings = {}

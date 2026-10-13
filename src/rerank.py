@@ -1,12 +1,14 @@
-"""RRF 후보를 원본 질문과 비교해 CrossEncoder로 재정렬합니다."""
+"""RRF 후보를 원본 질문과 비교해 CrossEncoder(BGE)로 재정렬합니다."""
 import math
+from time import perf_counter
 from src.const.model import create_rerank_model
 from src.multi_query import multi_query
 from src.rrf import reciprocal_rank_fusion
 
 
 # State의 원본 질문과 후보 본문을 비교해 상위 문서를 반환합니다.
-def rerank(state, top_k=5):
+def rerank(state, top_k=5, *, model=None, timings=None, verbose=True):
+    started = perf_counter()
     question = state.get("origin_query")
     documents = state.get("documents", [])
     if not isinstance(question, str) or not question.strip():
@@ -17,29 +19,56 @@ def rerank(state, top_k=5):
         raise ValueError("documents는 문서 딕셔너리 목록이어야 합니다.")
     if not documents:
         response = {"documents": []}
-        print(response)
+        if timings is not None:
+            timings.update(model_load_seconds=0.0, processing_seconds=perf_counter() - started,
+                           inference_seconds=0.0, window_count=0)
+        if verbose:
+            print(response)
         return response
     for doc in documents:
         if not isinstance(doc, dict) or not isinstance(doc.get("text"), str) or not doc["text"].strip():
             raise ValueError("각 후보에는 비어 있지 않은 text가 필요합니다.")
 
-    # 모델은 model.py에서 생성·재사용하며, 질문과 본문을 함께 읽습니다.
-    model = create_rerank_model()
+    # 평가에서는 로드된 모델을 주입할 수 있고, 일반 호출은 공통 로더를 사용합니다.
+    load_started = perf_counter()
+    supplied_model = model is not None
+    model = create_rerank_model() if model is None else model
+    load_seconds = 0.0 if supplied_model else perf_counter() - load_started
+    processing_started = perf_counter()
     tokenizer = model.tokenizer
-    query_tokens = tokenizer.encode(question.strip(), add_special_tokens=False)
+    # 분할 준비용 토큰화는 아직 모델 입력이 아니므로 원문 길이 경고를 발생시키지 않습니다.
+    query_tokens = tokenizer.encode(question.strip(), add_special_tokens=False, verbose=False)
     if len(query_tokens) > 100:
         raise ValueError("질문이 재정렬 입력 한도를 초과합니다(100 토큰).")
-    pairs, owners = [], []
+    max_length = model.max_seq_length
+    pairs, owners, pair_lengths = [], [], []
     for index, doc in enumerate(documents):
         # 긴 표·법령의 뒷부분도 평가하도록 본문을 겹치는 토큰 구간으로 나눕니다.
-        tokens = tokenizer.encode(doc["text"], add_special_tokens=False)
-        for start in range(0, len(tokens), 350):
-            passage = tokenizer.decode(tokens[start:start + 400], skip_special_tokens=True)
+        tokens = tokenizer.encode(doc["text"], add_special_tokens=False, verbose=False)
+        if not tokens:
+            raise ValueError("재정렬 본문에서 토큰을 생성하지 못했습니다.")
+        start = 0
+        while start < len(tokens):
+            size = min(400, len(tokens) - start)
+            # decode 후 재토큰화 길이는 달라질 수 있으므로 질문·특수 토큰까지 실제로 계산합니다.
+            while True:
+                passage = tokenizer.decode(tokens[start:start + size], skip_special_tokens=True)
+                length = len(tokenizer(question.strip(), passage, add_special_tokens=True,
+                                       truncation=False, verbose=False)["input_ids"])
+                if length <= max_length:
+                    break
+                if size == 1:
+                    raise ValueError("질문과 본문 구간을 모델 입력 한도 안에 구성하지 못했습니다.")
+                size = max(1, size - max(1, length - max_length))
             pairs.append((question.strip(), passage))
             owners.append(index)
-            if start + 400 >= len(tokens):
+            pair_lengths.append(length)
+            if start + size >= len(tokens):
                 break
+            start += max(1, size - 50)  # 축소된 구간도 끝부분을 빠뜨리지 않고 겹쳐 이동합니다.
+    inference_started = perf_counter()
     scores = model.predict(pairs, batch_size=1, show_progress_bar=False)
+    inference_seconds = perf_counter() - inference_started
     if len(scores) != len(pairs):
         raise ValueError("재정렬 점수와 입력 구간 개수가 다릅니다.")
     best = [float("-inf")] * len(documents)
@@ -59,7 +88,13 @@ def rerank(state, top_k=5):
         ranked.append({**doc, "score": best[index], "metadata": metadata})
     ranked.sort(key=lambda doc: -doc["score"])  # 동점은 RRF 순서를 유지합니다.
     response = {"documents": ranked[:top_k]}
-    print(response)
+    if timings is not None:
+        timings.update(model_load_seconds=load_seconds,
+                       processing_seconds=perf_counter() - processing_started,
+                       inference_seconds=inference_seconds, window_count=len(pairs),
+                       max_pair_tokens=max(pair_lengths), model_max_tokens=max_length)
+    if verbose:
+        print(response)
     return response
 
 

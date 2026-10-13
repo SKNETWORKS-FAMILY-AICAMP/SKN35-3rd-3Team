@@ -49,6 +49,11 @@ class SearchTests(unittest.TestCase):
         self.assertAlmostEqual(metrics["precision"],2/3)
         self.assertEqual(metrics["hit"],1)
         self.assertEqual(metrics["rr"],0.5)
+        self.assertAlmostEqual(metrics["ndcg"],
+                               (1 / math.log2(3) + 1 / math.log2(4)) /
+                               (1 + 1 / math.log2(3) + 1 / math.log2(4)))
+        self.assertEqual(evaluate_ranking(["a", "b"], ["a", "b"], k=3)["ndcg"], 1)
+        self.assertEqual(evaluate_ranking([], ["a"], k=3)["ndcg"], 0)
         self.assertEqual(evaluate_ranking([],["a"],k=5)["precision"],0)
         with self.assertRaises(ValueError):
             evaluate_ranking(["a"],[],k=5)

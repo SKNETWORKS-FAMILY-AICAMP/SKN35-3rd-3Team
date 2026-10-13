@@ -4,13 +4,14 @@ from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings , ChatOpenAI
 from src.const import config
 
-load_dotenv()
+load_dotenv(dotenv_path=config.ENV_PATH, override=False)
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
-OPENAI_LLM_MODEL =os.getenv("OPENAI_LLM_MODEL")
+OPENAI_LLM_MODEL = os.getenv("OPENAI_LLM_MODEL") or os.getenv("LLM_MODEL")
 OPENAI_EMBED_MODEL = os.getenv("OPENAI_EMBED_MODEL")
+RERANK_MODEL = os.getenv("RERANK_MODEL")
 
 GEMINI_LLM_MODEL = os.getenv("GEMINI_LLM_MODEL")
 GEMINI_EMBED_MODEL = os.getenv("GEMINI_EMBED_MODEL")
@@ -39,14 +40,17 @@ def create_llm(temperature : float = 0):
         api_key=OPENAI_API_KEY
     )
 
+# .env의 리랭크 모델을 CPU에서 생성합니다.
 def create_rerank_model():
+    if not RERANK_MODEL:
+        raise ValueError(".env에 RERANK_MODEL을 지정해야 합니다.")
     # 선택 의존성이라 모델을 사용하는 시점에만 로딩합니다.
     from sentence_transformers import CrossEncoder
     import torch
     torch.set_num_threads(4)
     return CrossEncoder(
-        os.environ["RERANK_MODEL"], device="cpu", max_length=512,
-        cache_folder=str(RERANK_CACHE_PATH), trust_remote_code=False,
+        RERANK_MODEL, device="cpu", max_length=512,
+        cache_folder=str(config.RERANK_CACHE_PATH), trust_remote_code=False,
     )
 
 # ============================================================================================================
@@ -66,4 +70,12 @@ def create_llm_gmn(temperature: float = 0):
         model=GEMINI_LLM_MODEL,
         temperature=temperature,
         google_api_key=GOOGLE_API_KEY,
+    )
+
+
+# 기존 LLM을 재사용하고, 생성 시 출력 길이와 JSON 형식을 지정합니다.
+def create_generator_llm():
+    return create_llm().bind(
+        max_tokens=int(os.environ["GENERATOR_MAX_OUTPUT_TOKENS"]),
+        response_format={"type": "json_object"},
     )

@@ -26,6 +26,10 @@ def main():
     # 정답 파일이 없으면 입력 질문으로 문서만 비교합니다.
     cases = (json.loads(args.evaluation_file.read_text(encoding="utf-8-sig"))
              if args.evaluation_file else [{"query": args.question or input("질문을 입력하세요: ")}])
+    if isinstance(cases, dict):
+        # 새 평가 JSON은 라벨 정책과 cases 목록을 함께 보관합니다.
+        print("평가 라벨 정책:", cases.get("label_policy", "미기재"))
+        cases = cases.get("cases")
     if not isinstance(cases, list) or not cases:
         parser.error("평가 파일은 비어 있지 않은 질문 목록이어야 합니다.")
     # 모든 질문과 정답을 검사한 뒤 실제 API를 호출합니다.
@@ -38,7 +42,7 @@ def main():
             evaluate_ranking([], case["relevant_ids"], k=args.k)
 
     # 두 방식에 같은 Qdrant Dense/Sparse 검색기와 후보 개수를 사용합니다.
-    searcher = create_team_retriever(search_mode="hybrid")
+    searcher = create_team_retriever()
     scores = {"멀티쿼리 없음": [], "멀티쿼리 있음": []}
     try:
         llm = create_llm()

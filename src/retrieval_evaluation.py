@@ -4,6 +4,7 @@ LLM Judge와 별개인 오프라인 평가입니다. 같은 청크가 반복되�
 정답이 없는 질문은 이 평가에서 제외하거나 별도 무응답 평가로 관리해야 합니다.
 """
 from collections.abc import Mapping, Sequence
+import math
 from dataclasses import dataclass
 from time import perf_counter
 
@@ -20,7 +21,7 @@ def chunk_key(hit: VectorSearchHit) -> str:
 
 
 def evaluate_ranking(retrieved_ids: Sequence[str], relevant_ids: Sequence[str], *, k: int = 5) -> dict[str, float]:
-    """질문 하나의 Recall/Precision/Hit/Reciprocal Rank를 계산합니다.
+    """질문 하나의 Recall/Precision/Hit/Reciprocal Rank/이진 nDCG를 계산합니다.
 
     Precision 분모는 K: 결과가 K개보다 적어도 부족한 자리를 정답으로 보지 않습니다.
     RR은 첫 정답 순위의 역수, MRR은 여러 질문의 RR 평균입니다.
@@ -37,7 +38,10 @@ def evaluate_ranking(retrieved_ids: Sequence[str], relevant_ids: Sequence[str], 
     ranked = list(dict.fromkeys(retrieved_ids))[:k]
     matches = sum(identifier in relevant for identifier in ranked)
     rr = next((1 / rank for rank, identifier in enumerate(ranked, 1) if identifier in relevant), 0.0)
-    return {"recall": matches / len(relevant), "precision": matches / k, "hit": float(matches > 0), "rr": rr}
+    dcg = sum(1 / math.log2(rank + 1) for rank, identifier in enumerate(ranked, 1) if identifier in relevant)
+    ideal = sum(1 / math.log2(rank + 1) for rank in range(1, min(k, len(relevant)) + 1))
+    return {"recall": matches / len(relevant), "precision": matches / k,
+            "hit": float(matches > 0), "rr": rr, "ndcg": dcg / ideal}
 
 
 @dataclass(frozen=True)

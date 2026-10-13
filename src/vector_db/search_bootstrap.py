@@ -7,9 +7,14 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
+
+from src.vector_db.bootstrap import create_team_retriever
+from src.multi_query import create_multi_query_searcher
+from src.rerank import rerank
 
 from src.retriever import BM25Retriever, DocumentRetriever, HybridRetriever, tokenize_keywords
-from src.vectorstore import VectorSearchHit
+from src.vectorstore import VectorSearchHit, VectorSearchRequest
 
 
 def load_keyword_documents(store: QdrantVectorStore, *, page_size: int = 256) -> tuple[VectorSearchHit, ...]:
@@ -80,33 +85,27 @@ def create_team_hybrid_retriever(
     )
 
 
+# 공통 원격 Qdrant 검색기에 현재 함수 기반 멀티쿼리를 연결합니다.
 def create_team_multi_query_retriever(llm: object, env_path: str | Path | None = None):
-    """사용자가 선택한 LLM과 팀 Hybrid 검색을 연결합니다.
-
-    LLM 모델/키를 이 파일에 고정하지 않습니다. 원격 문서가 비어 있다면
-    Hybrid 초기화에서 중단하므로 질문 확장 API는 호출하지 않습니다.
-    """
-    from src.multi_query import LLMQueryExpander, MultiQueryRetriever
-
-    hybrid = create_team_hybrid_retriever(env_path)
-    return MultiQueryRetriever(hybrid, LLMQueryExpander(llm))
+    base = create_team_retriever(env_path)
+    searcher = create_multi_query_searcher(base, llm)
+    searcher.vector_store = base.vector_store
+    return searcher
 
 
-def create_team_reranking_retriever(env_path=None, *, llm=None, candidate_k=10):
-    """Hybrid(또는 Multi-Query Hybrid) 뒤에 CPU Reranker를 붙입니다.
+# 현재 rerank 함수를 재사용해 검색 결과를 재정렬하는 호출 인터페이스를 제공합니다.
+def create_team_reranking_retriever(env_path=None, *, llm=None, candidate_k=20):
+    VectorSearchRequest.create([0.0], top_k=candidate_k)
+    base = create_team_retriever(env_path)
+    searcher = create_multi_query_searcher(base, llm) if llm is not None else base
 
-    서버 데이터부터 확인하므로 빈 컬렉션 때문에 큰 모델을 내려받지 않습니다.
-    llm=None이면 질문 확장 없이 Hybrid + Rerank로 사용할 수 있습니다.
-    """
-    from src.rerank import CrossEncoderScorer, RerankingRetriever
+    # 기존 평가 코드의 search_documents 호출을 새 함수 기반 재정렬에 연결합니다.
+    def search_documents(query, *, top_k=5, score_threshold=None, filters=None):
+        VectorSearchRequest.create([0.0], top_k=top_k, score_threshold=score_threshold)
+        hits = searcher.search_documents(query, top_k=max(candidate_k, top_k), filters=filters)
+        result = rerank({"origin_query": query, "documents": [hit.to_document() for hit in hits]},
+                        top_k=top_k, verbose=False)
+        return tuple(VectorSearchHit(**doc) for doc in result["documents"]
+                     if score_threshold is None or doc["score"] >= score_threshold)
 
-    base = create_team_hybrid_retriever(env_path)
-    try:
-        scorer = CrossEncoderScorer.from_pretrained()
-    except Exception:
-        base.dense.vector_store.client.close()
-        raise
-    if llm is not None:
-        from src.multi_query import LLMQueryExpander, MultiQueryRetriever
-        base = MultiQueryRetriever(base, LLMQueryExpander(llm))
-    return RerankingRetriever(base, scorer, candidate_k=candidate_k)
+    return SimpleNamespace(search_documents=search_documents, vector_store=base.vector_store)

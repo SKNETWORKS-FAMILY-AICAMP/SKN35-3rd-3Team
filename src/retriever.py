@@ -528,8 +528,7 @@ class BM25Retriever:
 #   1) 이 블록의 주석을 해제하고
 #   2) SEARCH_MODE=dense 로 실행하며(Qdrant가 Sparse 벡터를 요구하지 않도록)
 #   3) DocumentRetriever에는 sparse_embedder를 넘기지 않아야 합니다.
-# (src/vector_db/search_bootstrap.py, scripts/search_evaluate.py가 이 클래스를
-#  import하므로 해제 전에는 해당 스크립트가 동작하지 않습니다.)
+# 공용 검색 bootstrap의 로컬 BM25 비교 경로에서 이 클래스를 사용합니다.
 # --------------------------------------------------------------------------
 @dataclass
 class HybridRetriever:

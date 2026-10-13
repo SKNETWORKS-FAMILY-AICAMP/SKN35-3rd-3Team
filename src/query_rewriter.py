@@ -7,7 +7,7 @@ from src.prompt.query_rewriter_prompt import QUERY_REWRITE_PROMPT
 
 
 
-def query_rewriter(text):
+def query_rewriter(text, llm=None):
     # 빈 질문은 실제 모델을 호출하기 전에 확인합니다.
     if not isinstance(text, str) or not text.strip():
         raise ValueError("질문은 비어 있지 않은 문자열이어야 합니다.")
@@ -18,7 +18,7 @@ def query_rewriter(text):
         ("human", "{question}"),
     ])
     # 프롬프트 → model.py의 LLM → 응답 문자열 흐름을 하나의 체인으로 묶습니다.
-    chain = prompt | create_llm() | StrOutputParser()
+    chain = prompt | (llm if llm is not None else create_llm()) | StrOutputParser()
     # 실제 LLM에 질문을 전달하고, 응답 앞뒤의 공백을 제거합니다.
     response = chain.invoke({"question": text.strip()}).strip()
 

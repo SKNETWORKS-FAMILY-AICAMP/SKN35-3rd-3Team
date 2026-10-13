@@ -1,29 +1,24 @@
-# evaluation-cases.json 사용 안내
+# 현재 RAG 평가 입력 안내
 
-프로젝트 루트 evaluation-cases.json은 실제 검색 평가 입력 파일입니다. 예시 경로나 결과 보고서가 아닙니다.
+평가 입력은 프로젝트 루트의 `rag_evaluation_cases.review.json`입니다.
+이 파일은 `cases` 목록, 컬렉션·임베딩 규격, 실제 근거 및 `label_policy`를 포함합니다.
+라벨은 AI가 검토한 참고 라벨이며 사람이 검수한 완전한 정답 집합으로 취급하지 않습니다.
 
-- 확인일: 2026-10-11
-- 대상: team_documents_openai_dev
-- 실제 컬렉션 조회 결과: 12개 Point
-- 평가 질문: 12개. 모든 정답 document_id::chunk_id가 해당 컬렉션에 존재함을 확인했습니다.
-- 작성 방식: 청크 본문을 읽고 답이 있는 질문과 정답 ID를 지정했습니다. 검색 순위를 보고 정답을 선택하지 않았습니다.
-- 청약철회나 보증금 반환의 전체 법률 상담 품질을 대표하는 데이터가 아닙니다. 작은 샘플에서 사실·개념 검색을 점검하는 초기 세트입니다.
-- 사람이 작성한 초안이며 별도의 팀원 검수는 아직 진행하지 않았습니다.
+멀티쿼리 없음/있음 비교:
 
-동일한 12개 청크에 대해 현재 메모리 BM25를 실행한 결과(K=5):
+```powershell
+python -X utf8 -m tests.rag_multiquery_evaluation --evaluation-file rag_evaluation_cases.review.json
+```
 
-| 지표 | 결과 |
-|---|---:|
-| Recall@5 | 0.8333 |
-| Precision@5 | 0.1667 |
-| Hit@5 | 0.8333 |
-| MRR@5 | 0.7083 |
+같은 실제 RRF 후보의 재정렬 전후 비교:
 
-각 질문의 정답을 한 개 지정했으므로 Precision@5의 가능한 최대값은 0.2입니다. 이 숫자는 일반적인 전체 검색 품질의 합격 기준이 아닙니다.
-이 검증에서는 Dense 임베딩, Multi-Query LLM, Rerank를 실행하지 않았습니다. API 비용과 DB 쓰기는 발생하지 않았습니다.
-질문별 BM25 결과는 docs/evaluation-cases-bm25-check.json에 있습니다.
+```powershell
+python -X utf8 -m tests.rag_rerank_evaluation
+```
 
-팀원이 전달받아 프로젝트 루트에 두면 --evaluation-file .\evaluation-cases.json으로 지정할 수 있습니다.
-전체 비교에는 공용 DB 코드가 통합된 dev, API 키, 실제 사용 가능한 Multi-Query 모델 설정이 별도로 필요합니다.
-NVIDIA 컬렉션이나 데이터가 교체된 컬렉션에 바로 사용하지 말고 정답 청크 존재 여부부터 확인하세요.
-전체 데이터 적재 후에는 여러 관련 청크를 검수하고 일상 표현·복합 질문을 추가하여 평가 세트를 확장해야 합니다.
+자세한 검수·실행 조건은 [재정렬 평가 안내](rag_rerank_evaluation_guide.md)를 참고하세요.
+정답 ID는 `document_id::chunk_id`이며, 데이터 변경 시 해당 ID의 존재와 관련성을 다시 확인해야 합니다.
+Precision·Recall·Hit·MRR 등은 라벨 기준 검색 지표이며 답변 정확성이나 법률적 정확성을 보증하지 않습니다.
+
+기존 초안 평가 입력과 `src/scripts/`의 이전 검색·재작성·속도 평가 스크립트는 삭제됐습니다.
+과거 BM25 결과와 CPU 벤치마크 JSON은 과거 실험 기록이며 현재 품질이나 속도로 사용하지 않습니다.

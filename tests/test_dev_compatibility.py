@@ -11,6 +11,19 @@ from src.vectorstore import VectorSearchRequest, VectorDocument, VectorCollectio
 
 
 class DevCompatibilityTests(unittest.TestCase):
+    def test_default_profile_does_not_depend_on_legacy_model_variable(self):
+        from src.const.qdrant_config import get_api_embedding_profile
+        self.assertEqual(get_api_embedding_profile("openai").model, "text-embedding-3-small")
+        with patch.dict(os.environ, {
+            "EMBEDDING_PROVIDER": "openai", "EMBEDDING_MODEL": "text-embedding-3-small",
+            "EMBEDDING_DIMENSION": "1536", "QDRANT_COLLECTION": "team_documents_openai_dev",
+            "OPENAI_API_KEY": "test-key",
+            "EMBEDDING_NORMALIZED": "false",
+        }, clear=True):
+            settings = QdrantSettings.from_env()
+        self.assertEqual(settings.embedding.model, "text-embedding-3-small")
+        self.assertFalse(settings.embedding.normalized)
+
     def test_common_project_paths_have_one_root(self):
         self.assertEqual(CHUNK_DATA_PATH, PROJECT_PATH / "data" / "chunk")
         self.assertEqual(ENV_PATH, PROJECT_PATH / ".env")

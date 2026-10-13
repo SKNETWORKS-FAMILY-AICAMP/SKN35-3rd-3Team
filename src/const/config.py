@@ -41,8 +41,20 @@ TEST_REPORT_PATH = TEST_PATH / "report"
 ENV_PATH = PROJECT_PATH / ".env"
 ENV_EXAMPLE_PATH = PROJECT_PATH / ".env.example"
 
+# 공통 평가 입력과 리랭크 Markdown 보고서·모델 캐시 경로
+RAG_EVALUATION_CASES_PATH = PROJECT_PATH / "rag_evaluation_cases.review.json"
+RAG_RERANK_REPORT_PATH = PROJECT_PATH / "docs" / "rag_rerank_evaluation" / "rag_rerank_report.md"
+RERANK_CACHE_PATH = PROJECT_PATH / ".cache" / "rerank"
+
 
 # ==========================================================================================
 
 EMBED_DIMENSION = 1536
 EMBED_NORMALIZED = True
+
+# 빈 검색 결과에 대해 허용할 추가 재검색 횟수입니다.
+RAG_MAX_RETRIES = 2
+
+# 실제 Qdrant·Generator·Citation 통합 테스트 결과를 저장합니다.
+RAG_CITATION_REPORT_PATH = TEST_REPORT_PATH / "rag_citation_report.md"
+RAG_GRAPH_REPORT_PATH = TEST_REPORT_PATH / "rag_graph_integration_report.md"

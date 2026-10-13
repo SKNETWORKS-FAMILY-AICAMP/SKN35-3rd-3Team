@@ -56,7 +56,7 @@ API_EMBEDDING_PROFILES: Final[Mapping[str, ApiEmbeddingProfile]] = (
         {
             "openai": ApiEmbeddingProfile(
                 provider="openai",
-                model=model.OPENAI_EMBED_MODEL,
+                model="text-embedding-3-small",
                 dimension=config.EMBED_DIMENSION,
                 collection="team_documents_openai_dev",
                 normalized=config.EMBED_NORMALIZED,
@@ -438,7 +438,7 @@ class EmbeddingSettings:
                     or api_profile.dimension
                 ),
                 normalized=(
-                    _optional_boolean_env("EMBEDDING_NORMALIZED")
+                    _boolean_env("EMBEDDING_NORMALIZED", api_profile.normalized)
                     if _optional_env("EMBEDDING_NORMALIZED") is not None
                     else api_profile.normalized
                 ),

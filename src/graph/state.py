@@ -1,10 +1,13 @@
 # State 클래스 정의
-from typing import NotRequired
+from typing import NotRequired, Annotated
 
 from langgraph.graph import MessagesState
+from langgraph.graph.message import add_messages
 from src.vectorstore import VectorSearchHit
 
 class State(MessagesState):
+    history : Annotated[list[str], add_messages]
+
     origin_query : str # 원본
     retry_count : int
 
@@ -17,7 +20,7 @@ class State(MessagesState):
 
     is_valid: NotRequired[bool] # 생성에 전달할 문서가 있는지 확인한 결과(근거 검증 아님)
     validation_reason: NotRequired[str]
-    precision_at_k : NotRequired[float] # Precision@K 평가용
+    score : NotRequired[float] # 분기체크 용
 
     answer : str # 답변
 

@@ -45,6 +45,7 @@ def create_llm(temperature : float = 0):
     )
 
 # .env의 리랭크 모델을 CPU에서 생성합니다.
+@lru_cache(maxsize=1)
 def create_rerank_model():
     if not RERANK_MODEL:
         raise ValueError(".env에 RERANK_MODEL을 지정해야 합니다.")

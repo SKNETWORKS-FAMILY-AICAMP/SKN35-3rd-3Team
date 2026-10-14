@@ -3,6 +3,7 @@ import uuid
 
 import streamlit as st
 
+from src.app.pdf_utils import pdf_to_images
 from src.graph.workflow import build_workflow  # 실제 파일 이름에 맞게 수정
 
 
@@ -36,10 +37,11 @@ def ask(text: str, img_bytes_list: list[bytes]) -> str:
                 "origin_query": text,
                 "retry_count": 0,
                 "images": [to_b64(b) for b in img_bytes_list],  # 없으면 []
+                "answer": "",
             },
             config={"configurable": {"thread_id": st.session_state.thread_id}},
         )
-        return result.get("answer", "답변을 생성하지 못했어요.")
+        return result.get("answer") or "..."
     except Exception as e:
         msg = str(e)
         if "RESOURCE_EXHAUSTED" in msg or "429" in msg:
@@ -58,7 +60,7 @@ def render_chat():
     prompt = st.chat_input(
         "질문을 입력하세요. 이미지를 첨부할 수도 있어요.",
         accept_file="multiple",
-        file_type=["png", "jpg", "jpeg"],
+        file_type=["png", "jpg", "jpeg", "pdf"],
     )
     if not prompt:
         return
@@ -70,7 +72,13 @@ def render_chat():
         st.warning("질문을 함께 입력해 주세요.")
         return
 
-    img_bytes_list = [f.getvalue() for f in files]
+    img_bytes_list = []
+    for f in files:
+        data = f.getvalue()
+        if f.name.lower().endswith(".pdf"):
+            img_bytes_list += pdf_to_images(data)
+        else:
+            img_bytes_list.append(data)
 
     # 사용자 메시지 표시
     with st.chat_message("user"):

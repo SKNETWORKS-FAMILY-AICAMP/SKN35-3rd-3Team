@@ -7,7 +7,6 @@ from src.rerank import rerank
 
 def rerank_node(state : State):
     # rerank.py에서 정의한 함수의 리턴값만 받아서 다룰 예정
-    #documents = "ddd"
-    #precision = 0.5
-    #return {"documents": documents, "precision_at_k": precision,}
+    # documents, score = rerank(state,top_k=5)
+    # return {"documents" : documents, "score": score}
     return rerank(state, top_k=5)

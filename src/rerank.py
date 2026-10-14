@@ -9,7 +9,7 @@ from src.rrf import reciprocal_rank_fusion
 # State의 원본 질문과 후보 본문을 비교해 상위 문서를 반환합니다.
 def rerank(state, top_k=5, *, model=None, timings=None, verbose=True):
     started = perf_counter()
-    question = state.get("origin_query")
+    question = state.get("rewrite_query") or state.get("origin_query")
     documents = state.get("documents", [])
     if not isinstance(question, str) or not question.strip():
         raise ValueError("문자열 origin_query가 필요합니다.")
@@ -18,7 +18,7 @@ def rerank(state, top_k=5, *, model=None, timings=None, verbose=True):
     if not isinstance(documents, list):
         raise ValueError("documents는 문서 딕셔너리 목록이어야 합니다.")
     if not documents:
-        response = {"documents": []}
+        response = {"documents": [], "score" : None}
         if timings is not None:
             timings.update(model_load_seconds=0.0, processing_seconds=perf_counter() - started,
                            inference_seconds=0.0, window_count=0)
@@ -38,8 +38,8 @@ def rerank(state, top_k=5, *, model=None, timings=None, verbose=True):
     tokenizer = model.tokenizer
     # 분할 준비용 토큰화는 아직 모델 입력이 아니므로 원문 길이 경고를 발생시키지 않습니다.
     query_tokens = tokenizer.encode(question.strip(), add_special_tokens=False, verbose=False)
-    if len(query_tokens) > 100:
-        raise ValueError("질문이 재정렬 입력 한도를 초과합니다(100 토큰).")
+    if len(query_tokens) > 1000:
+        raise ValueError("질문이 재정렬 입력 한도를 초과합니다(1000 토큰).")
     max_length = model.max_seq_length
     pairs, owners, pair_lengths = [], [], []
     for index, doc in enumerate(documents):
@@ -87,7 +87,8 @@ def rerank(state, top_k=5, *, model=None, timings=None, verbose=True):
                     "rerank_score_method": "max_window"}
         ranked.append({**doc, "score": best[index], "metadata": metadata})
     ranked.sort(key=lambda doc: -doc["score"])  # 동점은 RRF 순서를 유지합니다.
-    response = {"documents": ranked[:top_k]}
+    top_docs = ranked[:top_k]
+    response = {"documents": top_docs, "score": top_docs[0]["score"]}
     if timings is not None:
         timings.update(model_load_seconds=load_seconds,
                        processing_seconds=perf_counter() - processing_started,

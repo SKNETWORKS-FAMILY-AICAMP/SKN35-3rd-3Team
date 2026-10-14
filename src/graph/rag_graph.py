@@ -6,7 +6,6 @@ from src.graph.rrf_node import rrf_node
 from src.graph.rerank_node import rerank_node
 from src.graph.validation_node import validation_node
 from src.graph.generator_node import generator_node
-from src.graph.citation_node import citation_node
 
 def route_after_validation(state: State):
     if state["is_valid"]:
@@ -24,7 +23,6 @@ def build_rag_graph():
     builder.add_node("rerank" , rerank_node)
     builder.add_node("validation" , validation_node)
     builder.add_node("generator" , generator_node)
-    builder.add_node("citation" , citation_node)
     print("노드 생성 완료")
 
     builder.add_edge(START, "query_rewrite")
@@ -39,7 +37,6 @@ def build_rag_graph():
         }
     )
 
-    builder.add_edge("generator", "citation")
-    builder.add_edge("citation" , END)
+    builder.add_edge("generator", END)
 
     return builder.compile()

@@ -7,14 +7,16 @@ from src.graph.mcp_graph import build_mcp_graph
 from src.graph.general_agent import general_agent
 from src.const.model import create_llm , create_llm_gmn
 from src.prompt.classify_prompt import CLASSIFY_PROMPT
+from src.history import format_history
 
 def route_start(state: State) -> str:
     llm = create_llm()
-    message = [
-        ("system", CLASSIFY_PROMPT),
-        ("user", state["origin_query"])
-    ]
-    # label = llm.invoke(message).content.strip().lower()
+    history = format_history(state.get("messages"), max_turns=2)
+    user_content = (
+        f"[이전 대화]\n{history}\n\n[현재 질문]\n{state['origin_query']}"
+        if history else state["origin_query"]
+    )
+    message = [("system", CLASSIFY_PROMPT), ("user", user_content)]
     label = llm.invoke(message).text.strip().lower()
     return label if label in {"general", "rag", "mcp", "out_of_scope"} else "rag"
 

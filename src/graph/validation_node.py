@@ -1,13 +1,13 @@
 from src.graph.state import State
 
-PRECISION_THRESHOLD = 0.8
+RERANK_MIN_SCORE = 0.8 # 테스트 후 수정 진행
 
 def validation_node(state: State):
-    # precision = state["precision_at_k"]
+    score = state["score"]
 
-    # if state["retry_count"] >= 2:
-    return { "is_valid": True }
+    if state["retry_count"] >= 2:
+        return { "is_valid": True }
 
-    # return {
-    #     "is_valid": precision >= PRECISION_THRESHOLD
-    # }
+    return {
+        "is_valid": score >= RERANK_MIN_SCORE and score is not None
+    }

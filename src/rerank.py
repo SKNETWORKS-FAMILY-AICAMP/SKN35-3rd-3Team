@@ -39,6 +39,7 @@ def _print_documents(documents, width=80):
         if len(text) > width:
             text = text[:width] + "…"
         print(f"  [{rank}] {text}")
+    print()
 
 def _preserve_primary_laws(ranked, top_k, question="", minimum=PRIMARY_LAW_MIN_COUNT):
     """명시된 조문과 법령 원문이 최종 근거에 포함되도록 출처 균형을 맞춥니다."""

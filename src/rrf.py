@@ -16,6 +16,7 @@ def print_hits(hits, width=80):
         if len(text) > width:
             text = text[:width] + "..."
         print(f"    [{rank}] {text}")
+    print()
 
 # 질문별 검색 순위를 RRF 점수로 합치고, 중복 청크를 제거해 상위 결과를 반환합니다.
 def reciprocal_rank_fusion(rankings, *, top_k=5, rank_constant=60.0):

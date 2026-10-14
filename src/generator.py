@@ -30,6 +30,7 @@ def print_response(response, width=80):
         print(f"    [{i}] {text}")
     print(f"  generation_status: {response['generation_status']}")
     print(f"  latency_ms: {response['latency_ms']}")
+    print()
 
 # 재정렬 순서를 유지하고, 출처·중복·토큰 한도·잘림 정보를 가진 컨텍스트를 만듭니다.
 def build_context(documents: list[dict], model_name: str, token_budget: int) -> dict:

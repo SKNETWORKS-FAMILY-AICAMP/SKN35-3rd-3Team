@@ -1,0 +1,377 @@
+{
+  "evaluation_dataset_sha256": "e7f9efcfc798dd6b4eb37892cc741aacccd2cd44387dc65674930b49617706f8",
+  "source_dataset_sha256": "f0300792706b70d0080c2b0ffd0b5be3b774b432885ee2d3ebe0ea8c113eea51",
+  "purpose": "question type/origin/correlation metadata only; queries and grades unchanged",
+  "cases": {
+    "q021": {
+      "query_sha256": "4585de4df594ef3dba014ba58e5fbd4489e76c35e1c6b16c681bdcd1a0ae9d2f",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q018"
+      ],
+      "question_group": "q018"
+    },
+    "q022": {
+      "query_sha256": "9e3c2389cf62c6b39c659fceb17d03391dfbafe0de11accab3314b7c8ae72b86",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q013"
+      ],
+      "question_group": "q013"
+    },
+    "q023": {
+      "query_sha256": "fee7be771084269679eef03b58d6d2e18c81f4f8ea39e632360c97433c10043e",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q008"
+      ],
+      "question_group": "q008"
+    },
+    "q024": {
+      "query_sha256": "8c82fe460d2499b3e00f5656b0eec24c7e827f5f3f7b2d221e7e26563817c27b",
+      "question_type": "complex",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q013",
+        "q015"
+      ],
+      "question_group": "q013+q015"
+    },
+    "q001": {
+      "query_sha256": "531e54ba4f1e74a68fd5c0f732a5148b6e47e9802580157dbab8b080e22dfda1",
+      "question_type": "simple",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q001"
+      ],
+      "question_group": "q001"
+    },
+    "q002": {
+      "query_sha256": "9295f66cf32b39e12c10d37ea67f2cb304e10d81a43372749eb49b3aeb7f3394",
+      "question_type": "simple",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q002"
+      ],
+      "question_group": "q002"
+    },
+    "q003": {
+      "query_sha256": "fc7e5d7cbb81cf80c78d2121890ea3e278e402987da2aa747cba87919aa625eb",
+      "question_type": "simple",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q003"
+      ],
+      "question_group": "q003"
+    },
+    "q004": {
+      "query_sha256": "418f2043dd20c77752b0551363c104cc9956f21f0db0cc8bff4277612776f953",
+      "question_type": "simple",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q004"
+      ],
+      "question_group": "q004"
+    },
+    "q005": {
+      "query_sha256": "db3125234ca6c5c6b6699a11bfc1ba2536bdc4eee68de76a66737ebaa5365613",
+      "question_type": "simple",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q005"
+      ],
+      "question_group": "q005"
+    },
+    "q006": {
+      "query_sha256": "ce848adc8b1a03dc7794aeae97ec44e2cd7727d31bb09576df80bb5e6386bd25",
+      "question_type": "simple",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q006"
+      ],
+      "question_group": "q006"
+    },
+    "q007": {
+      "query_sha256": "7e9b5e6c21fcc2ced47163a8992da4a684c1913688202ada7ec1dc51835e63ac",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q007"
+      ],
+      "question_group": "q007"
+    },
+    "q008": {
+      "query_sha256": "a963e3401940ae6bb041d515e117224a10b91be1f86beb6ef86d5853d6e6ce75",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q008"
+      ],
+      "question_group": "q008"
+    },
+    "q009": {
+      "query_sha256": "44509c6b28ef644eb7e7caa17aa56e391bb84926d8eb478ebdb29026bc0998c9",
+      "question_type": "complex",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q009"
+      ],
+      "question_group": "q009"
+    },
+    "q010": {
+      "query_sha256": "1c2d4a7afea272f9a75793cbf0421ba541d78d64371213371649873d794a18dc",
+      "question_type": "simple",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q010"
+      ],
+      "question_group": "q010"
+    },
+    "q011": {
+      "query_sha256": "3fb8246208eaab973d560c7655c3dee7af4bde6aa94643c04b5141b5e0c1a635",
+      "question_type": "complex",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q011"
+      ],
+      "question_group": "q011"
+    },
+    "q012": {
+      "query_sha256": "18189c4a8d0af0629710cc30212ee7ee836c7d12284fc9d64e74d1b65c432fbc",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q012"
+      ],
+      "question_group": "q012"
+    },
+    "q013": {
+      "query_sha256": "2565c0426140edf6c2be50fac07f5675930c46d6ca9dc9d89f2ac5549cc4575c",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q013"
+      ],
+      "question_group": "q013"
+    },
+    "q014": {
+      "query_sha256": "2ce793be34f63bb5859aa64be445ea561c43e98b8a2cba5c391742e433d91e06",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q014"
+      ],
+      "question_group": "q014"
+    },
+    "q015": {
+      "query_sha256": "2eb7c57395db9368db56bbdc99934b4a70bf37768e22e2e49302517ae5d70adb",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q015"
+      ],
+      "question_group": "q015"
+    },
+    "q016": {
+      "query_sha256": "fa6767bf0e1780d9122dcc2481b867ced863a6b17ff415dcc1ab5918f489f9ae",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q016"
+      ],
+      "question_group": "q016"
+    },
+    "q017": {
+      "query_sha256": "566d43f982bbc6524853fb93ea1b9e4b88e96b0af1ebdbd694eb2c4a46a151b3",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q017"
+      ],
+      "question_group": "q017"
+    },
+    "q018": {
+      "query_sha256": "473615dad8784b6ad6cd2a1e9b34f768ad9e0d43e29c606b9e2659b7d33f0962",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q018"
+      ],
+      "question_group": "q018"
+    },
+    "q019": {
+      "query_sha256": "1658f65592067506dc0c2884414e1e8647ab2f492f6587da28bb7f5ce5fd84fa",
+      "question_type": "scenario",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q019"
+      ],
+      "question_group": "q019"
+    },
+    "q020": {
+      "query_sha256": "e7faa67cea18d7b967347d8841a86cc79aa4046c4e98c9d028021a931df5c1d9",
+      "question_type": "complex",
+      "question_origin": "ai_generated_or_project_existing",
+      "source_case_ids": [
+        "q020"
+      ],
+      "question_group": "q020"
+    },
+    "q025": {
+      "query_sha256": "ce25f910b5693d61c13c39fb331de34d092991a86753c0cd1363b4bc6a111037",
+      "question_type": "simple",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q001"
+      ],
+      "question_group": "q001"
+    },
+    "q026": {
+      "query_sha256": "f7ad102bd9442600d1d13dd9be94befb540092a3630099836da3d4c4757bdc2d",
+      "question_type": "scenario",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q002"
+      ],
+      "question_group": "q002"
+    },
+    "q027": {
+      "query_sha256": "f8d3d09ef77f1d4572409815b3a215eb3a4c0b7501cc76e0be832e8f23c6002d",
+      "question_type": "complex",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q003",
+        "q004"
+      ],
+      "question_group": "q003+q004"
+    },
+    "q028": {
+      "query_sha256": "61b4ac32a5eeaeb76e16ed36425be481de389d6b2de50fd3518fd94ad1f9b688",
+      "question_type": "complex",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q005",
+        "q006"
+      ],
+      "question_group": "q005+q006"
+    },
+    "q029": {
+      "query_sha256": "20f649dd28ae8f476162fcb2111d2c58d0c156f2a0feb9e144fa87011ed3d628",
+      "question_type": "scenario",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q007",
+        "q008"
+      ],
+      "question_group": "q007+q008"
+    },
+    "q030": {
+      "query_sha256": "81752dd28dfc15af8baa566a61e1124fbc89ae483a5b376d1fefa2d944f7b330",
+      "question_type": "complex",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q009",
+        "q010"
+      ],
+      "question_group": "q009+q010"
+    },
+    "q031": {
+      "query_sha256": "4da41bff8ab1d582a426f917763a46c2447b502c5389297445ba833ed907bbb5",
+      "question_type": "complex",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q011",
+        "q012"
+      ],
+      "question_group": "q011+q012"
+    },
+    "q032": {
+      "query_sha256": "ed01f695454aa57b61a48924a9455216e1331c8960633a95d7d4fc63233b5aa8",
+      "question_type": "scenario",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q013",
+        "q014"
+      ],
+      "question_group": "q013+q014"
+    },
+    "q033": {
+      "query_sha256": "d589acdcf34383f21486ae6524927165ab1e78311e194768aa8d59dde4d79ea2",
+      "question_type": "complex",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q015",
+        "q016"
+      ],
+      "question_group": "q015+q016"
+    },
+    "q034": {
+      "query_sha256": "caddf02f638833862fcf9da1f512c240eb3148f55e924b3b75cda78db2527fd3",
+      "question_type": "scenario",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q017",
+        "q018"
+      ],
+      "question_group": "q017+q018"
+    },
+    "q035": {
+      "query_sha256": "1bdfe16caae291d21f0fb5975a2a3c383d8a83029d68028d3df4bc551ab1533f",
+      "question_type": "complex",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q018",
+        "q019"
+      ],
+      "question_group": "q018+q019"
+    },
+    "q036": {
+      "query_sha256": "c7cf60dbe81d4a944cba7fec07ddd525955f409c8c7c86ce4520286425d679a9",
+      "question_type": "scenario",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q020"
+      ],
+      "question_group": "q020"
+    },
+    "q037": {
+      "query_sha256": "9c8b83a752df3d850370dd8b265dfc2d8f90dd2b39a6bcccef310be318f91c00",
+      "question_type": "simple",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q017"
+      ],
+      "question_group": "q017"
+    },
+    "q038": {
+      "query_sha256": "8e9337497282d60683d5c56df17dbccf705cf0203b1eb0c9f25c15a108a1a880",
+      "question_type": "simple",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q018"
+      ],
+      "question_group": "q018"
+    },
+    "q039": {
+      "query_sha256": "4005f49e523e8d995a1deb92a6001e1027728794cd4b855753433da868a6e000",
+      "question_type": "simple",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q019"
+      ],
+      "question_group": "q019"
+    },
+    "q040": {
+      "query_sha256": "2ae086c754bdbfb4d1e47154d0ae95395f28bf0bcfeaadbd892a4383dffc2823",
+      "question_type": "scenario",
+      "question_origin": "ai_generated",
+      "source_case_ids": [
+        "q014"
+      ],
+      "question_group": "q014"
+    }
+  }
+}

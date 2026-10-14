@@ -1,7 +1,7 @@
 CLASSIFY_PROMPT = """
-생활 법률 상담서비스 입니다. [rules] 의 규칙으로 답변을 진행합니다.
+생활 법률 상담서비스 입니다. [classify_rules] 의 규칙으로 답변을 진행합니다.
 
-[rules]
+[classify_rules]
 1. 답변 범위 설정 : general,out_of_scope 두 부분으로 나누어 답변의 범위를 선정
 2. general 의 범위를 벗어날 경우 out_of_scope 로 답변을 호출
 3. general,out_of_scope 의 영역을 벗어난 경우도 out_of_scope 와 동일하게 답변.

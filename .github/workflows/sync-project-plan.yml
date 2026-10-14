@@ -1,0 +1,168 @@
+name: Sync Project 67 to PLAN_jb
+
+on:
+  workflow_dispatch:
+  issues:
+    types: [opened, edited, closed, reopened, assigned, unassigned]
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+
+permissions:
+  contents: write
+  issues: read
+
+concurrency:
+  group: sync-project-67-plan-jb
+  cancel-in-progress: true
+
+env:
+  PROJECT_OWNER: SKNETWORKS-FAMILY-AICAMP
+  PROJECT_NUMBER: "67"
+  PROJECT_URL: https://github.com/orgs/SKNETWORKS-FAMILY-AICAMP/projects/67/views/2
+  TARGET_REPO: SKNETWORKS-FAMILY-AICAMP/SKN35-3rd-3Team
+  PLAN_FILE: PLAN_jb.md
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout jb branch
+        uses: actions/checkout@v4
+        with:
+          ref: jb
+          fetch-depth: 0
+
+      - name: Read GitHub Project
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_SYNC_TOKEN }}
+        run: |
+          test -n "$GH_TOKEN" || {
+            echo "PROJECT_SYNC_TOKEN secret is not configured."
+            exit 1
+          }
+          gh project item-list "$PROJECT_NUMBER" \
+            --owner "$PROJECT_OWNER" \
+            --limit 200 \
+            --format json \
+            > project-items.json
+
+      - name: Update PLAN_jb.md
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from collections import Counter
+          from pathlib import Path
+
+          plan_path = Path(os.environ["PLAN_FILE"])
+          project_url = os.environ["PROJECT_URL"]
+          target_repo = os.environ["TARGET_REPO"]
+          start_marker = "<!-- PROJECT_STATUS:START -->"
+          end_marker = "<!-- PROJECT_STATUS:END -->"
+
+          status_names = {
+              "Todo": "계획",
+              "In Progress": "진행 중",
+              "Done": "완료",
+              "No Status": "상태 미지정",
+          }
+          status_order = {
+              "Todo": 0,
+              "In Progress": 1,
+              "Done": 2,
+              "No Status": 3,
+          }
+
+          def escape(value):
+              return str(value or "").replace("|", "\\|").replace("\n", " ")
+
+          def get_assignees(item):
+              raw = item.get("assignees") or []
+              names = []
+              for value in raw:
+                  if isinstance(value, str):
+                      names.append(value)
+                  elif isinstance(value, dict):
+                      name = value.get("login") or value.get("name")
+                      if name:
+                          names.append(name)
+              return ", ".join(f"@{name.lstrip('@')}" for name in names) or "미지정"
+
+          data = json.loads(Path("project-items.json").read_text(encoding="utf-8"))
+          rows = []
+
+          for item in data.get("items", []):
+              content = item.get("content") or {}
+              repository = item.get("repository") or content.get("repository") or ""
+              if isinstance(repository, dict):
+                  repository = repository.get("nameWithOwner") or repository.get("name") or ""
+              if isinstance(repository, str):
+                  repository = repository.removeprefix("https://github.com/").rstrip("/")
+              if repository and repository != target_repo:
+                  continue
+
+              title = item.get("title") or content.get("title") or "제목 없음"
+              status = item.get("status") or "No Status"
+              url = content.get("url") or item.get("url") or project_url
+              number = content.get("number") or item.get("number")
+              issue = f"[#{number}]({url})" if number else f"[Project 항목]({url})"
+              rows.append({
+                  "status": status,
+                  "title": title,
+                  "assignees": get_assignees(item),
+                  "issue": issue,
+              })
+
+          rows.sort(key=lambda row: (status_order.get(row["status"], 99), row["title"]))
+          counts = Counter(row["status"] for row in rows)
+          generated = [
+              f"> 기준: [GitHub Project #67]({project_url})",
+              "",
+              (
+                  f"계획 **{counts.get('Todo', 0)}건** · "
+                  f"진행 중 **{counts.get('In Progress', 0)}건** · "
+                  f"완료 **{counts.get('Done', 0)}건**"
+              ),
+              "",
+              "| 상태 | 담당 업무 | 담당자 | 이슈 |",
+              "|---|---|---|---|",
+          ]
+
+          if rows:
+              for row in rows:
+                  status = status_names.get(row["status"], row["status"])
+                  generated.append(
+                      f"| {escape(status)} | {escape(row['title'])} "
+                      f"| {escape(row['assignees'])} | {row['issue']} |"
+                  )
+          else:
+              generated.append("| 상태 미지정 | 등록된 작업 없음 | - | - |")
+
+          text = plan_path.read_text(encoding="utf-8")
+          if start_marker not in text or end_marker not in text:
+              raise SystemExit("PLAN_jb.md에서 PROJECT_STATUS 마커를 찾지 못했습니다.")
+
+          before, remainder = text.split(start_marker, 1)
+          _, after = remainder.split(end_marker, 1)
+          replacement = (
+              start_marker + "\n\n" + "\n".join(generated) + "\n\n" + end_marker
+          )
+          plan_path.write_text(before + replacement + after, encoding="utf-8")
+          PY
+
+      - name: Commit updated plan
+        shell: bash
+        run: |
+          rm -f project-items.json
+          if git diff --quiet -- "$PLAN_FILE"; then
+            echo "Project status is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$PLAN_FILE"
+          git commit -m "docs: sync Project 67 status"
+          git push origin HEAD:jb

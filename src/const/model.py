@@ -52,7 +52,8 @@ def create_rerank_model():
     if not RERANK_MODEL:
         raise ValueError(".env에 RERANK_MODEL을 지정해야 합니다.")
     # 선택 의존성이라 모델을 사용하는 시점에만 로딩합니다.
-    torch.set_num_threads(4)
+    # 5600X급 6코어 환경에서 배치 추론이 병렬 처리되도록 물리 코어 수준을 사용합니다.
+    torch.set_num_threads(min(6, os.cpu_count() or 4))
     return CrossEncoder(
         RERANK_MODEL, device="cpu", max_length=512,
         cache_folder=str(RERANK_CACHE_PATH), trust_remote_code=False,

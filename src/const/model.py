@@ -23,6 +23,7 @@ GEMINI_EMBED_MODEL = os.getenv("GEMINI_EMBED_MODEL")
 LAW_API = os.getenv("LAW_API_OC")
 
 # 임베딩 모델 정의
+@lru_cache(maxsize=1)
 def create_embedding():
     return OpenAIEmbeddings(
         model=OPENAI_EMBED_MODEL,
@@ -37,6 +38,7 @@ def create_embedding():
 # 필요한 다른 모델도 정의하고 위에 예시처럼 사용
 
 # 챗 모델 정의
+@lru_cache(maxsize=1)
 def create_llm(temperature : float = 0):
     return ChatOpenAI(
         model=OPENAI_LLM_MODEL,
@@ -76,6 +78,7 @@ def create_llm_gmn(temperature: float = 0):
     )
 
 # 기존 LLM을 재사용하고, 생성 시 출력 길이와 JSON 형식을 지정합니다.
+@lru_cache(maxsize=1)
 def create_generator_llm():
     return create_llm().bind(
         max_tokens=int(os.environ["GENERATOR_MAX_OUTPUT_TOKENS"]),

@@ -29,6 +29,16 @@ def _legal_search_rank(document):
     rank = source.get("rank")
     return rank if isinstance(rank, int) and rank > 0 else math.inf
 
+def _print_documents(documents, width=80):
+    """순위와 본문 앞부분만 한 줄씩 들여쓰기해서 출력합니다."""
+    if not documents:
+        print("  (결과 없음)")
+        return
+    for rank, doc in enumerate(documents, 1):
+        text = " ".join(doc["text"].split())  # 줄바꿈·연속 공백을 한 칸으로
+        if len(text) > width:
+            text = text[:width] + "…"
+        print(f"  [{rank}] {text}")
 
 def _preserve_primary_laws(ranked, top_k, question="", minimum=PRIMARY_LAW_MIN_COUNT):
     """명시된 조문과 법령 원문이 최종 근거에 포함되도록 출처 균형을 맞춥니다."""
@@ -100,7 +110,7 @@ def rerank(state, top_k=5, *, model=None, batch_size=DEFAULT_BATCH_SIZE,
             timings.update(model_load_seconds=0.0, processing_seconds=perf_counter() - started,
                            inference_seconds=0.0, window_count=0)
         if verbose:
-            print(response)
+            _print_documents(response["documents"])
         return response
     for doc in documents:
         if not isinstance(doc, dict) or not isinstance(doc.get("text"), str) or not doc["text"].strip():
@@ -172,7 +182,7 @@ def rerank(state, top_k=5, *, model=None, batch_size=DEFAULT_BATCH_SIZE,
                        inference_seconds=inference_seconds, window_count=len(pairs),
                        max_pair_tokens=max(pair_lengths), model_max_tokens=max_length)
     if verbose:
-        print(response)
+        _print_documents(response["documents"])
     return response
 
 

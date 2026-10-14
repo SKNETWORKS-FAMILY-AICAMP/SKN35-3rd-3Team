@@ -3,7 +3,6 @@ import math
 
 # 이전 임계값은 리랭커 점수를 확률처럼 해석해 정상 근거도 반복 검색했습니다.
 # 호환용 상수는 남기되, 검증은 점수가 아니라 사용 가능한 근거의 존재로 판단합니다.
-RERANK_MIN_SCORE = None
 
 def validation_node(state: State):
     documents = state.get("documents") or []

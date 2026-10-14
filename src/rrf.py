@@ -7,6 +7,15 @@ from src.vectorstore import VectorSearchHit
 if __name__ == "__main__":
     from src.vector_db.bootstrap import create_team_retriever
 
+def print_hits(hits, width=80):
+    if not hits:
+        print("  (결과 없음)")
+        return
+    for rank, hit in enumerate(hits, 1):
+        text = " ".join(hit.text.split())
+        if len(text) > width:
+            text = text[:width] + "..."
+        print(f"    [{rank}] {text}")
 
 # 질문별 검색 순위를 RRF 점수로 합치고, 중복 청크를 제거해 상위 결과를 반환합니다.
 def reciprocal_rank_fusion(rankings, *, top_k=5, rank_constant=60.0):
@@ -46,16 +55,15 @@ def reciprocal_rank_fusion(rankings, *, top_k=5, rank_constant=60.0):
         metadata = {**hit.metadata, "retrieval_method": "rrf", "rrf_sources": sources[key]}
         response.append(VectorSearchHit(hit.point_id, scores[key], hit.text, metadata))
     response = tuple(response)
-    #print(response)
+    # print_hits(response)
     return response
-
 
 # 그래프 State의 rankings를 받아 RRF를 실행하고, documents 형태로 반환합니다.
 def rrf(state):
     # 그래프 State의 질문별 결과를 통합해 다음 rerank 노드에 전달합니다.
     hits = reciprocal_rank_fusion(state["rankings"], top_k=20)
     response = {"documents": [hit.to_document() for hit in hits]}
-    #print(response)
+    # print_hits(response)
     return response
 
 

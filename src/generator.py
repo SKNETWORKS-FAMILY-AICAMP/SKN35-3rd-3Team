@@ -19,6 +19,17 @@ from src.rrf import reciprocal_rank_fusion
 import logging
 logger = logging.getLogger(__name__)
 
+def print_response(response, width=80):
+    answer = " ".join(str(response["answer"]).split())
+    print(f"  answer: {answer}")
+    print("  sources:")
+    for i, source in enumerate(response["sources"] or [], 1):
+        text = " ".join(str(source).split())
+        if len(text) > width:
+            text = text[:width] + "…"
+        print(f"    [{i}] {text}")
+    print(f"  generation_status: {response['generation_status']}")
+    print(f"  latency_ms: {response['latency_ms']}")
 
 # 재정렬 순서를 유지하고, 출처·중복·토큰 한도·잘림 정보를 가진 컨텍스트를 만듭니다.
 def build_context(documents: list[dict], model_name: str, token_budget: int) -> dict:
@@ -166,7 +177,7 @@ def generator(state: dict, *, llm=None, verbose: bool = True) -> dict:
                                     rejected_output=output)
     response["latency_ms"] = round((perf_counter() - started) * 1000, 1)
     if verbose:
-        print({key: response[key] for key in ["answer", "sources", "generation_status", "latency_ms"]})
+        print_response(response)
     return response
 
 

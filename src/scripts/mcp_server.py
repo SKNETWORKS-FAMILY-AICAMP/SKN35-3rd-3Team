@@ -3,13 +3,23 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
+import sys
 from pathlib import Path
 from typing import Literal, cast
 
+from src.mcp_tools.contracts import parse_tool_response
 from src.mcp_tools.runtime import create_team_mcp_server
 
 Transport = Literal["stdio", "streamable-http"]
 LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
+EXPECTED_TOOLS = {
+    "health_check",
+    "get_collection_info",
+    "search_documents",
+    "lookup_document",
+}
+CHECK_QUERY = "계약 해지 시 환불 기준은 무엇인가요?"
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -31,6 +41,11 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--path", default="/mcp")
+    parser.add_argument(
+        "--check-tools",
+        action="store_true",
+        help="임시 stdio Server로 읽기 전용 Tool 네 개를 호출하고 종료합니다.",
+    )
     return parser
 
 
@@ -65,8 +80,89 @@ def run_server(
     )
 
 
-def main() -> None:
+def _tool_payload(result: object) -> dict[str, object]:
+    """MCP TextContent를 팀 Tool 응답 객체로 변환합니다."""
+
+    response = "".join(
+        item.text
+        for item in getattr(result, "content", ())
+        if isinstance(getattr(item, "text", None), str)
+    )
+    return parse_tool_response(response)
+
+
+async def check_tools(env_file: Path | None = None) -> None:
+    """실제 stdio 연결로 MCP Tool 네 개를 한 번씩 호출합니다."""
+
+    from mcp import ClientSession, StdioServerParameters
+    from mcp.client.stdio import stdio_client
+
+    server_args = ["-m", "src.scripts.mcp_server", "--transport", "stdio"]
+    if env_file is not None:
+        server_args.extend(("--env-file", str(env_file)))
+    server = StdioServerParameters(command=sys.executable, args=server_args)
+
+    async with stdio_client(server) as streams:
+        async with ClientSession(*streams) as session:
+            await session.initialize()
+            tools = await session.list_tools()
+            tool_names = {tool.name for tool in tools.tools}
+            missing_tools = EXPECTED_TOOLS - tool_names
+            if missing_tools:
+                raise RuntimeError(
+                    "등록되지 않은 MCP Tool: "
+                    + ", ".join(sorted(missing_tools))
+                )
+
+            health = _tool_payload(await session.call_tool("health_check"))
+            info = _tool_payload(
+                await session.call_tool("get_collection_info")
+            )
+            search = _tool_payload(
+                await session.call_tool(
+                    "search_documents",
+                    {"query": CHECK_QUERY, "top_k": 3},
+                )
+            )
+            documents = search.get("documents")
+            if not isinstance(documents, list) or not documents:
+                raise RuntimeError("MCP 검색 결과가 없습니다.")
+            metadata = documents[0].get("metadata", {})
+            document_id = metadata.get("document_id")
+            lookup = _tool_payload(
+                await session.call_tool(
+                    "lookup_document",
+                    {"document_id": document_id, "limit": 20},
+                )
+            )
+
+    results = {
+        "health_check": health,
+        "get_collection_info": info,
+        "search_documents": search,
+        "lookup_document": lookup,
+    }
+    failed = [
+        name
+        for name, result in results.items()
+        if result["status"] != "success"
+    ]
+    if failed:
+        raise RuntimeError("MCP Tool 호출 실패: " + ", ".join(failed))
+
+    print("등록 Tool:", ", ".join(sorted(tool_names)))
+    for name, result in results.items():
+        documents = result.get("documents")
+        count = f", {len(documents)}건" if isinstance(documents, list) else ""
+        print(f"{name}: {result['status']}{count}")
+
+
+def main() -> int:
     args = _build_parser().parse_args()
+    if args.check_tools:
+        asyncio.run(check_tools(args.env_file))
+        return 0
+
     run_server(
         transport=cast(Transport, args.transport),
         env_file=args.env_file,
@@ -74,7 +170,8 @@ def main() -> None:
         port=args.port,
         path=args.path,
     )
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

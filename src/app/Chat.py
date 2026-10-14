@@ -3,9 +3,6 @@ import base64
 import logging
 import uuid
 import streamlit as st
-from src.app.pdf_utils import pdf_to_images
-from src.graph.workflow import build_workflow  # 실제 파일 이름에 맞게 수정
-from src.app.views import render_app
 
 def to_b64(file_bytes: bytes) -> str:
     return base64.b64encode(file_bytes).decode()
@@ -18,6 +15,7 @@ def init_session():
 
 def ask(text: str, img_bytes_list: list[bytes]) -> str:
     if "graph" not in st.session_state:
+        from src.graph.workflow import build_workflow
         st.session_state.graph = build_workflow()
     result = st.session_state.graph.invoke(
         {"origin_query": text, "retry_count": 0, "images": [to_b64(b) for b in img_bytes_list],"answer": "",},
@@ -62,47 +60,7 @@ def submit_question(text, images):
 
 
 def render_chat():
+    from src.app.views import render_app
     st.set_page_config(page_title="LAW:MATE | AI 법률 상담", page_icon="⚖️", layout="wide")
     init_session()
-    render_history()
-
-    # 입력창: 화면 아래 가운데, Enter로 전송, 이미지 첨부 가능
-    prompt = st.chat_input(
-        "질문을 입력하세요. 이미지를 첨부할 수도 있어요.",
-        accept_file="multiple",
-        file_type=["png", "jpg", "jpeg", "pdf"],
-    )
-    if not prompt:
-        return
-
-    text = (prompt.text or "").strip()
-    files = prompt.files or []
-
-    if not text:
-        st.warning("질문을 함께 입력해 주세요.")
-        return
-
-    img_bytes_list = []
-    for f in files:
-        data = f.getvalue()
-        if f.name.lower().endswith(".pdf"):
-            img_bytes_list += pdf_to_images(data)
-        else:
-            img_bytes_list.append(data)
-
-    # 사용자 메시지 표시
-    with st.chat_message("user"):
-        for b in img_bytes_list:
-            st.image(b, width=300)
-        st.markdown(text)
-    st.session_state.history.append(
-        {"role": "user", "content": text, "images": img_bytes_list}
-    )
-
-    # 답변 생성 및 표시
-    with st.chat_message("assistant"):
-        with st.spinner("답변을 찾는 중..."):
-            answer = ask(text, img_bytes_list)
-        st.markdown(answer)
-    st.session_state.history.append({"role": "assistant", "content": answer})
     render_app()

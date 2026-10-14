@@ -132,12 +132,23 @@ def chat():
                         if st.button(title, key=f"example_{title}"):
                             st.session_state.chat_draft = question
                             st.rerun()
-                prompt = st.chat_input("법률 고민을 자세히 입력해 주세요.", key="chat_draft", accept_file="multiple", file_type=["png", "jpg", "jpeg"], submit_mode="disable")
+                prompt = st.chat_input("법률 고민을 자세히 입력해 주세요.", key="chat_draft", accept_file="multiple", file_type=["png", "jpg", "jpeg", "pdf"], submit_mode="disable")
                 st.caption("구체적인 사실관계에 따라 판단이 달라질 수 있으며, 본 답변은 법률 자문을 대체하지 않습니다.")
                 if prompt:
                     text = (prompt.text or "").strip()
                     if text:
-                        submit_question(text, [f.getvalue() for f in prompt.files or []])
+                        try:
+                            images = []
+                            for file in prompt.files or []:
+                                if file.name.lower().endswith(".pdf"):
+                                    from src.app.pdf_utils import pdf_to_images
+                                    images.extend(pdf_to_images(file.getvalue()))
+                                else:
+                                    images.append(file.getvalue())
+                        except Exception:
+                            st.error("첨부파일을 읽지 못했습니다. PDF가 손상되거나 암호로 보호되어 있는지 확인해 주세요.")
+                        else:
+                            submit_question(text, images)
                     else:
                         st.warning("이미지와 함께 질문을 입력해 주세요.")
         with panel:

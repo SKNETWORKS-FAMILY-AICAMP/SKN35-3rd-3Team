@@ -1,0 +1,282 @@
+/* Default dark presentation using the same five brand colors. */
+:root {
+    --law-canvas: #111827;
+    --law-surface: #1e293b;
+    --law-text: #f8fafc;
+    --law-gold-text: #e2be7a;
+    --law-border: #f8fafc24;
+    --law-muted: #f8fafcbf;
+    color-scheme: dark;
+}
+
+.stApp {
+    background: var(--law-canvas);
+    color: var(--law-text);
+}
+
+[data-testid="stHeader"] {
+    background: #111827f2;
+}
+
+.stApp :is(h1,h2,h3,h4) {
+    color: var(--law-text);
+}
+
+.stApp a {
+    color: var(--law-gold);
+    text-decoration-color: #e2be7a80;
+}
+
+.stApp [data-testid="stCaptionContainer"] {
+    color: var(--law-muted);
+}
+
+/* Background, reading surfaces and the sidebar are separate depth levels. */
+.st-key-law_header,.st-key-law_conversation,[class*="st-key-law_process_"],[class*="st-key-law_source_note_"],
+.st-key-law_report_summary,.st-key-law_report_law,.st-key-law_report_precedent,.st-key-law_report_guide,
+.st-key-law_report_actions,.st-key-law_report_warning,.st-key-law_report_origins,
+.st-key-law_detail_body,.st-key-law_detail_meta,[class*="st-key-law_guide_category_"],[class*="st-key-law_guide_step_"],
+.st-key-law_guide_example,.st-key-law_guide_evidence,[data-testid="stForm"] {
+    background: var(--law-surface);
+    border-color: var(--law-border);
+    box-shadow: 0 8px 24px #11182730;
+}
+
+.st-key-law_guide [data-testid="stVerticalBlockBorderWrapper"] {
+    background: var(--law-surface);
+}
+
+.st-key-law_chat_shell,.st-key-law_history {
+    background: var(--law-canvas);
+}
+
+.st-key-law_history,.law-chat-heading,.law-date-divider:before,.law-date-divider:after,.law-process-title,.st-key-law_history_footer {
+    border-color: var(--law-border);
+}
+
+.law-date-divider:before,.law-date-divider:after {
+    background: var(--law-border);
+}
+
+.st-key-law_report_banner {
+    background: linear-gradient(120deg,var(--law-surface),var(--law-canvas));
+    border-color: var(--law-border);
+    border-top-color: var(--law-gold);
+}
+
+.st-key-law_report_summary {
+    border-top-color: var(--law-gold);
+}
+
+.st-key-law_summary_highlight {
+    background: #e2be7a12;
+    border-color: #e2be7a38;
+}
+
+[class*="st-key-law_evidence_"] {
+    background: var(--law-canvas);
+    border-color: var(--law-border);
+}
+
+[class*="st-key-law_source_note_"] [data-testid="stExpander"],[data-testid="stExpander"] {
+    background: var(--law-surface);
+    border-color: var(--law-border);
+}
+
+.st-key-law_guide_intro {
+    background: radial-gradient(ellipse at 95% 5%,#e2be7a18,transparent 65%),linear-gradient(125deg,var(--law-surface),var(--law-canvas));
+}
+
+.st-key-law_guide_notice {
+    background: #e2be7a12;
+    border-color: #e2be7a38;
+}
+
+.law-brand,.law-chat-heading strong,.law-section-heading strong,.law-process-title strong,.law-process-step strong,
+.law-action-step strong,.law-evidence-title strong,.law-step-title,.law-source-reading,
+.st-key-law_summary_highlight [data-testid="stMarkdownContainer"] p {
+    color: var(--law-text);
+}
+
+.law-step-description,.law-evidence-copy .law-evidence-excerpt,.law-evidence-copy .law-evidence-meta,
+.law-action-step small,.law-section-heading small,.law-report-status>span {
+    color: var(--law-muted);
+}
+
+.law-report-status strong {
+    color: var(--law-gold);
+}
+
+.law-report-status {
+    border-color: var(--law-border);
+}
+
+.st-key-law_guide [data-testid="stCaptionContainer"],.st-key-law_analysis [data-testid="stCaptionContainer"],.st-key-law_detail_meta [data-testid="stCaptionContainer"] {
+    color: var(--law-muted);
+}
+
+.law-brand-mark,.law-ai-mark,.law-section-icon {
+    border: 1px solid #e2be7a38;
+}
+
+[class*="st-key-law_guide_category_"] [data-testid="stIconMaterial"] {
+    background: var(--law-canvas);
+    color: var(--law-gold);
+    border: 1px solid #e2be7a38;
+}
+
+.law-process-dot {
+    box-shadow: inset 0 0 0 1px #e2be7a38;
+}
+
+.law-data-badge,.law-history-tag,.law-report-label,.law-count,.law-type,.law-report-badges>span,.law-report-badges .violet,
+.law-action-step>span {
+    background: #e2be7a12;
+    color: var(--law-gold);
+    border: 1px solid #e2be7a38;
+}
+
+.law-history-heading>span {
+    background: var(--law-surface);
+    color: var(--law-champagne);
+}
+
+[class*="st-key-law_thread_row_"]:hover,[class*="st-key-law_thread_row_"]:focus-within {
+    background: var(--law-surface);
+}
+
+.st-key-law_history [data-testid="stBaseButton-tertiary"] {
+    color: var(--law-text);
+}
+
+/* Navy buttons remain dark, with gold edges to stand out against dark cards. */
+[data-testid="stBaseButton-primary"],[data-testid="stBaseButton-primaryFormSubmit"],.st-key-guide_start button {
+    background: var(--law-deep);
+    border: 1px solid #e2be7a99;
+    box-shadow: 0 3px 12px #11182740;
+}
+
+[data-testid="stBaseButton-primary"]:not(:disabled):hover,[data-testid="stBaseButton-primaryFormSubmit"]:not(:disabled):hover {
+    background: var(--law-gold);
+    color: var(--law-deep);
+    border-color: var(--law-gold);
+}
+
+[data-testid="stBaseButton-primary"]:not(:disabled):hover :is(p,span),[data-testid="stBaseButton-primaryFormSubmit"]:not(:disabled):hover :is(p,span) {
+    color: var(--law-deep)!important;
+}
+
+[data-testid="stBaseButton-secondary"],[data-testid="stPopoverButton"] {
+    background: var(--law-canvas);
+    color: var(--law-champagne);
+    border-color: #f8fafc38;
+}
+
+[data-testid="stBaseButton-secondary"]:hover,[data-testid="stPopoverButton"]:hover {
+    background: var(--law-deep);
+    color: var(--law-gold);
+    border-color: var(--law-gold);
+}
+
+[data-testid="stBaseButton-primary"]:disabled,[data-testid="stBaseButton-primaryFormSubmit"]:disabled {
+    background: var(--law-canvas);
+    color: var(--law-muted);
+    border-color: var(--law-border);
+}
+
+[data-testid="stBaseButton-primary"]:disabled :is(p,span),[data-testid="stBaseButton-primaryFormSubmit"]:disabled :is(p,span) {
+    color: var(--law-muted)!important;
+}
+
+.st-key-law_header button {
+    color: var(--law-muted);
+}
+
+.st-key-law_header button:hover {
+    background: #e2be7a14!important;
+    color: var(--law-gold)!important;
+}
+
+.st-key-law_header [data-testid="stBaseButton-primary"]:not(:disabled):hover :is(p,span) {
+    color: var(--law-gold)!important;
+}
+
+.st-key-law_analysis_link button {
+    background: #e2be7a12;
+    color: var(--law-gold);
+    border-color: #e2be7a66;
+}
+
+.st-key-law_history [class*="st-key-history_"] [data-testid="stBaseButton-primary"] {
+    border-color: #e2be7a80;
+}
+
+.st-key-law_chat_shell [class*="st-key-law_message_user_"] [data-testid="stChatMessage"] {
+    background: var(--law-canvas);
+    border: 1px solid #e2be7a66;
+}
+
+.st-key-law_chat_shell [class*="st-key-law_message_assistant_"] [data-testid="stChatMessage"] {
+    background: var(--law-surface);
+    border-color: var(--law-border);
+}
+
+.st-key-law_chat_shell [class*="st-key-law_message_assistant_"] [data-testid="stChatMessage"] strong {
+    color: var(--law-champagne);
+}
+
+.st-key-law_chat_shell [data-testid="stChatMessage"] li {
+    background: var(--law-canvas);
+}
+
+[data-testid="stChatInput"] {
+    background: var(--law-surface);
+    border-color: #f8fafc4d;
+}
+
+[data-testid="stChatInput"] textarea {
+    background: var(--law-surface);
+    color: var(--law-text);
+    caret-color: var(--law-gold);
+}
+
+[data-testid="stChatInput"] textarea::placeholder {
+    color: #f8fafc99;
+}
+
+[data-testid="stChatInputSubmitButton"] {
+    border: 1px solid #e2be7a80;
+}
+
+[data-testid="stChatInputSubmitButton"]:disabled {
+    background: var(--law-canvas);
+    color: #f8fafc66;
+    border-color: var(--law-border);
+}
+
+.st-key-law_chat_messages {
+    scrollbar-color: #e2be7a80 var(--law-surface);
+}
+
+.st-key-law_chat_messages::-webkit-scrollbar-thumb {
+    background: #e2be7a80;
+}
+
+.st-key-law_chat_messages::-webkit-scrollbar-track {
+    background: var(--law-surface);
+}
+
+[data-testid="stPopoverBody"] {
+    background: var(--law-surface);
+    color: var(--law-text);
+}
+
+[data-testid="stAlert"],[data-testid="stAlertContainer"] {
+    background: #e2be7a14;
+    color: var(--law-champagne);
+    border-color: #e2be7a38;
+}
+
+[data-testid="stAlert"] :is(p,svg,span) {
+    color: var(--law-champagne);
+}

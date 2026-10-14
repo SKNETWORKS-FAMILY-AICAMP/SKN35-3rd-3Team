@@ -44,7 +44,6 @@ def main() -> int:
             check=False,
         ).returncode
 
-    st.set_page_config(page_title="생활법령 챗봇", page_icon="⚖️")
     render_chat()
     return 0
 

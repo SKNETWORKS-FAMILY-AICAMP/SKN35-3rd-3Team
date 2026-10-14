@@ -35,10 +35,10 @@ jobs:
 
       - name: Read GitHub Project
         env:
-          GH_TOKEN: ${{ secrets.PROJECT_SYNC_TOKEN }}
+          GH_TOKEN: ${{ secrets.SKN35_3RD_3T_1 }}
         run: |
           test -n "$GH_TOKEN" || {
-            echo "PROJECT_SYNC_TOKEN secret is not configured."
+            echo "SKN35_3RD_3T_1 secret is not configured."
             exit 1
           }
           gh project item-list "$PROJECT_NUMBER" \

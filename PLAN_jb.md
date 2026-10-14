@@ -51,11 +51,11 @@ PDF의 9개 생활분쟁 범주를 기획 범위로 유지하되, 실제 시연 
 
 > 기준: [GitHub Project #67](https://github.com/orgs/SKNETWORKS-FAMILY-AICAMP/projects/67/views/2)
 
-계획 **1건** · 진행 중 **0건** · 완료 **0건**
+계획 **0건** · 진행 중 **0건** · 완료 **1건**
 
 | 상태 | 담당 업무 | 담당자 | 이슈 |
 |---|---|---|---|
-| 계획 | 벡터 DB & MCP | @rupria | [#1](https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN35-3rd-3Team/issues/1) |
+| 완료 | 벡터 DB & MCP | @rupria | [#1](https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN35-3rd-3Team/issues/1) |
 
 <!-- PROJECT_STATUS:END -->
 

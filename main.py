@@ -1,5 +1,7 @@
 import subprocess
 import sys
+import streamlit as st
+from src.app.Chat import render_chat
 
 
 CHECK_COMMAND = "check-all"
@@ -41,10 +43,6 @@ def main() -> int:
             [sys.executable, "-m", "streamlit", "run", __file__],
             check=False,
         ).returncode
-
-    import streamlit as st
-
-    from src.app.Chat import render_chat
 
     st.set_page_config(page_title="생활법령 챗봇", page_icon="⚖️")
     render_chat()

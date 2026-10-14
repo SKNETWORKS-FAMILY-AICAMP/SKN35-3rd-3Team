@@ -7,10 +7,11 @@ from src.graph.mcp_search_documents import mcp_search_documents
 from src.graph.mcp_validation_node import mcp_validation_node
 
 def route_after_validation(state: State):
-    if state["is_valid"]:
-        return "mcp_lookup_document"
-    else:
-        return "mcp_health_check_node"
+    return "mcp_lookup_document"
+    # if state["is_valid"]:
+    #     return "mcp_lookup_document"
+    # else:
+    #     return "mcp_health_check_node"
 
 def build_mcp_graph():
     builder = StateGraph(State)
@@ -26,7 +27,7 @@ def build_mcp_graph():
     builder.add_edge("mcp_health_check_node", "mcp_get_collection_info")
     builder.add_edge("mcp_get_collection_info", "mcp_search_documents")
     builder.add_edge("mcp_search_documents", "mcp_validation_node")
-    builder.add_conditional_edges( "validation", route_after_validation,
+    builder.add_conditional_edges( "mcp_validation_node", route_after_validation,
             {
                 "mcp_lookup_document": "mcp_lookup_document",
                 "mcp_health_check_node": "mcp_health_check_node",

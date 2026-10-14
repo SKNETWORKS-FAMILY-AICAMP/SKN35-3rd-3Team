@@ -1,0 +1,435 @@
+{
+  "schema_version": 1,
+  "phase": "after",
+  "measured_at": "2026-10-14T14:27:26.411142+00:00",
+  "case_file": "tests\\data\\rag_performance_cases.json",
+  "case_file_sha256": "76b764b24f4232af8c1a08d5b7645971d7c3c594f9785a56269d00c6f3c23d26",
+  "source_dataset_sha256": "59f113f5658eeff417abb1aebded4913b0266c1a523d52aa948cecc3b2a80e8b",
+  "settings": {
+    "candidate_k": 20,
+    "final_k": 5,
+    "max_queries": 3,
+    "rerank_min_score": null,
+    "llm_model": "gpt-4o-mini",
+    "rerank_model": "BAAI/bge-reranker-v2-m3"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+    "logical_cpu_count": 12,
+    "python": "3.12.13",
+    "torch": "2.14.1+cpu",
+    "torch_threads": 6,
+    "cuda_available": false,
+    "cuda_device": null
+  },
+  "notes": [
+    "케이스당 1회 실측이며 OpenAI와 원격 Qdrant 네트워크 지연을 포함합니다.",
+    "첫 리랭커 모델 적재 시간을 포함하고 이후 케이스는 프로세스 캐시를 사용합니다.",
+    "라우팅 결과와 관계없이 RAG 영역 자체를 같은 조건으로 측정했습니다.",
+    "검수 정답 ID는 대표 근거이며 전체 말뭉치의 완전한 관련성 판정이 아닙니다."
+  ],
+  "summary": {
+    "case_count": 5,
+    "mean_total_ms": 29003.572,
+    "p50_total_ms": 30488.235,
+    "p95_total_ms": 35791.317,
+    "throughput_questions_per_minute": 2.0687,
+    "mean_retry_count": 1.0,
+    "stage_mean_ms": {
+      "routing": 1942.924,
+      "query_rewrite": 1061.617,
+      "multi_query_generation": 1048.5,
+      "retriever_init": 648.286,
+      "retrieval": 2489.273,
+      "rrf": 0.198,
+      "rerank": 18429.578,
+      "validation": 0.017,
+      "generation": 3382.956
+    },
+    "mean_rerank_model_load_ms": 1137.179,
+    "mean_rerank_inference_ms": 17271.424,
+    "quality_at_5": {
+      "recall": 0.933333,
+      "precision": 0.24,
+      "hit": 1.0,
+      "rr": 0.6,
+      "ndcg": 0.689051
+    },
+    "generation_success_rate": 0.8
+  },
+  "cases": [
+    {
+      "case_id": "q001",
+      "scenario": "직접 조문·짧은 질문",
+      "query": "최저임금법의 목적은 무엇인가요?",
+      "relevant_ids": [
+        "law:000129_218303_20200526::000129_218303_20200526_art_1_0_chunk_0000"
+      ],
+      "route": "out_of_scope",
+      "total_ms": 30488.235,
+      "stage_ms": {
+        "routing": 1480.096,
+        "query_rewrite": 1221.327,
+        "multi_query_generation": 1031.182,
+        "retriever_init": 1399.949,
+        "retrieval": 2928.872,
+        "rrf": 0.173,
+        "rerank": 19436.349,
+        "validation": 0.041,
+        "generation": 2990.044
+      },
+      "retry_count": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "queries": [
+            "최저임금법의 목적은 무엇인지 알고 싶습니다.",
+            "최저임금법의 목적은 무엇인지 설명해 주실 수 있나요?",
+            "최저임금법 목적, 최저임금 보장, 근로자의 생활 안정"
+          ],
+          "query_count": 3,
+          "search_calls_ms": [
+            2928.872
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 23,
+          "rerank_model_load_ms": 5685.89,
+          "rerank_inference_ms": 13733.532,
+          "score": 0.9982070922851562,
+          "is_valid": true,
+          "validation_reason": "usable_evidence_found"
+        }
+      ],
+      "final_score": 0.9982070922851562,
+      "retrieved_ids": [
+        "law:000129_218303_20200526::000129_218303_20200526_art_1_0_chunk_0000",
+        "law:001872_285279_20261008::001872_285279_20261008_art_1_0_chunk_0000",
+        "law:008480_282351_20260102::008480_282351_20260102_art_1_0_chunk_0000",
+        "law:005247_206564_20190101::005247_206564_20190101_art_1_0_chunk_0000",
+        "law:000129_218303_20200526::000129_218303_20200526_art_4_0_chunk_0000"
+      ],
+      "quality_at_5": {
+        "recall": 1.0,
+        "precision": 0.2,
+        "hit": 1.0,
+        "rr": 1.0,
+        "ndcg": 1.0
+      },
+      "generation_status": "generated_unverified",
+      "generation_error": null,
+      "generator_reported_latency_ms": 2990.0,
+      "token_usage": {
+        "input_tokens": 2298,
+        "output_tokens": 178,
+        "total_tokens": 2476,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    },
+    {
+      "case_id": "q007",
+      "scenario": "소비자 분쟁·사례 사실관계",
+      "query": "필라테스 환급 분쟁 사례에서 수강 계약의 총 횟수와 대금은 얼마였나요?",
+      "relevant_ids": [
+        "mediation_case:kca_pilates_1003941650::kca_pilates_1003941650_case_facts_0000"
+      ],
+      "route": "out_of_scope",
+      "total_ms": 20933.08,
+      "stage_ms": {
+        "routing": 895.499,
+        "query_rewrite": 1141.969,
+        "multi_query_generation": 1008.161,
+        "retriever_init": 468.221,
+        "retrieval": 2304.317,
+        "rrf": 0.189,
+        "rerank": 11648.744,
+        "validation": 0.01,
+        "generation": 3465.668
+      },
+      "retry_count": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "queries": [
+            "필라테스 환급 분쟁 사례에서 수강 계약의 총 횟수와 대금은 얼마인지 알고 싶습니다.",
+            "필라테스 수강 계약의 총 횟수와 대금에 대한 정보는 어디에서 확인할 수 있습니까?",
+            "민법 계약의 해제 및 대금 환급 관련 규정"
+          ],
+          "query_count": 3,
+          "search_calls_ms": [
+            2304.317
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 23,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 11634.494,
+          "score": 0.9970937967300415,
+          "is_valid": true,
+          "validation_reason": "usable_evidence_found"
+        }
+      ],
+      "final_score": 0.9970937967300415,
+      "retrieved_ids": [
+        "mediation_case:kca_pilates_1003941650::kca_pilates_1003941650_case_facts_0000",
+        "mediation_case:kca_case_1003739114::kca_case_1003739114_case_party_claims_0000",
+        "mediation_case:kca_case_1003739114::kca_case_1003739114_case_facts_0000",
+        "law:003572_286997_20260701::003572_286997_20260701_art_41_0_chunk_0000",
+        "law:001706_284415_20260317::001706_284415_20260317_art_674_0_chunk_0000"
+      ],
+      "quality_at_5": {
+        "recall": 1.0,
+        "precision": 0.2,
+        "hit": 1.0,
+        "rr": 1.0,
+        "ndcg": 1.0
+      },
+      "generation_status": "generated_unverified",
+      "generation_error": null,
+      "generator_reported_latency_ms": 3465.6,
+      "token_usage": {
+        "input_tokens": 4122,
+        "output_tokens": 155,
+        "total_tokens": 4277,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    },
+    {
+      "case_id": "q013",
+      "scenario": "주택임대차·대화형 질문",
+      "query": "집 계약이 말없이 연장됐는데 중간에 이사하려고 해요. 언제 계약을 끝낼 수 있나요?",
+      "relevant_ids": [
+        "law:001248_276291_20260102::001248_276291_20260102_art_6_2_chunk_0000"
+      ],
+      "route": "rag",
+      "total_ms": 24877.439,
+      "stage_ms": {
+        "routing": 2524.466,
+        "query_rewrite": 937.279,
+        "multi_query_generation": 1177.057,
+        "retriever_init": 452.622,
+        "retrieval": 2264.285,
+        "rrf": 0.208,
+        "rerank": 13437.975,
+        "validation": 0.009,
+        "generation": 4083.361
+      },
+      "retry_count": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "queries": [
+            "집 계약이 말없이 연장된 경우, 중간에 이사하려고 할 때 계약을 언제 끝낼 수 있는지 알고 싶습니다.",
+            "집 계약이 묵시적으로 연장된 경우, 중간에 이사하려면 계약 해지 통보는 언제까지 해야 하는지 알고 싶습니다.",
+            "민법 제625조 계약 해지 통지 의무, 묵시적 갱신, 임대차 계약 종료 조건"
+          ],
+          "query_count": 3,
+          "search_calls_ms": [
+            2264.285
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 24,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 13422.789,
+          "score": 0.3893257975578308,
+          "is_valid": true,
+          "validation_reason": "usable_evidence_found"
+        }
+      ],
+      "final_score": 0.3893257975578308,
+      "retrieved_ids": [
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0060_body_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0084_table_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0056_body_0000",
+        "law:001248_276291_20260102::001248_276291_20260102_art_6_2_chunk_0000",
+        "law:001706_284415_20260317::001706_284415_20260317_art_625_0_chunk_0000"
+      ],
+      "quality_at_5": {
+        "recall": 1.0,
+        "precision": 0.2,
+        "hit": 1.0,
+        "rr": 0.25,
+        "ndcg": 0.43067655807339306
+      },
+      "generation_status": "generated_unverified",
+      "generation_error": null,
+      "generator_reported_latency_ms": 4083.3,
+      "token_usage": {
+        "input_tokens": 3701,
+        "output_tokens": 212,
+        "total_tokens": 3913,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    },
+    {
+      "case_id": "q018",
+      "scenario": "민법·간접 표현 질문",
+      "query": "제 잘못 없이 빌린 집 일부를 못 쓰게 됐어요. 월세를 줄여 달라고 할 수 있나요?",
+      "relevant_ids": [
+        "law:001706_284415_20260317::001706_284415_20260317_art_627_0_chunk_0000"
+      ],
+      "route": "rag",
+      "total_ms": 36745.825,
+      "stage_ms": {
+        "routing": 2342.678,
+        "query_rewrite": 905.346,
+        "multi_query_generation": 986.969,
+        "retriever_init": 470.452,
+        "retrieval": 2289.74,
+        "rrf": 0.238,
+        "rerank": 26840.614,
+        "validation": 0.018,
+        "generation": 2909.562
+      },
+      "retry_count": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "queries": [
+            "잘못 없이 빌린 집의 일부를 사용하지 못하게 된 경우, 월세를 줄여 달라고 요청할 수 있는지 궁금합니다.",
+            "잘못 없이 임차한 주택의 일부를 사용하지 못하게 된 경우, 차임 감액을 요청할 수 있는지 알고 싶습니다.",
+            "민법 일부 사용·수익 불능·차임 감액청구"
+          ],
+          "query_count": 3,
+          "search_calls_ms": [
+            2289.74
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 37,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 26809.908,
+          "score": 0.3122249245643616,
+          "is_valid": true,
+          "validation_reason": "usable_evidence_found"
+        }
+      ],
+      "final_score": 0.3122249245643616,
+      "retrieved_ids": [
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0044_body_0000",
+        "law:001706_284415_20260317::001706_284415_20260317_art_627_0_chunk_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0041_body_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0057_body_0001",
+        "law:001706_284415_20260317::001706_284415_20260317_art_263_0_chunk_0000"
+      ],
+      "quality_at_5": {
+        "recall": 1.0,
+        "precision": 0.2,
+        "hit": 1.0,
+        "rr": 0.5,
+        "ndcg": 0.6309297535714575
+      },
+      "generation_status": "generated_unverified",
+      "generation_error": null,
+      "generator_reported_latency_ms": 2909.5,
+      "token_usage": {
+        "input_tokens": 3751,
+        "output_tokens": 198,
+        "total_tokens": 3949,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    },
+    {
+      "case_id": "q020",
+      "scenario": "전자상거래·복합 근거 질문",
+      "query": "인터넷으로 산 물건을 취소하려고 해요. 언제까지 취소할 수 있고 돌려보내면 환불은 어떻게 되나요?",
+      "relevant_ids": [
+        "law:009318_282793_20260721::009318_282793_20260721_art_17_0_chunk_0000",
+        "law:009318_282793_20260721::009318_282793_20260721_art_18_0_chunk_0000",
+        "law:009318_282793_20260721::009318_282793_20260721_art_18_0_chunk_0001"
+      ],
+      "route": "rag",
+      "total_ms": 31973.283,
+      "stage_ms": {
+        "routing": 2471.883,
+        "query_rewrite": 1102.165,
+        "multi_query_generation": 1039.129,
+        "retriever_init": 450.188,
+        "retrieval": 2659.152,
+        "rrf": 0.182,
+        "rerank": 20784.208,
+        "validation": 0.009,
+        "generation": 3466.146
+      },
+      "retry_count": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "queries": [
+            "인터넷으로 구매한 물건을 취소할 수 있는 기간과 환불 절차에 대해 알고 싶습니다.",
+            "인터넷으로 구매한 물건의 취소 가능 기간과 환불 절차는 어떻게 되나요?",
+            "전자상거래 등에서의 소비자보호에 관한 법률 제17조 청약철회 및 제18조 대금 환급"
+          ],
+          "query_count": 3,
+          "search_calls_ms": [
+            2659.152
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 28,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 20756.395,
+          "score": 0.9748790264129639,
+          "is_valid": true,
+          "validation_reason": "usable_evidence_found"
+        }
+      ],
+      "final_score": 0.9748790264129639,
+      "retrieved_ids": [
+        "official_guide:guide_383b62bce56bf1ce::guide_383b62bce56bf1ce_p0027_body_0000",
+        "official_guide:guide_383b62bce56bf1ce::guide_383b62bce56bf1ce_p0028_body_0000",
+        "official_guide:guide_383b62bce56bf1ce::guide_383b62bce56bf1ce_p0016_table_0000",
+        "law:009318_282793_20260721::009318_282793_20260721_art_17_0_chunk_0000",
+        "law:009318_282793_20260721::009318_282793_20260721_art_18_0_chunk_0001"
+      ],
+      "quality_at_5": {
+        "recall": 0.6666666666666666,
+        "precision": 0.4,
+        "hit": 1.0,
+        "rr": 0.25,
+        "ndcg": 0.38364913903790027
+      },
+      "generation_status": "invalid_output",
+      "generation_error": "없는 출처 또는 누락된 인용",
+      "generator_reported_latency_ms": 3466.1,
+      "token_usage": {
+        "input_tokens": 4769,
+        "output_tokens": 282,
+        "total_tokens": 5051,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 2176
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,20 +1,97 @@
 """RRF 후보를 원본 질문과 비교해 CrossEncoder(BGE)로 재정렬합니다."""
 import math
+import re
 from time import perf_counter
 from src.const.model import create_rerank_model
 from src.multi_query import multi_query
 from src.rrf import reciprocal_rank_fusion
 
 
-# State의 원본 질문과 후보 본문을 비교해 상위 문서를 반환합니다.
-def rerank(state, top_k=5, *, model=None, timings=None, verbose=True):
-    started = perf_counter()
+DEFAULT_BATCH_SIZE = 8
+PRIMARY_LAW_MIN_COUNT = 2
+
+
+def _rerank_question(state):
+    """자연어 질문에 법률 핵심어를 덧붙여 재정렬 의도를 선명하게 합니다."""
     question = state.get("rewrite_query") or state.get("origin_query")
+    if not isinstance(question, str) or not question.strip():
+        return question
+    queries = state.get("queries") or []
+    if queries and isinstance(queries[-1], str):
+        legal_query = queries[-1].strip()
+        if legal_query and legal_query.casefold() != question.strip().casefold():
+            question = f"{question.strip()}\n검색 핵심어: {legal_query}"
+    return question
+
+
+def _legal_search_rank(document):
+    source = document.get("metadata", {}).get("rrf_sources", {}).get("legal_primary_source", {})
+    rank = source.get("rank")
+    return rank if isinstance(rank, int) and rank > 0 else math.inf
+
+
+def _preserve_primary_laws(ranked, top_k, question="", minimum=PRIMARY_LAW_MIN_COUNT):
+    """명시된 조문과 법령 원문이 최종 근거에 포함되도록 출처 균형을 맞춥니다."""
+    top_docs = list(ranked[:top_k])
+    target = min(minimum, top_k)
+    protected: set[str] = set()
+
+    def key(document):
+        return str(document.get("point_id") or id(document))
+
+    def include(candidate, reason):
+        candidate_key = key(candidate)
+        if any(key(document) == candidate_key for document in top_docs):
+            protected.add(candidate_key)
+            return
+        replace_at = next(
+            (index for index in range(len(top_docs) - 1, -1, -1)
+             if key(top_docs[index]) not in protected),
+            None,
+        )
+        if replace_at is None:
+            return
+        candidate["metadata"] = {**candidate.get("metadata", {}), "selection_reason": reason}
+        top_docs[replace_at] = candidate
+        protected.add(candidate_key)
+        top_docs.sort(key=lambda doc: -doc["score"])
+
+    # 질문 생성기가 확실한 조문 번호를 제시했다면 각 조문의 가장 관련도 높은
+    # 청크를 하나씩 남깁니다. 복합 질문에서 한 조문에 결과가 몰리는 것을 막습니다.
+    article_numbers = list(dict.fromkeys(re.findall(r"제\s*(\d+)\s*조", question or "")))
+    for article_number in article_numbers[:top_k]:
+        candidates = [
+            doc for doc in ranked
+            if doc.get("metadata", {}).get("document_type") == "law"
+            and str(doc.get("metadata", {}).get("article_number") or "") == article_number
+        ]
+        if candidates:
+            include(max(candidates, key=lambda doc: doc["score"]), "referenced_article_coverage")
+
+    current = sum(doc.get("metadata", {}).get("document_type") == "law" for doc in top_docs)
+    selected_ids = {key(doc) for doc in top_docs}
+    law_candidates = sorted(
+        (doc for doc in ranked
+         if key(doc) not in selected_ids and doc.get("metadata", {}).get("document_type") == "law"),
+        key=lambda doc: (_legal_search_rank(doc), -doc["score"]),
+    )
+    for candidate in law_candidates[:max(0, target - current)]:
+        include(candidate, "primary_law_source_coverage")
+    return top_docs
+
+
+# State의 원본 질문과 후보 본문을 비교해 상위 문서를 반환합니다.
+def rerank(state, top_k=5, *, model=None, batch_size=DEFAULT_BATCH_SIZE,
+           timings=None, verbose=True):
+    started = perf_counter()
+    question = _rerank_question(state)
     documents = state.get("documents", [])
     if not isinstance(question, str) or not question.strip():
         raise ValueError("문자열 origin_query가 필요합니다.")
     if type(top_k) is not int or not 1 <= top_k <= 100:
         raise ValueError("top_k는 1~100 정수여야 합니다.")
+    if type(batch_size) is not int or not 1 <= batch_size <= 128:
+        raise ValueError("batch_size는 1~128 정수여야 합니다.")
     if not isinstance(documents, list):
         raise ValueError("documents는 문서 딕셔너리 목록이어야 합니다.")
     if not documents:
@@ -67,7 +144,7 @@ def rerank(state, top_k=5, *, model=None, timings=None, verbose=True):
                 break
             start += max(1, size - 50)  # 축소된 구간도 끝부분을 빠뜨리지 않고 겹쳐 이동합니다.
     inference_started = perf_counter()
-    scores = model.predict(pairs, batch_size=1, show_progress_bar=False)
+    scores = model.predict(pairs, batch_size=batch_size, show_progress_bar=False)
     inference_seconds = perf_counter() - inference_started
     if len(scores) != len(pairs):
         raise ValueError("재정렬 점수와 입력 구간 개수가 다릅니다.")
@@ -87,7 +164,7 @@ def rerank(state, top_k=5, *, model=None, timings=None, verbose=True):
                     "rerank_score_method": "max_window"}
         ranked.append({**doc, "score": best[index], "metadata": metadata})
     ranked.sort(key=lambda doc: -doc["score"])  # 동점은 RRF 순서를 유지합니다.
-    top_docs = ranked[:top_k]
+    top_docs = _preserve_primary_laws(ranked, top_k, question)
     response = {"documents": top_docs, "score": top_docs[0]["score"]}
     if timings is not None:
         timings.update(model_load_seconds=load_seconds,

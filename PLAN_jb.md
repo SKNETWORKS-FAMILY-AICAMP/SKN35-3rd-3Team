@@ -43,6 +43,15 @@ PDF의 9개 생활분쟁 범주를 기획 범위로 유지하되, 실제 시연 
 ### 1-3. 역할 분담
 
 ---
+### 진행 현황
+
+[GitHub Project #67에서 전체 보드 확인](https://github.com/orgs/SKNETWORKS-FAMILY-AICAMP/projects/67/views/2)
+
+<!-- PROJECT_STATUS:START -->
+
+GitHub Actions 동기화 전입니다.
+
+<!-- PROJECT_STATUS:END -->
 
 ---
 정·부 담당은 첨부 이미지 그대로 반영했다. 정 담당자는 영역의 완료 판단과 산출물 인계를 책임지고, 부 담당자는 교차 검토·연결 작업·문제 해결을 지원한다.

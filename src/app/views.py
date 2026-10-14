@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 import streamlit as st
 import streamlit.components.v1 as components
 from src.app.Chat import render_history, submit_question
+from src.app.conversation_history import group_consultations, first_question, category
 
 CATEGORIES = [
     ("중고거래", "사기·환불·분쟁 해결", "storefront", "중고거래 사기를 당했는데 어떻게 대응해야 하나요?"),
@@ -41,43 +42,104 @@ def header():
                         go(label)
 
 
+def reset_conversation():
+    st.session_state.thread_id = str(uuid.uuid4())
+    st.session_state.history = []
+    st.session_state.result = {}
+    for key in ("rag_progress", "chat_draft", "selected_source"):
+        st.session_state.pop(key, None)
+
+
 def sidebar():
     with st.container(key="law_history"):
         if st.button("새 상담 시작하기", icon=":material/add:", type="primary", width="stretch"):
-            st.session_state.thread_id = str(uuid.uuid4())
-            st.session_state.history = []
-            st.session_state.result = {}
-            st.session_state.pop("chat_draft", None)
+            reset_conversation()
             go("AI 법률상담")
-        st.caption("이번 세션의 상담")
-        for thread_id, item in reversed(list(st.session_state.consultations.items())):
-            active = thread_id == st.session_state.thread_id
-            if st.button(item["title"], key=f"history_{thread_id}", icon=":material/chat_bubble_outline:", type="primary" if active else "tertiary", width="stretch"):
-                st.session_state.thread_id = thread_id
-                st.session_state.history = list(item["history"])
-                st.session_state.result = item["result"]
-                st.session_state.pop("chat_draft", None)
-                go("AI 법률상담")
-        if not st.session_state.consultations:
-            st.caption("상담을 시작하면 이곳에 기록이 표시됩니다.")
-        st.caption("기록은 현재 브라우저 세션에서 유지됩니다.")
+        mode = st.session_state.get("history_group_mode", "날짜별")
+        st.html(f'<div class="law-history-heading">상담 기록<span>{len(st.session_state.consultations)}</span></div>')
+        with st.container(key="law_history_list"):
+            for label, items in group_consultations(st.session_state.consultations, mode).items():
+                st.html(f'<div class="law-history-group">{label}<span>{len(items)}</span></div>')
+                for thread_id, item in items:
+                    active = thread_id == st.session_state.thread_id
+                    full_question = first_question(item)
+                    title = item.get("title") if item.get("custom_title") else full_question
+                    with st.container(key=f"law_thread_row_{thread_id}"):
+                        with st.container(horizontal=True, vertical_alignment="center", gap="xxsmall"):
+                            if st.button(" ".join(str(title).split()), key=f"history_{thread_id}", icon=":material/chat_bubble_outline:", type="primary" if active else "tertiary", width="stretch", help=full_question):
+                                st.session_state.thread_id = thread_id
+                                st.session_state.history = list(item["history"])
+                                st.session_state.result = item["result"]
+                                st.session_state.rag_progress = item.get("progress")
+                                st.session_state.pop("chat_draft", None)
+                                st.session_state.pop("selected_source", None)
+                                go("AI 법률상담")
+                            with st.container(key=f"law_thread_actions_{thread_id}", width=34):
+                                with st.popover("상담 관리", icon=":material/more_horiz:", width=34):
+                                    st.markdown("**상담 관리**")
+                                    with st.form(f"rename_form_{thread_id}", border=False):
+                                        new_title = st.text_input("상담 이름", value=str(title)[:80], max_chars=80, key=f"rename_title_{thread_id}")
+                                        if st.form_submit_button("이름 변경", icon=":material/edit:"):
+                                            if new_title.strip():
+                                                item.update(title=new_title.strip(), custom_title=True)
+                                                st.rerun()
+                                            else:
+                                                st.warning("상담 이름을 입력해 주세요.")
+                                    if st.button("목록에서 삭제", key=f"delete_{thread_id}", icon=":material/delete_outline:"):
+                                        st.session_state.deleted_consultation = (thread_id, st.session_state.consultations.pop(thread_id))
+                                        if active:
+                                            reset_conversation()
+                                        st.rerun()
+                        st.html(f'<span class="law-history-tag">{category(item)}</span>')
+            if not st.session_state.consultations:
+                st.html('<div class="law-history-empty">아직 상담 기록이 없어요.<br><small>질문을 보내면 이곳에 정리됩니다.</small></div>')
+        with st.container(key="law_history_footer"):
+            if st.session_state.get("deleted_consultation"):
+                st.caption("상담 1개를 목록에서 삭제했습니다.")
+                if st.button("삭제 되돌리기", icon=":material/undo:", key="restore_consultation", width="stretch"):
+                    thread_id, item = st.session_state.pop("deleted_consultation")
+                    st.session_state.consultations[thread_id] = item
+                    st.rerun()
+            st.html('<div class="law-session-profile"><span>G</span><div><strong>게스트 세션</strong><small>현재 브라우저에서 이용 중</small></div></div>')
+            with st.popover("목록 표시 설정", icon=":material/tune:", width="stretch"):
+                st.radio("상담 기록 분류", ["날짜별", "분야별"], key="history_group_mode")
+                st.caption("분야는 첫 질문의 키워드로 분류합니다. 기록은 현재 세션에서만 보관됩니다.")
+            st.caption("법령 · 판례 · 공식 안내 기반\n\n기록은 영구 저장되지 않습니다.")
 
 
-def process_panel():
-    result = st.session_state.result
-    complete = bool(result) and not result.get("error_type")
-    state = "상담 서비스 연결 오류" if result.get("error_type") else "근거 기반 답변 작성 완료" if complete else "질문을 입력하면 분석을 시작해요"
-    with st.container(key="law_process", border=True):
+def process_panel(revision=0):
+    progress = st.session_state.get("rag_progress") or {}
+    steps = progress.get("steps", ["waiting"] * 4)
+    state = progress.get("note", "질문을 입력하면 분석을 시작해요")
+    with st.container(key=f"law_process_{revision}", border=True):
         st.markdown('<div class="law-process-title"><span class="law-ai-mark">✦</span><div><strong>답변 분석 과정</strong><small>' + state + '</small></div></div>', unsafe_allow_html=True)
-        for title, desc in [("질문 분석", "입력한 상황과 질문 확인"), ("관련 법령 검색", "답변의 근거 자료 검색"), ("인용 근거 확인", f"확인된 인용 출처 {len(sources())}건" if complete else "답변 생성 후 출처 표시"), ("답변 생성", state)]:
-            symbol = "✓" if complete else "·"
-            style = "done" if complete else "waiting"
+        for (title, desc), style in zip([("질문 분석", "입력한 상황과 첨부 자료 확인"), ("관련 법령 검색", "벡터 검색 · 근거 후보 재정렬"), ("인용 근거 확인", "검색 문서의 본문·구조 확인"), ("답변 생성", "검색된 근거를 바탕으로 답변 작성")], steps):
+            symbol = {"done": "✓", "active": "", "waiting": "·", "skipped": "–", "error": "!"}[style]
             st.markdown(f'<div class="law-process-step"><span class="law-process-dot {style}">{symbol}</span><div><strong>{title}</strong><small>{desc}</small></div></div>', unsafe_allow_html=True)
-        st.progress(100 if complete else 0)
-        st.caption("답변 생성 완료" if complete else "서비스 오류 · 잠시 후 다시 시도해 주세요" if result.get("error_type") else "질문 대기 중")
-    with st.container(key="law_source_note", border=True):
-        st.markdown("**📖 답변의 법률 근거**")
-        st.caption("상세 분석에서 확인된 인용 출처와 원문을 확인할 수 있습니다.")
+        st.progress(sum(step in {"done", "skipped"} for step in steps) / 4)
+        st.caption(state if progress else "질문 대기 중")
+    with st.container(key=f"law_source_note_{revision}", border=True):
+        st.markdown("**:material/manage_search: 검색된 근거 미리보기**")
+        documents = progress.get("documents", [])
+        st.caption(f"검색 후보 {len(documents)}개 · 답변에 인용된 자료와 다를 수 있어요" if documents else "검색이 완료되면 실제 검색 문서를 표시합니다.")
+        for index, document in enumerate(documents[:5]):
+            meta = document.get("metadata") or {}
+            title = " ".join(str(value) for value in [meta.get("law_name") or meta.get("source_name") or meta.get("title") or "근거 자료", meta.get("article_label") or meta.get("article_number") or meta.get("case_number") or ""] if value)
+            text = str(document.get("text") or "")
+            with st.expander(title):
+                st.caption({"law": "법령", "precedent": "판례"}.get(meta.get("document_type"), "안내 자료"))
+                st.write(" ".join(text.split())[:160] + ("…" if len(text) > 160 else ""))
+                with st.popover("원문 스니펫", icon=":material/article:", key=f"snippet_{revision}_{index}"):
+                    st.markdown(f"**{escape(title)}**")
+                    st.text(text[:3000])
+                    if len(text) > 3000:
+                        st.caption("긴 검색 청크의 앞 3,000자를 표시합니다.")
+                url = meta.get("source_url") or ""
+                if urlparse(url).scheme in {"http", "https"}:
+                    st.html(f'<a href="{escape(url, quote=True)}" target="_blank" rel="noopener noreferrer">출처 원문 ↗</a>')
+        if progress.get("status") == "complete" and steps[1] == "skipped":
+            st.caption("이번 응답은 법령 검색을 사용하지 않았습니다.")
+        st.caption("문서 구조 확인은 법률 판단의 정확성이나 인용의 의미적 일치를 보증하지 않습니다.")
 
 
 def chat():
@@ -85,44 +147,59 @@ def chat():
         history, conversation, panel = st.columns([1.05, 3.8, 1.25], gap="small")
         with history:
             sidebar()
+        with panel:
+            process_slot = st.empty()
+        revision = 0
+
+        def refresh_process():
+            nonlocal revision
+            revision += 1
+            with process_slot.container():
+                process_panel(revision)
+
+        refresh_process()
         with conversation:
             with st.container(key="law_conversation"):
                 st.markdown('<div class="law-chat-heading"><span class="law-ai-mark">✦</span><div><strong>AI 법률 상담</strong><small><i></i> 법률 데이터 기반 상담</small></div><span class="law-data-badge">♧ 법률 데이터 기반 답변</span></div>', unsafe_allow_html=True)
                 st.markdown('<div class="law-date-divider"><span>현재 상담</span></div>', unsafe_allow_html=True)
-                render_history()
-                if not st.session_state.history:
-                    with st.container(key="law_chat_empty"):
-                        components.html(
-                            """<!doctype html><html lang="ko"><head><meta charset="utf-8">
-                            <style>
-                            body{margin:0;background:transparent;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;color:#17213c;}
-                            h3{margin:0;text-align:center;font-size:clamp(24px,3.5vw,34px);font-weight:700;line-height:1.5;letter-spacing:-1px;}
-                            .cursor{display:inline-block;width:2px;height:1em;margin-left:4px;vertical-align:-.1em;background:#5369ed;animation:blink .7s step-end infinite;}
-                            @keyframes blink{50%{opacity:0;}}
-                            </style></head><body>
-                            <h3 aria-label="어떤 법률 고민이 있으신가요?"><span id="title" aria-hidden="true"></span><span class="cursor" aria-hidden="true"></span></h3>
-                            <script>
-                            const text = Array.from("어떤 법률 고민이 있으신가요?");
-                            const title = document.getElementById("title");
-                            const cursor = document.querySelector(".cursor");
-                            let index = 0;
-                            function typeNext(){
-                                if(index < text.length){
-                                    title.textContent += text[index++];
-                                    window.setTimeout(typeNext, 100);
-                                }else{
-                                    window.setTimeout(() => {cursor.style.display = "none";}, 700);
+                with st.container(key="law_chat_messages", height=460, border=False, autoscroll=True):
+                    render_history()
+                    # Reserve a position above the composer for in-flight messages.
+                    pending_messages = st.empty()
+                    welcome = st.empty()
+                    if not st.session_state.history:
+                        with welcome.container(), st.container(key="law_chat_empty"):
+                            components.html(
+                                """<!doctype html><html lang="ko"><head><meta charset="utf-8">
+                                <style>
+                                body{margin:0;background:transparent;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;color:#1e293b;}
+                                h3{margin:0;text-align:center;font-size:clamp(24px,3.5vw,34px);font-weight:700;line-height:1.5;letter-spacing:-1px;}
+                                .cursor{display:inline-block;width:2px;height:1em;margin-left:4px;vertical-align:-.1em;background:#e2be7a;animation:blink .7s step-end infinite;}
+                                @keyframes blink{50%{opacity:0;}}
+                                </style></head><body>
+                                <h3 aria-label="어떤 법률 고민이 있으신가요?"><span id="title" aria-hidden="true"></span><span class="cursor" aria-hidden="true"></span></h3>
+                                <script>
+                                const text = Array.from("어떤 법률 고민이 있으신가요?");
+                                const title = document.getElementById("title");
+                                const cursor = document.querySelector(".cursor");
+                                let index = 0;
+                                function typeNext(){
+                                    if(index < text.length){
+                                        title.textContent += text[index++];
+                                        window.setTimeout(typeNext, 100);
+                                    }else{
+                                        window.setTimeout(() => {cursor.style.display = "none";}, 700);
+                                    }
                                 }
-                            }
-                            if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-                                title.textContent = text.join("");
-                                cursor.style.display = "none";
-                            }else{window.setTimeout(typeNext, 350);}
-                            </script></body></html>""",
-                            height=110,
-                            scrolling=False,
-                        )
-                        st.caption("거래 과정, 날짜, 금액 등 상황을 구체적으로 알려 주세요.")
+                                if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+                                    title.textContent = text.join("");
+                                    cursor.style.display = "none";
+                                }else{window.setTimeout(typeNext, 350);}
+                                </script></body></html>""",
+                                height=110,
+                                scrolling=False,
+                            )
+                            st.caption("거래 과정, 날짜, 금액 등 상황을 구체적으로 알려 주세요.")
                 if st.session_state.result:
                     if st.button("상세 법률 분석 결과 보기", key="law_analysis_link", icon=":material/description:", width="stretch"):
                         go("판례·법령 검색")
@@ -148,11 +225,11 @@ def chat():
                         except Exception:
                             st.error("첨부파일을 읽지 못했습니다. PDF가 손상되거나 암호로 보호되어 있는지 확인해 주세요.")
                         else:
-                            submit_question(text, images)
+                            welcome.empty()
+                            with pending_messages.container():
+                                    submit_question(text, images, on_progress=refresh_process)
                     else:
                         st.warning("이미지와 함께 질문을 입력해 주세요.")
-        with panel:
-            process_panel()
 
 
 def report_groups(items):
@@ -300,6 +377,14 @@ def render_source_detail():
             st.link_button("원문 보기", url, icon=":material/open_in_new:")
 
 
+def close_other_faq(opened_key):
+    """Expander callbacks run before rendering, so sibling states can be reset."""
+    if st.session_state.get(opened_key):
+        for key in tuple(st.session_state):
+            if key.startswith("guide_faq_") and key != opened_key:
+                st.session_state[key] = False
+
+
 def guide():
     with st.container(key="law_guide"):
         with st.container(key="law_guide_intro"):
@@ -309,7 +394,7 @@ def guide():
 
         st.subheader("어떤 고민을 이야기할 수 있나요?")
         for col, (title, description, icon, _) in zip(st.columns(4, gap="small"), CATEGORIES):
-            with col.container(border=True):
+            with col.container(border=True, key=f"law_guide_category_{icon}"):
                 st.markdown(f":material/{icon}:")
                 st.markdown(f"**{title}**")
                 st.caption(description)
@@ -322,8 +407,15 @@ def guide():
             ("04", "원문 확인 후 이어서 질문", "자료 카드의 ‘근거 자료 상세 보기’에서 본문을 읽고, 원문 링크가 있으면 출처도 확인하세요. ‘후속 질문하기’로 돌아가 추가 상황을 설명할 수 있습니다."),
         ]
         for number, title, description in steps:
-            with st.container(key=f"law_guide_step_{number}"):
-                st.markdown(f'<div class="law-guide-step"><span>{number}</span><div><strong>{title}</strong><p>{description}</p></div></div>', unsafe_allow_html=True)
+            with st.container(key=f"law_guide_step_{number}", border=True):
+                st.markdown(
+                    '<div class="law-step-layout">'
+                    f'<div class="law-step-number">{escape(number)}</div>'
+                    '<div class="law-step-copy">'
+                    f'<div class="law-step-title">{escape(title)}</div>'
+                    f'<div class="law-step-description">{escape(description)}</div>'
+                    '</div></div>', unsafe_allow_html=True,
+                )
 
         left, right = st.columns(2, gap="medium")
         with left.container(key="law_guide_example", border=True):
@@ -336,13 +428,14 @@ def guide():
             st.caption("같은 문서의 여러 인용은 한 카드로 묶입니다. 법령·판례·안내 자료는 구분해 표시하며, 인용된 자료가 없는 항목은 비어 있을 수 있습니다.")
 
         st.subheader("자주 묻는 질문")
-        for title, description in [
+        for index, (title, description) in enumerate([
             ("판례·법령 검색 탭에서 직접 검색할 수 있나요?", "현재는 진행 중인 상담의 분석 결과를 보여주는 탭입니다. 별도의 독립 검색 입력은 제공하지 않습니다. 먼저 AI 법률상담에 상황을 입력해 주세요."),
             ("인용이 확인되면 답변이 정확하다는 뜻인가요?", "인용 구조 검사는 출처와 본문 등의 연결을 확인합니다. 법적 결론의 정확성이나 법령의 최신성을 보증하지 않으므로, 원문의 적용 시점과 조건을 함께 확인해 주세요."),
             ("상담 기록은 계속 저장되나요?", "기록은 현재 브라우저 세션에서 확인할 수 있으며 영구 저장을 제공하지 않습니다. ‘새 상담 시작하기’를 누르면 별도 상담을 시작합니다."),
             ("모든 법률 분야를 상담할 수 있나요?", "중고거래, 주택임대차, 근로·노동, 소비자 피해 등 생활분쟁을 중심으로 구성되어 있습니다. 형사 사건, 이혼, 상속, 세금 등은 지원 범위 밖이며 개별 사건에 대한 전문 상담을 대신하지 않습니다."),
-        ]:
-            with st.expander(title):
+        ]):
+            faq_key = f"guide_faq_{index}"
+            with st.expander(title, key=faq_key, on_change=close_other_faq, args=(faq_key,)):
                 st.write(description)
         with st.container(key="law_guide_notice"):
             st.markdown("**:material/privacy_tip: 상담 전 확인해 주세요**")
@@ -355,6 +448,7 @@ def render_app():
     css = Path(__file__).with_name("styles.css").read_text(encoding="utf-8")
     if st.session_state.view == "AI 법률상담":
         css += Path(__file__).with_name("chat.css").read_text(encoding="utf-8")
+    css += Path(__file__).with_name("palette.css").read_text(encoding="utf-8")
     st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
     header()
     {"AI 법률상담": chat, "판례·법령 검색": analysis, "판례 상세": detail, "이용 안내": guide}[st.session_state.view]()

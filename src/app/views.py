@@ -352,6 +352,15 @@ def analysis():
         render_analysis_report()
 
 
+def _report_title_html(question):
+    """질문 원문은 유지하고, 제목에서만 문장 끝과 기존 줄바꿈을 표시한다."""
+    sentences = re.split(
+        r"(?<=[!?。])\s*(?=[^\s.!?。])|(?<=[가-힣]\.)\s*(?=\S)|\n+",
+        question.strip(),
+    )
+    return "<br>".join(escape(sentence.strip()) for sentence in sentences if sentence.strip())
+
+
 def render_analysis_report():
     st.caption("AI 법률상담 › 분석 결과")
     result = st.session_state.result
@@ -371,7 +380,14 @@ def render_analysis_report():
     else:
         status = "추가 확인 필요"
     with st.container(key="law_report_banner"):
-        st.markdown(f'<div class="law-banner-content"><div><span class="law-report-label">법률 분석 보고서</span><h1>{escape(query or "상담 분석 결과")}</h1><p>상담 내용과 검색된 근거를 바탕으로 작성한 분석 결과</p></div><div class="law-report-status"><strong>{len(items)}<small>개 인용</small></strong><span>{status}</span></div></div>', unsafe_allow_html=True)
+        title = _report_title_html(query or "상담 분석 결과")
+        st.markdown(
+            '<div class="law-banner-content"><div><span class="law-report-label">법률 분석 보고서</span>'
+            f'<h1>{title}</h1><p>상담 내용과 검색된 근거를 바탕으로 작성한 분석 결과</p></div>'
+            f'<div class="law-report-status"><strong>{len(items)}<small>개 인용</small></strong>'
+            f'<span>{status}</span></div></div>',
+            unsafe_allow_html=True,
+        )
     st.markdown(f'<div class="law-report-badges"><span class="law-status-badge">{status}</span><span>법령 {len(groups["law"])}건</span><span class="violet">판례 {len(groups["precedent"])}건</span><span>안내 자료 {len(groups["guide"])}건</span></div>', unsafe_allow_html=True)
     left, right = st.columns([2.5, 1], gap="medium")
     with left:

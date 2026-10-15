@@ -126,12 +126,6 @@
     border: 1px solid #e2be7a38;
 }
 
-.law-history-tag {
-    background: var(--law-champagne);
-    color: var(--law-gold-text);
-    border-color: #f5ebd8;
-}
-
 .st-key-law_history_footer {
     border-top-color: var(--law-border);
 }

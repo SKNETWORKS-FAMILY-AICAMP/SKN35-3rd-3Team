@@ -89,7 +89,10 @@
     overflow-x: hidden;
     min-height: 0;
     padding-right: 3px;
-    gap: 8px!important;
+    gap: 4px!important;
+    height: auto!important;
+    flex: 0 0 auto!important;
+    justify-content: flex-start;
 }
 
 .law-history-group {
@@ -99,7 +102,7 @@
     font-size: 10px;
     font-weight: 600;
     letter-spacing: .3px;
-    padding: 14px 8px 4px;
+    padding: 8px 8px 2px;
 }
 
 .law-history-group>span {
@@ -107,10 +110,54 @@
 }
 
 [class*="st-key-law_thread_row_"] {
-    padding: 4px 6px 7px;
+    padding: 2px 0;
     border-radius: 12px;
-    gap: 0!important;
+    gap: 4px!important;
+    height: auto!important;
+    min-height: 0!important;
+    flex: 0 0 auto!important;
+    flex-wrap: nowrap!important;
+    align-items: center;
+    justify-content: flex-start;
     transition: background .18s ease;
+}
+
+/* Both selected and unselected entries share a compact, left-aligned row. */
+.st-key-law_history_list [data-testid="stButton"] {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 0%;
+}
+
+.st-key-law_history_list [data-testid="stButton"] button {
+    width: 100%;
+    min-height: 38px!important;
+    padding: 8px!important;
+    justify-content: flex-start!important;
+    text-align: left!important;
+}
+
+.st-key-law_history_list [data-testid="stButton"] button > *,
+.st-key-law_history_list [data-testid="stButton"] button [data-has-shortcut] {
+    justify-content: flex-start!important;
+    min-width: 0;
+    width: 100%;
+}
+
+.st-key-law_history_list [data-testid="stButton"] [data-testid="stMarkdownContainer"] {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-align: left;
+}
+
+.st-key-law_history_list [data-testid="stButton"] p {
+    margin: 0;
+    font-size: 12px;
+    text-align: left!important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 [class*="st-key-law_thread_row_"]:hover,[class*="st-key-law_thread_row_"]:focus-within {
@@ -126,18 +173,6 @@
 
 .st-key-law_history [class*="st-key-history_"] button p {
     font-size: 12px;
-}
-
-.law-history-tag {
-    display: inline-block;
-    font-size: 9px;
-    line-height: 1.6;
-    color: var(--law-muted);
-    background: var(--law-champagne);
-    border-radius: 5px;
-    padding: 2px 6px;
-    margin-left: 28px;
-    margin-top: 2px;
 }
 
 [class*="st-key-law_thread_actions_"] {

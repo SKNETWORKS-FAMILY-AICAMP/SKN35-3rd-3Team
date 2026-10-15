@@ -9,8 +9,9 @@ from urllib.parse import urlparse
 import streamlit as st
 
 from src.app.Chat import render_history, submit_question
-from src.app.conversation_history import category, first_question, group_consultations
+from src.app.conversation_history import first_question, group_consultations
 from src.app.page_navigation import render_page_navigation
+from src.app.report_summary import report_summary
 
 APP_DIR = Path(__file__).parent
 NAVIGATION_LABELS = ("AI 법률상담", "판례·법령 검색", "이용 안내")
@@ -105,16 +106,17 @@ def _consultation_row(thread_id, item):
     full_question = first_question(item)
     title = item.get("title") if item.get("custom_title") else full_question
     active = thread_id == st.session_state.thread_id
-    with st.container(key=f"law_thread_row_{thread_id}"):
-        with st.container(horizontal=True, vertical_alignment="center", gap="xxsmall"):
-            if st.button(
-                " ".join(str(title).split()), key=f"history_{thread_id}",
-                icon=":material/chat_bubble_outline:",
-                type="primary" if active else "tertiary", width="stretch", help=full_question,
-            ):
-                _open_consultation(thread_id, item)
-            _consultation_actions(thread_id, item, title)
-        st.html(f'<span class="law-history-tag">{category(item)}</span>')
+    with st.container(
+        key=f"law_thread_row_{thread_id}", horizontal=True, wrap=False,
+        horizontal_alignment="left", vertical_alignment="center", gap="xxsmall",
+    ):
+        if st.button(
+            " ".join(str(title).split()), key=f"history_{thread_id}",
+            icon=":material/chat_bubble_outline:",
+            type="primary" if active else "tertiary", width="stretch", help=full_question,
+        ):
+            _open_consultation(thread_id, item)
+        _consultation_actions(thread_id, item, title)
 
 
 def _history_footer():
@@ -183,8 +185,9 @@ def process_panel(revision=0):
     with st.container(key=f"law_source_note_{revision}", border=True):
         st.markdown("**:material/manage_search: 검색된 근거 미리보기**")
         documents = progress.get("documents", [])
-        st.caption(f"검색 후보 {len(documents)}개 · 답변에 인용된 자료와 다를 수 있어요" if documents else "검색이 완료되면 실제 검색 문서를 표시합니다.")
-        for index, document in enumerate(documents[:5]):
+        preview_documents = documents[:3]
+        st.caption(f"검색 후보 {len(documents)}개 중 {len(preview_documents)}개 표시 · 답변에 인용된 자료와 다를 수 있어요" if documents else "검색이 완료되면 실제 검색 문서를 표시합니다.")
+        for index, document in enumerate(preview_documents):
             _retrieved_document(document, index, revision)
         if progress.get("status") == "complete" and steps[1] == "skipped":
             st.caption("이번 응답은 법령 검색을 사용하지 않았습니다.")
@@ -315,7 +318,7 @@ def report_groups(items):
 
 def report_heading(icon, kicker, title, count=None):
     badge = f'<span class="law-count">{count}건</span>' if count is not None else ""
-    st.markdown(f'<div class="law-section-heading"><span class="law-section-icon">{icon}</span><div><small>{escape(kicker)}</small><strong>{escape(title)}</strong></div>{badge}</div>', unsafe_allow_html=True)
+    st.html(f'<div class="law-section-heading"><span class="law-section-icon">{icon}</span><div><small>{escape(kicker)}</small><strong>{escape(title)}</strong></div>{badge}</div>')
 
 
 def report_sources(title, kind, groups):
@@ -375,11 +378,19 @@ def render_analysis_report():
         with st.container(key="law_report_summary"):
             report_heading("✧", "한눈에 보는", "핵심 요약")
             answer = result.get("answer") or "답변이 없습니다."
-            paragraphs = re.split(r"\n\s*\n", answer.strip())
-            with st.container(key="law_summary_highlight"):
-                st.markdown(paragraphs[0])
-            st.caption("답변의 첫 문단입니다. 전체 답변과 인용된 근거를 함께 확인해 주세요.")
-            with st.expander("AI 분석 답변 전체 보기"):
+            with st.spinner("핵심 요약을 정리하고 있어요..."):
+                summary = report_summary(result)
+            with st.container(
+                key="law_summary_highlight", horizontal_alignment="left", vertical_alignment="center", gap=None,
+            ):
+                # Markdown 문단의 여백 없이 한 텍스트 블록으로 그려 상하 여백을 맞춘다.
+                st.html(f'<div class="law-summary-text">{escape(summary["text"])}</div>')
+            st.caption(
+                "핵심 결론을 짧게 요약했습니다. 세부 조건과 근거는 전체 답변에서 확인해 주세요."
+                if summary["method"] == "generated"
+                else "답변의 주요 문장을 짧게 발췌했습니다. 세부 조건과 근거는 전체 답변에서 확인해 주세요."
+            )
+            with st.expander("AI 분석 답변 전체 보기", expanded=False):
                 st.markdown(answer)
         report_sources("관련 법령", "law", groups["law"])
         report_sources("유사 판례", "precedent", groups["precedent"])
@@ -398,7 +409,7 @@ def render_analysis_report():
             if st.button("후속 질문하기", type="primary", icon=":material/arrow_forward:", width="stretch"):
                 go("AI 법률상담")
         with st.container(key="law_report_warning"):
-            report_heading("△", "확인해 주세요", "주의사항")
+            report_heading("!", "확인해 주세요", "주의사항")
             st.caption("사건별 사실관계에 따라 판단이 달라질 수 있습니다. 중요한 결정 전 전문가 상담을 권장합니다.")
             st.caption("인용 구조 확인은 법률 판단의 정확성이나 법령의 최신성을 보증하지 않습니다.")
         with st.container(key="law_report_origins"):

@@ -94,7 +94,7 @@
 
 .law-brand,.law-chat-heading strong,.law-section-heading strong,.law-process-title strong,.law-process-step strong,
 .law-action-step strong,.law-evidence-title strong,.law-step-title,.law-source-reading,
-.st-key-law_summary_highlight [data-testid="stMarkdownContainer"] p {
+.st-key-law_summary_highlight .law-summary-text {
     color: var(--law-text);
 }
 
@@ -129,7 +129,7 @@
     box-shadow: inset 0 0 0 1px #e2be7a38;
 }
 
-.law-data-badge,.law-history-tag,.law-report-label,.law-count,.law-type,.law-report-badges>span,.law-report-badges .violet,
+.law-data-badge,.law-report-label,.law-count,.law-type,.law-report-badges>span,.law-report-badges .violet,
 .law-action-step>span {
     background: #e2be7a12;
     color: var(--law-gold);

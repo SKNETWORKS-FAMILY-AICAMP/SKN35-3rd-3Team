@@ -317,6 +317,12 @@
     flex-shrink: 0;
 }
 
+/* Use the shared text badge for warnings, without image or font-icon wrappers. */
+.st-key-law_report_warning .law-section-icon {
+    font-weight: 700;
+    line-height: 1;
+}
+
 .law-section-heading>div {
     display: flex;
     flex-direction: column;
@@ -351,7 +357,9 @@
 .st-key-law_summary_highlight {
     background: linear-gradient(110deg,var(--law-canvas),var(--law-canvas));
     border-radius: 12px;
-    padding: 17px 19px;
+    padding: 20px 19px!important;
+    gap: 0!important;
+    box-sizing: border-box;
 }
 
 .st-key-law_analysis [data-testid="stMarkdownContainer"] p {
@@ -359,10 +367,16 @@
     line-height: 1.85;
 }
 
-.st-key-law_summary_highlight [data-testid="stMarkdownContainer"] p {
+.st-key-law_summary_highlight .law-summary-text {
+    display: block;
+    width: 100%;
     font-size: 13px;
+    line-height: 1.85;
     color: var(--law-ink);
     margin: 0;
+    padding: 0;
+    text-align: left;
+    overflow-wrap: anywhere;
 }
 
 .st-key-law_analysis [data-testid="stExpander"] {
@@ -531,11 +545,6 @@
     font-size: 10px;
     line-height: 1.7;
     color: var(--law-muted);
-}
-
-.st-key-law_report_warning .law-section-icon {
-    background: #f8fafc;
-    color: #1e293b;
 }
 
 .st-key-law_report_origins button {

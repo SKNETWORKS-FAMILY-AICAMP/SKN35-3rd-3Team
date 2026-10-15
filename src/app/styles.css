@@ -207,6 +207,11 @@
     gap: 24px;
 }
 
+.law-banner-content > div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
 .law-report-label {
     display: inline-block;
     padding: 6px 10px;
@@ -224,6 +229,8 @@
     padding: 14px 0 10px;
     letter-spacing: -.8px;
     margin: 0;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
 }
 
 .law-banner-content p {
@@ -236,6 +243,7 @@
     border-left: 1px solid var(--law-champagne);
     padding-left: 30px;
     min-width: 130px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 8px;

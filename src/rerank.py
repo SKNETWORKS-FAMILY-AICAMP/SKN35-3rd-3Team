@@ -9,6 +9,7 @@ from src.rrf import reciprocal_rank_fusion
 
 DEFAULT_BATCH_SIZE = 8
 PRIMARY_LAW_MIN_COUNT = 2
+MIN_RELEVANCE_SCORE = 0.6
 
 
 def _rerank_question(state):
@@ -30,7 +31,6 @@ def _legal_search_rank(document):
     return rank if isinstance(rank, int) and rank > 0 else math.inf
 
 def _print_documents(documents, width=80):
-    """순위와 본문 앞부분만 한 줄씩 들여쓰기해서 출력합니다."""
     if not documents:
         print("  (결과 없음)")
         return
@@ -93,7 +93,7 @@ def _preserve_primary_laws(ranked, top_k, question="", minimum=PRIMARY_LAW_MIN_C
 
 # State의 원본 질문과 후보 본문을 비교해 상위 문서를 반환합니다.
 def rerank(state, top_k=5, *, model=None, batch_size=DEFAULT_BATCH_SIZE,
-           timings=None, verbose=True):
+           min_score=MIN_RELEVANCE_SCORE, timings=None, verbose=True):
     started = perf_counter()
     question = _rerank_question(state)
     documents = state.get("documents", [])
@@ -103,10 +103,13 @@ def rerank(state, top_k=5, *, model=None, batch_size=DEFAULT_BATCH_SIZE,
         raise ValueError("top_k는 1~100 정수여야 합니다.")
     if type(batch_size) is not int or not 1 <= batch_size <= 128:
         raise ValueError("batch_size는 1~128 정수여야 합니다.")
+    if (isinstance(min_score, bool) or not isinstance(min_score, (int, float))
+            or not math.isfinite(min_score)):
+        raise ValueError("min_score는 유한한 숫자여야 합니다.")
     if not isinstance(documents, list):
         raise ValueError("documents는 문서 딕셔너리 목록이어야 합니다.")
     if not documents:
-        response = {"documents": [], "score" : None}
+        response = {"documents": [], "score": None, "low_confidence": True}
         if timings is not None:
             timings.update(model_load_seconds=0.0, processing_seconds=perf_counter() - started,
                            inference_seconds=0.0, window_count=0)
@@ -175,13 +178,24 @@ def rerank(state, top_k=5, *, model=None, batch_size=DEFAULT_BATCH_SIZE,
                     "rerank_score_method": "max_window"}
         ranked.append({**doc, "score": best[index], "metadata": metadata})
     ranked.sort(key=lambda doc: -doc["score"])  # 동점은 RRF 순서를 유지합니다.
-    top_docs = _preserve_primary_laws(ranked, top_k, question)
-    response = {"documents": top_docs, "score": top_docs[0]["score"]}
+
+    # 임계값 미만 후보는 법령 강제 포함 대상에서도 제외하기 위해,
+    # 출처 균형 조정(_preserve_primary_laws) 이전에 먼저 걸러냅니다.
+    eligible = [doc for doc in ranked if doc["score"] >= min_score]
+    top_docs = _preserve_primary_laws(eligible, top_k, question)
+    response = {
+        "documents": top_docs,
+        "score": top_docs[0]["score"] if top_docs else None,
+        # True이면 관련 근거를 찾지 못한 것이므로 호출 측에서 재검색·안내 응답으로 분기합니다.
+        "low_confidence": not top_docs,
+    }
     if timings is not None:
         timings.update(model_load_seconds=load_seconds,
                        processing_seconds=perf_counter() - processing_started,
                        inference_seconds=inference_seconds, window_count=len(pairs),
-                       max_pair_tokens=max(pair_lengths), model_max_tokens=max_length)
+                       max_pair_tokens=max(pair_lengths), model_max_tokens=max_length,
+                       best_score=ranked[0]["score"], min_score=min_score,
+                       filtered_out_count=len(ranked) - len(eligible))
     if verbose:
         _print_documents(response["documents"])
     return response
@@ -194,6 +208,8 @@ if __name__ == "__main__":
     hits = reciprocal_rank_fusion(results["rankings"], top_k=20)
     state = {"origin_query": question, "documents": [hit.to_document() for hit in hits]}
     response = rerank(state)
+    if response["low_confidence"]:
+        print(f"\n관련 근거를 찾지 못했습니다 (기준 점수 {MIN_RELEVANCE_SCORE} 미만).")
     for label, docs in [("재정렬 전", state["documents"][:5]),
                         ("재정렬 후", response["documents"])]:
         print(f"\n=== {label} ===")

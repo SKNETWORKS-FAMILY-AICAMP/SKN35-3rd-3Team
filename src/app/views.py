@@ -21,11 +21,84 @@ def go(view):
     st.rerun()
 
 
+def _source_identity(source):
+    """검색 문서와 생성기 출처를 같은 청크 기준으로 연결합니다."""
+    metadata = source.get("metadata") if isinstance(source.get("metadata"), dict) else {}
+    point_id = source.get("point_id") or metadata.get("point_id")
+    if point_id:
+        return ("point_id", str(point_id))
+    return (
+        "chunk",
+        source.get("document_id") or metadata.get("document_id"),
+        source.get("chunk_id") or metadata.get("chunk_id"),
+    )
+
+
+def _document_source(document, index):
+    """rerank 문서를 상세 화면에서 사용할 출처 형식으로 변환합니다."""
+    metadata = document.get("metadata") if isinstance(document.get("metadata"), dict) else {}
+    text = document.get("text") or ""
+    return {
+        "source_id": f"R{index}",
+        "point_id": document.get("point_id"),
+        "document_id": metadata.get("document_id"),
+        "chunk_id": metadata.get("chunk_id"),
+        "source_name": metadata.get("law_name") or metadata.get("source_name") or metadata.get("title"),
+        "article": metadata.get("article_label") or metadata.get("article_number"),
+        "article_title": metadata.get("article_title"),
+        "version_id": metadata.get("version_id"),
+        "source_url": metadata.get("source_url"),
+        "document_type": metadata.get("document_type"),
+        "effective_date": metadata.get("effective_date"),
+        "rerank_score": document.get("score"),
+        "context_text": text,
+        "text": text,
+        "is_cited": False,
+    }
+
+
+def cited_sources(result=None):
+    """답변 생성기가 실제로 사용한 출처만 반환합니다."""
+    result = st.session_state.result if result is None else result
+    items = result.get("sources") or result.get("citations") or []
+    return items if isinstance(items, list) else []
+
+
+def display_sources(result):
+    """rerank 결과와 답변 인용을 합쳐 화면 표시용 근거를 만듭니다."""
+    documents = result.get("documents") or []
+    items = [
+        _document_source(document, index)
+        for index, document in enumerate(documents, 1)
+        if isinstance(document, dict)
+    ]
+    positions = {_source_identity(item): index for index, item in enumerate(items)}
+
+    # Generator가 부여한 S 번호와 보강된 메타데이터를 rerank 문서에 합칩니다.
+    for source in result.get("context_sources") or []:
+        if not isinstance(source, dict):
+            continue
+        identity = _source_identity(source)
+        if identity in positions:
+            index = positions[identity]
+            items[index] = {**items[index], **source}
+
+    # 실제 답변에 사용된 출처는 인용 여부를 표시하고 검증된 본문을 우선합니다.
+    for source in cited_sources(result):
+        if not isinstance(source, dict):
+            continue
+        identity = _source_identity(source)
+        if identity in positions:
+            index = positions[identity]
+            items[index] = {**items[index], **source, "is_cited": True}
+        else:
+            positions[identity] = len(items)
+            items.append({**source, "is_cited": True})
+    return items
+
+
 def sources():
-    result = st.session_state.result
-    if result.get("citation_validation_status") not in {"passed", "passed_with_missing_metadata"}:
-        return []
-    return result.get("sources") or result.get("citations") or []
+    return display_sources(st.session_state.result)
 
 
 def header():
@@ -69,7 +142,7 @@ def process_panel():
     state = "상담 서비스 연결 오류" if result.get("error_type") else "근거 기반 답변 작성 완료" if complete else "질문을 입력하면 분석을 시작해요"
     with st.container(key="law_process", border=True):
         st.markdown('<div class="law-process-title"><span class="law-ai-mark">✦</span><div><strong>답변 분석 과정</strong><small>' + state + '</small></div></div>', unsafe_allow_html=True)
-        for title, desc in [("질문 분석", "입력한 상황과 질문 확인"), ("관련 법령 검색", "답변의 근거 자료 검색"), ("인용 근거 확인", f"확인된 인용 출처 {len(sources())}건" if complete else "답변 생성 후 출처 표시"), ("답변 생성", state)]:
+        for title, desc in [("질문 분석", "입력한 상황과 질문 확인"), ("관련 법령 검색", "답변의 근거 자료 검색"), ("인용 근거 확인", f"답변에 사용된 출처 {len(cited_sources())}건" if complete else "답변 생성 후 출처 표시"), ("답변 생성", state)]:
             symbol = "✓" if complete else "·"
             style = "done" if complete else "waiting"
             st.markdown(f'<div class="law-process-step"><span class="law-process-dot {style}">{symbol}</span><div><strong>{title}</strong><small>{desc}</small></div></div>', unsafe_allow_html=True)
@@ -126,7 +199,7 @@ def chat():
                 if st.session_state.result:
                     if st.button("상세 법률 분석 결과 보기", key="law_analysis_link", icon=":material/description:", width="stretch"):
                         go("판례·법령 검색")
-                    st.caption(f"확인된 인용 출처 {len(sources())}건")
+                    st.caption(f"검색 근거 {len(sources())}건 · 답변 인용 {len(cited_sources())}건")
                 with st.container(horizontal=True):
                     for title, _, _, question in CATEGORIES[:3]:
                         if st.button(title, key=f"example_{title}"):
@@ -177,24 +250,31 @@ def report_sources(title, kind, groups):
     with st.container(key=f"law_report_{kind}"):
         report_heading("§" if kind == "law" else "⚖" if kind == "precedent" else "▤", "판단의 기준이 된" if kind == "law" else "함께 확인할 근거 자료", title, len(groups))
         if not groups:
-            st.caption(f"이번 답변에 인용된 {title}가 없습니다.")
+            st.caption(f"이번 검색에서 확인된 {title}가 없습니다.")
         for entries in groups.values():
             index, source = entries[0]
             name = source.get("source_name") or "법률 자료"
             article = source.get("article") or source.get("article_title") or ""
             ids = " · ".join(str(item.get("source_id") or "") for _, item in entries)
+            source_status = "답변 인용" if any(item.get("is_cited") for _, item in entries) else "검색 결과"
             with st.container(key=f"law_evidence_{index}"):
                 excerpt = " ".join(str(source.get("context_text") or source.get("text") or "").split())
-                st.html(f'<div class="law-evidence-copy"><div class="law-evidence-title"><span class="law-type">{escape({"law": "법령", "precedent": "판례", "guide": "안내"}[kind])}</span><strong>{escape(name)} {escape(str(article))}</strong></div><p class="law-evidence-excerpt">{escape(excerpt[:135])}{"…" if len(excerpt) > 135 else ""}</p><p class="law-evidence-meta">인용 {escape(ids)}</p></div>')
+                st.html(f'<div class="law-evidence-copy"><div class="law-evidence-title"><span class="law-type">{escape({"law": "법령", "precedent": "판례", "guide": "안내"}[kind])}</span><strong>{escape(name)} {escape(str(article))}</strong></div><p class="law-evidence-excerpt">{escape(excerpt[:135])}{"…" if len(excerpt) > 135 else ""}</p><p class="law-evidence-meta">{source_status} {escape(ids)}</p></div>')
                 if st.button("근거 자료 상세 보기", key=f"source_{index}", icon=":material/chevron_right:", width="stretch"):
                     st.session_state.selected_source = index
                     go("판례 상세")
                 if len(entries) > 1:
-                    with st.expander(f"이 자료의 인용 {len(entries)}개"):
-                        for detail_index, item in entries:
-                            if st.button(f"{item.get('source_id', '')} 인용 본문 보기", key=f"chunk_{detail_index}"):
-                                st.session_state.selected_source = detail_index
-                                go("판례 상세")
+                    with st.expander(f"이 자료의 검색 청크 {len(entries)}개", expanded=True):
+                        for chunk_number, (detail_index, item) in enumerate(entries, 1):
+                            chunk_text = " ".join(
+                                str(item.get("context_text") or item.get("text") or "본문이 없습니다.").split()
+                            )
+                            with st.container(key=f"law_chunk_preview_{detail_index}", border=True):
+                                st.caption(f"청크 {chunk_number} · {item.get('source_id') or '번호 없음'}")
+                                st.text(chunk_text[:350] + ("…" if len(chunk_text) > 350 else ""))
+                                if st.button("이 청크 전체 보기", key=f"chunk_{detail_index}"):
+                                    st.session_state.selected_source = detail_index
+                                    go("판례 상세")
 
 
 def analysis():
@@ -216,7 +296,7 @@ def render_analysis_report():
     passed = result.get("citation_validation_status") in {"passed", "passed_with_missing_metadata"}
     status = "인용 구조 확인" if passed else "서비스 연결 오류" if result.get("error_type") else "추가 확인 필요"
     with st.container(key="law_report_banner"):
-        st.markdown(f'<div class="law-banner-content"><div><span class="law-report-label">법률 분석 보고서</span><h1>{escape(query or "상담 분석 결과")}</h1><p>상담 내용과 검색된 근거를 바탕으로 작성한 분석 결과</p></div><div class="law-report-status"><strong>{len(items)}<small>개 인용</small></strong><span>{status}</span></div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="law-banner-content"><div><span class="law-report-label">법률 분석 보고서</span><h1>{escape(query or "상담 분석 결과")}</h1><p>상담 내용과 검색된 근거를 바탕으로 작성한 분석 결과</p></div><div class="law-report-status"><strong>{len(items)}<small>개 검색 근거</small></strong><span>{status}</span></div></div>', unsafe_allow_html=True)
     st.markdown(f'<div class="law-report-badges"><span class="law-status-badge">{status}</span><span>법령 {len(groups["law"])}건</span><span class="violet">판례 {len(groups["precedent"])}건</span><span>안내 자료 {len(groups["guide"])}건</span></div>', unsafe_allow_html=True)
     left, right = st.columns([2.5, 1], gap="medium")
     with left:

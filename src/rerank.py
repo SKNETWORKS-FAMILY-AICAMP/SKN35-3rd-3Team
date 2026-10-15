@@ -9,6 +9,12 @@ from src.rrf import reciprocal_rank_fusion
 
 DEFAULT_BATCH_SIZE = 8
 PRIMARY_LAW_MIN_COUNT = 2
+PRECEDENT_MIN_COUNT = 1
+DOCUMENT_TYPE_LABELS = {
+    "law": "법령",
+    "precedent": "판례",
+    "official_guide": "안내",
+}
 
 
 def _rerank_question(state):
@@ -29,8 +35,20 @@ def _legal_search_rank(document):
     rank = source.get("rank")
     return rank if isinstance(rank, int) and rank > 0 else math.inf
 
+
+def _precedent_search_rank(document):
+    source = document.get("metadata", {}).get("rrf_sources", {}).get("precedent_source", {})
+    rank = source.get("rank")
+    return rank if isinstance(rank, int) and rank > 0 else math.inf
+
+
+def _document_type_label(document):
+    document_type = document.get("metadata", {}).get("document_type")
+    return DOCUMENT_TYPE_LABELS.get(document_type, document_type or "기타")
+
+
 def _print_documents(documents, width=80):
-    """순위와 본문 앞부분만 한 줄씩 들여쓰기해서 출력합니다."""
+    """순위, 자료 유형과 본문 앞부분을 한 줄씩 들여쓰기해서 출력합니다."""
     if not documents:
         print("  (결과 없음)")
         return
@@ -38,7 +56,7 @@ def _print_documents(documents, width=80):
         text = " ".join(doc["text"].split())  # 줄바꿈·연속 공백을 한 칸으로
         if len(text) > width:
             text = text[:width] + "…"
-        print(f"  [{rank}] {text}")
+        print(f"  [{rank}] [{_document_type_label(doc)}] {text}")
 
 def _preserve_primary_laws(ranked, top_k, question="", minimum=PRIMARY_LAW_MIN_COUNT):
     """명시된 조문과 법령 원문이 최종 근거에 포함되도록 출처 균형을 맞춥니다."""
@@ -87,6 +105,31 @@ def _preserve_primary_laws(ranked, top_k, question="", minimum=PRIMARY_LAW_MIN_C
     )
     for candidate in law_candidates[:max(0, target - current)]:
         include(candidate, "primary_law_source_coverage")
+
+    # 판례도 최종 근거에 최소 개수만큼 남깁니다(법령 우선 원칙은 유지).
+    # 법령 최소 개수만큼은 교체 대상에서 제외해 판례가 법령을 밀어내지 않게 합니다.
+    precedent_target = min(PRECEDENT_MIN_COUNT, max(0, top_k - target))
+    if precedent_target:
+        kept_laws = [
+            doc for doc in top_docs
+            if doc.get("metadata", {}).get("document_type") == "law"
+        ][:target]
+        protected.update(key(doc) for doc in kept_laws)
+        current_precedents = sum(
+            doc.get("metadata", {}).get("document_type") == "precedent"
+            for doc in top_docs
+        )
+        selected_ids = {key(doc) for doc in top_docs}
+        precedent_candidates = sorted(
+            (
+                doc for doc in ranked
+                if key(doc) not in selected_ids
+                and doc.get("metadata", {}).get("document_type") == "precedent"
+            ),
+            key=lambda doc: (_precedent_search_rank(doc), -doc["score"]),
+        )
+        for candidate in precedent_candidates[:max(0, precedent_target - current_precedents)]:
+            include(candidate, "precedent_coverage")
     return top_docs
 
 
@@ -197,4 +240,8 @@ if __name__ == "__main__":
                         ("재정렬 후", response["documents"])]:
         print(f"\n=== {label} ===")
         for index, doc in enumerate(docs, 1):
-            print(f"[{index}] id={doc['point_id']}, score={doc['score']:.4f}\n{doc['text'][:200]}\n")
+            print(
+                f"[{index}] [{_document_type_label(doc)}] "
+                f"id={doc['point_id']}, score={doc['score']:.4f}\n"
+                f"{doc['text'][:200]}\n"
+            )

@@ -10,6 +10,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 
 PRIMARY_SOURCE_FILTER = {"document_type": "law"}
+PRECEDENT_SOURCE_FILTER = {"document_type": "precedent"}
 
 
 # 모델이 만든 여러 줄 문자열을 실제 검색 질의 리스트로 바꿉니다.
@@ -61,7 +62,7 @@ def search_rankings(searcher, queries, *, candidate_k=20, filters=None):
     """질의별 검색 결과와 법령 원문 보강 결과를 반환합니다.
 
     일반 검색은 안내서·분쟁 사례처럼 설명력이 좋은 자료를 찾고, 마지막 법률
-    핵심어 질의는 법령 원문만 한 번 더 검색합니다. 호출자가 이미 문서 유형을
+    핵심어 질의는 법령 원문만, 원 질문은 판례만 한 번씩 더 검색합니다. 호출자가 이미 문서 유형을
     지정한 경우에는 그 범위를 존중해 보강 검색을 추가하지 않습니다.
     """
     if not isinstance(queries, list) or not queries:
@@ -83,6 +84,12 @@ def search_rankings(searcher, queries, *, candidate_k=20, filters=None):
         law_filters = {**(filters or {}), **PRIMARY_SOURCE_FILTER}
         rankings["legal_primary_source"] = list(searcher.search_documents(
             queries[-1], top_k=candidate_k, filters=law_filters,
+        ))
+        # 판례는 법령·안내서에 밀려 상위 후보에서 빠지기 쉬우므로, 사실관계가 담긴
+        # 원 질문(queries[0])으로 판례만 따로 검색해 후보에 항상 포함시킵니다.
+        precedent_filters = {**(filters or {}), **PRECEDENT_SOURCE_FILTER}
+        rankings["precedent_source"] = list(searcher.search_documents(
+            queries[0], top_k=candidate_k, filters=precedent_filters,
         ))
     return rankings
 

@@ -9,7 +9,7 @@ from src.rrf import reciprocal_rank_fusion
 
 DEFAULT_BATCH_SIZE = 8
 PRIMARY_LAW_MIN_COUNT = 2
-MIN_RELEVANCE_SCORE = 0.6
+MIN_RELEVANCE_SCORE = 0.1
 PRECEDENT_MIN_COUNT = 1
 DOCUMENT_TYPE_LABELS = {
     "law": "법령",

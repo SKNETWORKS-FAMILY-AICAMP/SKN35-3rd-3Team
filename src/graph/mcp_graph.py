@@ -90,6 +90,7 @@ def route_after_mcp_validation(state: MCPGraphState) -> str:
 
 def build_mcp_graph(service: MCPToolServiceLike | None = None):
     """구현된 MCP Tool 네 개를 실행 순서대로 연결합니다."""
+    print("mcp 진입")
 
     health_check = service.health_check if service else _health_check
     get_collection_info = (

@@ -16,6 +16,8 @@ def route_after_validation(state: State):
 def build_rag_graph():
     builder = StateGraph(State)
 
+    print("RAG 진입")
+    
     # 노드 생성
     builder.add_node("query_rewrite" , query_rewrite_node)
     builder.add_node("multi_query" , multi_query_node)
@@ -23,7 +25,6 @@ def build_rag_graph():
     builder.add_node("rerank" , rerank_node)
     builder.add_node("validation" , validation_node)
     builder.add_node("generator" , generator_node)
-    print("노드 생성 완료")
 
     builder.add_edge(START, "query_rewrite")
     builder.add_edge("query_rewrite", "multi_query")

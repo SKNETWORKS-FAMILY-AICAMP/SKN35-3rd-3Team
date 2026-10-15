@@ -5,8 +5,8 @@ from src.rerank import rerank
 # state에 따라서 노드의 상태를 정의합니다.
 # rerank 평가 후 다시 query_rewrite
 
-def rerank_node(state : State):
-    # rerank.py에서 정의한 함수의 리턴값만 받아서 다룰 예정
-    # documents, score = rerank(state,top_k=5)
-    # return {"documents" : documents, "score": score}
-    return rerank(state, top_k=5)
+def rerank_node(state: State):
+    t = {}
+    response = rerank(state, top_k=5, timings=t)
+    print("best:", t.get("best_score"), "min:", t.get("min_score"), "filtered_out:", t.get("filtered_out_count"))
+    return {"documents": response["documents"], "score": response["score"]}

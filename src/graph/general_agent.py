@@ -6,6 +6,7 @@ from langchain_core.messages import SystemMessage , HumanMessage
 model = create_llm(temperature=0.3)
 
 def general_agent(state : State):
+    print("일반 진입")
     question = HumanMessage(content=state["origin_query"])
 
     response = model.invoke([

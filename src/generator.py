@@ -165,6 +165,18 @@ def generator(state: dict, *, llm=None, verbose: bool = True) -> dict:
                     if any(marker not in available for marker in markers):
                         raise ValueError("실제 출처와 매핑되지 않은 인용")
                     cited = set(re.findall(r"\[(S\d+)\]", answer))
+                    # source_url이 없는 출처(예: 공식 안내서)는 링크를 만들 수 없어 모델이 표기를 생략합니다.
+                    # 링크가 있는 출처의 누락은 그대로 오류로 두고, 링크가 없는 출처만 코드가
+                    # 이름과 번호를 본문 끝에 덧붙여 claims와 표기를 일치시킵니다.
+                    if status == "answered":
+                        unlinked = [s for s in prepared["sources"]
+                                    if s["source_id"] in claimed - cited and not s["source_url"]]
+                        if unlinked:
+                            labels = ", ".join(
+                                f"{s['source_name'] or s['document_type'] or '출처'} [{s['source_id']}]"
+                                for s in unlinked)
+                            answer = f"{answer}\n\n참고 자료(원문 링크 없음): {labels}"
+                            cited |= {s["source_id"] for s in unlinked}
                     if not (cited | claimed) <= available or (status == "answered" and (not cited or cited != claimed)):
                         raise ValueError("없는 출처 또는 누락된 인용")
                     used = cited | claimed

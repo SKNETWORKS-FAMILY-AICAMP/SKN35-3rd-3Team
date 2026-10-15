@@ -4,9 +4,10 @@ import json
 import os
 import re
 from time import perf_counter
+from urllib.parse import quote, urlparse
 
 import tiktoken
-from langchain_core.messages import SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
 
 from src.const.model import create_generator_llm, OPENAI_LLM_MODEL
@@ -98,6 +99,86 @@ def build_context(documents: list[dict], model_name: str, token_budget: int) -> 
     return response
 
 
+class UnknownSourceError(ValueError):
+    """제공되지 않은 출처는 형식 보완이나 재요청으로 임의 대체하지 않습니다."""
+
+
+def _decode_output(content):
+    """모델의 JSON 계약을 검사합니다. 누락된 주장·근거는 코드가 추측하지 않습니다."""
+    output = json.loads(content)
+    if not isinstance(output, dict):
+        raise ValueError("생성 결과는 JSON 객체여야 합니다.")
+    status, answer, claims = output["status"], output["answer"], output["claims"]
+    if status not in {"answered", "insufficient_evidence", "needs_clarification", "conflicting_evidence"}:
+        raise ValueError("알 수 없는 생성 상태")
+    if not isinstance(answer, str) or not answer.strip() or not isinstance(claims, list):
+        raise ValueError("답변 형식이 올바르지 않습니다.")
+    if status == "answered" and not claims:
+        raise ValueError("답변의 주장별 근거가 없습니다.")
+    if status != "answered" and claims:
+        raise ValueError("보류 상태의 claims는 빈 배열이어야 합니다.")
+    for claim in claims:
+        if (not isinstance(claim, dict) or not isinstance(claim.get("statement"), str)
+                or not claim["statement"].strip() or not isinstance(claim.get("source_ids"), list)
+                or not claim["source_ids"] or any(not isinstance(x, str) for x in claim["source_ids"])):
+            raise ValueError("주장별 근거 형식이 올바르지 않습니다.")
+    return output
+
+
+def _source_reference(source):
+    """인용의 표시명·링크는 모델 문자열 대신 실제 출처 메타데이터를 사용합니다."""
+    name = source["source_name"] or source["document_type"] or "출처"
+    if source.get("article"):
+        name = f"{name} · {source['article']}"
+    name = re.sub(r"([\[\]\\])", r"\\\1", name)
+    number = source["source_id"]
+    url = source.get("source_url") or ""
+    if urlparse(url).scheme in {"http", "https"} and urlparse(url).netloc:
+        url = quote(url, safe=":/?=&%#@+;,.-_~")
+        return f"[{name}](<{url}> '[{number}]')"
+    return f"{name} [{number}]"
+
+
+def _answer_with_sources(output, available_sources):
+    """검증된 주장 매핑의 표기 누락만 보완합니다. 출처 매핑을 새로 만들지 않습니다."""
+    answer, claims = output["answer"], output["claims"]
+    available = {s["source_id"] for s in available_sources}
+    claimed = {number for claim in claims for number in claim["source_ids"]}
+    if not claimed <= available:
+        raise UnknownSourceError("실제 출처와 매핑되지 않은 인용")
+    answer = re.sub(
+        r"\[\s*(S?\d+)\s*\]",
+        lambda match: f"[S{match.group(1).lstrip('S')}]"
+        if f"S{match.group(1).lstrip('S')}" in available & claimed else match.group(0),
+        answer,
+    )
+    markers = re.findall(r"\[\s*(S?\d+)\s*\]", answer)
+    if any(marker not in available for marker in markers):
+        raise UnknownSourceError("실제 출처와 매핑되지 않은 인용")
+    cited = set(re.findall(r"\[(S\d+)\]", answer))
+    if not cited <= claimed:
+        raise ValueError(f"본문 인용 {sorted(cited)}과 주장별 근거 {sorted(claimed)}가 다릅니다.")
+    by_number = {source["source_id"]: source for source in available_sources}
+
+    def canonical_link(match):
+        numbers = list(dict.fromkeys(re.findall(r"\[(S\d+)\]", match.group(2))))
+        if numbers and set(numbers) <= claimed:
+            return " / ".join(_source_reference(by_number[number]) for number in numbers)
+        return match.group(0)
+
+    # 예: [안내서](자료명 [S1])처럼 URL 없는 PDF에 모델이 만든 깨진 링크도
+    # 이미 검증된 번호의 실제 출처 표기로 바꿉니다.
+    answer = re.sub(r"\[((?:\\.|[^\]\\\n])*)\]\(([^)\n]*)\)", canonical_link, answer)
+    missing = [s for s in available_sources if s["source_id"] in claimed - cited]
+    if missing:
+        labels = [f"- {_source_reference(source)}" for source in missing]
+        answer += "\n\n참고 근거\n" + "\n".join(labels)
+        cited |= {s["source_id"] for s in missing}
+    if output["status"] == "answered" and (not cited or cited != claimed):
+        raise ValueError("없는 출처 또는 누락된 인용")
+    return answer, claimed
+
+
 # 원본 질문과 검색 근거를 모델에 전달하고, 인용 출처의 존재를 확인해 결과를 반환합니다.
 def generator(state: dict, *, llm=None, verbose: bool = True) -> dict:
     """origin_query/documents를 받아 답변·출처·상태·모델·지연 시간을 반환합니다."""
@@ -114,7 +195,8 @@ def generator(state: dict, *, llm=None, verbose: bool = True) -> dict:
                 "model_name": OPENAI_LLM_MODEL, "latency_ms": 0.0, "token_usage": {},
                 "estimated_cost_usd": None,
                 "error_type": None, "output_validation_error": None, "rejected_output": None,
-                "claims": [], "source_validation_passed": False, "judge_status": "not_run"}
+                "claims": [], "source_validation_passed": False, "judge_status": "not_run",
+                "generation_attempts": 0}
     documents = state.get("documents", [])
     if not isinstance(documents, list):
         raise ValueError("documents는 문서 목록이어야 합니다.")
@@ -127,59 +209,56 @@ def generator(state: dict, *, llm=None, verbose: bool = True) -> dict:
                 SystemMessage(content=GENERATOR_PROMPT),
                 ("human", "사용자의 원본 질문: {question}\n검색 자료(JSON):\n{context}"),
             ])
+            output = None
             try:
                 model = create_generator_llm() if llm is None else llm
-                message = (prompt | model).invoke({"question": question, "context": prepared["context"]})
-                response["token_usage"] = getattr(message, "usage_metadata", None) or {}
+                messages = prompt.format_messages(question=question, context=prepared["context"])
+                for attempt in range(2):
+                    output = None
+                    response["generation_attempts"] += 1
+                    message = model.invoke(messages)
+                    usage = getattr(message, "usage_metadata", None) or {}
+                    for key in ("input_tokens", "output_tokens", "total_tokens"):
+                        if isinstance(usage.get(key), int):
+                            response["token_usage"][key] = response["token_usage"].get(key, 0) + usage[key]
+                    try:
+                        output = _decode_output(message.content)
+                        _answer_with_sources(output, prepared["sources"])
+                        break
+                    except UnknownSourceError:
+                        # 알려지지 않은 번호는 기존처럼 즉시 거절하며 아래에서 오류를 기록합니다.
+                        break
+                    except (ValueError, KeyError, TypeError) as error:
+                        if attempt:
+                            response.update(answer="답변의 출처 형식을 확인할 수 없어 답변을 보류합니다.",
+                                            generation_status="invalid_output", output_validation_error=str(error),
+                                            rejected_output=message.content)
+                            break
+                        # JSON·필수 키·인용 번호 불일치는 한 번 재요청합니다. claims를 추측하지 않습니다.
+                        messages.extend([
+                            AIMessage(content=message.content),
+                            HumanMessage(content=(
+                                f"출력 형식 검사 실패: {error}. 같은 질문과 검색 자료를 바탕으로 "
+                                "status, answer, claims가 모두 있는 JSON 객체를 다시 작성하세요. "
+                                "answered이면 각 주장에 statement와 실제 source_ids를 포함하세요. "
+                                "answer에는 인용 번호나 링크를 쓰지 마세요. 유효한 주장·근거 연결은 유지하세요. "
+                                "근거를 연결할 수 없으면 insufficient_evidence와 빈 claims를 반환하세요."
+                            )),
+                        ])
 
             except Exception as error:
                 logger.exception("generator LLM 호출 실패")
                 response.update(answer="답변 생성 서비스 호출에 실패했습니다.", generation_status="llm_error",
                     error_type=type(error).__name__, output_validation_error=str(error))
             else:
-                output = None
+                if output is None or response["generation_status"] == "invalid_output":
+                    response["latency_ms"] = round((perf_counter() - started) * 1000, 1)
+                    if verbose:
+                        print_response(response)
+                    return response
                 try:
-                    output = json.loads(message.content)
                     status, answer, claims = output["status"], output["answer"], output["claims"]
-                    if status not in {"answered", "insufficient_evidence", "needs_clarification", "conflicting_evidence"}:
-                        raise ValueError("알 수 없는 생성 상태")
-                    if not isinstance(answer, str) or not answer.strip() or not isinstance(claims, list):
-                        raise ValueError("답변 형식이 올바르지 않습니다.")
-                    claimed = set()
-                    for claim in claims:
-                        if (not isinstance(claim, dict) or not isinstance(claim.get("statement"), str)
-                                or not claim["statement"].strip() or not isinstance(claim.get("source_ids"), list)
-                                or not claim["source_ids"] or any(not isinstance(x, str) for x in claim["source_ids"])):
-                            raise ValueError("주장별 근거 형식이 올바르지 않습니다.")
-                        claimed.update(claim["source_ids"])
-                    available = {s["source_id"] for s in prepared["sources"]}
-                    # [1] 또는 [ S1 ]처럼 표기가 달라도 실제 출처와 주장 매핑이 있을 때만 통일합니다.
-                    # 없는 번호에 새 출처를 만들거나, 임의로 인용을 추가하지 않습니다.
-                    answer = re.sub(
-                        r"\[\s*(S?\d+)\s*\]",
-                        lambda match: f"[S{match.group(1).lstrip('S')}]"
-                        if f"S{match.group(1).lstrip('S')}" in available & claimed else match.group(0),
-                        answer,
-                    )
-                    markers = re.findall(r"\[\s*(S?\d+)\s*\]", answer)
-                    if any(marker not in available for marker in markers):
-                        raise ValueError("실제 출처와 매핑되지 않은 인용")
-                    cited = set(re.findall(r"\[(S\d+)\]", answer))
-                    # source_url이 없는 출처(예: 공식 안내서)는 링크를 만들 수 없어 모델이 표기를 생략합니다.
-                    # 링크가 있는 출처의 누락은 그대로 오류로 두고, 링크가 없는 출처만 코드가
-                    # 이름과 번호를 본문 끝에 덧붙여 claims와 표기를 일치시킵니다.
-                    if status == "answered":
-                        unlinked = [s for s in prepared["sources"]
-                                    if s["source_id"] in claimed - cited and not s["source_url"]]
-                        if unlinked:
-                            labels = ", ".join(
-                                f"{s['source_name'] or s['document_type'] or '출처'} [{s['source_id']}]"
-                                for s in unlinked)
-                            answer = f"{answer}\n\n참고 자료(원문 링크 없음): {labels}"
-                            cited |= {s["source_id"] for s in unlinked}
-                    if not (cited | claimed) <= available or (status == "answered" and (not cited or cited != claimed)):
-                        raise ValueError("없는 출처 또는 누락된 인용")
-                    used = cited | claimed
+                    answer, used = _answer_with_sources(output, prepared["sources"])
                     sources = [s for s in prepared["sources"] if s["source_id"] in used]
                     response.update(answer=answer, sources=sources, claims=claims, source_validation_passed=True,
                                     used_document_ids=list(dict.fromkeys(s["document_id"] or s["point_id"] for s in sources)),

@@ -40,12 +40,15 @@ def advance_progress(progress, node, update):
         steps[:] = ["done", "skipped", "skipped", "done"]
     if node == "generator":
         steps[3] = "done"
+    if node == "citation":
+        status = update.get("citation_validation_status")
+        steps[2] = "error" if status == "failed" else "done" if status in {"passed", "passed_with_missing_metadata"} else "skipped"
 
 
 def finish_progress(progress, result):
     """오류·무응답·제한 답변을 구분하고 수행하지 않은 단계를 건너뜀으로 표시한다."""
     status = result.get("generation_status")
-    failed = bool(result.get("error_type")) or status in FAILED_STATUSES
+    failed = bool(result.get("error_type")) or status in FAILED_STATUSES or result.get("citation_validation_status") == "failed"
     limited = status in LIMITED_STATUSES
     if failed:
         progress["status"] = "error"

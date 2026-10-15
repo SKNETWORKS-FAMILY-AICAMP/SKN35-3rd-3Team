@@ -21,9 +21,10 @@ def ask(text: str, img_bytes_list: list[bytes], on_progress=None) -> str:
     st.session_state.rag_progress = progress
     if on_progress:
         on_progress()
-    if "graph" not in st.session_state:
-        from src.graph.workflow import build_workflow
+    from src.graph.workflow import WORKFLOW_VERSION, build_workflow
+    if "graph" not in st.session_state or st.session_state.get("graph_version") != WORKFLOW_VERSION:
         st.session_state.graph = build_workflow()
+        st.session_state.graph_version = WORKFLOW_VERSION
     result = {}
     for namespace, mode, event in st.session_state.graph.stream(
         {"origin_query": text, "retry_count": 0, "images": [to_b64(b) for b in img_bytes_list], "answer": "",

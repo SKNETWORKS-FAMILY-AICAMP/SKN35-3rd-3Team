@@ -9,6 +9,10 @@ from src.const.model import create_llm , create_llm_gmn
 from src.prompt.classify_prompt import CLASSIFY_PROMPT
 from src.history import format_history
 from src.graph.generator_node import generator_node
+from src.graph.citation_node import citation_node
+
+# 세션에 캐시된 이전 그래프를 교체할 때 올립니다.
+WORKFLOW_VERSION = 3
 
 def route_start(state: State) -> str:
     llm = create_llm()
@@ -34,6 +38,7 @@ def build_workflow():
     builder.add_node("rag", build_rag_graph())
     builder.add_node("mcp", build_mcp_graph())
     builder.add_node("generator", generator_node)
+    builder.add_node("citation", citation_node)
 
     builder.add_conditional_edges(START , route_image ,
         {"image": "image", "general": "general", "out_of_scope": "general", "rag": "rag", "mcp": "mcp"})
@@ -42,8 +47,9 @@ def build_workflow():
         {"general": "general", "out_of_scope" : "general", "rag": "rag", "mcp" : "mcp"})
     
     builder.add_edge("general", END)
-    builder.add_edge("rag", END)
+    builder.add_edge("rag", "citation")
     builder.add_edge("mcp", "generator")
-    builder.add_edge("generator", END)
+    builder.add_edge("generator", "citation")
+    builder.add_edge("citation", END)
 
     return builder.compile(checkpointer=InMemorySaver())

@@ -12,10 +12,10 @@ from src.app.Chat import render_history, submit_question
 from src.app.conversation_history import first_question, group_consultations
 from src.app.page_navigation import render_page_navigation
 from src.app.report_summary import report_summary
+from src.app.evidence import VALID_CITATION_STATUSES, display_sources, verified_sources
 
 APP_DIR = Path(__file__).parent
 NAVIGATION_LABELS = ("AI 법률상담", "판례·법령 검색", "이용 안내")
-VALID_CITATION_STATUSES = {"passed", "passed_with_missing_metadata"}
 DOCUMENT_LABELS = {"law": "법령", "precedent": "판례", "guide": "안내"}
 PROCESS_STEPS = (
     ("질문 분석", "입력한 상황과 첨부 자료 확인"),
@@ -33,17 +33,14 @@ CATEGORIES = [
 ]
 
 
-# 공통 탐색과 인용 출처: 구조 검사를 통과한 자료만 분석 화면에 표시한다.
+# 공통 탐색과 근거 자료: 검증된 인용과 검색 후보를 구분해 표시한다.
 def go(view):
     st.session_state.view = view
     st.rerun()
 
 
 def sources():
-    result = st.session_state.result
-    if result.get("citation_validation_status") not in VALID_CITATION_STATUSES:
-        return []
-    return result.get("sources") or result.get("citations") or []
+    return display_sources(st.session_state.result)
 
 
 def header():
@@ -290,7 +287,7 @@ def chat():
                 if st.session_state.result:
                     if st.button("상세 법률 분석 결과 보기", key="law_analysis_link", icon=":material/description:", width="stretch"):
                         go("판례·법령 검색")
-                    st.caption(f"확인된 인용 출처 {len(sources())}건")
+                    st.caption(f"확인된 인용 출처 {len(verified_sources(st.session_state.result))}건 · 검색된 근거 {len(sources())}개")
                 with st.container(horizontal=True):
                     for title, _, _, question in CATEGORIES[:3]:
                         if st.button(title, key=f"example_{title}"):
@@ -324,25 +321,27 @@ def report_heading(icon, kicker, title, count=None):
 def report_sources(title, kind, groups):
     with st.container(key=f"law_report_{kind}"):
         icon = {"law": "§", "precedent": "⚖", "guide": "▤"}[kind]
-        kicker = "판단의 기준이 된" if kind == "law" else "함께 확인할 근거 자료"
+        kicker = "검색된 근거 자료"
         report_heading(icon, kicker, title, len(groups))
         if not groups:
-            st.caption(f"이번 답변에 인용된 {title}가 없습니다.")
+            st.caption(f"이번 질문에서 검색된 {title}가 없습니다.")
         for entries in groups.values():
             index, source = entries[0]
             name = source.get("source_name") or "법률 자료"
             article = source.get("article") or source.get("article_title") or ""
-            ids = " · ".join(str(item.get("source_id") or "") for _, item in entries)
+            ids = " · ".join(str(item["source_id"]) for _, item in entries if item.get("is_cited") and item.get("source_id"))
+            evidence_label = f"답변에 인용 · {ids}" if ids else "검색된 후보 · 답변 인용 미확인"
             with st.container(key=f"law_evidence_{index}"):
                 excerpt = " ".join(str(source.get("context_text") or source.get("text") or "").split())
-                st.html(f'<div class="law-evidence-copy"><div class="law-evidence-title"><span class="law-type">{escape(DOCUMENT_LABELS[kind])}</span><strong>{escape(name)} {escape(str(article))}</strong></div><p class="law-evidence-excerpt">{escape(excerpt[:135])}{"…" if len(excerpt) > 135 else ""}</p><p class="law-evidence-meta">인용 {escape(ids)}</p></div>')
+                st.html(f'<div class="law-evidence-copy"><div class="law-evidence-title"><span class="law-type">{escape(DOCUMENT_LABELS[kind])}</span><strong>{escape(name)} {escape(str(article))}</strong></div><p class="law-evidence-excerpt">{escape(excerpt[:135])}{"…" if len(excerpt) > 135 else ""}</p><p class="law-evidence-meta">{escape(evidence_label)}</p></div>')
                 if st.button("근거 자료 상세 보기", key=f"source_{index}", icon=":material/chevron_right:", width="stretch"):
                     st.session_state.selected_source = index
                     go("판례 상세")
                 if len(entries) > 1:
-                    with st.expander(f"이 자료의 인용 {len(entries)}개"):
+                    with st.expander(f"이 자료의 근거 본문 {len(entries)}개"):
                         for detail_index, item in entries:
-                            if st.button(f"{item.get('source_id', '')} 인용 본문 보기", key=f"chunk_{detail_index}"):
+                            label = item.get("source_id") if item.get("is_cited") else "검색 후보"
+                            if st.button(f"{label} 본문 보기", key=f"chunk_{detail_index}"):
                                 st.session_state.selected_source = detail_index
                                 go("판례 상세")
 
@@ -384,7 +383,7 @@ def render_analysis_report():
         st.markdown(
             '<div class="law-banner-content"><div><span class="law-report-label">법률 분석 보고서</span>'
             f'<h1>{title}</h1><p>상담 내용과 검색된 근거를 바탕으로 작성한 분석 결과</p></div>'
-            f'<div class="law-report-status"><strong>{len(items)}<small>개 인용</small></strong>'
+            f'<div class="law-report-status"><strong>{len(verified_sources(result))}<small>개 인용</small></strong>'
             f'<span>{status}</span></div></div>',
             unsafe_allow_html=True,
         )
@@ -460,9 +459,10 @@ def render_source_detail():
     if st.button("분석 결과로 돌아가기", icon=":material/arrow_back:"):
         go("판례·법령 검색")
     st.title(source.get("source_name") or "근거 자료 상세")
+    st.caption("답변에 인용된 자료입니다." if source.get("is_cited") else "검색된 후보 자료입니다. 답변의 결론을 뒷받침하는 것으로 검증된 자료는 아닙니다.")
     left, right = st.columns([3, 1], gap="large")
     with left.container(key="law_detail_body", border=True):
-        st.subheader(str(source.get("article_title") or source.get("article") or "인용 본문"))
+        st.subheader(str(source.get("article_title") or source.get("article") or "근거 본문"))
         text = str(source.get("text") or source.get("context_text") or "제공된 본문이 없습니다.")
         paragraphs = re.split(r"\n\s*\n|(?<=다\.)[ \t]+", text.strip())
         st.html('<div class="law-source-reading">' + ''.join(f'<p>{escape(paragraph)}</p>' for paragraph in paragraphs if paragraph) + '</div>')
@@ -528,7 +528,7 @@ def guide():
         with right.container(key="law_guide_evidence", border=True):
             st.subheader("답변의 근거 읽는 법", icon=":material/menu_book:")
             st.markdown("답변에 표시된 [S1], [S2]는 참조한 자료의 인용 번호입니다. 분석 결과에서 같은 번호의 근거를 찾아보세요.")
-            st.caption("같은 문서의 여러 인용은 한 카드로 묶입니다. 법령·판례·안내 자료는 구분해 표시하며, 인용된 자료가 없는 항목은 비어 있을 수 있습니다.")
+            st.caption("같은 문서의 근거 본문은 한 카드로 묶입니다. 답변에 인용된 출처와 검색 후보를 구분하며, 후보 자료는 확인된 인용 건수에 포함하지 않습니다.")
 
         st.subheader("자주 묻는 질문")
         for index, (title, description) in enumerate([

@@ -29,6 +29,7 @@ class State(MessagesState):
     sources: NotRequired[list[dict]]
     used_document_ids: NotRequired[list[str]]
     generation_status: NotRequired[str]
+    generation_attempts: NotRequired[int]
     model_name: NotRequired[str]
     latency_ms: NotRequired[float]
     token_usage: NotRequired[dict]

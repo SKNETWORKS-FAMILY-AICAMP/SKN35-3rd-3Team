@@ -61,7 +61,7 @@ class MCPGraphTests(unittest.TestCase):
         self.assertEqual(result["mcp_search_documents"], [search_document])
         self.assertEqual(result["mcp_document_id"], "law:1")
         self.assertEqual(result["mcp_lookup_documents"], [lookup_document])
-        self.assertEqual(result["documents"], [lookup_document])
+        self.assertEqual(result["documents"], [search_document, lookup_document])
         self.assertTrue(result["is_valid"])
         self.assertFalse(result["mcp_should_end"])
         self.service.search_documents.assert_called_once_with(

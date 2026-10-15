@@ -9,6 +9,10 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
+PRIMARY_SOURCE_FILTER = {"document_type": "law"}
+PRECEDENT_SOURCE_FILTER = {"document_type": "precedent"}
+
+
 # 모델이 만든 여러 줄 문자열을 실제 검색 질의 리스트로 바꿉니다.
 def parse_queries(text, question, max_queries=3):
     # 입력 질문을 첫 번째 질의로 남기고, 확장 표현을 뒤에 추가합니다.
@@ -54,6 +58,42 @@ def create_queries(question, llm=None, max_queries=3):
     return response
 
 
+def search_rankings(searcher, queries, *, candidate_k=20, filters=None):
+    """질의별 검색 결과와 법령 원문 보강 결과를 반환합니다.
+
+    일반 검색은 안내서·분쟁 사례처럼 설명력이 좋은 자료를 찾고, 마지막 법률
+    핵심어 질의는 법령 원문만, 원 질문은 판례만 한 번씩 더 검색합니다. 호출자가 이미 문서 유형을
+    지정한 경우에는 그 범위를 존중해 보강 검색을 추가하지 않습니다.
+    """
+    if not isinstance(queries, list) or not queries:
+        raise ValueError("queries는 하나 이상의 문자열 목록이어야 합니다.")
+    if any(not isinstance(query, str) or not query.strip() for query in queries):
+        raise ValueError("각 검색 질의는 비어 있지 않은 문자열이어야 합니다.")
+    if type(candidate_k) is not int or not 1 <= candidate_k <= 100:
+        raise ValueError("candidate_k는 1~100 정수여야 합니다.")
+
+    rankings = {
+        f"query_{index}": list(searcher.search_documents(
+            query, top_k=candidate_k, filters=filters,
+        ))
+        for index, query in enumerate(queries)
+    }
+
+    requested_type = (filters or {}).get("document_type")
+    if requested_type is None:
+        law_filters = {**(filters or {}), **PRIMARY_SOURCE_FILTER}
+        rankings["legal_primary_source"] = list(searcher.search_documents(
+            queries[-1], top_k=candidate_k, filters=law_filters,
+        ))
+        # 판례는 법령·안내서에 밀려 상위 후보에서 빠지기 쉬우므로, 사실관계가 담긴
+        # 원 질문(queries[0])으로 판례만 따로 검색해 후보에 항상 포함시킵니다.
+        precedent_filters = {**(filters or {}), **PRECEDENT_SOURCE_FILTER}
+        rankings["precedent_source"] = list(searcher.search_documents(
+            queries[0], top_k=candidate_k, filters=precedent_filters,
+        ))
+    return rankings
+
+
 # 원본과 확장 질문을 각각 검색하고, 질문별 결과를 다음 RRF 노드로 전달합니다.
 def multi_query(question, llm=None, searcher=None, *, candidate_k=20, filters=None):
     """질문 확장 → 원격 Qdrant Dense/Sparse 검색 → 질문별 결과 반환."""
@@ -65,14 +105,10 @@ def multi_query(question, llm=None, searcher=None, *, candidate_k=20, filters=No
         searcher = create_team_retriever()
     try:
         queries = create_queries(question, llm)
-        rankings = {}
-        for index, query in enumerate(queries):
-            # 각 질문으로 원격 Qdrant의 Dense와 Sparse 검색을 실행합니다.
-            # 질문별 Dense/Sparse 결과는 Qdrant 내부 RRF로 통합됩니다.
-            # 다음 그래프 RRF 노드는 여러 질문의 결과를 통합합니다.
-            rankings[f"query_{index}"] = list(searcher.search_documents(
-                query, top_k=candidate_k, filters=filters,
-            ))
+        # 일반 자료와 법령 원문을 함께 확보해 다음 RRF 노드로 전달합니다.
+        rankings = search_rankings(
+            searcher, queries, candidate_k=candidate_k, filters=filters,
+        )
     finally:
         # 이 함수에서 만든 검색 연결은 작업이 끝나면 닫습니다.
         if owns_searcher:

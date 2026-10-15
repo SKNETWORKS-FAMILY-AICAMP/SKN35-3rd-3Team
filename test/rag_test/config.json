@@ -1,0 +1,11 @@
+{
+  "dataset": "rag_evaluation_cases_list.json",
+  "output_dir": "reports/evaluation/expanded",
+  "ks": [1, 3, 5, 10],
+  "candidate_ks": [20, 50],
+  "candidate_k": 20,
+  "rerank_k": 10,
+  "repeats": 3,
+  "warmup": 1,
+  "batch_size": 1
+}

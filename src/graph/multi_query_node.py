@@ -7,5 +7,5 @@ def multi_query_node(state: State):
     question = state.get("rewrite_query") or state["origin_query"]
     # 질문 확장과 검색을 실행하고, 질문 목록과 질문별 결과를 State에 저장합니다.
     response = multi_query(question, filters=state.get("filters"))
-    print(response)
+    # print(response)
     return response

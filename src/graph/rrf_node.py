@@ -4,5 +4,5 @@ from src.rrf import rrf
 
 def rrf_node(state: State):
     response = rrf(state)
-    print(response)
+    # print(response)
     return response

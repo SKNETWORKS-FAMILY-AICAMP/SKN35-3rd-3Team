@@ -1,0 +1,417 @@
+{
+  "schema_version": 1,
+  "phase": "before",
+  "measured_at": "2026-10-14T14:01:17.694366+00:00",
+  "case_file": "tests\\data\\rag_performance_cases.json",
+  "case_file_sha256": "76b764b24f4232af8c1a08d5b7645971d7c3c594f9785a56269d00c6f3c23d26",
+  "source_dataset_sha256": "59f113f5658eeff417abb1aebded4913b0266c1a523d52aa948cecc3b2a80e8b",
+  "settings": {
+    "candidate_k": 20,
+    "final_k": 5,
+    "max_queries": 3,
+    "rerank_min_score": 0.8,
+    "llm_model": "gpt-4o-mini",
+    "rerank_model": "BAAI/bge-reranker-v2-m3"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+    "logical_cpu_count": 12,
+    "python": "3.12.13",
+    "torch": "2.14.1+cpu",
+    "torch_threads": 4,
+    "cuda_available": false,
+    "cuda_device": null
+  },
+  "summary": {
+    "case_count": 5,
+    "mean_total_ms": 44644.355,
+    "p50_total_ms": 34120.295,
+    "p95_total_ms": 79559.783,
+    "throughput_questions_per_minute": 1.344,
+    "mean_retry_count": 1.4,
+    "stage_mean_ms": {
+      "routing": 1668.317,
+      "query_rewrite": 1743.729,
+      "multi_query_generation": 1631.853,
+      "retriever_init": 819.129,
+      "retrieval": 3058.406,
+      "rrf": 0.258,
+      "rerank": 31084.004,
+      "validation": 0.011,
+      "generation": 4637.831
+    },
+    "mean_rerank_model_load_ms": 994.768,
+    "mean_rerank_inference_ms": 30056.517,
+    "quality_at_5": {
+      "recall": 0.6,
+      "precision": 0.12,
+      "hit": 0.6,
+      "rr": 0.5,
+      "ndcg": 0.526186
+    },
+    "generation_success_rate": 0.8
+  },
+  "cases": [
+    {
+      "case_id": "q001",
+      "scenario": "직접 조문·짧은 질문",
+      "query": "최저임금법의 목적은 무엇인가요?",
+      "route": "out_of_scope",
+      "total_ms": 23520.92,
+      "stage_ms": {
+        "routing": 1298.244,
+        "query_rewrite": 1063.214,
+        "multi_query_generation": 992.73,
+        "retriever_init": 1279.453,
+        "retrieval": 2688.449,
+        "rrf": 0.249,
+        "rerank": 13548.191,
+        "validation": 0.008,
+        "generation": 2650.184
+      },
+      "retry_count": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "query_count": 3,
+          "search_calls_ms": [
+            1726.935,
+            671.154,
+            290.36
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 21,
+          "rerank_model_load_ms": 4973.834,
+          "rerank_inference_ms": 8562.291,
+          "score": 0.9838640689849854,
+          "is_valid": true
+        }
+      ],
+      "final_score": 0.9838640689849854,
+      "retrieved_ids": [
+        "law:000129_218303_20200526::000129_218303_20200526_art_1_0_chunk_0000",
+        "law:008480_282351_20260102::008480_282351_20260102_art_1_0_chunk_0000",
+        "law:005247_206564_20190101::005247_206564_20190101_art_1_0_chunk_0000",
+        "law:008480_282351_20260102::008480_282351_20260102_art_2_0_chunk_0000",
+        "law:000129_218303_20200526::000129_218303_20200526_supplement_1986123103927_chunk_0000"
+      ],
+      "quality_at_5": {
+        "recall": 1.0,
+        "precision": 0.2,
+        "hit": 1.0,
+        "rr": 1.0,
+        "ndcg": 1.0
+      },
+      "generation_status": "generated_unverified",
+      "generator_reported_latency_ms": 2650.2,
+      "token_usage": {
+        "input_tokens": 2852,
+        "output_tokens": 180,
+        "total_tokens": 3032,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    },
+    {
+      "case_id": "q007",
+      "scenario": "소비자 분쟁·사례 사실관계",
+      "query": "필라테스 환급 분쟁 사례에서 수강 계약의 총 횟수와 대금은 얼마였나요?",
+      "route": "out_of_scope",
+      "total_ms": 22514.086,
+      "stage_ms": {
+        "routing": 723.42,
+        "query_rewrite": 965.079,
+        "multi_query_generation": 1324.927,
+        "retriever_init": 450.933,
+        "retrieval": 1990.285,
+        "rrf": 0.187,
+        "rerank": 14405.756,
+        "validation": 0.009,
+        "generation": 2653.304
+      },
+      "retry_count": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "query_count": 3,
+          "search_calls_ms": [
+            1399.384,
+            292.114,
+            298.787
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 23,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 14389.451,
+          "score": 0.9935318231582642,
+          "is_valid": true
+        }
+      ],
+      "final_score": 0.9935318231582642,
+      "retrieved_ids": [
+        "mediation_case:kca_pilates_1003941650::kca_pilates_1003941650_case_facts_0000",
+        "mediation_case:kca_case_1003640779::kca_case_1003640779_case_facts_0000",
+        "mediation_case:kca_case_1003739114::kca_case_1003739114_case_party_claims_0000",
+        "mediation_case:kca_case_1003739114::kca_case_1003739114_case_reasoning_0000",
+        "mediation_case:kca_case_1003739114::kca_case_1003739114_case_facts_0000"
+      ],
+      "quality_at_5": {
+        "recall": 1.0,
+        "precision": 0.2,
+        "hit": 1.0,
+        "rr": 1.0,
+        "ndcg": 1.0
+      },
+      "generation_status": "generated_unverified",
+      "generator_reported_latency_ms": 2653.3,
+      "token_usage": {
+        "input_tokens": 5172,
+        "output_tokens": 212,
+        "total_tokens": 5384,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    },
+    {
+      "case_id": "q013",
+      "scenario": "주택임대차·대화형 질문",
+      "query": "집 계약이 말없이 연장됐는데 중간에 이사하려고 해요. 언제 계약을 끝낼 수 있나요?",
+      "route": "rag",
+      "total_ms": 58155.663,
+      "stage_ms": {
+        "routing": 2215.102,
+        "query_rewrite": 3492.867,
+        "multi_query_generation": 2563.523,
+        "retriever_init": 928.751,
+        "retrieval": 4283.159,
+        "rrf": 0.327,
+        "rerank": 42131.509,
+        "validation": 0.014,
+        "generation": 2538.623
+      },
+      "retry_count": 2,
+      "attempts": [
+        {
+          "attempt": 1,
+          "query_count": 3,
+          "search_calls_ms": [
+            1402.063,
+            297.483,
+            308.182
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 25,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 22220.124,
+          "score": 0.020797351375222206,
+          "is_valid": false
+        },
+        {
+          "attempt": 2,
+          "query_count": 3,
+          "search_calls_ms": [
+            1687.074,
+            292.068,
+            296.289
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 24,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 19872.756,
+          "score": 0.008388298563659191,
+          "is_valid": true
+        }
+      ],
+      "final_score": 0.008388298563659191,
+      "retrieved_ids": [
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0084_table_0000",
+        "law:001248_276291_20260102::001248_276291_20260102_art_6_2_chunk_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0060_body_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0036_body_0001",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0058_body_0000"
+      ],
+      "quality_at_5": {
+        "recall": 1.0,
+        "precision": 0.2,
+        "hit": 1.0,
+        "rr": 0.5,
+        "ndcg": 0.6309297535714575
+      },
+      "generation_status": "generated_unverified",
+      "generator_reported_latency_ms": 2538.6,
+      "token_usage": {
+        "input_tokens": 3986,
+        "output_tokens": 253,
+        "total_tokens": 4239,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    },
+    {
+      "case_id": "q018",
+      "scenario": "민법·간접 표현 질문",
+      "query": "제 잘못 없이 빌린 집 일부를 못 쓰게 됐어요. 월세를 줄여 달라고 할 수 있나요?",
+      "route": "rag",
+      "total_ms": 84910.813,
+      "stage_ms": {
+        "routing": 2126.595,
+        "query_rewrite": 2258.333,
+        "multi_query_generation": 2042.909,
+        "retriever_init": 975.387,
+        "retrieval": 4258.711,
+        "rrf": 0.357,
+        "rerank": 61904.835,
+        "validation": 0.015,
+        "generation": 11341.937
+      },
+      "retry_count": 2,
+      "attempts": [
+        {
+          "attempt": 1,
+          "query_count": 3,
+          "search_calls_ms": [
+            1377.653,
+            299.243,
+            288.811
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 34,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 29725.556,
+          "score": 0.011246251873672009,
+          "is_valid": false
+        },
+        {
+          "attempt": 2,
+          "query_count": 3,
+          "search_calls_ms": [
+            1678.963,
+            320.183,
+            293.859
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 39,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 32106.129,
+          "score": 0.007191966287791729,
+          "is_valid": true
+        }
+      ],
+      "final_score": 0.007191966287791729,
+      "retrieved_ids": [
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0043_body_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0018_body_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0005_table_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0059_body_0000",
+        "official_guide:guide_23ffe4c8fd5715cb::guide_23ffe4c8fd5715cb_p0084_table_0000"
+      ],
+      "quality_at_5": {
+        "recall": 0.0,
+        "precision": 0.0,
+        "hit": 0.0,
+        "rr": 0.0,
+        "ndcg": 0.0
+      },
+      "generation_status": "generated_unverified",
+      "generator_reported_latency_ms": 11341.9,
+      "token_usage": {
+        "input_tokens": 4260,
+        "output_tokens": 229,
+        "total_tokens": 4489,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    },
+    {
+      "case_id": "q020",
+      "scenario": "전자상거래·복합 근거 질문",
+      "query": "인터넷으로 산 물건을 취소하려고 해요. 언제까지 취소할 수 있고 돌려보내면 환불은 어떻게 되나요?",
+      "route": "rag",
+      "total_ms": 34120.295,
+      "stage_ms": {
+        "routing": 1978.224,
+        "query_rewrite": 939.151,
+        "multi_query_generation": 1235.178,
+        "retriever_init": 461.123,
+        "retrieval": 2071.428,
+        "rrf": 0.17,
+        "rerank": 23429.73,
+        "validation": 0.008,
+        "generation": 4005.109
+      },
+      "retry_count": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "query_count": 3,
+          "search_calls_ms": [
+            1460.841,
+            310.371,
+            300.216
+          ],
+          "candidate_count": 20,
+          "rerank_window_count": 28,
+          "rerank_model_load_ms": 0.001,
+          "rerank_inference_ms": 23406.276,
+          "score": 0.9165579676628113,
+          "is_valid": true
+        }
+      ],
+      "final_score": 0.9165579676628113,
+      "retrieved_ids": [
+        "official_guide:guide_383b62bce56bf1ce::guide_383b62bce56bf1ce_p0028_body_0000",
+        "official_guide:guide_383b62bce56bf1ce::guide_383b62bce56bf1ce_p0027_body_0000",
+        "official_guide:kca_overseas_checklist::kca_overseas_checklist_purchase_agent_0000",
+        "official_guide:guide_383b62bce56bf1ce::guide_383b62bce56bf1ce_p0016_table_0000",
+        "official_guide:guide_383b62bce56bf1ce::guide_383b62bce56bf1ce_p0028_table_0000"
+      ],
+      "quality_at_5": {
+        "recall": 0.0,
+        "precision": 0.0,
+        "hit": 0.0,
+        "rr": 0.0,
+        "ndcg": 0.0
+      },
+      "generation_status": "invalid_output",
+      "generator_reported_latency_ms": 4005.1,
+      "token_usage": {
+        "input_tokens": 4166,
+        "output_tokens": 290,
+        "total_tokens": 4456,
+        "input_token_details": {
+          "audio": 0,
+          "cache_read": 0
+        },
+        "output_token_details": {
+          "audio": 0,
+          "reasoning": 0
+        }
+      }
+    }
+  ]
+}

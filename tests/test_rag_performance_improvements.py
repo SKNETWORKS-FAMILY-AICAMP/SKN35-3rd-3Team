@@ -16,12 +16,24 @@ class FakeSearcher:
         return (f"{query}:{filters}",)
 
 
-def document(name, score, document_type, article_number=None, legal_rank=None):
+def document(
+    name,
+    score,
+    document_type,
+    article_number=None,
+    legal_rank=None,
+    precedent_rank=None,
+):
     metadata = {"document_type": document_type}
     if article_number is not None:
         metadata["article_number"] = article_number
+    rrf_sources = {}
     if legal_rank is not None:
-        metadata["rrf_sources"] = {"legal_primary_source": {"rank": legal_rank}}
+        rrf_sources["legal_primary_source"] = {"rank": legal_rank}
+    if precedent_rank is not None:
+        rrf_sources["precedent_source"] = {"rank": precedent_rank}
+    if rrf_sources:
+        metadata["rrf_sources"] = rrf_sources
     return {
         "point_id": name,
         "text": name,
@@ -31,12 +43,16 @@ def document(name, score, document_type, article_number=None, legal_rank=None):
 
 
 class RagPerformanceImprovementTests(unittest.TestCase):
-    def test_primary_law_search_is_added_for_unfiltered_query(self):
+    def test_primary_law_and_precedent_searches_are_added_for_unfiltered_query(self):
         searcher = FakeSearcher()
         rankings = search_rankings(searcher, ["자연어", "법률 핵심어"], candidate_k=20)
 
-        self.assertEqual(list(rankings), ["query_0", "query_1", "legal_primary_source"])
-        self.assertEqual(searcher.calls[-1], ("법률 핵심어", 20, {"document_type": "law"}))
+        self.assertEqual(
+            list(rankings),
+            ["query_0", "query_1", "legal_primary_source", "precedent_source"],
+        )
+        self.assertEqual(searcher.calls[-2], ("법률 핵심어", 20, {"document_type": "law"}))
+        self.assertEqual(searcher.calls[-1], ("자연어", 20, {"document_type": "precedent"}))
 
     def test_explicit_document_type_is_respected(self):
         searcher = FakeSearcher()
@@ -96,6 +112,26 @@ class RagPerformanceImprovementTests(unittest.TestCase):
         selected_ids = {doc["point_id"] for doc in selected}
         self.assertIn("article-17", selected_ids)
         self.assertIn("article-18", selected_ids)
+
+    def test_final_evidence_keeps_primary_laws_and_one_precedent(self):
+        ranked = [
+            document("guide-1", .9, "official_guide"),
+            document("guide-2", .8, "official_guide"),
+            document("guide-3", .7, "official_guide"),
+            document("guide-4", .6, "official_guide"),
+            document("guide-5", .5, "official_guide"),
+            document("law-1", .4, "law", legal_rank=1),
+            document("law-2", .3, "law", legal_rank=2),
+            document("precedent-1", .2, "precedent", precedent_rank=1),
+        ]
+
+        selected = _preserve_primary_laws(ranked, top_k=5)
+        selected_types = [doc["metadata"]["document_type"] for doc in selected]
+
+        self.assertEqual(selected_types.count("law"), 2)
+        self.assertEqual(selected_types.count("precedent"), 1)
+        precedent = next(doc for doc in selected if doc["point_id"] == "precedent-1")
+        self.assertEqual(precedent["metadata"]["selection_reason"], "precedent_coverage")
 
     def test_validation_accepts_low_scored_evidence_without_retry(self):
         result = validation_node({

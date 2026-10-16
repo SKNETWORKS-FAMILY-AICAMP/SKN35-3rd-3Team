@@ -1,0 +1,45 @@
+{
+  "saved": [
+    {
+      "source_id": "easylaw_housing_termination",
+      "title": "주택임대차계약의 종료",
+      "source_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=5&cciNo=1&cnpClsNo=1&csmSeq=629&popMenu=ov",
+      "document_type": "official_guide",
+      "domain": "주택임대차",
+      "publisher": "법제처 찾기쉬운 생활법령정보",
+      "resolved_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=5&cciNo=1&cnpClsNo=1&csmSeq=629&popMenu=ov",
+      "raw_file": "data/raw/consumer_sources/easylaw_housing_termination_99c0cd5e05a96ba2.html",
+      "raw_sha256": "99c0cd5e05a96ba24645b505a9b53ce954838520400767846d882fd344501477",
+      "collected_at": "2026-10-11T04:46:21.310070+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "easylaw_housing_restoration",
+      "title": "임차인의 권리·의무: 반환·원상회복",
+      "source_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=4&cciNo=2&cnpClsNo=1&csmSeq=629&popMenu=ov",
+      "document_type": "official_guide",
+      "domain": "주택임대차",
+      "publisher": "법제처 찾기쉬운 생활법령정보",
+      "resolved_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=4&cciNo=2&cnpClsNo=1&csmSeq=629&popMenu=ov",
+      "raw_file": "data/raw/consumer_sources/easylaw_housing_restoration_095ff325282e7a26.html",
+      "raw_sha256": "095ff325282e7a26f3522067c37976e75af69bb8d66984f2a8328b8cd3d981fe",
+      "collected_at": "2026-10-11T04:46:21.880247+00:00",
+      "format": "html"
+    },
+    {
+      "source_id": "easylaw_housing_distribution",
+      "title": "보증금 회수: 배당요구",
+      "source_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=5&cciNo=2&cnpClsNo=5&csmSeq=629&popMenu=ov",
+      "document_type": "official_guide",
+      "domain": "주택임대차",
+      "publisher": "법제처 찾기쉬운 생활법령정보",
+      "resolved_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=5&cciNo=2&cnpClsNo=5&csmSeq=629&popMenu=ov",
+      "raw_file": "data/raw/consumer_sources/easylaw_housing_distribution_b665db61357ab62b.html",
+      "raw_sha256": "b665db61357ab62b7816aab6c046e2d9859b347d62705340ee44fd02b4628b1b",
+      "collected_at": "2026-10-11T04:46:22.449903+00:00",
+      "format": "html"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T04:46:20.466050+00:00"
+}

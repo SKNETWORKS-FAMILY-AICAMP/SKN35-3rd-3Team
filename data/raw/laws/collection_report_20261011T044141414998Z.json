@@ -1,0 +1,32 @@
+{
+  "as_of": "2026-10-11",
+  "started_at": "2026-10-11T04:41:31.365546+00:00",
+  "requested": [
+    "소송촉진 등에 관한 특례법",
+    "소송촉진 등에 관한 특례법 제3조제1항 본문의 법정이율에 관한 규정",
+    "민사집행법",
+    "민사집행규칙"
+  ],
+  "saved": [],
+  "skipped": [],
+  "failures": [
+    {
+      "law_name": "소송촉진 등에 관한 특례법",
+      "error": "API 연결 실패: ConnectionError, HTTP=None"
+    },
+    {
+      "law_name": "소송촉진 등에 관한 특례법 제3조제1항 본문의 법정이율에 관한 규정",
+      "error": "API 연결 실패: ConnectionError, HTTP=None"
+    },
+    {
+      "law_name": "민사집행법",
+      "error": "API 연결 실패: ConnectionError, HTTP=None"
+    },
+    {
+      "law_name": "민사집행규칙",
+      "error": "API 연결 실패: ConnectionError, HTTP=None"
+    }
+  ],
+  "scope": "조회 시점의 현행 법령. 과거 판례 적용 구법은 별도 수집해야 합니다.",
+  "finished_at": "2026-10-11T04:41:41.414998+00:00"
+}

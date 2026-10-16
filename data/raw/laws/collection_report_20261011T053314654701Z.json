@@ -1,0 +1,22 @@
+{
+  "as_of": "2026-10-11",
+  "started_at": "2026-10-11T05:33:09.630465+00:00",
+  "requested": [
+    "소비자기본법",
+    "소비자기본법 시행령"
+  ],
+  "saved": [],
+  "skipped": [],
+  "failures": [
+    {
+      "law_name": "소비자기본법",
+      "error": "API 연결 실패: ConnectionError, HTTP=None"
+    },
+    {
+      "law_name": "소비자기본법 시행령",
+      "error": "API 연결 실패: ConnectionError, HTTP=None"
+    }
+  ],
+  "scope": "조회 시점의 현행 법령. 과거 판례 적용 구법은 별도 수집해야 합니다.",
+  "finished_at": "2026-10-11T05:33:14.654701+00:00"
+}

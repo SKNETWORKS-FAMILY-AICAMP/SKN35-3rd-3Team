@@ -1,0 +1,612 @@
+{
+  "saved": [
+    {
+      "file": "consumer_dispute_standard.json",
+      "source_id": "consumer_dispute_standard",
+      "document_type": "administrative_rule",
+      "embedding_candidate": true,
+      "domain": "consumer",
+      "unit_count": 11,
+      "raw_sha256": "64e922b28e0d2e2b79c275cf1acec392e97d60975226d383201511e1a9e9a7f1"
+    },
+    {
+      "file": "consumer_dispute_standard_appendix_0.json",
+      "source_id": "consumer_dispute_standard_appendix_0",
+      "document_type": "administrative_rule_appendix",
+      "embedding_candidate": false,
+      "domain": "consumer",
+      "unit_count": 0,
+      "raw_sha256": "c9a1aa0c121a58767b22f21da16a857df103e5594c9bd6a8b7ab37fdb417c321"
+    },
+    {
+      "file": "consumer_dispute_standard_appendix_1.json",
+      "source_id": "consumer_dispute_standard_appendix_1",
+      "document_type": "administrative_rule_appendix",
+      "embedding_candidate": false,
+      "domain": "consumer",
+      "unit_count": 0,
+      "raw_sha256": "242401b8ae436e786a1b3c33aa5f568d7c8cb3a0927484a25ed933346bf72083"
+    },
+    {
+      "file": "consumer_dispute_standard_appendix_2.json",
+      "source_id": "consumer_dispute_standard_appendix_2",
+      "document_type": "administrative_rule_appendix",
+      "embedding_candidate": false,
+      "domain": "consumer",
+      "unit_count": 0,
+      "raw_sha256": "efd94a7a06c489dab45e1160aa558be638af0176bec932f74fe0385616b11dd7"
+    },
+    {
+      "file": "consumer_dispute_standard_appendix_3.json",
+      "source_id": "consumer_dispute_standard_appendix_3",
+      "document_type": "administrative_rule_appendix",
+      "embedding_candidate": false,
+      "domain": "consumer",
+      "unit_count": 0,
+      "raw_sha256": "f6d4e6570d0bd34f527d023e1a5f4ee13ff4a7c0730515b8cb6a7845296704e4"
+    },
+    {
+      "file": "kca_pilates_1003941650.json",
+      "source_id": "kca_pilates_1003941650",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "1066de99b588fb09284a24d2d271d83993784d8eb24ce1ab3a3e0fa17ae81a61"
+    },
+    {
+      "file": "kca_parcel_1003817349.json",
+      "source_id": "kca_parcel_1003817349",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "parcel_loss",
+      "unit_count": 5,
+      "raw_sha256": "ee85f1b96a5d2842536c6987da5027f82bf0f4e1abb1e005e5c2003c548dd720"
+    },
+    {
+      "file": "kca_discovery_fitness.json",
+      "source_id": "kca_discovery_fitness",
+      "document_type": "discovery",
+      "embedding_candidate": false,
+      "domain": "fitness_refund",
+      "unit_count": 0,
+      "raw_sha256": "d209b597fc1f53e9c2c369dc7d74c705bd7cb62eb6fdc9203ee2aa3f7922daed"
+    },
+    {
+      "file": "ftc_terms_discovery.json",
+      "source_id": "ftc_terms_discovery",
+      "document_type": "discovery",
+      "embedding_candidate": false,
+      "domain": "consumer",
+      "unit_count": 0,
+      "raw_sha256": "76a09efb376c21a18d18b774f01b07f0204cdba12c07a0062fcae18ebfe422a3"
+    },
+    {
+      "file": "kca_discovery_parcel.json",
+      "source_id": "kca_discovery_parcel",
+      "document_type": "discovery",
+      "embedding_candidate": false,
+      "domain": "parcel_loss",
+      "unit_count": 0,
+      "raw_sha256": "a798f5a486dd5cf54e13fd0616518ed4740aa22d64da427f8d1d8e99427ff6b7"
+    },
+    {
+      "file": "kca_discovery_shopping.json",
+      "source_id": "kca_discovery_shopping",
+      "document_type": "discovery",
+      "embedding_candidate": false,
+      "domain": "shopping_return",
+      "unit_count": 0,
+      "raw_sha256": "090e049b6fb8c6d474140a23370e68abc1fd34c70cf28092296df79f6f82b16f"
+    },
+    {
+      "file": "ftc_terms_discovery_parcel.json",
+      "source_id": "ftc_terms_discovery_parcel",
+      "document_type": "discovery",
+      "embedding_candidate": false,
+      "domain": "parcel_loss",
+      "unit_count": 0,
+      "raw_sha256": "ba2980a0d250d5fd49846b8c804d1dfc01150971835a3037698dbac60a83f481"
+    },
+    {
+      "file": "kca_case_1003941875.json",
+      "source_id": "kca_case_1003941875",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "4544e34afa87ee89561deb404e156dd6a157132f40bf07ee03326155feb100e7"
+    },
+    {
+      "file": "kca_case_1003892170.json",
+      "source_id": "kca_case_1003892170",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "04b05e15688f90d3781109debc43f99b834ea2d509bf9eda84d1c9a807549bb8"
+    },
+    {
+      "file": "kca_case_1003892039.json",
+      "source_id": "kca_case_1003892039",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "935b3cc418eb4f8fb49efff0977c15b2666b048d122ca7e1f2324a283bff45f9"
+    },
+    {
+      "file": "kca_case_1003817065.json",
+      "source_id": "kca_case_1003817065",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "808f552f2da36aeb33becc2c39808266d6c5ef093d5aafe0e051d83b95013f22"
+    },
+    {
+      "file": "kca_case_1003739114.json",
+      "source_id": "kca_case_1003739114",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "63d4b26cb7f7f468a265fb52a4766d16427feda787ffb7eee42b7d410263a3ad"
+    },
+    {
+      "file": "kca_case_1003640779.json",
+      "source_id": "kca_case_1003640779",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "9ce0ceec579098a58ec8be86c328c829563e5bf97fcb158788a8945e9ff8e97a"
+    },
+    {
+      "file": "ftc_terms_47762.json",
+      "source_id": "ftc_terms_47762",
+      "document_type": "standard_terms_notice",
+      "embedding_candidate": false,
+      "domain": "consumer",
+      "unit_count": 0,
+      "raw_sha256": "b65fee1634f8ac57c4cff5cb12d3809636cee0135fbff4b671648ad5f14283a8"
+    },
+    {
+      "file": "ftc_terms_46118.json",
+      "source_id": "ftc_terms_46118",
+      "document_type": "standard_terms_notice",
+      "embedding_candidate": false,
+      "domain": "consumer",
+      "unit_count": 0,
+      "raw_sha256": "68dbd618d62a93f32223f2e53a374fa98ddd1ff47b515deedc1f591dcd5cbd75"
+    },
+    {
+      "file": "kca_case_1003475989.json",
+      "source_id": "kca_case_1003475989",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "parcel_loss",
+      "unit_count": 5,
+      "raw_sha256": "b65f1351b8f1bd2acf8ba7c7d7fcbf17a2632b4e3705bf7c327ef0e593f1d57d"
+    },
+    {
+      "file": "kca_case_1003148978.json",
+      "source_id": "kca_case_1003148978",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "parcel_loss",
+      "unit_count": 4,
+      "raw_sha256": "03bde7fcf667e2208d1c8190b1e2e41d5ec81e5594d3f1fa1e6140d78ac4d770"
+    },
+    {
+      "file": "kca_case_1002730975.json",
+      "source_id": "kca_case_1002730975",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "parcel_loss",
+      "unit_count": 4,
+      "raw_sha256": "77df9e7632adea6147a970ea3e105ed5c5dfc97795a14fbb85dcee7081224737"
+    },
+    {
+      "file": "kca_case_1001329664.json",
+      "source_id": "kca_case_1001329664",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "parcel_loss",
+      "unit_count": 4,
+      "raw_sha256": "b17fb541923d2e6dabd911cef89e51ce1e570d4ccb972f9f1fc1c69075111626"
+    },
+    {
+      "file": "kca_case_1001243565.json",
+      "source_id": "kca_case_1001243565",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "parcel_loss",
+      "unit_count": 4,
+      "raw_sha256": "cf59b8102dce535918218dc1d962a99b74bc8479c03ce7e0c2124354b4b244ce"
+    },
+    {
+      "file": "kca_case_1003940398.json",
+      "source_id": "kca_case_1003940398",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 5,
+      "raw_sha256": "7891d2ba00baa19d3ac1af443fce63252241d5d98dff918bfa8a7daec05858f5"
+    },
+    {
+      "file": "kca_case_1003890245.json",
+      "source_id": "kca_case_1003890245",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 5,
+      "raw_sha256": "1814d21e1873b6f5568ee89f1f14489ad8bf8f3c24d2287d3f8c631efd840a77"
+    },
+    {
+      "file": "kca_case_1003641715.json",
+      "source_id": "kca_case_1003641715",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 5,
+      "raw_sha256": "f501641ba298f828acdf81e0e9bad6f7f2fa4611247455b58462f2d9307e0c14"
+    },
+    {
+      "file": "kca_case_1003641375.json",
+      "source_id": "kca_case_1003641375",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 4,
+      "raw_sha256": "83af2d2845fa537bfa4bd9f7ecc3730ce26c760181f0e1dc7831678686bde25c"
+    },
+    {
+      "file": "kca_case_1003604873.json",
+      "source_id": "kca_case_1003604873",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 5,
+      "raw_sha256": "e157fd0bf9c121c6854d456865368b07cc242d79d7e29ab749c3a282344acc83"
+    },
+    {
+      "file": "kca_case_1003164054.json",
+      "source_id": "kca_case_1003164054",
+      "document_type": "mediation_case",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 5,
+      "raw_sha256": "d051f101fa29e5e13d221bdb4d7405fa00323b943d0d928a267a4029ffc1893b"
+    },
+    {
+      "file": "ftc_terms_11185.json",
+      "source_id": "ftc_terms_11185",
+      "document_type": "standard_terms_notice",
+      "embedding_candidate": false,
+      "domain": "parcel_loss",
+      "unit_count": 0,
+      "raw_sha256": "a5710fe4a7964fb0711a8702dde2bab6c5f7f3950930abce53969263487f77ec"
+    },
+    {
+      "file": "ftc_terms_11125.json",
+      "source_id": "ftc_terms_11125",
+      "document_type": "standard_terms_notice",
+      "embedding_candidate": false,
+      "domain": "parcel_loss",
+      "unit_count": 0,
+      "raw_sha256": "0127b10e1cacb795df8a9e02755d37efb173451fef329cb25162b72da95ddbec"
+    },
+    {
+      "file": "ftc_terms_47762_file_05d51a47.json",
+      "source_id": "ftc_terms_47762_file_05d51a47",
+      "document_type": "standard_terms",
+      "embedding_candidate": true,
+      "domain": "consumer",
+      "unit_count": 18,
+      "raw_sha256": "c57b37993e3956ba38b45ff786eb733b44adce50c98d91856bb6dfa9ef62c767"
+    },
+    {
+      "file": "ftc_terms_46118_file_5b139f26.json",
+      "source_id": "ftc_terms_46118_file_5b139f26",
+      "document_type": "standard_terms",
+      "embedding_candidate": true,
+      "domain": "consumer",
+      "unit_count": 19,
+      "raw_sha256": "fcf0aa7eecd0b131edf896b91693d8df024e4ebf4f8c1743e825cb88718c39a0"
+    },
+    {
+      "file": "ftc_terms_11185_file_a321590d.json",
+      "source_id": "ftc_terms_11185_file_a321590d",
+      "document_type": "standard_terms",
+      "embedding_candidate": true,
+      "domain": "parcel_loss",
+      "unit_count": 27,
+      "raw_sha256": "745c0f1e2657454b281db6b35f974902000aade14f167a6620c0ae66517159cc"
+    },
+    {
+      "file": "ftc_terms_11125_file_e27d5f98.json",
+      "source_id": "ftc_terms_11125_file_e27d5f98",
+      "document_type": "standard_terms",
+      "embedding_candidate": false,
+      "domain": "parcel_loss",
+      "unit_count": 24,
+      "raw_sha256": "edd5d70775cc8b53ad4bb65425df93e5a2a2cfa13e51a99b0f639865bd65c355"
+    },
+    {
+      "file": "continual_contract_refund.json",
+      "source_id": "continual_contract_refund",
+      "document_type": "administrative_rule",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 9,
+      "raw_sha256": "6b47303e7142fc41b1b0512c02d1b4ad56fa5311134fde4cc4bf974990fcf7d3"
+    },
+    {
+      "file": "minimum_wage_2026.json",
+      "source_id": "minimum_wage_2026",
+      "document_type": "administrative_rule",
+      "embedding_candidate": true,
+      "domain": "임금",
+      "unit_count": 1,
+      "raw_sha256": "c0a8b9413dbfebc6e660bb48daa7e20843bced7d5f64a95ed4f0e2542ad139c5"
+    },
+    {
+      "file": "minimum_wage_2026_attachment_body.json",
+      "source_id": "minimum_wage_2026_attachment_body",
+      "document_type": "administrative_rule_appendix",
+      "embedding_candidate": false,
+      "domain": "임금",
+      "unit_count": 0,
+      "raw_sha256": "b87d3570ff339e04747d7835228e20c2faeffa7c9fbcdfe79d719e6ed096a30d"
+    },
+    {
+      "file": "minimum_wage_simple_labor.json",
+      "source_id": "minimum_wage_simple_labor",
+      "document_type": "administrative_rule",
+      "embedding_candidate": true,
+      "domain": "임금",
+      "unit_count": 1,
+      "raw_sha256": "df8550c1d3d7570dd9fe920885c4dbe8a75339f2592ca19a294a546a1c84e848"
+    },
+    {
+      "file": "moel_wage_procedure.json",
+      "source_id": "moel_wage_procedure",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "임금체불",
+      "unit_count": 5,
+      "raw_sha256": "9c52aa51a2d0ec54ecf1dd2c1bbbf1d0178bb80f38be77bcf48acce864bc8122"
+    },
+    {
+      "file": "moel_wage_evidence_1000323154.json",
+      "source_id": "moel_wage_evidence_1000323154",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "임금체불",
+      "unit_count": 1,
+      "raw_sha256": "7492a58ac0c94d39e099c999175696084026eddf014736756bc5afdb52e4af5a"
+    },
+    {
+      "file": "kca_overseas_types.json",
+      "source_id": "kca_overseas_types",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 8,
+      "raw_sha256": "8b985f72ecc984e9e7c0c844c3cd1e285de51915f24e9620f0ab55dcf17ff832"
+    },
+    {
+      "file": "kca_overseas_checklist.json",
+      "source_id": "kca_overseas_checklist",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 6,
+      "raw_sha256": "8a7c044d6fb1eb22d7dd5eaf6edc2778c3dd0dec0a709e1513964ead3706dcac"
+    },
+    {
+      "file": "kca_overseas_returns.json",
+      "source_id": "kca_overseas_returns",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "shopping_return",
+      "unit_count": 1,
+      "raw_sha256": "bc2e743fc2f1ec0b040b03f275fb2e89619ec75e536f35aa3a1503b7116c0c04"
+    },
+    {
+      "file": "kca_fitness_closure_gym.json",
+      "source_id": "kca_fitness_closure_gym",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 2,
+      "raw_sha256": "c624ab16f714fd3ffebcff2a683e0502592338d17da021b41c4abb64ff66940a"
+    },
+    {
+      "file": "kca_fitness_closure_pilates.json",
+      "source_id": "kca_fitness_closure_pilates",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 4,
+      "raw_sha256": "0c85b3eaed61bd88aa4f958522b4afde87f3266352849d09b27ebccfb44ddf74"
+    },
+    {
+      "file": "kca_damage_redress_procedure.json",
+      "source_id": "kca_damage_redress_procedure",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 3,
+      "raw_sha256": "a76de09b87f6e09531234b7ae3c2a4cf5c0939170d95a5f3456d1b9b89dfe863"
+    },
+    {
+      "file": "easylaw_consumer_small_claim.json",
+      "source_id": "easylaw_consumer_small_claim",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "3650e2b8cbaaccd3b8fec83cae0e27955d4c76f316c770736e6e90ea46452ca9"
+    },
+    {
+      "file": "easylaw_consumer_payment_order.json",
+      "source_id": "easylaw_consumer_payment_order",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 4,
+      "raw_sha256": "ea994a1979330dba43f686720c4651aba525d64f120ef995bdb27dc39f1b6fdd"
+    },
+    {
+      "file": "easylaw_payment_order_application.json",
+      "source_id": "easylaw_payment_order_application",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 5,
+      "raw_sha256": "95a740b53c356d13fe35206b6005f73022718bcf5985b481e47db7a73ae56b54"
+    },
+    {
+      "file": "easylaw_civil_enforcement.json",
+      "source_id": "easylaw_civil_enforcement",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "fitness_refund",
+      "unit_count": 4,
+      "raw_sha256": "344f615b7ca0b3e2daad9990ce08c5f9666577640fbd6f1beaae9425614ed545"
+    },
+    {
+      "file": "easylaw_housing_termination.json",
+      "source_id": "easylaw_housing_termination",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "주택임대차",
+      "unit_count": 2,
+      "raw_sha256": "99c0cd5e05a96ba24645b505a9b53ce954838520400767846d882fd344501477"
+    },
+    {
+      "file": "easylaw_housing_restoration.json",
+      "source_id": "easylaw_housing_restoration",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "주택임대차",
+      "unit_count": 2,
+      "raw_sha256": "095ff325282e7a26f3522067c37976e75af69bb8d66984f2a8328b8cd3d981fe"
+    },
+    {
+      "file": "easylaw_housing_distribution.json",
+      "source_id": "easylaw_housing_distribution",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "주택임대차",
+      "unit_count": 9,
+      "raw_sha256": "b665db61357ab62b7816aab6c046e2d9859b347d62705340ee44fd02b4628b1b"
+    },
+    {
+      "file": "kca_redress_requirements.json",
+      "source_id": "kca_redress_requirements",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "consumer",
+      "unit_count": 2,
+      "raw_sha256": "f5048b0525c401e490afe2cf7e89fba8f882477c0a5f23a25d89c3cce6668857"
+    },
+    {
+      "file": "kca_redress_submission.json",
+      "source_id": "kca_redress_submission",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "consumer",
+      "unit_count": 5,
+      "raw_sha256": "c98aa847ed1f68d56261e4fb49fcd06bc1c32a06e02f6cdab9bd9b7d4bc798c9"
+    },
+    {
+      "file": "kca_mediation_procedure.json",
+      "source_id": "kca_mediation_procedure",
+      "document_type": "official_guide",
+      "embedding_candidate": true,
+      "domain": "consumer",
+      "unit_count": 7,
+      "raw_sha256": "30422ca02b9d5a45a056c8501be866eff5cd3643b83cc3d3ae6baadad9b0e6bb"
+    }
+  ],
+  "failures": [],
+  "excluded": [
+    {
+      "source_id": "consumer_dispute_standard_appendix_0",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_1",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_2",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "consumer_dispute_standard_appendix_3",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "kca_discovery_fitness",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_discovery",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "kca_discovery_parcel",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "kca_discovery_shopping",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_discovery_parcel",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_47762",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_46118",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_11185",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_11125",
+      "reason": "reference_only"
+    },
+    {
+      "source_id": "ftc_terms_11125_file_e27d5f98",
+      "reason": "processed_historical"
+    },
+    {
+      "source_id": "minimum_wage_2026_attachment_body",
+      "reason": "reference_only"
+    }
+  ],
+  "duplicate_aliases": [
+    {
+      "source_id": "kca_case_1003817349",
+      "representative_id": "kca_parcel_1003817349"
+    }
+  ],
+  "parcel_revision_comparison": {
+    "file": "parcel_terms_revision_comparison.json",
+    "counts": {
+      "changed": 22,
+      "added": 3,
+      "unchanged": 1
+    }
+  }
+}

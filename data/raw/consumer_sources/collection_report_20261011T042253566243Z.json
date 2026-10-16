@@ -1,0 +1,19 @@
+{
+  "saved": [
+    {
+      "source_id": "easylaw_civil_enforcement",
+      "title": "금전거래: 강제집행의 요건·집행문·재산명시·대상 재산",
+      "source_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=4&cciNo=7&cnpClsNo=1&csmSeq=272&popMenu=ov",
+      "document_type": "official_guide",
+      "domain": "fitness_refund",
+      "publisher": "법제처 찾기쉬운 생활법령정보",
+      "resolved_url": "https://www.easylaw.go.kr/CSP/CnpClsMain.laf?ccfNo=4&cciNo=7&cnpClsNo=1&csmSeq=272&popMenu=ov",
+      "raw_file": "data/raw/consumer_sources/easylaw_civil_enforcement_344f615b7ca0b3e2.html",
+      "raw_sha256": "344f615b7ca0b3e2daad9990ce08c5f9666577640fbd6f1beaae9425614ed545",
+      "collected_at": "2026-10-11T04:22:53.260503+00:00",
+      "format": "html"
+    }
+  ],
+  "failures": [],
+  "started_at": "2026-10-11T04:22:52.344289+00:00"
+}

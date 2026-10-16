@@ -1,0 +1,17 @@
+{
+  "as_of": "2026-10-10",
+  "started_at": "2026-10-10T01:45:05.881686+00:00",
+  "requested": [
+    "민법"
+  ],
+  "saved": [],
+  "skipped": [],
+  "failures": [
+    {
+      "law_name": "민법",
+      "error": "API 연결 실패: ConnectionError, HTTP=None"
+    }
+  ],
+  "scope": "조회 시점의 현행 법령. 과거 판례 적용 구법은 별도 수집해야 합니다.",
+  "finished_at": "2026-10-10T01:45:08.435630+00:00"
+}

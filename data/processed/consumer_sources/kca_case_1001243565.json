@@ -1,0 +1,56 @@
+{
+  "source_id": "kca_case_1001243565",
+  "title": "택배 의뢰 후 분실된 물품에 대한 손해배상 요구",
+  "document_type": "mediation_case",
+  "source_url": "https://www.kca.go.kr/odr/bj/br/osBjDecisionExamDetW.do?brdId=00000007&dataStts=Y&seq=1001243565",
+  "domain": "parcel_loss",
+  "publisher": "한국소비자원",
+  "resolved_url": "https://www.kca.go.kr/odr/bj/br/osBjDecisionExamDetW.do?brdId=00000007&dataStts=Y&seq=1001243565",
+  "raw_file": "data/raw/consumer_sources/kca_case_1001243565_cf59b8102dce5359.html",
+  "raw_sha256": "cf59b8102dce535918218dc1d962a99b74bc8479c03ce7e0c2124354b4b244ce",
+  "collected_at": "2026-10-10T12:34:46.351231+00:00",
+  "format": "html",
+  "schema_version": 1,
+  "units": [
+    {
+      "unit_id": "case_facts",
+      "role": "facts",
+      "text": "신청인은 2011. 1. 24. 피신청인에게 택배를 의뢰했으나 물품이 수령인에게 배송되지 않았고 피신청인이 분실하였음을 인정하였으므로 분실된 물품 및 택배비의 손해배상을 요구함.",
+      "source_label": "사건개요",
+      "source_locator": "HTML table row th=사건개요"
+    },
+    {
+      "unit_id": "case_party_claims",
+      "role": "party_claims",
+      "text": "가. 신청인(소비자)\n신청인은 분실된 운송의뢰 물품 및 운송비 합계 87,500원 배상을 요구함.\n나. 피신청인(사업자)\n피신청인은 신청인이 서대문 연희2동 영업소장에게 수탁증사본, 거래명세서, 신분증 사본, 통장 사본을 제출하고 위 영업소에서 본사 방문하여 서류를 접수할 경우 검토 후 배상하겠다고 주장함.",
+      "source_label": "당사자주장",
+      "source_locator": "HTML table row th=당사자주장"
+    },
+    {
+      "unit_id": "case_reasoning",
+      "role": "reasoning",
+      "text": "가. 사실 관계\n(1) 계약관련 내용\no 운송장 작성일자 : 2011. 1. 24.\no 발송지 영업소 : 서대문 연희2동 영업소\no 도착지 영업소 : 군포 부곡\no 운송장 번호 : 12511010****\no 발송자 : 대한○○○○\no 수신자 : 정성영\no 운송의뢰물품 : 함마기리(82,500원 : 공급가 75,000원, 세액 7,500원)\no 택배비 : 5,000원\n(2) 사건 진행 경과\no 2011. 1. 24. 연희2동 영업소장 김○○ 소장(전 영업소장)은 현재 연락이 되지 않고 있고, 현재 영업소장 정○○ 소장(2011. 8. 1. 이후 현 영업소장)이 관리하고 있음.\no 피신청인은 수탁증, 통장사본, 신분증, 거래명세서등을 제출할 경우 보상을 검토하겠다고 하고 있음.\n나. 관련 고시\no 소비자분쟁해결기준(택배 및 퀵서비스업, 공정거래위원회 고시)\n1) 운송중 전부 또는 일부 멸실된 때 : 운임 환급 및 운송장에 기재된 운송물의 가액을 기준으로 산정한 손해액의 지급\n※ 소비자가 운송장에 운송물의 가액을 기재하지 아니한 경우\n① 전부 멸실된 때에는 인도예정일의 인도 예정 장소에서의 운송물 가액을 기준으로 산정한 손해액 지급\n② 일부 멸실된 때에는 인도일의 인도장소에서의 운송물 가액을 기준으로 산정한 손해액 지급\n다. 책임 유무 및 범위\n피신청인은 신청인이 서대문 연희2동 영업소장에게 수탁증사본, 거래명세서, 신분증 사본, 통장 사본을 제출하고 위 영업소에서 본사 방문하여 서류를 접수할 경우 검토 후 배상하겠다고 주장한다.\n살피건대, 신청인이 피신청인에게 이 사건 물품을 택배 운송 의뢰한 후 위 물품이 분실된 사실에 대해서는 다툼이 없으므로, 피신청인은 소비자분쟁해결기준에 따라 신청인에게 위 물품 구입가 82,500원과 운송비 5,000원 합계 87,500원을 배상함이 상당하다.\n라. 결  론\n피신청인은 2012. 2. 22.까지 신청인에게 금 87,500원을 지급한다.",
+      "source_label": "판단",
+      "source_locator": "HTML table row th=판단"
+    },
+    {
+      "unit_id": "case_decision",
+      "role": "decision",
+      "text": "피신청인은 2012. 2. 22.까지 신청인에게 금 87,500원을 지급한다.",
+      "source_label": "결정사항",
+      "source_locator": "HTML table row th=결정사항"
+    }
+  ],
+  "embedding_candidate": true,
+  "needs_manual_review": false,
+  "publication_date": null,
+  "updated_date": "2012-06-26",
+  "decision_date": null,
+  "effective_date": null,
+  "warnings": [
+    "분쟁조정 사례이며 법원 판례가 아님. 게시 수정일을 결정일로 대체하지 않음.",
+    "사례 당시 사실관계·법령 적용에 따른 판단. 현행 일반 기준으로 단정하지 않음."
+  ],
+  "processed_at": "2026-10-11T07:18:26.194237+00:00",
+  "source_missing_fields": []
+}

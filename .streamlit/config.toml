@@ -1,0 +1,16 @@
+[theme]
+base = "dark"
+primaryColor = "#E2BE7A"
+backgroundColor = "#111827"
+secondaryBackgroundColor = "#1E293B"
+textColor = "#F8FAFC"
+borderColor = "#F8FAFC24"
+baseRadius = "large"
+buttonRadius = "12px"
+font = "'Noto Sans KR':https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap"
+headingFontWeights = [700, 700, 600, 600, 600, 600]
+showWidgetBorder = true
+
+[theme.sidebar]
+backgroundColor = "#111827"
+secondaryBackgroundColor = "#1E293B"

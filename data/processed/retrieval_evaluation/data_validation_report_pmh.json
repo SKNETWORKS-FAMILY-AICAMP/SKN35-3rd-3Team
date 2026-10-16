@@ -1,0 +1,3085 @@
+{
+  "validation_scope": "수집본의 구조·출처·처리 기록·청크 일관성. 법률 답변 품질/현행 적용 검증 아님",
+  "structural_passed": true,
+  "checks": [
+    {
+      "name": "current_pipeline_failures",
+      "passed": true
+    },
+    {
+      "name": "raw_source_coverage_and_hashes",
+      "passed": true
+    },
+    {
+      "name": "law_appendix_provenance",
+      "passed": true
+    },
+    {
+      "name": "consumer_appendix_pdf_review",
+      "passed": true
+    },
+    {
+      "name": "pilates_case_law_version_comparison",
+      "passed": true
+    },
+    {
+      "name": "processed_document_inventory",
+      "passed": true
+    },
+    {
+      "name": "chunk_metadata_and_duplicates",
+      "passed": true
+    },
+    {
+      "name": "chunk_reports_and_input_fingerprints",
+      "passed": true
+    },
+    {
+      "name": "eligibility_and_exclusion_records",
+      "passed": true
+    },
+    {
+      "name": "provenance_headers_and_parcel_warning",
+      "passed": true
+    },
+    {
+      "name": "supporting_sources_and_validity_period",
+      "passed": true
+    },
+    {
+      "name": "domain_review_snapshot",
+      "passed": true
+    }
+  ],
+  "details": {
+    "current_pipeline_failures": {
+      "current_failure_count": 0,
+      "note": "이전 raw 수집 보고서의 재시도 전 실패는 현재 실패와 구분"
+    },
+    "raw_source_coverage_and_hashes": {
+      "law_originals": 24,
+      "guide_originals": 5,
+      "precedent_originals": 96,
+      "precedent_reviewed": 96,
+      "precedent_review_statuses": {
+        "제외 후보": 53,
+        "포함": 26,
+        "부분 사용": 4,
+        "보조 후보": 13
+      },
+      "consumer_recorded_original_files": 66,
+      "consumer_collection_history": [
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261010T122720119532Z.json",
+          "failure_count": 3
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261010T122851624158Z.json",
+          "failure_count": 3
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261010T123239942243Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261010T123454226043Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T011453457432Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T011712576872Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T021546658807Z.json",
+          "failure_count": 1
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T021555244646Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T025327129480Z.json",
+          "failure_count": 2
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T025341435928Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T030649088047Z.json",
+          "failure_count": 3
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T030713264506Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T031806716940Z.json",
+          "failure_count": 3
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T031913580171Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T041930218258Z.json",
+          "failure_count": 3
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T042036991788Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T042135406294Z.json",
+          "failure_count": 1
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T042253566243Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T044622750859Z.json",
+          "failure_count": 0
+        },
+        {
+          "file": "data/raw/consumer_sources/collection_report_20261011T053932166469Z.json",
+          "failure_count": 0
+        }
+      ]
+    },
+    "law_appendix_provenance": {
+      "pdf_metadata_pairs": 51
+    },
+    "consumer_appendix_pdf_review": {
+      "reviewed_appendices": 2,
+      "reviewed_pdf_pages": 4,
+      "preserved_xml_question_marks": 70,
+      "review_record_file": "data/processed/consumer_sources/consumer_appendix_review_pmh.json",
+      "review_record_sha256": "dce0502b2c3aab5e79eecf4f2357d5b6b7a8adf6cc500ff021de7e67083ade38",
+      "effective_date": "20251218"
+    },
+    "pilates_case_law_version_comparison": {
+      "cases": 2,
+      "historical_reference_files": 12,
+      "comparison_rows": 26,
+      "identical_rows": 25,
+      "different_definition_rows": 1,
+      "review_record_file": "data/processed/consumer_sources/pilates_law_version_comparison_pmh.json"
+    },
+    "processed_document_inventory": {
+      "laws": 24,
+      "guides": 5,
+      "precedent_files": 30,
+      "consumer_documents": 59
+    },
+    "chunk_metadata_and_duplicates": {
+      "chunk_count": 4932,
+      "duplicate_chunk_ids": 0,
+      "empty_text_or_header": 0,
+      "unmapped_domains": 0,
+      "source_url_missing": 488,
+      "identical_body_groups": [
+        [
+          "000129_218303_20200526_supplement_2020052617326_chunk_0000",
+          "001872_285279_20261008_supplement_2020052617326_chunk_0000",
+          "009883_284455_20260918_supplement_2020052617326_chunk_0000"
+        ],
+        [
+          "001248_276291_20260102_supplement_1997121305454_chunk_0000",
+          "001692_290185_20261002_supplement_1997121305454_chunk_0000",
+          "001706_284415_20260317_supplement_1997121305454_chunk_0000"
+        ],
+        [
+          "003058_270551_20251023_supplement_2012010623488_chunk_0000",
+          "004950_287183_20260701_supplement_2012010623488_chunk_0000",
+          "005247_206564_20190101_supplement_2012010623488_chunk_0000"
+        ],
+        [
+          "003058_270551_20251023_supplement_2020030330509_chunk_0000",
+          "003572_286997_20260701_supplement_2020030330509_chunk_0000"
+        ],
+        [
+          "003572_286997_20260701_supplement_2014120925840_chunk_0000",
+          "009338_288143_20260721_supplement_2014120925840_chunk_0000"
+        ],
+        [
+          "003572_286997_20260701_supplement_2018122429421_chunk_0000",
+          "009338_288143_20260721_supplement_2018122429421_chunk_0000"
+        ],
+        [
+          "003572_286997_20260701_supplement_2021030231516_chunk_0000",
+          "009338_288143_20260721_supplement_2021030231516_chunk_0000"
+        ],
+        [
+          "003572_286997_20260701_supplement_2022030832528_chunk_0000",
+          "005498_287001_20260701_supplement_2022030832528_chunk_0000"
+        ],
+        [
+          "003572_286997_20260701_supplement_2023121233913_chunk_0000",
+          "009338_288143_20260721_supplement_2023121233913_chunk_0000"
+        ],
+        [
+          "003572_286997_20260701_supplement_2026061636416_chunk_0000",
+          "005498_287001_20260701_supplement_2026061636416_chunk_0000"
+        ],
+        [
+          "005247_206564_20190101_supplement_2004031718312_chunk_0000",
+          "009338_288143_20260721_supplement_2004031718312_chunk_0000"
+        ],
+        [
+          "kca_pilates_1003941650_case_cited_law_0000",
+          "kca_case_1003892170_case_cited_law_0000",
+          "kca_case_1003739114_case_cited_law_0000"
+        ]
+      ],
+      "duplicate_body_policy": "공백 정규화 후 동일 본문. 출처·시점·문맥이 달라 자동 제외하지 않음"
+    },
+    "chunk_reports_and_input_fingerprints": {
+      "by_document_type": {
+        "law": 3826,
+        "precedent": 359,
+        "administrative_rule": 22,
+        "mediation_case": 98,
+        "standard_terms": 64,
+        "official_guide": 563
+      },
+      "guide_files": [
+        "guide_23ffe4c8fd5715cb_chunks.json",
+        "guide_246eabd0676d5957_chunks.json",
+        "guide_383b62bce56bf1ce_chunks.json",
+        "guide_94e9d4bd30eadf0b_chunks.json",
+        "guide_cad7b1de1e4dc64c_chunks.json"
+      ],
+      "by_storage_group": {
+        "laws": 3826,
+        "precedents": 359,
+        "guides": 488,
+        "consumer_sources": 259
+      },
+      "html_official_guide_chunks": 75,
+      "total": 4932
+    },
+    "eligibility_and_exclusion_records": {
+      "precedent_ready": 28,
+      "precedent_duplicates": [
+        {
+          "precedent_id": "600531",
+          "representative_id": "614661",
+          "method": "reviewed_formatting_variants"
+        },
+        {
+          "precedent_id": "614721",
+          "representative_id": "606973"
+        }
+      ],
+      "consumer_ready": 44,
+      "consumer_excluded": [
+        {
+          "source_id": "consumer_dispute_standard_appendix_0",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "consumer_dispute_standard_appendix_1",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "consumer_dispute_standard_appendix_2",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "consumer_dispute_standard_appendix_3",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "kca_discovery_fitness",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "ftc_terms_discovery",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "kca_discovery_parcel",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "kca_discovery_shopping",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "ftc_terms_discovery_parcel",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "ftc_terms_47762",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "ftc_terms_46118",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "ftc_terms_11185",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "ftc_terms_11125",
+          "reason": "reference_only"
+        },
+        {
+          "source_id": "ftc_terms_11125_file_e27d5f98",
+          "reason": "processed_historical"
+        },
+        {
+          "source_id": "minimum_wage_2026_attachment_body",
+          "reason": "reference_only"
+        }
+      ],
+      "consumer_duplicate_aliases": [
+        {
+          "source_id": "kca_case_1003817349",
+          "representative_id": "kca_parcel_1003817349"
+        }
+      ]
+    },
+    "provenance_headers_and_parcel_warning": {
+      "parcel_restricted_chunk_id": "ftc_terms_11185_file_a321590d_terms_article_22_0000",
+      "source_anomaly": "missing_rate_unit_in_original",
+      "calculation_restricted_clause": "제22조 제2항 제3호 나목"
+    },
+    "supporting_sources_and_validity_period": {
+      "added_law_names": [
+        "민사집행규칙",
+        "민사집행법",
+        "방문판매 등에 관한 법률",
+        "방문판매 등에 관한 법률 시행규칙",
+        "방문판매 등에 관한 법률 시행령",
+        "소비자기본법",
+        "소비자기본법 시행령",
+        "소송촉진 등에 관한 특례법",
+        "소송촉진 등에 관한 특례법 제3조제1항 본문의 법정이율에 관한 규정",
+        "전자상거래 등에서의 소비자보호에 관한 법률 시행령",
+        "주택임대차보호법 시행령",
+        "최저임금법",
+        "최저임금법 시행규칙",
+        "최저임금법 시행령",
+        "할부거래에 관한 법률",
+        "할부거래에 관한 법률 시행령"
+      ],
+      "notice_ids": [
+        "continual_contract_refund",
+        "minimum_wage_2026",
+        "minimum_wage_simple_labor"
+      ],
+      "minimum_wage_period": [
+        "2026-01-01",
+        "2026-12-31"
+      ]
+    },
+    "domain_review_snapshot": {
+      "question_count": 45,
+      "review_statuses": {
+        "supported": 37,
+        "partial": 7,
+        "restricted": 1
+      }
+    }
+  },
+  "inventory": [
+    {
+      "path": "data/raw/__init__.py",
+      "bytes": 25,
+      "sha256": "f7894b77c376b362a0a7c30a93749badd9f8a9ad47e26d35c4e543be9b690c25"
+    },
+    {
+      "path": "data/raw/consumer_sources/__init__.py",
+      "bytes": 115,
+      "sha256": "1c23490cd7bc344263784580693363c9af4ff931c5116182b6b879ca0ef41e5b"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261010T122720119532Z.json",
+      "bytes": 1619,
+      "sha256": "905621e87e295bf7042177bd713f4747d41304c2d08a6b68c1db194a0927fa86"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261010T122851624158Z.json",
+      "bytes": 1619,
+      "sha256": "24d2b1afac9f19678f6bbe807a5c4ddecba790fb2192a01df6a476325ccee40c"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261010T123239942243Z.json",
+      "bytes": 6235,
+      "sha256": "484866f1fa0c1925b0f70da8423f9d35465659ec0a9da04b10681e3fa0ebdd29"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261010T123454226043Z.json",
+      "bytes": 28535,
+      "sha256": "d959bb1b72372e6b8fca845fa444f3da43775dae9a6fb0ab90cdedcb3c9d419f"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T011453457432Z.json",
+      "bytes": 1333,
+      "sha256": "a825fa15430a5425d983c0f3cbbfd427d6c20e51cce46a6f32cb26fb7ae72edc"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T011712576872Z.json",
+      "bytes": 1730,
+      "sha256": "076f031aeed7228b8ef06fc729bbe36a9ae31c7f7948a2cea3d511739e73b62f"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T021546658807Z.json",
+      "bytes": 197,
+      "sha256": "000289e7937e7b9c7b113ca0487d5d1f9f324c2f16b64d66c1273eb5a01c1bdd"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T021555244646Z.json",
+      "bytes": 843,
+      "sha256": "08ed2faa2c96c494cb93f6841bb85910695cf867dbc4b5c77db3f4d49344b4bc"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T025327129480Z.json",
+      "bytes": 298,
+      "sha256": "4a45d22a126205bf0695452cf6d594d477560417ffb277ee3ca561e0b07c7991"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T025341435928Z.json",
+      "bytes": 1593,
+      "sha256": "bde18e49f87e711ce5143552692b3e45cb615a9758a911414520d8c0af898141"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T030649088047Z.json",
+      "bytes": 388,
+      "sha256": "a0392f2ddbc4cc5a03385e9987895d22970c9c29eab1d96f412b52e43881417d"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T030713264506Z.json",
+      "bytes": 2239,
+      "sha256": "c93ff765295a7d041f75409fd91f13b46141d1a11afdf3ebdc6a941b57685e79"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T031806716940Z.json",
+      "bytes": 406,
+      "sha256": "b92c96e36f519c4753a8595071c0b7cf85d6acd61d803a5b509f14b49f6598d3"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T031913580171Z.json",
+      "bytes": 2444,
+      "sha256": "4c66f438435a46066643e48bdf0996a597c57613bad275b7524a959d853cadbe"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T041930218258Z.json",
+      "bytes": 419,
+      "sha256": "1dea9c4c8a3f7bf264966221a16d88bd28fdd2014aa323149b3b6ea4a3d2d733"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T042036991788Z.json",
+      "bytes": 2408,
+      "sha256": "285a3be9e60248d76a456315a8a9b9370b1364ba2f9b138ec35cdd94264dc71a"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T042135406294Z.json",
+      "bytes": 197,
+      "sha256": "ac880f1ee0fabac1a0e3b2e68022ccf6211d5e2d68df7fd6709f96da7626b44a"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T042253566243Z.json",
+      "bytes": 902,
+      "sha256": "d7e79e7de6bc4f2c9297929d1e1cb2e6fa39f41c36e927cb3321ffd3edfc01f7"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T044622750859Z.json",
+      "bytes": 2417,
+      "sha256": "5a2691fcb82240c1024acd6003659bf7d5ae78df729495fe2d53b5fcb233e152"
+    },
+    {
+      "path": "data/raw/consumer_sources/collection_report_20261011T053932166469Z.json",
+      "bytes": 2121,
+      "sha256": "5a8fd72f3095d00ef33e5a67edf895e3925e282627282b54ded6f71c571f4775"
+    },
+    {
+      "path": "data/raw/consumer_sources/consumer_dispute_standard_64e922b28e0d2e2b.xml",
+      "bytes": 1024970,
+      "sha256": "64e922b28e0d2e2b79c275cf1acec392e97d60975226d383201511e1a9e9a7f1"
+    },
+    {
+      "path": "data/raw/consumer_sources/consumer_dispute_standard_appendix_0_c9a1aa0c121a5876.pdf",
+      "bytes": 402319,
+      "sha256": "c9a1aa0c121a58767b22f21da16a857df103e5594c9bd6a8b7ab37fdb417c321"
+    },
+    {
+      "path": "data/raw/consumer_sources/consumer_dispute_standard_appendix_1_242401b8ae436e78.pdf",
+      "bytes": 3324040,
+      "sha256": "242401b8ae436e786a1b3c33aa5f568d7c8cb3a0927484a25ed933346bf72083"
+    },
+    {
+      "path": "data/raw/consumer_sources/consumer_dispute_standard_appendix_2_efd94a7a06c489da.pdf",
+      "bytes": 194767,
+      "sha256": "efd94a7a06c489dab45e1160aa558be638af0176bec932f74fe0385616b11dd7"
+    },
+    {
+      "path": "data/raw/consumer_sources/consumer_dispute_standard_appendix_3_f6d4e6570d0bd34f.pdf",
+      "bytes": 62579,
+      "sha256": "f6d4e6570d0bd34f527d023e1a5f4ee13ff4a7c0730515b8cb6a7845296704e4"
+    },
+    {
+      "path": "data/raw/consumer_sources/continual_contract_refund_6b47303e7142fc41.xml",
+      "bytes": 14698,
+      "sha256": "6b47303e7142fc41b1b0512c02d1b4ad56fa5311134fde4cc4bf974990fcf7d3"
+    },
+    {
+      "path": "data/raw/consumer_sources/easylaw_civil_enforcement_344f615b7ca0b3e2.html",
+      "bytes": 133763,
+      "sha256": "344f615b7ca0b3e2daad9990ce08c5f9666577640fbd6f1beaae9425614ed545"
+    },
+    {
+      "path": "data/raw/consumer_sources/easylaw_consumer_payment_order_ea994a1979330dba.html",
+      "bytes": 96062,
+      "sha256": "ea994a1979330dba43f686720c4651aba525d64f120ef995bdb27dc39f1b6fdd"
+    },
+    {
+      "path": "data/raw/consumer_sources/easylaw_consumer_small_claim_3650e2b8cbaaccd3.html",
+      "bytes": 97519,
+      "sha256": "3650e2b8cbaaccd3b8fec83cae0e27955d4c76f316c770736e6e90ea46452ca9"
+    },
+    {
+      "path": "data/raw/consumer_sources/easylaw_housing_distribution_b665db61357ab62b.html",
+      "bytes": 130135,
+      "sha256": "b665db61357ab62b7816aab6c046e2d9859b347d62705340ee44fd02b4628b1b"
+    },
+    {
+      "path": "data/raw/consumer_sources/easylaw_housing_restoration_095ff325282e7a26.html",
+      "bytes": 115255,
+      "sha256": "095ff325282e7a26f3522067c37976e75af69bb8d66984f2a8328b8cd3d981fe"
+    },
+    {
+      "path": "data/raw/consumer_sources/easylaw_housing_termination_99c0cd5e05a96ba2.html",
+      "bytes": 126163,
+      "sha256": "99c0cd5e05a96ba24645b505a9b53ce954838520400767846d882fd344501477"
+    },
+    {
+      "path": "data/raw/consumer_sources/easylaw_payment_order_application_95a740b53c356d13.html",
+      "bytes": 124460,
+      "sha256": "95a740b53c356d13fe35206b6005f73022718bcf5985b481e47db7a73ae56b54"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_11125_0127b10e1cacb795.html",
+      "bytes": 304400,
+      "sha256": "0127b10e1cacb795df8a9e02755d37efb173451fef329cb25162b72da95ddbec"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_11125_file_e27d5f98_edd5d70775cc8b53.hwp",
+      "bytes": 193024,
+      "sha256": "edd5d70775cc8b53ad4bb65425df93e5a2a2cfa13e51a99b0f639865bd65c355"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_11185_a5710fe4a7964fb0.html",
+      "bytes": 303054,
+      "sha256": "a5710fe4a7964fb0711a8702dde2bab6c5f7f3950930abce53969263487f77ec"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_11185_file_a321590d_745c0f1e2657454b.hwp",
+      "bytes": 191488,
+      "sha256": "745c0f1e2657454b281db6b35f974902000aade14f167a6620c0ae66517159cc"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_46118_68dbd618d62a93f3.html",
+      "bytes": 303138,
+      "sha256": "68dbd618d62a93f32223f2e53a374fa98ddd1ff47b515deedc1f591dcd5cbd75"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_46118_file_5b139f26_fcf0aa7eecd0b131.hwpx",
+      "bytes": 206175,
+      "sha256": "fcf0aa7eecd0b131edf896b91693d8df024e4ebf4f8c1743e825cb88718c39a0"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_47762_b65fee1634f8ac57.html",
+      "bytes": 303054,
+      "sha256": "b65fee1634f8ac57c4cff5cb12d3809636cee0135fbff4b671648ad5f14283a8"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_47762_file_05d51a47_c57b37993e3956ba.hwpx",
+      "bytes": 212687,
+      "sha256": "c57b37993e3956ba38b45ff786eb733b44adce50c98d91856bb6dfa9ef62c767"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_discovery_220fa118aa638ee0.html",
+      "bytes": 318691,
+      "sha256": "220fa118aa638ee08fccf84b9f52171670fcccb8411be3560da9b41fa4f02ad1"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_discovery_6ed2c75de24f4df8.html",
+      "bytes": 318691,
+      "sha256": "6ed2c75de24f4df856048ff80a28f2cba08e886ee0c77a5a3a194182c0ca3065"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_discovery_76a09efb376c21a1.html",
+      "bytes": 318691,
+      "sha256": "76a09efb376c21a18d18b774f01b07f0204cdba12c07a0062fcae18ebfe422a3"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_discovery_d3a5877321892bc9.html",
+      "bytes": 318691,
+      "sha256": "d3a5877321892bc99bc0a8e57368045895c1438c5332d8f978efdd197d235ea2"
+    },
+    {
+      "path": "data/raw/consumer_sources/ftc_terms_discovery_parcel_ba2980a0d250d5fd.html",
+      "bytes": 309986,
+      "sha256": "ba2980a0d250d5fd49846b8c804d1dfc01150971835a3037698dbac60a83f481"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1001243565_cf59b8102dce5359.html",
+      "bytes": 60298,
+      "sha256": "cf59b8102dce535918218dc1d962a99b74bc8479c03ce7e0c2124354b4b244ce"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1001329664_b17fb541923d2e6d.html",
+      "bytes": 66945,
+      "sha256": "b17fb541923d2e6dabd911cef89e51ce1e570d4ccb972f9f1fc1c69075111626"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1002730975_77df9e7632adea61.html",
+      "bytes": 61473,
+      "sha256": "77df9e7632adea6147a970ea3e105ed5c5dfc97795a14fbb85dcee7081224737"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003148978_03bde7fcf667e220.html",
+      "bytes": 61769,
+      "sha256": "03bde7fcf667e2208d1c8190b1e2e41d5ec81e5594d3f1fa1e6140d78ac4d770"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003164054_d051f101fa29e5e1.html",
+      "bytes": 64084,
+      "sha256": "d051f101fa29e5e13d221bdb4d7405fa00323b943d0d928a267a4029ffc1893b"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003475989_b65f1351b8f1bd2a.html",
+      "bytes": 63918,
+      "sha256": "b65f1351b8f1bd2acf8ba7c7d7fcbf17a2632b4e3705bf7c327ef0e593f1d57d"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003604873_e157fd0bf9c121c6.html",
+      "bytes": 61500,
+      "sha256": "e157fd0bf9c121c6854d456865368b07cc242d79d7e29ab749c3a282344acc83"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003640779_9ce0ceec579098a5.html",
+      "bytes": 60730,
+      "sha256": "9ce0ceec579098a58ec8be86c328c829563e5bf97fcb158788a8945e9ff8e97a"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003641375_83af2d2845fa537b.html",
+      "bytes": 61392,
+      "sha256": "83af2d2845fa537bfa4bd9f7ecc3730ce26c760181f0e1dc7831678686bde25c"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003641715_f501641ba298f828.html",
+      "bytes": 61943,
+      "sha256": "f501641ba298f828acdf81e0e9bad6f7f2fa4611247455b58462f2d9307e0c14"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003739114_63d4b26cb7f7f468.html",
+      "bytes": 63953,
+      "sha256": "63d4b26cb7f7f468a265fb52a4766d16427feda787ffb7eee42b7d410263a3ad"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003817065_808f552f2da36aeb.html",
+      "bytes": 59046,
+      "sha256": "808f552f2da36aeb33becc2c39808266d6c5ef093d5aafe0e051d83b95013f22"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003817349_5c78a693825a4119.html",
+      "bytes": 59469,
+      "sha256": "5c78a693825a4119f909cc85e9b9c0eea134bd13d5b572c8dc08522024156f5c"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003890245_1814d21e1873b6f5.html",
+      "bytes": 60936,
+      "sha256": "1814d21e1873b6f5568ee89f1f14489ad8bf8f3c24d2287d3f8c631efd840a77"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003892039_935b3cc418eb4f8f.html",
+      "bytes": 60922,
+      "sha256": "935b3cc418eb4f8fb49efff0977c15b2666b048d122ca7e1f2324a283bff45f9"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003892170_04b05e15688f90d3.html",
+      "bytes": 62041,
+      "sha256": "04b05e15688f90d3781109debc43f99b834ea2d509bf9eda84d1c9a807549bb8"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003940398_7891d2ba00baa19d.html",
+      "bytes": 60605,
+      "sha256": "7891d2ba00baa19d3ac1af443fce63252241d5d98dff918bfa8a7daec05858f5"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_case_1003941875_4544e34afa87ee89.html",
+      "bytes": 60946,
+      "sha256": "4544e34afa87ee89561deb404e156dd6a157132f40bf07ee03326155feb100e7"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_damage_redress_procedure_a76de09b87f6e095.html",
+      "bytes": 77302,
+      "sha256": "a76de09b87f6e09531234b7ae3c2a4cf5c0939170d95a5f3456d1b9b89dfe863"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_discovery_fitness_79d51c98701b1151.html",
+      "bytes": 71831,
+      "sha256": "79d51c98701b1151b5e26e4d57c7680f5b3e1b6f606653aeba3c1854bc6880aa"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_discovery_fitness_d209b597fc1f53e9.html",
+      "bytes": 71844,
+      "sha256": "d209b597fc1f53e9c2c369dc7d74c705bd7cb62eb6fdc9203ee2aa3f7922daed"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_discovery_parcel_a798f5a486dd5cf5.html",
+      "bytes": 71481,
+      "sha256": "a798f5a486dd5cf54e13fd0616518ed4740aa22d64da427f8d1d8e99427ff6b7"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_discovery_shopping_090e049b6fb8c6d4.html",
+      "bytes": 71613,
+      "sha256": "090e049b6fb8c6d474140a23370e68abc1fd34c70cf28092296df79f6f82b16f"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_fitness_closure_gym_c624ab16f714fd3f.html",
+      "bytes": 144217,
+      "sha256": "c624ab16f714fd3ffebcff2a683e0502592338d17da021b41c4abb64ff66940a"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_fitness_closure_pilates_0c85b3eaed61bd88.html",
+      "bytes": 93109,
+      "sha256": "0c85b3eaed61bd88aa4f958522b4afde87f3266352849d09b27ebccfb44ddf74"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_mediation_procedure_30422ca02b9d5a45.html",
+      "bytes": 54520,
+      "sha256": "30422ca02b9d5a45a056c8501be866eff5cd3643b83cc3d3ae6baadad9b0e6bb"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_overseas_checklist_8a7c044d6fb1eb22.html",
+      "bytes": 78025,
+      "sha256": "8a7c044d6fb1eb22d7dd5eaf6edc2778c3dd0dec0a709e1513964ead3706dcac"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_overseas_returns_bc2e743fc2f1ec0b.html",
+      "bytes": 73172,
+      "sha256": "bc2e743fc2f1ec0b040b03f275fb2e89619ec75e536f35aa3a1503b7116c0c04"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_overseas_types_8b985f72ecc984e9.html",
+      "bytes": 75848,
+      "sha256": "8b985f72ecc984e9e7c0c844c3cd1e285de51915f24e9620f0ab55dcf17ff832"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_parcel_1003817349_b8ab05bc7edde191.html",
+      "bytes": 59482,
+      "sha256": "b8ab05bc7edde191a3fea6a9e91b43267a77127b88a80a6720f7ea71940c65f0"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_parcel_1003817349_ee85f1b96a5d2842.html",
+      "bytes": 59433,
+      "sha256": "ee85f1b96a5d2842536c6987da5027f82bf0f4e1abb1e005e5c2003c548dd720"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_pilates_1003941650_1066de99b588fb09.html",
+      "bytes": 60821,
+      "sha256": "1066de99b588fb09284a24d2d271d83993784d8eb24ce1ab3a3e0fa17ae81a61"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_pilates_1003941650_1f2543b259e2d07a.html",
+      "bytes": 60819,
+      "sha256": "1f2543b259e2d07a04bb399316c8a87a99735510dc7cc070a070f28d7d937ef8"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_redress_requirements_f5048b0525c401e4.html",
+      "bytes": 86279,
+      "sha256": "f5048b0525c401e490afe2cf7e89fba8f882477c0a5f23a25d89c3cce6668857"
+    },
+    {
+      "path": "data/raw/consumer_sources/kca_redress_submission_c98aa847ed1f68d5.html",
+      "bytes": 66570,
+      "sha256": "c98aa847ed1f68d56261e4fb49fcd06bc1c32a06e02f6cdab9bd9b7d4bc798c9"
+    },
+    {
+      "path": "data/raw/consumer_sources/minimum_wage_2026_attachment_body_b87d3570ff339e04.pdf",
+      "bytes": 84498,
+      "sha256": "b87d3570ff339e04747d7835228e20c2faeffa7c9fbcdfe79d719e6ed096a30d"
+    },
+    {
+      "path": "data/raw/consumer_sources/minimum_wage_2026_c0a8b9413dbfebc6.xml",
+      "bytes": 1593,
+      "sha256": "c0a8b9413dbfebc6e660bb48daa7e20843bced7d5f64a95ed4f0e2542ad139c5"
+    },
+    {
+      "path": "data/raw/consumer_sources/minimum_wage_simple_labor_df8550c1d3d7570d.xml",
+      "bytes": 4028,
+      "sha256": "df8550c1d3d7570dd9fe920885c4dbe8a75339f2592ca19a294a546a1c84e848"
+    },
+    {
+      "path": "data/raw/consumer_sources/moel_wage_evidence_1000323154_7492a58ac0c94d39.html",
+      "bytes": 10120,
+      "sha256": "7492a58ac0c94d39e099c999175696084026eddf014736756bc5afdb52e4af5a"
+    },
+    {
+      "path": "data/raw/consumer_sources/moel_wage_procedure_9c52aa51a2d0ec54.html",
+      "bytes": 111183,
+      "sha256": "9c52aa51a2d0ec54ecf1dd2c1bbbf1d0178bb80f38be77bcf48acce864bc8122"
+    },
+    {
+      "path": "data/raw/guides/[pdf]인터넷 쇼핑.pdf",
+      "bytes": 937146,
+      "sha256": "41f96f93f3a9d71182f8e178ef7fe753423753fe4ab8d2c0c296b593329227dc"
+    },
+    {
+      "path": "data/raw/guides/[pdf]주택임대차.pdf",
+      "bytes": 1624011,
+      "sha256": "98b42f3b414d49761277ed9dbcadd4569d5c9705963686d22ad8e9a55f7fc7e7"
+    },
+    {
+      "path": "data/raw/guides/[pdf]중고거래 피해자.pdf",
+      "bytes": 1745574,
+      "sha256": "4880f1019627cc4f690ab62ebe43d81642b0fc5d56c20c907a892eb1ab47e15c"
+    },
+    {
+      "path": "data/raw/guides/[pdf]택배.pdf",
+      "bytes": 1522353,
+      "sha256": "d1e7622809cf8e8546f386d673edf0b700d737f62f1d616932138f509fd8416f"
+    },
+    {
+      "path": "data/raw/guides/[pdf]해고근로자.pdf",
+      "bytes": 2034261,
+      "sha256": "4c68ec8ed9916cb983a26f719aff85abbb6bf76852c9966185c988df07f0c039"
+    },
+    {
+      "path": "data/raw/guides/__init__.py",
+      "bytes": 33,
+      "sha256": "1bd4fba2dc613408cb72dcff199019f5b41367db26ac2420c921fad5ca199be6"
+    },
+    {
+      "path": "data/raw/law_appendices/001872_285279_20261008_appendix_000000E.json",
+      "bytes": 431,
+      "sha256": "e113ddf284ddbbe91cafda7a28fa7edde836b17307f72d9b0b3607ff166cbce3"
+    },
+    {
+      "path": "data/raw/law_appendices/001872_285279_20261008_appendix_000000E.pdf",
+      "bytes": 21282,
+      "sha256": "cb05ba17f5cf163ae6bae2242c3c04b766f23ca734d018a7671f811b93222120"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000100E.json",
+      "bytes": 431,
+      "sha256": "5b647dd37849ddb38a70b5b530a98e97b824db316c3e6281f80237d180692b69"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000100E.pdf",
+      "bytes": 40636,
+      "sha256": "02b9522854d9eb74c6bc3288ef97e210ab417174cc7ae28e2eb981efb5bbeb44"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000200E.json",
+      "bytes": 431,
+      "sha256": "7401aabf89f29c833f4aabac5c9fa3a926094ec73d71ca0a5aba0536a0fafa71"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000200E.pdf",
+      "bytes": 64780,
+      "sha256": "67b16dab2b8fdc26ad253c1bc03a2fb8a141c59b05633f93e29503843eba0fee"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000300E.json",
+      "bytes": 431,
+      "sha256": "6dc4fe04b4a65584bf7835673c8d5b4e1b0b450c3fd15ac4c6b0e903e1cf9bc6"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000300E.pdf",
+      "bytes": 45875,
+      "sha256": "b6c249bb95d71b478d5289526d8d9f14d1311e2408977088d1b1d1479623d2fd"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000400E.json",
+      "bytes": 431,
+      "sha256": "fee5574661b01a16af56c9f33a8d065e64012944f24930d7d2788128351293fc"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000400E.pdf",
+      "bytes": 153108,
+      "sha256": "b94833cc9750ec08fc3cc8ce0a15aee55e97774529a6edf6896bafc80fe2511e"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000500E.json",
+      "bytes": 431,
+      "sha256": "f44b9bb21def036f5d49fb466c67d73a943233b02689858610d800731ec52019"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000500E.pdf",
+      "bytes": 89529,
+      "sha256": "ad0d9b1ccc68044fb2b70d1c7788a0148e1aa004924629faf8211746068071cb"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000600E.json",
+      "bytes": 431,
+      "sha256": "18b51a3c28783d3d316b267529674a55c09c2feadbdbff3b4c288a2e0fb6ba3e"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000600E.pdf",
+      "bytes": 104061,
+      "sha256": "8d1121e1634d311ae4fdb359e65bc68c8cce5d7ea74341a22fbe24cc88c0ab07"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000700E.json",
+      "bytes": 431,
+      "sha256": "12e5a100de610bfea98b0cf86880ee28489073e9b54fcdbbabba1c9107ca2585"
+    },
+    {
+      "path": "data/raw/law_appendices/003058_270551_20251023_appendix_000700E.pdf",
+      "bytes": 160575,
+      "sha256": "ef9745baa39da59281913cf924d8cdc978ac917646a0fe4e22118919cc4870e6"
+    },
+    {
+      "path": "data/raw/law_appendices/003572_286997_20260701_appendix_000100E.json",
+      "bytes": 431,
+      "sha256": "f3fb311818d07adfc2c2b2e1528e8ead7cc092776abdb7c47d33430d1bc4399c"
+    },
+    {
+      "path": "data/raw/law_appendices/003572_286997_20260701_appendix_000100E.pdf",
+      "bytes": 53295,
+      "sha256": "7a13ac31f8e977753d576b127a557078a20a918f88e8aa964e6285a90d2bec4d"
+    },
+    {
+      "path": "data/raw/law_appendices/003572_286997_20260701_appendix_000200E.json",
+      "bytes": 431,
+      "sha256": "dca1eab7e2f09f7cfa2c35488e9f9aaf835cbc2ea25a6bbd0cfeaa5b7444dbee"
+    },
+    {
+      "path": "data/raw/law_appendices/003572_286997_20260701_appendix_000200E.pdf",
+      "bytes": 77006,
+      "sha256": "c949d8381e314e5affd2b5f8b1261a02ec32ffe5d46f43a8b319a3dd91eb45f3"
+    },
+    {
+      "path": "data/raw/law_appendices/003572_286997_20260701_appendix_000300E.json",
+      "bytes": 431,
+      "sha256": "889b076ce4b3b08009329d473a2059b75f1ebd3d6fe4ace9695363d41776e254"
+    },
+    {
+      "path": "data/raw/law_appendices/003572_286997_20260701_appendix_000300E.pdf",
+      "bytes": 66823,
+      "sha256": "1bf0cce19c553151cf9c7a631d78ae51b48b1cf88d9b97633cf340e5a63db240"
+    },
+    {
+      "path": "data/raw/law_appendices/003572_286997_20260701_appendix_000400E.json",
+      "bytes": 431,
+      "sha256": "2adc9ba65ae574b9b6a47d9d12e0163906571900563eb63729158b229c7e445f"
+    },
+    {
+      "path": "data/raw/law_appendices/003572_286997_20260701_appendix_000400E.pdf",
+      "bytes": 74602,
+      "sha256": "22f9339d4ad8845f190bc937b3e4aaf20557479b7d2fff6288d2a26bd2129c19"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000100E.json",
+      "bytes": 431,
+      "sha256": "5b2431a30139a148dd98df8b8d2c68ce3187f5e7b15eeb3e3939e85519f8171a"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000100E.pdf",
+      "bytes": 83101,
+      "sha256": "b64ececef72314f0ce389abd8579d2c8b930568f6066422c285f191bbcd6c591"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000100F.json",
+      "bytes": 431,
+      "sha256": "d306667965077ae12f81c7b5fa0522b471b91633817ad17343ce9c5ce190c38d"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000100F.pdf",
+      "bytes": 63709,
+      "sha256": "ffc76ce11d0257c7ded6fd799dfe87a3ca7086dfb5ee56f2d1808ed714d924b6"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000200E.json",
+      "bytes": 431,
+      "sha256": "e65c8888036b87c0c5c309031ed33f1448ffb08d90aed82a5002a25683e5b750"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000200E.pdf",
+      "bytes": 101596,
+      "sha256": "6d8d1ebcbe20866079ffb086f9c3ad84b9e1126aebc20c8c7660af436b0ea3e0"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000200F.json",
+      "bytes": 431,
+      "sha256": "cb5e6eaeef1a8ca28733c0b3cfb0118b6f29e95518697adbcad0c7041b9fc148"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000200F.pdf",
+      "bytes": 40216,
+      "sha256": "10a8a094cdc65a4a11953e540c4e7eb9a0617cb6bbffc61f780c3f1ae504c124"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000300F.json",
+      "bytes": 431,
+      "sha256": "616d43e75bfda84a45d34e7d167743d8f24afaf951f7e68625443114a79a0919"
+    },
+    {
+      "path": "data/raw/law_appendices/003979_289451_20260911_appendix_000300F.pdf",
+      "bytes": 29747,
+      "sha256": "3ae6945dbadb94028be4209ccb18d076405cffd1e350da663b9728247e351634"
+    },
+    {
+      "path": "data/raw/law_appendices/004950_287183_20260701_appendix_000100E.json",
+      "bytes": 431,
+      "sha256": "83b4347c2f9300e69673615440dba6cd9387b258c69b6604f954bbcac70691f9"
+    },
+    {
+      "path": "data/raw/law_appendices/004950_287183_20260701_appendix_000100E.pdf",
+      "bytes": 56252,
+      "sha256": "9500277f40b52926f7eb8299612fed3b465c190baef977445c45da4a2aae150d"
+    },
+    {
+      "path": "data/raw/law_appendices/004950_287183_20260701_appendix_000200E.json",
+      "bytes": 431,
+      "sha256": "d3a563e3008a4d29b22b5803f40fd68123cb0bf46ae2893fcccb98f9e338dfbd"
+    },
+    {
+      "path": "data/raw/law_appendices/004950_287183_20260701_appendix_000200E.pdf",
+      "bytes": 46126,
+      "sha256": "609d4b47f2a694e32e8343782748a117f09c89b3c01227f40fdaed40a9e1c5c7"
+    },
+    {
+      "path": "data/raw/law_appendices/005247_206564_20190101_appendix_000000E.json",
+      "bytes": 430,
+      "sha256": "46331776c37ae4d721ffd06b5f131c5c5be51416076e6abd30339a30850c9cf1"
+    },
+    {
+      "path": "data/raw/law_appendices/005247_206564_20190101_appendix_000000E.pdf",
+      "bytes": 93068,
+      "sha256": "b488667fa7ef85ea045462a522741b176a3564d9404b0c7d6a3d9dcfdbbd830e"
+    },
+    {
+      "path": "data/raw/law_appendices/005498_287001_20260701_appendix_000100E.json",
+      "bytes": 431,
+      "sha256": "513931a66a3994c4a8e68c7eefd16dc058041e8f967b46a1704237608a4e2010"
+    },
+    {
+      "path": "data/raw/law_appendices/005498_287001_20260701_appendix_000100E.pdf",
+      "bytes": 54256,
+      "sha256": "a9f7680c083545a8e64788abc17499b22a02b348555c2c84120e7f9d309dbefa"
+    },
+    {
+      "path": "data/raw/law_appendices/005498_287001_20260701_appendix_000200E.json",
+      "bytes": 431,
+      "sha256": "4ac86f6478bda4ffb73ce52393999a767621ec822f31b84de1a97c36cbe74935"
+    },
+    {
+      "path": "data/raw/law_appendices/005498_287001_20260701_appendix_000200E.pdf",
+      "bytes": 44883,
+      "sha256": "63135f7a52f4609a19f0297e96864d74f618df7dad8a0e717596b0f49003e00c"
+    },
+    {
+      "path": "data/raw/law_appendices/005498_287001_20260701_appendix_000300E.json",
+      "bytes": 431,
+      "sha256": "b3ba7204a2af4cc63b83329810e8f4247c36db4638443c7a0bcba6ecedf1f0dc"
+    },
+    {
+      "path": "data/raw/law_appendices/005498_287001_20260701_appendix_000300E.pdf",
+      "bytes": 77613,
+      "sha256": "d4d6ff4b949ca908cfad6b4cee5c4100b2b495a8107f92b920063a8b69c8cbb1"
+    },
+    {
+      "path": "data/raw/law_appendices/005498_287001_20260701_appendix_000400E.json",
+      "bytes": 431,
+      "sha256": "67a10173b2238be9c1f37e0d9d4154bdb72d21d7a85cc4b985833f0246de1add"
+    },
+    {
+      "path": "data/raw/law_appendices/005498_287001_20260701_appendix_000400E.pdf",
+      "bytes": 159281,
+      "sha256": "49487ff800fd79b09a9f329558a7c880b2a4302b05c7f286c73bf43fe1242393"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000100F.json",
+      "bytes": 431,
+      "sha256": "cabc758b543196415ea95240f531de5e739d9fb7060df9749c76e1f2c4cf44a0"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000100F.pdf",
+      "bytes": 69153,
+      "sha256": "ffbda411aad9d4c054a989c8bd8ed21456106eefdcc1dae608fc18b4c04d8a21"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000200F.json",
+      "bytes": 431,
+      "sha256": "457e2eff4d33f10e154bf9b39b15dc44c64bd1c629eb3c35730c3bdbeb185ed3"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000200F.pdf",
+      "bytes": 43026,
+      "sha256": "ccf6e4cda07084e700e01de23d335eb9b9e973d23393e3bbd40aa56fbacad7d0"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000300F.json",
+      "bytes": 431,
+      "sha256": "00c776e7bf80e415da143855d6c25c59e62d17c8d297759c76e9b1928703d5a8"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000300F.pdf",
+      "bytes": 44470,
+      "sha256": "55a6104b1c84e9e9ded27f9335e7d6e5147884366679932825c13e2c6f3106e5"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000302F.json",
+      "bytes": 431,
+      "sha256": "9c0d945482ba9ad2f4779f969781193b2ba0332b75e2deee95e8a3faabf11643"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000302F.pdf",
+      "bytes": 65493,
+      "sha256": "60071277ea16d4cac12dcf1f0809e4cd8bb6e0e102d7c9086119353066205f17"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000400F.json",
+      "bytes": 431,
+      "sha256": "1e0f45dff64619546910e65d8deb94f5936c53566a4bcac4ef340db7fe06cea8"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000400F.pdf",
+      "bytes": 66440,
+      "sha256": "b5b4e1f5478cef71457b3b9112930c274e88bb9d4530c3e6760a203eac8418a7"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000500F.json",
+      "bytes": 431,
+      "sha256": "2f0a245cbec063e46431a940ae31eca5783005a328e8cd9b324825c67bba0537"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000500F.pdf",
+      "bytes": 58733,
+      "sha256": "deba4a6c41796ff078ed217c581d4de0c71a853be7299516440e342680881bfc"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000600F.json",
+      "bytes": 431,
+      "sha256": "fe4d4609cb3695b4d5657e2ac9b97f70660c0f34bb8f2a7aa7c73b0e26fb584f"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000600F.pdf",
+      "bytes": 41972,
+      "sha256": "c175f709313410806e571dad751b0c718b9fc8d231d0cc396a50721fd5d44508"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000700F.json",
+      "bytes": 431,
+      "sha256": "757c2a5d8263a400930a485416e335774e267f1792fa4a3a35ee5cbf6b543fe8"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000700F.pdf",
+      "bytes": 73760,
+      "sha256": "48a6ae951ac99864c725503049127d13f1708224dc0b62744cadfd3535cc4b83"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000800F.json",
+      "bytes": 431,
+      "sha256": "7d8ddab6ed342281426ae43c6718c7983443efbae3ca54d3a0ebf9c989454e7f"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000800F.pdf",
+      "bytes": 50029,
+      "sha256": "a88da1eebc473862f70fc4767685b26ce759259d32630af3c7a3d7e0680b488a"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000900F.json",
+      "bytes": 431,
+      "sha256": "18bfc23e81ab5f570bf373268b0572fe50c64030c6d70ecfe17bdbbc94142521"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_000900F.pdf",
+      "bytes": 50582,
+      "sha256": "7fed6ba6498d141878080e6ea573f1a3511045d24f9b9edeba2ff50d5eeb8276"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_001000F.json",
+      "bytes": 431,
+      "sha256": "eb3a8f9786ecdf0528cf9e56bac7492e79a6d2561613f9378d4f18eed07436c9"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_001000F.pdf",
+      "bytes": 66718,
+      "sha256": "69b09ecb5452fbb040227a9b1f47ff0a15c94f50d0a9d828d4d54491838fd2a0"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_001100F.json",
+      "bytes": 431,
+      "sha256": "8426bbc42b1a4ab9bb489e9acf6f62903fb3861771c1d62872eee10f6ee960ea"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_001100F.pdf",
+      "bytes": 59358,
+      "sha256": "fa7336d74a7b160f60383494eafd7871a3f4870bcbdcb98576cc12f9bcd6aca5"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_001200F.json",
+      "bytes": 431,
+      "sha256": "64422e1174eb02810ecab31e325257f328fb4a8673ecdd2de5eea616fa63f8be"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_001200F.pdf",
+      "bytes": 52489,
+      "sha256": "c5d7162f3a9d0180f8c3821ec78231cebe23b4b003b2902d08cc59ad400e369e"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_001300F.json",
+      "bytes": 431,
+      "sha256": "c865681526a13dc8916bb77bca3f870205ebeba467525b4f3fb7888b223ba63e"
+    },
+    {
+      "path": "data/raw/law_appendices/007196_284567_20260317_appendix_001300F.pdf",
+      "bytes": 56117,
+      "sha256": "06106d51b340c86acc9f5dd5cc4b11ed60b920ce73c26611cfb4302bdb87351a"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000100E.json",
+      "bytes": 431,
+      "sha256": "de099717803ab7a489cb3840da8e4c8d58c6560ccdd1c9b03e60a57b3e85557c"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000100E.pdf",
+      "bytes": 12387,
+      "sha256": "925503067eb89f7413160a7b43647346af412b413d9a0fb9c882fa8d20dff851"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000100F.json",
+      "bytes": 431,
+      "sha256": "323d785292dab5d7fa16ea07f5c3c61ce754efe73ca3313a5c545e53daa66422"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000100F.pdf",
+      "bytes": 71798,
+      "sha256": "8339d500fc8735060cb83b87bb3141a4ef6b9ede9a03d9a1d17beda6ab46ffcc"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000200E.json",
+      "bytes": 431,
+      "sha256": "bff98d481c850cf570302e514719df7cdca70433646a8e1fab8c8ec11dd1c7f9"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000200E.pdf",
+      "bytes": 12407,
+      "sha256": "96bd9b1551c18baa010cf16e980c482a036153098611ae5fdd9bb068e54a27c5"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000200F.json",
+      "bytes": 431,
+      "sha256": "4cc595df3fbe3897e838e84a6c239f00634d0b1bb18e3ef16ca5f653ef3c1a3e"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000200F.pdf",
+      "bytes": 41974,
+      "sha256": "ceb92937137e627bcb093e89666f123ab3a5ccdee3ceebe8b9aca05aaed8cef2"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000300E.json",
+      "bytes": 431,
+      "sha256": "b68f8af163def31499948311489d1db568e9b6849819395762e52afb1657c39e"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000300E.pdf",
+      "bytes": 48986,
+      "sha256": "bd82bb88449dbc87b70ef9e0cf207933d2314942a572a6a7bfae3019c4dd4d8e"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000300F.json",
+      "bytes": 431,
+      "sha256": "cb217d5355167727012bb6e913ca98acc7cbcce8cd7be41225577f7052f68560"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000300F.pdf",
+      "bytes": 12940,
+      "sha256": "441d21569bc45a603d3b74241547a38d30a0144cced6043b7ed633551eb3bac3"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000400F.json",
+      "bytes": 431,
+      "sha256": "810e999431a112bf51040c6f86833313116ebf149b2ce4fa96396cdfaf6fad97"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000400F.pdf",
+      "bytes": 13939,
+      "sha256": "e460ccfa21dfc9bb57c31efaae99f59b223d2742349ca052d24756edb573d96a"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000500F.json",
+      "bytes": 431,
+      "sha256": "99956c9e9411cb69523dd0c7d3af0ea39e00108dc6740003615a619c310215d3"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000500F.pdf",
+      "bytes": 13263,
+      "sha256": "34641b5939a67437e2ec0a7d34b456e79db1726415b4a4936c49c2e85d1f3cb6"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000600F.json",
+      "bytes": 431,
+      "sha256": "f663690f170b5b1346d77402797eba0071aaea41093a9a929517e7ebe9a5cd4b"
+    },
+    {
+      "path": "data/raw/law_appendices/008480_282351_20260102_appendix_000600F.pdf",
+      "bytes": 12905,
+      "sha256": "82ea3dd3f3aed6c2e6d4bdd2560b0aefa2b4812bd85dfff1cd5be0de9f9d10b7"
+    },
+    {
+      "path": "data/raw/law_appendices/009325_272631_20250712_appendix_000000E.json",
+      "bytes": 431,
+      "sha256": "9e2e754013582026349cf4a55fb12a50976352f416ffb5dfa5f6e4da001a58cb"
+    },
+    {
+      "path": "data/raw/law_appendices/009325_272631_20250712_appendix_000000E.pdf",
+      "bytes": 94521,
+      "sha256": "975125c7d0c2b93a239d0eed9dc77eb46a28b0adc3784df30cc8a6454a4c559d"
+    },
+    {
+      "path": "data/raw/law_appendices/009338_288143_20260721_appendix_000100E.json",
+      "bytes": 431,
+      "sha256": "f69a86c8be43b1db55fd58199c1bea6f526a5f9de747459301290dcf4f0a5822"
+    },
+    {
+      "path": "data/raw/law_appendices/009338_288143_20260721_appendix_000100E.pdf",
+      "bytes": 86326,
+      "sha256": "7fee592cfcf1c56d4a8a49b49336ee51f21e46332f5a767000809e0dbc8b85e5"
+    },
+    {
+      "path": "data/raw/law_appendices/009338_288143_20260721_appendix_000200E.json",
+      "bytes": 431,
+      "sha256": "d5bd81a29108f445ecbe31907b1465e302a28ef199a33de9254657ad94764515"
+    },
+    {
+      "path": "data/raw/law_appendices/009338_288143_20260721_appendix_000200E.pdf",
+      "bytes": 63016,
+      "sha256": "ba2af6f67ff6fefa918f6e2b1d99d1cda28ea3a8b1ff9db4efd58256f617d176"
+    },
+    {
+      "path": "data/raw/law_appendices/009338_288143_20260721_appendix_000300E.json",
+      "bytes": 431,
+      "sha256": "2861d4b2a9dec10634655188eedcb5f9772147efe1158e9b7d2e9e90274bed42"
+    },
+    {
+      "path": "data/raw/law_appendices/009338_288143_20260721_appendix_000300E.pdf",
+      "bytes": 79905,
+      "sha256": "2999e2386b1b36772d567b4bb7871a004e5bf525e80f68cea0b6c76f820fca74"
+    },
+    {
+      "path": "data/raw/law_appendices/__init__.py",
+      "bytes": 83,
+      "sha256": "2a17de0a7dab290cf45b2d495bb4d221c363ee084de4a15ef4f7dfab4322d701"
+    },
+    {
+      "path": "data/raw/law_history/223955_20201204.json",
+      "bytes": 196647,
+      "sha256": "736b783e32406fbc0d46f3e40d154bfe8bf7edee8c35683a5d802217251631a6"
+    },
+    {
+      "path": "data/raw/law_history/225063_20211230.json",
+      "bytes": 98852,
+      "sha256": "fb4e5710f84b07a1ef27ec96c850e30df9d21134ff98579b901ea2011e8c79ec"
+    },
+    {
+      "path": "data/raw/law_history/237455_20221208.json",
+      "bytes": 188877,
+      "sha256": "30b78b989a54e3be3629430c992c2db91712de8898d67acabf8ada5e582000cf"
+    },
+    {
+      "path": "data/raw/law_history/246957_20221227.json",
+      "bytes": 199083,
+      "sha256": "86ff7c3ae27338b61ceccb92b67626019d8cf2e9e4d4bdc3e6dee4b4aa51acb1"
+    },
+    {
+      "path": "data/raw/law_history/248655_20230307.json",
+      "bytes": 198904,
+      "sha256": "382acffe3fa465973af6d43798debc5e85d214992a9e75e0a78a6f323199b396"
+    },
+    {
+      "path": "data/raw/law_history/249019_20230321.json",
+      "bytes": 203429,
+      "sha256": "ca2f3d6b394aa698d91a11f07a916dae4069e2f0197cd3e6a84c416b34b22e3d"
+    },
+    {
+      "path": "data/raw/law_history/252407_20230711.json",
+      "bytes": 202958,
+      "sha256": "ed9adb9aae28ecd0f4e4f79dee9551a7fd6e3a8407007cd6760a29a568a10505"
+    },
+    {
+      "path": "data/raw/law_history/260021_20240807.json",
+      "bytes": 88388,
+      "sha256": "e9eb20f5c86befc82aaf008ce85ba2cc8723f62fcf059b9ebd42a96c08bb9161"
+    },
+    {
+      "path": "data/raw/law_history/history_000354_through_2023.html",
+      "bytes": 37738,
+      "sha256": "db3b7db75bd0a7601a9640943b3ad0d7bf3c13cdaad501a5596eecb3b12e0bd7"
+    },
+    {
+      "path": "data/raw/law_history/history_003572_through_2023.html",
+      "bytes": 24510,
+      "sha256": "7ffcd37ce485cb2adff0077c5df7522ed41323a4ea5c33edc097f32f9795aad8"
+    },
+    {
+      "path": "data/raw/law_history/history_007196_through_2023.html",
+      "bytes": 13372,
+      "sha256": "8e908dbc3263617d50aba5e1f0efb70f5c734a7f7529686c60e1b38d80a43936"
+    },
+    {
+      "path": "data/raw/law_history/history_adhesion_terms_through_2023.html",
+      "bytes": 17085,
+      "sha256": "23f3d4a68f4508027e429eafe25c37c2abd3068d3a6b73ef23a0511e8ab6bbb5"
+    },
+    {
+      "path": "data/raw/laws/000129_218303_20200526.json",
+      "bytes": 128595,
+      "sha256": "f99fb4802eda02477157dc1f89eae3f533bbbd85437b4f9c1089e7b892a7442e"
+    },
+    {
+      "path": "data/raw/laws/000354_290239_20261002.json",
+      "bytes": 426258,
+      "sha256": "88f7cc1dd03a0fc421f69ffd0e2186126fb5d99fcf6e7a570e2e0856ba6dc3bc"
+    },
+    {
+      "path": "data/raw/laws/000355_289407_20260908.json",
+      "bytes": 407147,
+      "sha256": "841148707253468f71f936357bba04912674f1b77b9162d23acf98311e1f4f3a"
+    },
+    {
+      "path": "data/raw/laws/001215_286417_20260602.json",
+      "bytes": 165325,
+      "sha256": "ae991452da4ca280e0e09bdcea2058719c7016050d405dfdeaec5e9470714a07"
+    },
+    {
+      "path": "data/raw/laws/001248_276291_20260102.json",
+      "bytes": 213698,
+      "sha256": "0233541979a1cfb3de916560b5805497f71553dc9ce20df051f78e22c9ed10bc"
+    },
+    {
+      "path": "data/raw/laws/001589_283837_20260911.json",
+      "bytes": 478480,
+      "sha256": "0d6ff5e8383b61eb4d9535d0a4bb8e4fde773e47bffd643fc5b8abe2d1574930"
+    },
+    {
+      "path": "data/raw/laws/001654_283713_20260828.json",
+      "bytes": 377524,
+      "sha256": "c49be7a614da9de5dda43870cfa06d855249e5f479ba5f22fcca6c6a919d4b59"
+    },
+    {
+      "path": "data/raw/laws/001692_290185_20261002.json",
+      "bytes": 833398,
+      "sha256": "2ea2006f6f38b0ad86529b1e10458288478cd4ec150e265ec2b6e7ef8c73668a"
+    },
+    {
+      "path": "data/raw/laws/001706_284415_20260317.json",
+      "bytes": 2360928,
+      "sha256": "17bb0545a87e1b27097240544dc25fa4f136006e7b780ad0693216baad0a4748"
+    },
+    {
+      "path": "data/raw/laws/001872_285279_20261008.json",
+      "bytes": 519767,
+      "sha256": "9284f4c033ada77aee55db55ca2fd6de31b7d8d9273e2bb71a78044244c56c1c"
+    },
+    {
+      "path": "data/raw/laws/003058_270551_20251023.json",
+      "bytes": 523929,
+      "sha256": "fb0b4239a7cd38164ec6fc0d39073bb750de57eb92d7ceebc7bc7a4255fe0d49"
+    },
+    {
+      "path": "data/raw/laws/003572_286997_20260701.json",
+      "bytes": 399513,
+      "sha256": "e5849da615e34eb625ffddb0f8a8535dfb189c6d8043235704204deac8c21cfd"
+    },
+    {
+      "path": "data/raw/laws/003979_289451_20260911.json",
+      "bytes": 475543,
+      "sha256": "f9287f8e0ae51b14bb8ff52f4aefc8b7f8ee368ba9f351619905870115046ba2"
+    },
+    {
+      "path": "data/raw/laws/003984_208701_20190601.json",
+      "bytes": 13935,
+      "sha256": "cb3ea141f1d83ba8b19da20a4f0f377b7bf5c87cd5c68bac5a06ea0bd51f604e"
+    },
+    {
+      "path": "data/raw/laws/004950_287183_20260701.json",
+      "bytes": 207638,
+      "sha256": "618150cedec156125efa9cd5c0bfcfe6f6a9ead25209e080a5d8345fc337f47e"
+    },
+    {
+      "path": "data/raw/laws/005247_206564_20190101.json",
+      "bytes": 104286,
+      "sha256": "dc5185ad76d11a41b4655c384ad1a617ada756457f3274fbd1743b1224d9bcb5"
+    },
+    {
+      "path": "data/raw/laws/005498_287001_20260701.json",
+      "bytes": 261218,
+      "sha256": "706abf87390c25b82344547796aae291ef1bd4da6aff59c60f4f7e9b51abb8e8"
+    },
+    {
+      "path": "data/raw/laws/007196_284567_20260317.json",
+      "bytes": 396501,
+      "sha256": "ebbb435a4e84400c843f214d45420533b8a80ee8705e5c6be3fd136655dff51a"
+    },
+    {
+      "path": "data/raw/laws/008480_282351_20260102.json",
+      "bytes": 124369,
+      "sha256": "aa84359e59bd88b8919c2bb5a776df526d6cc93b608055cf57369f798b934fa8"
+    },
+    {
+      "path": "data/raw/laws/009290_268837_20260201.json",
+      "bytes": 857796,
+      "sha256": "995eb8ddd10f934c74db29636e752d0d44339ea6d2541ebc8d8fd870c0630994"
+    },
+    {
+      "path": "data/raw/laws/009318_282793_20260721.json",
+      "bytes": 385231,
+      "sha256": "b91f8ec561bab576fe85c292db100cccbd46e3141f95139a4c359636f5f89bdd"
+    },
+    {
+      "path": "data/raw/laws/009325_272631_20250712.json",
+      "bytes": 747076,
+      "sha256": "bf9277724562098d44cf34f8eaa1b2cbe7a438c19df68e8319aed3216d136250"
+    },
+    {
+      "path": "data/raw/laws/009338_288143_20260721.json",
+      "bytes": 421746,
+      "sha256": "da2080993c065d925b7d054a1124db4537c50a89691dd65d29c39087ce4c24f5"
+    },
+    {
+      "path": "data/raw/laws/009883_284455_20260918.json",
+      "bytes": 332956,
+      "sha256": "3900c8877edf4002198cb24465ac1ed02897dc91590778636e56f8d612fadc28"
+    },
+    {
+      "path": "data/raw/laws/__init__.py",
+      "bytes": 125,
+      "sha256": "8d5331a7a3b0ce6d69b240d9678e46cbd5f9c3daacb122485167a3c253d56f0f"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261010T014508435630Z.json",
+      "bytes": 447,
+      "sha256": "78061469b141ae34655cc04e7a88d4e87601f7cc6bbb120ab9db597eafe2aab8"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261010T014726494979Z.json",
+      "bytes": 2412,
+      "sha256": "dee1f2875d0cf21720873f129aee9472c9ccf4140157dff951cab67e5d1a72fe"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T011342787741Z.json",
+      "bytes": 1235,
+      "sha256": "8380c12400d020c53606a6ccc33a8b1e10cc4c1ab7f1f2370fcd589ba96d4d5e"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T011421776947Z.json",
+      "bytes": 1750,
+      "sha256": "9f6d9e26ca6ccf1ea61da314a855b85289d4f4bb443fafc8d8d15727be1011ad"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T021512867859Z.json",
+      "bytes": 891,
+      "sha256": "313aed27709a9c2ae2889a1b919da009427d26f5b18314be6aaaa2f6ae7ca16e"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T021540648713Z.json",
+      "bytes": 1199,
+      "sha256": "684eedbb73605b881a6af912fa6bd98a32ccedde86efdb1175a9c4cb44096e2a"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T032747521246Z.json",
+      "bytes": 682,
+      "sha256": "8121082453ae244fe50954789ec059f248eee9e00dede4e90d4ea45f2cbd6420"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T033148049620Z.json",
+      "bytes": 888,
+      "sha256": "d1c4ee153d0b63d58ba70b872e69b23702dceb776b1d4c52a6d44fb05d4ec2d6"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T044141414998Z.json",
+      "bytes": 1088,
+      "sha256": "23a82a7613a64b96cb041bead94423cc3c928654accac8343b1a841ca6baa1e6"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T044408366145Z.json",
+      "bytes": 1501,
+      "sha256": "5c1dead6e6bd4e3b8cf2f8def036060b2673a770c14262412608f7923beff623"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T053314654701Z.json",
+      "bytes": 638,
+      "sha256": "5abcfc848cc0e14abc09c9c91b90c5d6a4f5a6b5831a97cb9bde4aea15535138"
+    },
+    {
+      "path": "data/raw/laws/collection_report_20261011T053506503851Z.json",
+      "bytes": 845,
+      "sha256": "e317dea8e08720ff366e7cb687f4a3ff4c1a3ffb06986dee81817616a8d15451"
+    },
+    {
+      "path": "data/raw/precedents/147076.json",
+      "bytes": 31763,
+      "sha256": "de5261ba7d14de4fae6975f7a5fc2ce6a4f87161a097761b42d7504760998e5b"
+    },
+    {
+      "path": "data/raw/precedents/211835.json",
+      "bytes": 61993,
+      "sha256": "d9fd490e9d899366bca271490f1709af560928223d2f6c216fd0d129605ef65e"
+    },
+    {
+      "path": "data/raw/precedents/213483.json",
+      "bytes": 39636,
+      "sha256": "101013b21bf969316e0596cf434174704403a229e2d51912087161620068e4d1"
+    },
+    {
+      "path": "data/raw/precedents/213515.json",
+      "bytes": 14265,
+      "sha256": "2c96dc9a302e30a4e94f637cb6afa6d6b472f96a33cea672cac053b557906e15"
+    },
+    {
+      "path": "data/raw/precedents/219745.json",
+      "bytes": 22158,
+      "sha256": "48ff02ed513fa49a61e777fa9f5e27b8388d9692d0626fef8040c054bd36d0dd"
+    },
+    {
+      "path": "data/raw/precedents/227759.json",
+      "bytes": 206172,
+      "sha256": "946efc5a2bf6c34d7031c6582e7969b316bfcd4b2d4b5fdd4b353e59502d0933"
+    },
+    {
+      "path": "data/raw/precedents/232727.json",
+      "bytes": 16370,
+      "sha256": "aeff64788bb15db10c1c1fc92d82fab723f8931f4a1ebf265fb1bffe34fd723f"
+    },
+    {
+      "path": "data/raw/precedents/233339.json",
+      "bytes": 13365,
+      "sha256": "98ecf75f8c043ffd619452adca74a4997be68de5c990354e745d65703cea5038"
+    },
+    {
+      "path": "data/raw/precedents/234477.json",
+      "bytes": 37139,
+      "sha256": "9fb3c3a6394053657744745b646dfd811ee484603116970a79cedfce5f56fff0"
+    },
+    {
+      "path": "data/raw/precedents/234541.json",
+      "bytes": 1141089,
+      "sha256": "3edaa8d7483e247e6e6ecaea03ff43af9e78af244a3caf17691d2937b026c409"
+    },
+    {
+      "path": "data/raw/precedents/234895.json",
+      "bytes": 41259,
+      "sha256": "442af6d855528ff65609f7945411fe02a614bde268fe680e1be0e4704e358246"
+    },
+    {
+      "path": "data/raw/precedents/235097.json",
+      "bytes": 29433,
+      "sha256": "4b355aa24a7b054962824d7d5958fa1c5db8b06f6479eb19bc49d34a8efc7294"
+    },
+    {
+      "path": "data/raw/precedents/237119.json",
+      "bytes": 24795,
+      "sha256": "6fce1751f0ad732523b8c465fb855d4f981a18ee352dcbf33079723c77fb17fd"
+    },
+    {
+      "path": "data/raw/precedents/238515.json",
+      "bytes": 76648,
+      "sha256": "569157a89ee8e68bf56265a2d408f4802b59858905334cc0c7ac908d7ba6f02a"
+    },
+    {
+      "path": "data/raw/precedents/238925.json",
+      "bytes": 16931,
+      "sha256": "237a643bb40c23ad5c909862ec76cdf81b480a354186860e3131bdf0c14e9b19"
+    },
+    {
+      "path": "data/raw/precedents/239817.json",
+      "bytes": 20566,
+      "sha256": "525b257ba86333f1cdc94dcb30519d2054b42cde8335249cf74655a3b658ac5d"
+    },
+    {
+      "path": "data/raw/precedents/240265.json",
+      "bytes": 8313,
+      "sha256": "59cafe43e5ee9934056c92fd363de2eb50edab73de1bb0022fe87dd06abe1110"
+    },
+    {
+      "path": "data/raw/precedents/240967.json",
+      "bytes": 15662,
+      "sha256": "9f2cf88e083b7b2bbde3e1b416da21a0766b83a5526ecd7128a7b40eba12bc67"
+    },
+    {
+      "path": "data/raw/precedents/241141.json",
+      "bytes": 25172,
+      "sha256": "f032c80848abe91c3fd24d33249327cace4d10a2f75cec7f7d84f4b8113c1d0f"
+    },
+    {
+      "path": "data/raw/precedents/241143.json",
+      "bytes": 13388,
+      "sha256": "9c83ba130cfda295c9b218985b7f30f0d41efe8011d44d5a39cc4a077c2f9996"
+    },
+    {
+      "path": "data/raw/precedents/241453.json",
+      "bytes": 7789,
+      "sha256": "1a29516f5cbe5bd240e49d5494e245437480b64ae2d9dc4bf775d931233e5455"
+    },
+    {
+      "path": "data/raw/precedents/241683.json",
+      "bytes": 34104,
+      "sha256": "c130b31a75a8a3293641f015f5fc81b06660de0afb997d83731d67e55327e864"
+    },
+    {
+      "path": "data/raw/precedents/421174.json",
+      "bytes": 24792,
+      "sha256": "fe04eeea248e3192ac90a1e10f4a766e95d76a24a97fd78396cbabcc27f1ffe6"
+    },
+    {
+      "path": "data/raw/precedents/421240.json",
+      "bytes": 24477,
+      "sha256": "988446bcf69b8bbecaee3dc407d8ebce1a3b9204e22462fe6c2c30a3a9a0e93d"
+    },
+    {
+      "path": "data/raw/precedents/423788.json",
+      "bytes": 23688,
+      "sha256": "0b01b1fd7fdaa2df06036161425ed89b1772c9c47fc73eaf5987ab9da5bfdcfa"
+    },
+    {
+      "path": "data/raw/precedents/600325.json",
+      "bytes": 84301,
+      "sha256": "a52930cdb78b4d7bf8900eb1b4989b1eaa743ba2c421a2f6fe31406cbdddc1ef"
+    },
+    {
+      "path": "data/raw/precedents/600531.json",
+      "bytes": 32210,
+      "sha256": "46c6252a733fa1bb672dbc556f5b904eb8d78ec8d2711f73a8a3e5fff864a9db"
+    },
+    {
+      "path": "data/raw/precedents/601449.json",
+      "bytes": 30548,
+      "sha256": "9f27fe1e4b10052cccba85a5a62467688229bea3fed7e6fb9c9d6273e003077c"
+    },
+    {
+      "path": "data/raw/precedents/601883.json",
+      "bytes": 35748,
+      "sha256": "a2bd00eefc8bf873281f2d9da21a70468dcaab82f18bf83f67913af43487ae91"
+    },
+    {
+      "path": "data/raw/precedents/605067.json",
+      "bytes": 8808,
+      "sha256": "4a1e0eee5adc7ca8106754095391b4f6583f24f1c49f31dde80f1cb94cd063d5"
+    },
+    {
+      "path": "data/raw/precedents/605079.json",
+      "bytes": 20132,
+      "sha256": "74c3d5aa02e6637f7cd3ea6b97446b2ca006c9c8c493cfe74ccb57939e80ab39"
+    },
+    {
+      "path": "data/raw/precedents/605573.json",
+      "bytes": 39279,
+      "sha256": "30e2048725d514380ba6f314d9b588c52f5af0360bcc669207944913990fc51d"
+    },
+    {
+      "path": "data/raw/precedents/605583.json",
+      "bytes": 8792,
+      "sha256": "fbda3aff2d36c536f709eed803d599758a902f209448b682bc156e229176a97e"
+    },
+    {
+      "path": "data/raw/precedents/606533.json",
+      "bytes": 51719,
+      "sha256": "5ae2cd248325031974b455ab4dc48ac65c11a5916721e445953fd2948903dd95"
+    },
+    {
+      "path": "data/raw/precedents/606645.json",
+      "bytes": 94603,
+      "sha256": "3771f2e9a2e6075152e843190136e67eed414d59768456b7bc3353f29be62f8b"
+    },
+    {
+      "path": "data/raw/precedents/606767.json",
+      "bytes": 17434,
+      "sha256": "3332bd4ad5d8af90596541ce1e86ac36e43d84350e1ff0c7e60218dd7973df51"
+    },
+    {
+      "path": "data/raw/precedents/606973.json",
+      "bytes": 32113,
+      "sha256": "8122e02d72defe2e5ec9c21818f229a67123583aae337265ed895dedca292b1e"
+    },
+    {
+      "path": "data/raw/precedents/607191.json",
+      "bytes": 27143,
+      "sha256": "7ce476676059e333f93caed1fecef24056a2c8bac51b8bd95af924f75eab9788"
+    },
+    {
+      "path": "data/raw/precedents/607233.json",
+      "bytes": 60443,
+      "sha256": "dc157e043d7a827cadb6c7a985b170f9ec26175b75911fa09ae96d93bdc4761f"
+    },
+    {
+      "path": "data/raw/precedents/607545.json",
+      "bytes": 80474,
+      "sha256": "9eba99f4d805d1c35c80df094d8606653ec046f88c6450b738d7b59c79725ae6"
+    },
+    {
+      "path": "data/raw/precedents/607829.json",
+      "bytes": 28621,
+      "sha256": "6e7960b3a89f2421eede4fced3dcc27195542ce2da60091757fb432ac159f4ca"
+    },
+    {
+      "path": "data/raw/precedents/609321.json",
+      "bytes": 21883,
+      "sha256": "8d7bd3d39cfe61bf3f1efbe48c9627fed0c27861b6df043f7a3b7a82d2c4706b"
+    },
+    {
+      "path": "data/raw/precedents/609463.json",
+      "bytes": 160876,
+      "sha256": "0f144c62491227c844630a90f34c39fcd67e1fd93f6d8b3f67eb51106471eb71"
+    },
+    {
+      "path": "data/raw/precedents/609505.json",
+      "bytes": 14357,
+      "sha256": "ee9cb46adac843f52541d545d513a0fbb7ca6af39fc8ce1e634ac02962d9e25d"
+    },
+    {
+      "path": "data/raw/precedents/612055.json",
+      "bytes": 95133,
+      "sha256": "c2bf97295f2e2a8b1c379939c04d9e80b44708e568e6831af12a7e8655e4e021"
+    },
+    {
+      "path": "data/raw/precedents/612841.json",
+      "bytes": 18424,
+      "sha256": "f8a1d28cd3ba26c370ab63744c0061118ef3b026dcaa0cb03d764a5e8086c43c"
+    },
+    {
+      "path": "data/raw/precedents/612851.json",
+      "bytes": 7537,
+      "sha256": "26cdb7993455b669e382f13ad5f6d7a4b44d56662d4ddb09b8e73276e98b122c"
+    },
+    {
+      "path": "data/raw/precedents/613065.json",
+      "bytes": 12360,
+      "sha256": "33a85f635a70b8a7dd2e19a5982e9477225aa25ec43768678c642d9840105099"
+    },
+    {
+      "path": "data/raw/precedents/613069.json",
+      "bytes": 29873,
+      "sha256": "4565b1b88306c078a06fe331e682258e83e7efe936af06277f01ea0ef8287959"
+    },
+    {
+      "path": "data/raw/precedents/613245.json",
+      "bytes": 41316,
+      "sha256": "f8788d8afdf0111e684236bf761b33b0921efe072efd4d00db9e47e2ebbb2ba6"
+    },
+    {
+      "path": "data/raw/precedents/613301.json",
+      "bytes": 43589,
+      "sha256": "a3ecd5fce118dd7ceff1817c60386867c262549e8bb502118e9432743bdddd8c"
+    },
+    {
+      "path": "data/raw/precedents/614443.json",
+      "bytes": 40047,
+      "sha256": "217e6ccc8147d5052703d52dbbdf4e0ee0470614e8d1e97f15ca38d81fd08644"
+    },
+    {
+      "path": "data/raw/precedents/614543.json",
+      "bytes": 34182,
+      "sha256": "5ca09caf47ce858825bece1d029358ca746224564f32407308038d98f60d6130"
+    },
+    {
+      "path": "data/raw/precedents/614573.json",
+      "bytes": 37567,
+      "sha256": "683355f0a727d696d4295c8d9d1a51b6cce94906501a627eef0e750f54d3e240"
+    },
+    {
+      "path": "data/raw/precedents/614661.json",
+      "bytes": 32721,
+      "sha256": "778f7a51ec5e718ca5216c468d14a0fc6b2f4b90cedf5b871d5a12c6bafcbcb1"
+    },
+    {
+      "path": "data/raw/precedents/614721.json",
+      "bytes": 33462,
+      "sha256": "8cea9a0ab49855835e69b21dac59a4573b77fefc16bbcbece97e9d4564945640"
+    },
+    {
+      "path": "data/raw/precedents/615761.json",
+      "bytes": 13445,
+      "sha256": "8cd6ddd4d169e6a60a36ab68b3519da2598b10a72bdc816b7b7f08a341c5273b"
+    },
+    {
+      "path": "data/raw/precedents/615767.json",
+      "bytes": 13374,
+      "sha256": "67df97d12064d0134606382524c82e143e0833c0f27c5268a9b27dcac8b72901"
+    },
+    {
+      "path": "data/raw/precedents/615859.json",
+      "bytes": 50014,
+      "sha256": "21c7df276d8303dbddb57741207e299d49049fa0ac7033b66d3d9df2e92693dc"
+    },
+    {
+      "path": "data/raw/precedents/615943.json",
+      "bytes": 19825,
+      "sha256": "28f0ed7ebe995b6b7f0d19d0f32fbf99dbadfeb3db80ae9b513b3b6720d770df"
+    },
+    {
+      "path": "data/raw/precedents/616033.json",
+      "bytes": 23204,
+      "sha256": "10435beb070c3458d5f7575ad6d1bced97ca5a6ca0c33a7d020be59ba7e34167"
+    },
+    {
+      "path": "data/raw/precedents/616251.json",
+      "bytes": 23708,
+      "sha256": "dc1e8a8eff4e7b5ad66d591b95c36499ae1e7989a80df8c04f45075702619331"
+    },
+    {
+      "path": "data/raw/precedents/616255.json",
+      "bytes": 86580,
+      "sha256": "0669449c9c585279b54a740d2fa9f11f2c6c7c39eece0fc0270f07420ecac689"
+    },
+    {
+      "path": "data/raw/precedents/616527.json",
+      "bytes": 284709,
+      "sha256": "75eed1b5ad689164142377156afc32475bf5120a5abf88d1c00c651658b6cf74"
+    },
+    {
+      "path": "data/raw/precedents/616561.json",
+      "bytes": 19806,
+      "sha256": "fadf7a8df130d19490994710ec88bc34d333eca84ddf1f8013651468f5511c18"
+    },
+    {
+      "path": "data/raw/precedents/616581.json",
+      "bytes": 34883,
+      "sha256": "e09c72daf04fc1b2b2dba9090cdfaa4b894d440a1177de1d25b7e79021fc430b"
+    },
+    {
+      "path": "data/raw/precedents/616695.json",
+      "bytes": 227948,
+      "sha256": "701341ee8f8d24b238552609a6cbe5ddd6999766d6ed0996f7cc8c24340ac89f"
+    },
+    {
+      "path": "data/raw/precedents/617185.json",
+      "bytes": 16252,
+      "sha256": "4b58806d18fe5f4706d2b22adb4323c8c01072bc367d231b710716b7bf26bb54"
+    },
+    {
+      "path": "data/raw/precedents/618185.json",
+      "bytes": 15736,
+      "sha256": "8792dfebb354f49d44b0fb6b60cc0daddeec766fafcae8dfe1a178667c8f530b"
+    },
+    {
+      "path": "data/raw/precedents/618209.json",
+      "bytes": 14865,
+      "sha256": "d1326388d1b44d2dc014cc10640fc6ff1a888bdc578b29197578249fa7468068"
+    },
+    {
+      "path": "data/raw/precedents/618233.json",
+      "bytes": 34190,
+      "sha256": "141d65ecdd8344097abc551874866a538468c91157665649ade4e903ee7af9ac"
+    },
+    {
+      "path": "data/raw/precedents/618521.json",
+      "bytes": 35623,
+      "sha256": "dd3125d7b08ea3692c7f3798169767a879a7e299783fd4a9ffe3469c8001058d"
+    },
+    {
+      "path": "data/raw/precedents/618537.json",
+      "bytes": 80336,
+      "sha256": "7fe87d12ce3bfe10300ca0e79c217638cce6b5e6fc71037a9e76ca83bcc7ba38"
+    },
+    {
+      "path": "data/raw/precedents/618667.json",
+      "bytes": 18734,
+      "sha256": "3cc3ca6ea095dc3319425c347719f330b99aefd7e193687eb2c0790a5480d007"
+    },
+    {
+      "path": "data/raw/precedents/618691.json",
+      "bytes": 34908,
+      "sha256": "f64efe6382f15604052a6215b2de85665396da12c0cd6ad48e1f8b806c45c13b"
+    },
+    {
+      "path": "data/raw/precedents/618723.json",
+      "bytes": 43770,
+      "sha256": "e466bd8efab32ffea39d06ac57e353c0688e3661c32a3e9f1126be16345fbd07"
+    },
+    {
+      "path": "data/raw/precedents/618827.json",
+      "bytes": 43653,
+      "sha256": "7c2721b71adc89524221d6f7837c8b926e6707991673da66ea2209b52d683480"
+    },
+    {
+      "path": "data/raw/precedents/619451.json",
+      "bytes": 13517,
+      "sha256": "9ec2103d73c1415d00cc602a1cdc730bcef6becc0b4571e388f08cdf9010d58e"
+    },
+    {
+      "path": "data/raw/precedents/621911.json",
+      "bytes": 18797,
+      "sha256": "4f2d9b746a5d18e55565a3734e98d10959bbc41407c73fb3843267af07a1f65c"
+    },
+    {
+      "path": "data/raw/precedents/621921.json",
+      "bytes": 24243,
+      "sha256": "febcd29cc2bc62554465f29c5b5a3e7a58b72673eb94efd2d8339ee181c556ac"
+    },
+    {
+      "path": "data/raw/precedents/622111.json",
+      "bytes": 96045,
+      "sha256": "59aec6437c410bd617c8a8a322c6e287eb3c67e90fbd22d9664c3f743c496149"
+    },
+    {
+      "path": "data/raw/precedents/622235.json",
+      "bytes": 23422,
+      "sha256": "79da90df52ff638c38825a5c2334b94aecf4f37ecfa4d2b04536558374fcc883"
+    },
+    {
+      "path": "data/raw/precedents/622247.json",
+      "bytes": 20734,
+      "sha256": "67f4236eda004061dc34c4517fd3fa813653fefe9420224fccc6a9dd1035d7c3"
+    },
+    {
+      "path": "data/raw/precedents/622253.json",
+      "bytes": 27556,
+      "sha256": "93c0abf550e06029c4baa050363d51dc7cf0b6e00e8cbbb5a80b7c940797904c"
+    },
+    {
+      "path": "data/raw/precedents/622353.json",
+      "bytes": 31766,
+      "sha256": "27725836782373dd360354e7d78b9ed0c617e6a5dfacda8bddfa230d705c712b"
+    },
+    {
+      "path": "data/raw/precedents/622355.json",
+      "bytes": 89233,
+      "sha256": "91494f37e7416e0ab580f38d847bb3bf97e63c0bbf4db622fd9b56b125a11c22"
+    },
+    {
+      "path": "data/raw/precedents/622653.json",
+      "bytes": 41909,
+      "sha256": "04d8d8a5568e38e6f1dd4037dc16337334bb4f40d14d1b7e137aab9527b83737"
+    },
+    {
+      "path": "data/raw/precedents/622837.json",
+      "bytes": 19435,
+      "sha256": "676ee732bd9b7f8c46f80f3131b85b0024a81ac52bccfe46989e3ddeacb7133b"
+    },
+    {
+      "path": "data/raw/precedents/622901.json",
+      "bytes": 36171,
+      "sha256": "09e67f2897657fac31f8eb51e87338bff584f5e52151aa663913572acbd298d5"
+    },
+    {
+      "path": "data/raw/precedents/622957.json",
+      "bytes": 18538,
+      "sha256": "f9f5beac96a96c83c0838a040c1dc508bd2932d08271cdee1d5a8777245dd734"
+    },
+    {
+      "path": "data/raw/precedents/622971.json",
+      "bytes": 9047,
+      "sha256": "20272390e936c9f17a20157fa1e10c4ffef26786675f71b3ae7a9661d207f4bf"
+    },
+    {
+      "path": "data/raw/precedents/623049.json",
+      "bytes": 12248,
+      "sha256": "2de9be5a1825bd4738b15baf15c230d79931390e957836bf1929d97d78658594"
+    },
+    {
+      "path": "data/raw/precedents/623961.json",
+      "bytes": 18137,
+      "sha256": "f56ed5ea8f837ae5ed9a68225beb309edaee365ceaf20216545ae67d0abdaaf4"
+    },
+    {
+      "path": "data/raw/precedents/623979.json",
+      "bytes": 15751,
+      "sha256": "6b24461c50cb9d0026e6670959ff478a443d5aaaf51f2aa0391e76c81489b161"
+    },
+    {
+      "path": "data/raw/precedents/624249.json",
+      "bytes": 84724,
+      "sha256": "53784ea9630575ac2bb23748119b2e98631f2f3c3ffbf264d3fdda60c9da308a"
+    },
+    {
+      "path": "data/raw/precedents/624487.json",
+      "bytes": 20212,
+      "sha256": "4fdf6dd5ea808a59e49168b05737ce2e5e8212e8d3eef0192899eeb2f4a061c2"
+    },
+    {
+      "path": "data/raw/precedents/__init__.py",
+      "bytes": 25,
+      "sha256": "b629716444f228d382e2b9f7e502026795f6d1212ad5485f5ad2668f867883be"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261009T184525401792Z.json",
+      "bytes": 310,
+      "sha256": "a991b614eba34509fe6ff85ac019e8041de551c9d12fab8989448a9877a1a1b4"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261009T184707230066Z.json",
+      "bytes": 861,
+      "sha256": "25e5b179daf8cd31100a41943b218ffbed4156af0a05be21b6f6bdf8f5e5d2da"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261009T184803892268Z.json",
+      "bytes": 1008,
+      "sha256": "151c0dea431293fc92f3fc843a09d16e27ad0751810b43a87ef245b274aed379"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261009T185339569893Z.json",
+      "bytes": 1005,
+      "sha256": "a175bab4cea57cb7c2e273c07d58fb9ec52482f373a0fe510c0853dc9f3e2c4b"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261009T185959573792Z.json",
+      "bytes": 1661,
+      "sha256": "9286ea0de859967f35caa09724a9d2b69ac41cee9fa2666b8274e2a4e38f0f87"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261009T190030309935Z.json",
+      "bytes": 2163,
+      "sha256": "d6ef3ff94d729aabac4e37994f0e02d097267202e84c85dfc0056857b8f38b84"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261009T190055812688Z.json",
+      "bytes": 1169,
+      "sha256": "6f08a49ae826f3a44e957b0a441a98a476833c980897ade8af5aa90d289457ec"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261009T190115457676Z.json",
+      "bytes": 1503,
+      "sha256": "afeda3b1d29bfd0867f43345be72432d2e5288493c214282a342e92086847379"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261009T190150618671Z.json",
+      "bytes": 2153,
+      "sha256": "901f3e28fad0e5c5d70175f0f5a5993a22c80341eb2d0b9e89054f01b0162130"
+    },
+    {
+      "path": "data/raw/precedents/collection_report_20261011T044451155307Z.json",
+      "bytes": 269,
+      "sha256": "ae3ac61e7c31bb05cca1550bd85e1dee166d8816b60d42235c15de198c90bbca"
+    },
+    {
+      "path": "data/processed/__init__.py",
+      "bytes": 28,
+      "sha256": "9458b95cfa29dac971b80e25f2048206b5c00c3270aa03bdfbab8df983f6bde5"
+    },
+    {
+      "path": "data/processed/consumer_sources/__init__.py",
+      "bytes": 112,
+      "sha256": "0926afadb249d2a3319685271095f77a2bc30fe3a02ffccfa8a5535aa0a4f4de"
+    },
+    {
+      "path": "data/processed/consumer_sources/consumer_appendix_review_pmh.json",
+      "bytes": 85951,
+      "sha256": "dce0502b2c3aab5e79eecf4f2357d5b6b7a8adf6cc500ff021de7e67083ade38"
+    },
+    {
+      "path": "data/processed/consumer_sources/consumer_collection_report.json",
+      "bytes": 45001,
+      "sha256": "71744bad5641f8d1613ad1ad0c8ed360bdeece7c922a22007d89a92f2e829580"
+    },
+    {
+      "path": "data/processed/consumer_sources/consumer_dispute_standard.json",
+      "bytes": 183198,
+      "sha256": "6af595f2e332da6d15d9d24138a7db94b04d1d1f9ad264c5d516c159fdb154de"
+    },
+    {
+      "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_0.json",
+      "bytes": 913,
+      "sha256": "a990208ce7d7b8b54952ae24ff83c270093078f012aaafdddcbec258817ad9ea"
+    },
+    {
+      "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_1.json",
+      "bytes": 923,
+      "sha256": "10a3e654967402802a8360fa0a5f95be37851584ad6c2a8285c602542ec10f96"
+    },
+    {
+      "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_2.json",
+      "bytes": 952,
+      "sha256": "e8f75b915c021c0e43310961895c15bc4195cecfec1809ae5542a84041f7dfcc"
+    },
+    {
+      "path": "data/processed/consumer_sources/consumer_dispute_standard_appendix_3.json",
+      "bytes": 926,
+      "sha256": "3754eeade24f9f95f2c138c2ead17ac654602670fcca36aa47838472a3104978"
+    },
+    {
+      "path": "data/processed/consumer_sources/consumer_preprocessing_report.json",
+      "bytes": 21581,
+      "sha256": "6e76c763b80a9741b948c521aa47fbdf1393c6db2aa33847f9472e819f8bb571"
+    },
+    {
+      "path": "data/processed/consumer_sources/continual_contract_refund.json",
+      "bytes": 16031,
+      "sha256": "cbcc54f6c509b123fc91be296aae6d8ae644ba39ee418d1b9a89ac886bf7aec3"
+    },
+    {
+      "path": "data/processed/consumer_sources/converted/ftc_parcel_terms_14786.conversion.json",
+      "bytes": 949,
+      "sha256": "676d3590cb39eb8f993ea464c142489bf7d3e44b476fb45d788bcc072dcc5350"
+    },
+    {
+      "path": "data/processed/consumer_sources/converted/ftc_parcel_terms_14786.pdf",
+      "bytes": 789083,
+      "sha256": "aed46f8281fae937697f201debbafac619c006f04c0fc4510d69411b0ea4ab53"
+    },
+    {
+      "path": "data/processed/consumer_sources/converted/ftc_parcel_terms_14849.conversion.json",
+      "bytes": 949,
+      "sha256": "79b64057f1383e0c55aaded21dab6618cd886489fc6962ba33e6348e66509520"
+    },
+    {
+      "path": "data/processed/consumer_sources/converted/ftc_parcel_terms_14849.pdf",
+      "bytes": 1211044,
+      "sha256": "513885ac631cb5f87d14bd688d2aabcf1b09e011f30da9a7d119863697166a91"
+    },
+    {
+      "path": "data/processed/consumer_sources/easylaw_civil_enforcement.json",
+      "bytes": 7917,
+      "sha256": "13b8544a1fd3abe5640cff759a9a756cd5185463c3d3719e339a4e4776774b37"
+    },
+    {
+      "path": "data/processed/consumer_sources/easylaw_consumer_payment_order.json",
+      "bytes": 7713,
+      "sha256": "8fd83403b39aa521dd833cc21c330fa48fb253f1673594358a8ca232c54372e4"
+    },
+    {
+      "path": "data/processed/consumer_sources/easylaw_consumer_small_claim.json",
+      "bytes": 6727,
+      "sha256": "67f308e1dcabf069475e4a6ed249b6a9c445bc866e70c26d8e3ce56a56499573"
+    },
+    {
+      "path": "data/processed/consumer_sources/easylaw_housing_distribution.json",
+      "bytes": 23328,
+      "sha256": "29958fd0ee15e753b53c5ea4bb6c1f9ad604d8f398c03c89be8ea55a84ab2976"
+    },
+    {
+      "path": "data/processed/consumer_sources/easylaw_housing_restoration.json",
+      "bytes": 6395,
+      "sha256": "198b30cb99be876200bbaa0f4c5ba9f05042c373aadfeb438fe91822969b644e"
+    },
+    {
+      "path": "data/processed/consumer_sources/easylaw_housing_termination.json",
+      "bytes": 7532,
+      "sha256": "e7e3cdccdf1b6c506598eff50abf1be47039c95926e2856071deb2970bdb7f71"
+    },
+    {
+      "path": "data/processed/consumer_sources/easylaw_payment_order_application.json",
+      "bytes": 10602,
+      "sha256": "1a06c408c9fc8f70b63e69fb9a2f55f3677f8a9094d47d6f444b9321fb9bfcd7"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_11125.json",
+      "bytes": 1088,
+      "sha256": "933225f4088b0eff4e9811a0d7a1a8e08e3806134141afd84ff039a60df06f39"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_11125_file_e27d5f98.json",
+      "bytes": 71440,
+      "sha256": "66e3be22edbd990808b4bc1a25ac927f0e049610c79df0014dc85a24544f895f"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_11185.json",
+      "bytes": 1082,
+      "sha256": "279b54548a7bf8e674fddd655a236fcfb80b509fc112a4c044b454211b31ab6e"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_11185_file_a321590d.json",
+      "bytes": 87814,
+      "sha256": "0cde95bd4a72757771a9901a9128ad915037d222816e03991e652f5c386b9794"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_46118.json",
+      "bytes": 1055,
+      "sha256": "0ba1af1e6f4ae4103068f02d3ad4c046f7177d7332dda57043f5efd78855c0d9"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_46118_file_5b139f26.json",
+      "bytes": 76211,
+      "sha256": "e2b7cf9676be09609339c7e5d0fdec41e5bbf403ce2975118ff1ffe5adc15df1"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_47762.json",
+      "bytes": 1066,
+      "sha256": "f26d3bc7bb36cbd05c29cb5a132d42ddbdd3582179826600ed5d95c237bc21fe"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_47762_file_05d51a47.json",
+      "bytes": 88787,
+      "sha256": "1cd28c0b6e92b2f05f2b7ef78c68ed3aede9c4572643eb6d5a23a2180fcc099c"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_discovery.json",
+      "bytes": 923,
+      "sha256": "ff057ffb823047641fb97bf76272afaab80958fe77bc39a8042be061574a88db"
+    },
+    {
+      "path": "data/processed/consumer_sources/ftc_terms_discovery_parcel.json",
+      "bytes": 1013,
+      "sha256": "d95fbc17e23c4cfe3fc447545bc1084c84b39ba2cb959c0c473acc18fd8f4553"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1001243565.json",
+      "bytes": 4880,
+      "sha256": "762127fb0a5fc853406f0b0c320d94f641d8ba15811f549326be1aa9ab0fb735"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1001329664.json",
+      "bytes": 11141,
+      "sha256": "ad77a564a55d8abf0755649510a5750497e4bee0f85ddf2e9a220df0425740b8"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1002730975.json",
+      "bytes": 6313,
+      "sha256": "6fe74fc5aecbe9f99dd7b404d98c3c089c55772a6e5b44bc9e569cdacc120240"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003148978.json",
+      "bytes": 6582,
+      "sha256": "cf15da62d7bb880df5c81678d146edaab53fc50788e0cb8fa07f0cb627951a39"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003164054.json",
+      "bytes": 8722,
+      "sha256": "728af3f2e2a1f611017530309a913d1f2f64ac234562630e18774d4fcf2a8a29"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003475989.json",
+      "bytes": 8622,
+      "sha256": "7a0ef6571a050fd3bdba5f4f749b40167893dd946dc9225c592f74726856a797"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003604873.json",
+      "bytes": 6286,
+      "sha256": "098c1633f0eb2411f52f2bf7a75fb4eea53da369af079c3e164269e6724eb874"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003640779.json",
+      "bytes": 15474,
+      "sha256": "346c7e2792e2213db8910d5d2d94022c664fb1416fece1224f442307072d47d7"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003641375.json",
+      "bytes": 6262,
+      "sha256": "1d5723d75cc5611c1860674f495e048916d5b4f550b207191c9b3b5de5fa7eab"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003641715.json",
+      "bytes": 6775,
+      "sha256": "b3bac70a5c54fb0781b7fca545a15e0a059565a3df13a461df318b6743983603"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003739114.json",
+      "bytes": 18625,
+      "sha256": "b3458e8cb87e4ada65275517d362bdb9a05aee3783470c3a0a856be564194eb6"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003817065.json",
+      "bytes": 3892,
+      "sha256": "60db2feee234c260d48c6ad205ac71142ba820342c97bb2b51a4f9164d6bfc5e"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003890245.json",
+      "bytes": 5747,
+      "sha256": "6a99db3a581db64a11192008d8db79721876b456d493259ef306f70020c151ec"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003892039.json",
+      "bytes": 5747,
+      "sha256": "f047fb6f1747bd76fbaf1fc9f494deadbed8d556b8b315f0ca0253ab44c03efa"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003892170.json",
+      "bytes": 6807,
+      "sha256": "07de344df618157dc0fcfb60b289217a4516ebfb2db502e85035656c91d65dec"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003940398.json",
+      "bytes": 5392,
+      "sha256": "efec6d07b587ffd5b2ab774c6dc7eb8e91f145e572e293fc300d4ef04aeaa7d0"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_case_1003941875.json",
+      "bytes": 5672,
+      "sha256": "aae70e1dd2031295e07ccc2d8ffd5d0642a016a1914aa3b99a97afe03acc673f"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_damage_redress_procedure.json",
+      "bytes": 6457,
+      "sha256": "e0325d7893e39f290e66231c2bbacaae7a5144269e362978718a2a7c67cacbcf"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_discovery_fitness.json",
+      "bytes": 958,
+      "sha256": "c1b9e80a0bdbc36bf3315df127977c1e753f87d800e0aa71d3799c20a00890d8"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_discovery_parcel.json",
+      "bytes": 974,
+      "sha256": "16a03d27c3f4a5bf5f4d69ff1175936be7b14c86a15ee21b36bc9f690d0684ed"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_discovery_shopping.json",
+      "bytes": 982,
+      "sha256": "f29a86fe9fd95cf9f5dee6140365c62c47ed50bcca32e45a46bfc1dec8210402"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_fitness_closure_gym.json",
+      "bytes": 7734,
+      "sha256": "face3dcc685128d17578797722dc4e7a0243814f051d956eb44b570ac89143b9"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_fitness_closure_pilates.json",
+      "bytes": 16286,
+      "sha256": "3ae521b3472d4d16e62c8c80914cc128aec57789b80afd3dfc17ec49713a5061"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_mediation_procedure.json",
+      "bytes": 10759,
+      "sha256": "d95728f15d163f4ca7226555be78d2bc8003a6a42f336f648e1c57179eeacb2b"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_overseas_checklist.json",
+      "bytes": 6923,
+      "sha256": "857d1f43213efa043a09f19be6ea61366f44a388e011a969b1cfcbcb8d4e0f81"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_overseas_returns.json",
+      "bytes": 4492,
+      "sha256": "600d2f8da8d5a970e6217de0b9e187b4011fb2dbc1c3823deb591c882e19859f"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_overseas_types.json",
+      "bytes": 9742,
+      "sha256": "01de55ae8b5ef207b54a80845597c86722b23dadfcb44f9e23fe9b3695183f69"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_parcel_1003817349.json",
+      "bytes": 4315,
+      "sha256": "24be291276eac2c61de476a2b5bff66a6bb77a3f38ede39556f515119d7b27c3"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_pilates_1003941650.json",
+      "bytes": 5624,
+      "sha256": "fec6f746428859d9f7aac3d21ec5b3f76b69304c5a3b61abdddd5e213c837ae9"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_redress_requirements.json",
+      "bytes": 4786,
+      "sha256": "47df7564e40a9a3f8ad737aa0f6c31f70bedc36a89288eb029b007f906d975ce"
+    },
+    {
+      "path": "data/processed/consumer_sources/kca_redress_submission.json",
+      "bytes": 7364,
+      "sha256": "fbb74d14bdd3f521b8928dcba61404ad03eec9860098494d2ddb21a50afc3ab0"
+    },
+    {
+      "path": "data/processed/consumer_sources/minimum_wage_2026.json",
+      "bytes": 5146,
+      "sha256": "81edddc75cfb91d21b627444065ff4f4293ae885a36e75b0a0fde58a642d199e"
+    },
+    {
+      "path": "data/processed/consumer_sources/minimum_wage_2026_attachment_body.json",
+      "bytes": 995,
+      "sha256": "8baa41933e62331faeb1bb6ec00cfbef21d1595a40e6f4ae7ef959d4ad37367e"
+    },
+    {
+      "path": "data/processed/consumer_sources/minimum_wage_simple_labor.json",
+      "bytes": 4853,
+      "sha256": "230071e040ac1a926c0ff4bace74d347221625ab97f4dfcd2415b7c4976fd3a3"
+    },
+    {
+      "path": "data/processed/consumer_sources/moel_wage_evidence_1000323154.json",
+      "bytes": 4201,
+      "sha256": "fb54bd318d849e372caec215dbd55d927af7e619324428fe046f1b4879aec43d"
+    },
+    {
+      "path": "data/processed/consumer_sources/moel_wage_procedure.json",
+      "bytes": 5040,
+      "sha256": "3a4ba2a3d25f1323481d3b4328231bf2c64f9fdbecde983c80e50b8ffd86b809"
+    },
+    {
+      "path": "data/processed/consumer_sources/parcel_terms_revision_comparison.json",
+      "bytes": 108638,
+      "sha256": "efd7ddd4bd0972351faae5015c773cf1a454f337dc452fe80e7d886b9e72511b"
+    },
+    {
+      "path": "data/processed/consumer_sources/pilates_law_version_comparison_pmh.json",
+      "bytes": 117870,
+      "sha256": "8f712ed763d456b42b610544356c60133a45d3e3425daa82a572bf4befe10eac"
+    },
+    {
+      "path": "data/processed/consumer_sources/source_manifest.json",
+      "bytes": 37279,
+      "sha256": "77505e2fc86ad2a925719cef81776b89961b1bebebfd1c68d4f5cfb7e4431d41"
+    },
+    {
+      "path": "data/processed/guides/__init__.py",
+      "bytes": 89,
+      "sha256": "9044978ec3865fc6d1e71613b611635005815c92648720b22a37c562e7c6bd21"
+    },
+    {
+      "path": "data/processed/guides/guide_23ffe4c8fd5715cb.json",
+      "bytes": 899277,
+      "sha256": "419c019fc91359b3f07aff804e2028c2439b439a6caac1fd3342271ca0d4b480"
+    },
+    {
+      "path": "data/processed/guides/guide_246eabd0676d5957.json",
+      "bytes": 283474,
+      "sha256": "7f7e54cedff11dd89986157fe51bd52f7ed62663ac423982cb241a299a5c8348"
+    },
+    {
+      "path": "data/processed/guides/guide_383b62bce56bf1ce.json",
+      "bytes": 334717,
+      "sha256": "0bc269c4a8c41e22d7ce287f433560aeccec3829f368703f92f51f787fed8d58"
+    },
+    {
+      "path": "data/processed/guides/guide_94e9d4bd30eadf0b.json",
+      "bytes": 317528,
+      "sha256": "e8dd9ff635383f194fec1cf1be26867826500ed0ed37f37ac00438470af6eaad"
+    },
+    {
+      "path": "data/processed/guides/guide_cad7b1de1e4dc64c.json",
+      "bytes": 971573,
+      "sha256": "8eb5e808629ac4f3609e5a7e3668b12477315440e8529c1710dfbb589e9654b9"
+    },
+    {
+      "path": "data/processed/guides/guide_preprocessing_report.json",
+      "bytes": 3197,
+      "sha256": "d364ce149972e534ad37797d1d2c91b7a3f06dad907323d7de91243c2d281ef5"
+    },
+    {
+      "path": "data/processed/guides/guide_visual_review.json",
+      "bytes": 19899,
+      "sha256": "2660ecbc81023bdf721743d93408b0b6bac01038538525768ee064e533261ba9"
+    },
+    {
+      "path": "data/processed/guides/images/guide_23ffe4c8fd5715cb_p69_i0.png",
+      "bytes": 35079,
+      "sha256": "d9b71ef39b675b020a6ace3bfe1799b9787cfcfb0fd612173f85c60cb217a00e"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p12_i0.png",
+      "bytes": 162043,
+      "sha256": "5160cb0199bd5f75c7fcd71e41e936b31d82b3563e19473864eaaa167137b2b5"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p13_i0.png",
+      "bytes": 241346,
+      "sha256": "27f204fdbf55fb5be4e86389ea6924ad32c92c9b4c6376b28e03cb52aca2d06f"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p14_i0.png",
+      "bytes": 65171,
+      "sha256": "5632cb183d7b1e4869ffaddbf5e4a19c0d39dbbbe67c77b5fefbdbf1d0b4e8dd"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p19_i0.png",
+      "bytes": 328010,
+      "sha256": "821223589c2ebf7596f857c5f5ed63a42a9e42b9332872bf0c18a6651a21028f"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p20_i0.png",
+      "bytes": 300197,
+      "sha256": "d192087ceb34f7455c07fce381eb3f79a28ce66d48ef0475301c5f863ec5abab"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p25_i0.png",
+      "bytes": 192898,
+      "sha256": "6caf8200437ffe95b4d6074cdbb445a86d69360344d7dc0ea3aea3f77c2ba0ed"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p26_i0.png",
+      "bytes": 211162,
+      "sha256": "9d31ef3fe8fae7a52c02f72d6e3bbdd166fdd6dce6e7d89cf67c224e550f6386"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p27_i0.png",
+      "bytes": 466905,
+      "sha256": "00f27952e5d45f925a6c3f79e58fef24ba4ae3630eff0caa34977015c8cc06da"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p29_i0.png",
+      "bytes": 443035,
+      "sha256": "83b710a7c6d9419217acf3cde351189b1de5dc89943f5af43fcd9ea623755471"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p31_i0.png",
+      "bytes": 68609,
+      "sha256": "67636ea6f2b16393f6f8c6035b780b1e6d168fcdd563c9f7deaf3dc0796fc39b"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p34_i0.png",
+      "bytes": 172386,
+      "sha256": "b1110bda3b2aa8341e06bd66864534bb053c6629e88ec618cc639fb678bda8bc"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p36_i0.png",
+      "bytes": 119191,
+      "sha256": "b280a34d0a2c40bed7de5f9b6204b53b1d09d04e3d6011234d6fe72295691df9"
+    },
+    {
+      "path": "data/processed/guides/images/guide_246eabd0676d5957_p37_i0.png",
+      "bytes": 169518,
+      "sha256": "7a6ed7888feca143c6813dd176b0bdd58d0d112052af955b9b3451235fa08875"
+    },
+    {
+      "path": "data/processed/guides/images/guide_94e9d4bd30eadf0b_p29_i0.png",
+      "bytes": 137714,
+      "sha256": "b71785bc8571497999e4df3bff5a7358cb977d866d52d47f17ce7e68686500a9"
+    },
+    {
+      "path": "data/processed/guides/images/guide_94e9d4bd30eadf0b_p31_i0.png",
+      "bytes": 162252,
+      "sha256": "754c5ee34394d89e2a3bf6772426532a05e5f91096ab0016749bd607174ffbaf"
+    },
+    {
+      "path": "data/processed/guides/images/guide_94e9d4bd30eadf0b_p9_i0.png",
+      "bytes": 223036,
+      "sha256": "65250eb14b1f7aac3d0dcce310f048b647dc3c944de09610fe9bbf97498d1e3b"
+    },
+    {
+      "path": "data/processed/guides/images/guide_cad7b1de1e4dc64c_p44_i0.png",
+      "bytes": 125919,
+      "sha256": "c5ce61d9f11b5317e49fd667d6e47b366790cbbafa02cfd76bb3389d18d00094"
+    },
+    {
+      "path": "data/processed/guides/images/guide_cad7b1de1e4dc64c_p66_i0.png",
+      "bytes": 62189,
+      "sha256": "866ece3310a8d4d2f9a29af75f1822b1f5cf508c7140b012e79baba85feb6c56"
+    },
+    {
+      "path": "data/processed/guides/images/guide_cad7b1de1e4dc64c_p70_i0.png",
+      "bytes": 47285,
+      "sha256": "6c18b16db091e061c79a26d4d69beecb811e5908264c24ba8cb920e5da629704"
+    },
+    {
+      "path": "data/processed/guides/images/guide_cad7b1de1e4dc64c_p79_i0.png",
+      "bytes": 24509,
+      "sha256": "1cae33ee21d6ba537dbbc18406e3ae6d5da35634e706f6f0acdbd96af0c3dad6"
+    },
+    {
+      "path": "data/processed/laws/000129_218303_20200526.json",
+      "bytes": 200240,
+      "sha256": "9dc3282a653690f209a25039f63c8ef643e856f610a5f403d006af953378c6a9"
+    },
+    {
+      "path": "data/processed/laws/000354_290239_20261002.json",
+      "bytes": 637192,
+      "sha256": "83e297c4a3651ea95229fbcb421eb4417b51b320359f3f136c3ac44a78166b9b"
+    },
+    {
+      "path": "data/processed/laws/000355_289407_20260908.json",
+      "bytes": 564731,
+      "sha256": "0693586062a0515ab5439fa20d910cef27d1c15e4817cd6dc9583546d4f75f90"
+    },
+    {
+      "path": "data/processed/laws/001215_286417_20260602.json",
+      "bytes": 273600,
+      "sha256": "5d4cc24b74f31f902164f4a01bb3ba58b612a33c595e0773f6eaa4d14505bf04"
+    },
+    {
+      "path": "data/processed/laws/001248_276291_20260102.json",
+      "bytes": 338719,
+      "sha256": "5e7aa0fd82edfadd6e56f1643486434976cd526f54e631b36383bf7ec3055e2a"
+    },
+    {
+      "path": "data/processed/laws/001589_283837_20260911.json",
+      "bytes": 693879,
+      "sha256": "d58327ad6e29a05382abe78e2a0e2066c2aa1e3e13a478938ffa669de9abf98b"
+    },
+    {
+      "path": "data/processed/laws/001654_283713_20260828.json",
+      "bytes": 592701,
+      "sha256": "8cac0e0994ecc8d3d27addab9bda3c852a980746ceac8909a63a4b5a0984b1c0"
+    },
+    {
+      "path": "data/processed/laws/001692_290185_20261002.json",
+      "bytes": 1193955,
+      "sha256": "937e00fa41d8bb13bb6fec6f45488f3ef0d6fbc2dafb866c292b453b6a3e4a1b"
+    },
+    {
+      "path": "data/processed/laws/001706_284415_20260317.json",
+      "bytes": 3332001,
+      "sha256": "0f0ca8a89945c055787b5ca9dd99858f95496a038d2c5a4b8734ea781e57ef32"
+    },
+    {
+      "path": "data/processed/laws/001872_285279_20261008.json",
+      "bytes": 818067,
+      "sha256": "135a62c2460d493bcd263c7e5454ea367b65b53c01d8d5c3b4b8ce7ed54069c1"
+    },
+    {
+      "path": "data/processed/laws/003058_270551_20251023.json",
+      "bytes": 1051880,
+      "sha256": "dd0f959e2a1f5b2c4ca47bbbec4b0deca0ab0232b3672970c558291af5bddba7"
+    },
+    {
+      "path": "data/processed/laws/003572_286997_20260701.json",
+      "bytes": 799289,
+      "sha256": "15c553b2a4b52ad16f56a7a3800568e288da8c60f81684013225a5ccd706675f"
+    },
+    {
+      "path": "data/processed/laws/003979_289451_20260911.json",
+      "bytes": 832064,
+      "sha256": "dd8e729b8a794b923fff68939bd6ed6a816e90b3eb348afbf3ff43bc72ec90d6"
+    },
+    {
+      "path": "data/processed/laws/003984_208701_20190601.json",
+      "bytes": 15722,
+      "sha256": "eb6818461e62de176a2b19eb126e3f6f7183e9faf38829c6a16a937da3ab5ce6"
+    },
+    {
+      "path": "data/processed/laws/004950_287183_20260701.json",
+      "bytes": 354386,
+      "sha256": "367125edeb4ead5d96ab4d9b722b46909bca69bdcb09157129b15b266f3260b0"
+    },
+    {
+      "path": "data/processed/laws/005247_206564_20190101.json",
+      "bytes": 176719,
+      "sha256": "2cd15a19e04294ced6392c83799208267e8276b459039c0ba1c204770be216e7"
+    },
+    {
+      "path": "data/processed/laws/005498_287001_20260701.json",
+      "bytes": 526523,
+      "sha256": "88ed06d7ec97c925193fc59c9b0814ada9ea04ec0d62d9ddeb16ab95a928ba53"
+    },
+    {
+      "path": "data/processed/laws/007196_284567_20260317.json",
+      "bytes": 896350,
+      "sha256": "ac4c51f0d3a3694d17c716fe6e1a161b83a18876f12c1a410b089d5667cb0065"
+    },
+    {
+      "path": "data/processed/laws/008480_282351_20260102.json",
+      "bytes": 249046,
+      "sha256": "2be38833e668a0bc0354a4b35ee02eb9eb3f6af380672e17bef2f9f9ba10aa19"
+    },
+    {
+      "path": "data/processed/laws/009290_268837_20260201.json",
+      "bytes": 1295074,
+      "sha256": "41e1bbbfcefcc339e8c6eede2f57f189e0098bd8acf9dfb46f5b6c74d05480e4"
+    },
+    {
+      "path": "data/processed/laws/009318_282793_20260721.json",
+      "bytes": 553777,
+      "sha256": "1501b29e452051021090ac9f67324dd48527111383c9141940cdc7662dacc4bb"
+    },
+    {
+      "path": "data/processed/laws/009325_272631_20250712.json",
+      "bytes": 1142946,
+      "sha256": "53d980d676e141d6a317ab42df512f89729359aff0294c5ada211ec26608e130"
+    },
+    {
+      "path": "data/processed/laws/009338_288143_20260721.json",
+      "bytes": 829820,
+      "sha256": "a437c2e1315744faae9f41d1081b03a0334a151be3b31b7762d610dc8f34f1f2"
+    },
+    {
+      "path": "data/processed/laws/009883_284455_20260918.json",
+      "bytes": 475467,
+      "sha256": "12bb686f8dba15e50298255098f49d46df0536b45f9c6a2750c8f63c273adcf4"
+    },
+    {
+      "path": "data/processed/laws/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/processed/laws/law_preprocessing_report.json",
+      "bytes": 14734,
+      "sha256": "2a61e586dcdfb7b5d467a31c3a206ccf79ebe53c38d83d40dcd0a84e228d16e5"
+    },
+    {
+      "path": "data/processed/precedent_preprocessing_report.json",
+      "bytes": 3803,
+      "sha256": "85a415184535817aa609f474918aa10f86f362337f83b67066d86787bdb310cf"
+    },
+    {
+      "path": "data/processed/precedent_relevance_review.json",
+      "bytes": 258134,
+      "sha256": "dcb7f718b7da91c41c5017ed3744a820dbd8f7c6af3f17fca5dad3ca3e762552"
+    },
+    {
+      "path": "data/processed/precedent_relevance_review.md",
+      "bytes": 27386,
+      "sha256": "4ea5e991f1e052fd0801d2f7772e55169f141f24dbf2dc474d18728b81e3fe57"
+    },
+    {
+      "path": "data/processed/precedents/147076.json",
+      "bytes": 87317,
+      "sha256": "cde05f04b4478c04b13d17203913e6da3c780ddd8104daf71d77634cc6d95be1"
+    },
+    {
+      "path": "data/processed/precedents/213515.json",
+      "bytes": 53989,
+      "sha256": "e5a0821b883b9a256f60d0198fcaefd272481005726c6c4887e7bb24a673147c"
+    },
+    {
+      "path": "data/processed/precedents/227759.json",
+      "bytes": 468871,
+      "sha256": "503860f3a745da1c8a890ffbbfd0d68043abbbec9485e9464c618a4ca1e98847"
+    },
+    {
+      "path": "data/processed/precedents/234477.json",
+      "bytes": 93856,
+      "sha256": "087dd394b639743014eb72420a3d228dba79336a0db7104f0c1461c717bfa1cb"
+    },
+    {
+      "path": "data/processed/precedents/240967.json",
+      "bytes": 46356,
+      "sha256": "8d1154ea886bd285da7dc38a9d4b0e6c839c8ef5820b238ee37ad4e4f21d2536"
+    },
+    {
+      "path": "data/processed/precedents/241141.json",
+      "bytes": 98009,
+      "sha256": "4d06b76e2cefdb8f4cce675ddfb8c7e967d633f56f356e3464880af0ac4faf7c"
+    },
+    {
+      "path": "data/processed/precedents/241143.json",
+      "bytes": 51062,
+      "sha256": "4280338482782c3b978849595f8d3f060dfdd0b9b441053ef63432a09c7d78c6"
+    },
+    {
+      "path": "data/processed/precedents/600531.json",
+      "bytes": 115329,
+      "sha256": "78743ebe9e26fd4384fa6923b8c6d38b4bda41803a75739fd472a6e560bd6d14"
+    },
+    {
+      "path": "data/processed/precedents/605067.json",
+      "bytes": 28041,
+      "sha256": "42d5dfa6242a4bb2155794bdb8af6453812c79a1b126c4a56e7e23085bca9c62"
+    },
+    {
+      "path": "data/processed/precedents/605583.json",
+      "bytes": 20994,
+      "sha256": "a5a529dfb6d4106b26503c0a674768b5ff9d0142d30b4212bcd29ea28530dc68"
+    },
+    {
+      "path": "data/processed/precedents/606973.json",
+      "bytes": 119098,
+      "sha256": "abb99100e1a0a9a4d2509c859d99cf2b8f32c2437d6f89128ef7fcc0fd755c81"
+    },
+    {
+      "path": "data/processed/precedents/609505.json",
+      "bytes": 50602,
+      "sha256": "983788f83612fa2222247f233c66ab370041c0baad35e4280f2e0d480e5bb4d6"
+    },
+    {
+      "path": "data/processed/precedents/612851.json",
+      "bytes": 24504,
+      "sha256": "7e81e8aa920349cf864167a628cc3f8edf6e805c4f32d5f04e04c084a3c4886e"
+    },
+    {
+      "path": "data/processed/precedents/613301.json",
+      "bytes": 164725,
+      "sha256": "e79602621ff105d2ecad506530a2a5788900f7b59bc0a819a5f9732597d90c8c"
+    },
+    {
+      "path": "data/processed/precedents/614661.json",
+      "bytes": 115320,
+      "sha256": "24fd93040ec43b1c0d279f4e12951ac81f121b9d58c622552b2fdaf05ce20f20"
+    },
+    {
+      "path": "data/processed/precedents/614721.json",
+      "bytes": 119183,
+      "sha256": "4445c010ebf6ed80d09ee46d739c98210481b25ff40dfbbe9ff6f3237e1c5b66"
+    },
+    {
+      "path": "data/processed/precedents/615767.json",
+      "bytes": 38904,
+      "sha256": "76e0f41f4a8dde295b3203eb95f1cf954275afc101459a1f3c84f606b9719d9e"
+    },
+    {
+      "path": "data/processed/precedents/616251.json",
+      "bytes": 82860,
+      "sha256": "1bf3bc03211ff491a6e9192023724cbe747b5bd6c74f46dbbd38a11b0d354032"
+    },
+    {
+      "path": "data/processed/precedents/618185.json",
+      "bytes": 47089,
+      "sha256": "05ba23b3baa92926a93531b092323c7522c48ba9f017cee6edf66a737dba7196"
+    },
+    {
+      "path": "data/processed/precedents/618209.json",
+      "bytes": 49419,
+      "sha256": "c8deeae36477bf8acd95f59b12adcb86b6f3e64dd531a4c3ce64cef30e1bf5d5"
+    },
+    {
+      "path": "data/processed/precedents/621911.json",
+      "bytes": 57585,
+      "sha256": "9ab15fa32db2c4832431816f5160a640e96cb3dc35cd4441cd819cbbd97e60ac"
+    },
+    {
+      "path": "data/processed/precedents/621921.json",
+      "bytes": 86889,
+      "sha256": "0a6280bae9f277041003c6ca1d906f725c06ba298ffa9727ed808fe803663448"
+    },
+    {
+      "path": "data/processed/precedents/622235.json",
+      "bytes": 82979,
+      "sha256": "1ffe9e443cf879ed5e7f0ab6fdbaedad5e69a483f2b0df30a5a2c23f390514a0"
+    },
+    {
+      "path": "data/processed/precedents/622247.json",
+      "bytes": 65313,
+      "sha256": "480e530ca3bf43fd2205faf4c5755b19ae8b36ed3758e5b8b62194ca5b1a9e6d"
+    },
+    {
+      "path": "data/processed/precedents/622355.json",
+      "bytes": 340510,
+      "sha256": "4c55f0f555ac8d74932c56fb288a5eace432b5af7e7e216cccb66cdf21f9be0f"
+    },
+    {
+      "path": "data/processed/precedents/622837.json",
+      "bytes": 74826,
+      "sha256": "b77d8bfe250a234e3699c1374ca988e748d2a09dc627f740673bc09d56eaa8a6"
+    },
+    {
+      "path": "data/processed/precedents/622971.json",
+      "bytes": 26757,
+      "sha256": "16418a51d91f861a21635d3e8c75f9e2e5cfced3b7b80d91e3be32dd2207f588"
+    },
+    {
+      "path": "data/processed/precedents/623049.json",
+      "bytes": 40216,
+      "sha256": "647c24f987b661b427a47bd5469e5de71bf7dce1ffd9095d1c780842cf5fc0ee"
+    },
+    {
+      "path": "data/processed/precedents/623961.json",
+      "bytes": 60612,
+      "sha256": "8d65017b3628e191a36596401fbdfc7d4682d99c7b487428b9ae12e72f83bd94"
+    },
+    {
+      "path": "data/processed/precedents/623979.json",
+      "bytes": 60500,
+      "sha256": "3215f3de83149f4229705488858bb777743f0df88068373161b82c3495a8bb41"
+    },
+    {
+      "path": "data/processed/precedents/__init__.py",
+      "bytes": 93,
+      "sha256": "b0f9746431583ec1855af1f9a8ae1f9d3f43e38055b42108cb772571e68fdeb9"
+    },
+    {
+      "path": "data/processed/retrieval_evaluation/__init__.py",
+      "bytes": 70,
+      "sha256": "4e0a81995da0a3b3146a3436eb4f837685908a9528c82836a329e473f647333c"
+    },
+    {
+      "path": "data/processed/retrieval_evaluation/baseline_report.json",
+      "bytes": 248188,
+      "sha256": "442db92d51a6dc62ab7c54c45f6978868da6371f1a5c8350264560a57b0cfba2"
+    },
+    {
+      "path": "data/processed/retrieval_evaluation/baseline_report.md",
+      "bytes": 2683,
+      "sha256": "41d8a5c2149dc36ea0d03cea5d02f94ca96f5d05d8cd73fcd17ae30e4ae48bd0"
+    },
+    {
+      "path": "data/processed/retrieval_evaluation/consumer_coverage_report.json",
+      "bytes": 290452,
+      "sha256": "5d495c003659c4d2241682f93b5b949fd25a721164c8315aa8f7eb188a842fe8"
+    },
+    {
+      "path": "data/processed/retrieval_evaluation/domain_coverage_report_pmh.json",
+      "bytes": 1539906,
+      "sha256": "9ed5b30150e57441c810774ae184c3fb336ff6aaaf2714b9e2e5c8209aeff2e6"
+    },
+    {
+      "path": "data/processed/retrieval_evaluation/domain_coverage_report_pmh.md",
+      "bytes": 457637,
+      "sha256": "dd6bb5c629f2ca50b112154ec29c2bdc365e2f3b968d8325609f7065ee4fd4ae"
+    },
+    {
+      "path": "data/chunk/__init__.py",
+      "bytes": 30,
+      "sha256": "09cf947fc6fa952641ca353c9a500fa869968000ef20bc35a8d57392fb39ba34"
+    },
+    {
+      "path": "data/chunk/consumer_sources/__init__.py",
+      "bytes": 42,
+      "sha256": "84df559294bc92cfd08e2eaa7504fc55fccbdbef37d056bb084b46720c9d9974"
+    },
+    {
+      "path": "data/chunk/consumer_sources/chunks.jsonl",
+      "bytes": 2050564,
+      "sha256": "e34b07bc214a1e0ec4780341c7fc41ae21b9bad224a41c086ee206235e37af80"
+    },
+    {
+      "path": "data/chunk/consumer_sources/consumer_chunking_report.json",
+      "bytes": 11242,
+      "sha256": "4cbf16fe76492d8836433c550cc91916be15e92834b9d9420f7d5a4c0273a263"
+    },
+    {
+      "path": "data/chunk/guides/__init__.py",
+      "bytes": 65,
+      "sha256": "11cf835c4fa690d00cea5ca36c1914b5a10381cfd367ef349d79d6003c4bae7b"
+    },
+    {
+      "path": "data/chunk/guides/guide_23ffe4c8fd5715cb_chunks.json",
+      "bytes": 873159,
+      "sha256": "f07698278510e89934c1bf6549d2946b53312d2994c93af577499a47c77293af"
+    },
+    {
+      "path": "data/chunk/guides/guide_246eabd0676d5957_chunks.json",
+      "bytes": 322485,
+      "sha256": "dc550c0ba22b0169724a3f3b49d3b61ea236ecc83b38dd7ade6fb45428f1d5cb"
+    },
+    {
+      "path": "data/chunk/guides/guide_383b62bce56bf1ce_chunks.json",
+      "bytes": 330258,
+      "sha256": "1b77fa3d64061129d1bcb18c526f850bf4bee4e1bab554c5ebb5c719b9848c76"
+    },
+    {
+      "path": "data/chunk/guides/guide_94e9d4bd30eadf0b_chunks.json",
+      "bytes": 304536,
+      "sha256": "9ea007587a0ff47c9e655ec21f2f23a9956f5ead6f9562c848e2cad907badd9d"
+    },
+    {
+      "path": "data/chunk/guides/guide_cad7b1de1e4dc64c_chunks.json",
+      "bytes": 950949,
+      "sha256": "7322123e3e9fdc23217fd7202c46f2ca4e0b2de985de04a52427a4815788a8db"
+    },
+    {
+      "path": "data/chunk/guides/guide_chunking_report.json",
+      "bytes": 10266,
+      "sha256": "f180cf4bbfef684fb19e89e51dd3ffd8541f4bbca6ceef32c5cc47946c593375"
+    },
+    {
+      "path": "data/chunk/laws/__init__.py",
+      "bytes": 50,
+      "sha256": "8e8502181bb914a65be65a7b3200db49790fc6d8c31c7607e97c81c8d5bf3721"
+    },
+    {
+      "path": "data/chunk/laws/chunks.jsonl",
+      "bytes": 14672879,
+      "sha256": "72fdc82bd7aef246254f2853ace69a275ff47b1ee6fd900822c3b20e4c8fbb9d"
+    },
+    {
+      "path": "data/chunk/laws/law_chunking_report.json",
+      "bytes": 14498,
+      "sha256": "781f9dda95db3bc959895e3acb1e2e1dce6f14442618995c1add7959b9e3ad23"
+    },
+    {
+      "path": "data/chunk/precedents/__init__.py",
+      "bytes": 32,
+      "sha256": "d056db80d9ef959c4a92854866a6a5b91ed311507813f5d44408bc900d88f3ce"
+    },
+    {
+      "path": "data/chunk/precedents/chunks.jsonl",
+      "bytes": 1954096,
+      "sha256": "bcde044c4869f50feada1cead23474dace126c89416bb4f76e717ac41898a921"
+    }
+  ],
+  "inventory_sha256": "3beed12bd1a3fe7df51a906988545dc69be3ce46ae83ce43500d26e29c6788f0",
+  "remaining_limits": [
+    "분야 내용 검토 상태: {\"supported\": 37, \"partial\": 7, \"restricted\": 1}",
+    "자료 추가·개정 후 분야별 내용 검토와 평가 보고서를 다시 갱신해야 함",
+    "PDF 모든 이미지/원문 시각 요소 및 신규 현행 개정의 전수 검증은 아님",
+    "공통 서비스 로더·임베딩·Qdrant 저장/검색·LLM 답변·MCP 연결은 미구현"
+  ],
+  "validated_at": "2026-10-12T14:15:52.415692+00:00",
+  "test_suite": {
+    "tests_run": 163,
+    "successful": true,
+    "failures": [],
+    "errors": [],
+    "skipped": []
+  },
+  "handoff_ready_for_initial_pipeline": true
+}

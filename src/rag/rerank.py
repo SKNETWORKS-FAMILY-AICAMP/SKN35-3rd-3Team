@@ -3,8 +3,8 @@ import math
 import re
 from time import perf_counter
 from src.const.model import create_rerank_model
-from src.multi_query import multi_query
-from src.rrf import reciprocal_rank_fusion
+from src.rag.multi_query import multi_query
+from src.rag.rrf import reciprocal_rank_fusion
 
 
 DEFAULT_BATCH_SIZE = 8

@@ -2,7 +2,7 @@
 import re
 from src.prompt.multi_query_prompt import MULTI_QUERY_PROMPT
 from types import SimpleNamespace
-from src.rrf import reciprocal_rank_fusion
+from src.rag.rrf import reciprocal_rank_fusion
 from src.vector_db.bootstrap import create_team_retriever
 from src.const.model import create_llm
 from langchain_core.prompts import PromptTemplate

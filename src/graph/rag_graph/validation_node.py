@@ -1,5 +1,5 @@
 from src.graph.state import State
-from src.rerank import MIN_RELEVANCE_SCORE
+from src.rag.rerank import MIN_RELEVANCE_SCORE
 import math
 
 MAX_RETRY = 2

@@ -7,7 +7,7 @@ from langchain_core.runnables import RunnableLambda
 
 from src.const.config import RAG_EVALUATION_CASES_PATH
 from src.const.model import OPENAI_LLM_MODEL
-from src.generator import build_context, generator
+from src.rag.generator import build_context, generator
 
 
 # 문서가 없을 때 생성 API 없이 근거 부족 상태를 반환하는지 확인합니다.

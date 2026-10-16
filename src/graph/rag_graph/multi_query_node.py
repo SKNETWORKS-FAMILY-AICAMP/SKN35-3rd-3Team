@@ -1,5 +1,5 @@
 from src.graph.state import State
-from src.multi_query import multi_query
+from src.rag.multi_query import multi_query
 
 
 def multi_query_node(state: State):

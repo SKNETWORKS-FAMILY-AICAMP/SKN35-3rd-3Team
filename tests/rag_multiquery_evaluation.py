@@ -5,9 +5,9 @@ from pathlib import Path
 from time import perf_counter
 
 from src.const.model import create_llm
-from src.multi_query import multi_query
-from src.retrieval_evaluation import chunk_key, evaluate_ranking
-from src.rrf import reciprocal_rank_fusion
+from src.rag.multi_query import multi_query
+from src.rag.retrieval_evaluation import chunk_key, evaluate_ranking
+from src.rag.rrf import reciprocal_rank_fusion
 from src.vector_db.bootstrap import create_team_retriever
 
 

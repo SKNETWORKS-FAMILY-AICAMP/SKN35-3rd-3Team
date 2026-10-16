@@ -190,7 +190,7 @@ def export(result, report_dir):
 
 def run(dataset_path, output, report_dir, batch_size=8, resume=False):
     from src.const.model import create_rerank_model, RERANK_MODEL
-    from src.rerank import rerank
+    from src.rag.rerank import rerank
     import torch
     raw = dataset_path.read_bytes()
     data = json.loads(raw.decode('utf-8-sig'))

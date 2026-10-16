@@ -1,5 +1,5 @@
 from src.graph.state import State
-from src.rrf import rrf
+from src.rag.rrf import rrf
 
 
 def rrf_node(state: State):

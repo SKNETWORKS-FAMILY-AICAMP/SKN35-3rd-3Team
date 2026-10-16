@@ -1,10 +1,10 @@
 from langgraph.graph import StateGraph, START, END
 from src.graph.state import State
-from src.graph.multi_query_node import multi_query_node
-from src.graph.query_rewrite_node import query_rewrite_node
-from src.graph.rrf_node import rrf_node
-from src.graph.rerank_node import rerank_node
-from src.graph.validation_node import validation_node
+from src.graph.rag_graph.multi_query_node import multi_query_node
+from src.graph.rag_graph.query_rewrite_node import query_rewrite_node
+from src.graph.rag_graph.rrf_node import rrf_node
+from src.graph.rag_graph.rerank_node import rerank_node
+from src.graph.rag_graph.validation_node import validation_node
 from src.graph.generator_node import generator_node
 
 def route_after_validation(state: State):

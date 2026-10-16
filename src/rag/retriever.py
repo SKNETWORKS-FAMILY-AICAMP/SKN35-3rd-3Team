@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
 from src.const.vector_data_contract import create_content_hash
-from src.rrf import reciprocal_rank_fusion
+from src.rag.rrf import reciprocal_rank_fusion
 from src.vectorstore import (
     VectorCollectionInfo,
     VectorDocument,

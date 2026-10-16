@@ -3,13 +3,13 @@ from functools import cache
 from langgraph.graph import StateGraph, START, END
 
 from src.graph.state import State
-from src.graph.mcp_get_collection_info import (
+from src.graph.mcp_graph.mcp_get_collection_info import (
     create_mcp_collection_info_graph_node,
 )
-from src.graph.mcp_health_check_node import create_mcp_health_check_graph_node
-from src.graph.mcp_lookup_document import create_mcp_lookup_document_graph_node
-from src.graph.mcp_search_documents import create_mcp_search_documents_graph_node
-from src.graph.mcp_validation_node import mcp_validation_node
+from src.graph.mcp_graph.mcp_health_check_node import create_mcp_health_check_graph_node
+from src.graph.mcp_graph.mcp_lookup_document import create_mcp_lookup_document_graph_node
+from src.graph.mcp_graph.mcp_search_documents import create_mcp_search_documents_graph_node
+from src.graph.mcp_graph.mcp_validation_node import mcp_validation_node
 from src.mcp_tools.nodes import MCPToolServiceLike
 from src.mcp_tools.server import MCPToolService, create_tool_service
 from src.vector_db import create_team_retriever

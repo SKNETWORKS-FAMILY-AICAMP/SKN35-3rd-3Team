@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 
 from src.const.config import CHUNK_DATA_PATH, ENV_PATH, PROJECT_PATH
 from src.const.qdrant_config import QdrantSettings
-from src.retriever import DocumentRetriever
+from src.rag.retriever import DocumentRetriever
 from src.scripts import mcp_server, qdrant_ingest, qdrant_setup
 from src.vectorstore import VectorSearchRequest, VectorDocument, VectorCollectionInfo
 

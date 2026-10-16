@@ -1,5 +1,5 @@
 from src.graph.state import State
-from src.rerank import rerank
+from src.rag.rerank import rerank
 # 노드 입니다.
 # Precision@K 로 평가 진행
 # state에 따라서 노드의 상태를 정의합니다.

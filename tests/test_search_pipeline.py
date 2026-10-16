@@ -10,9 +10,9 @@ from unittest.mock import patch
 
 from qdrant_client import QdrantClient, models
 
-from src.retrieval_evaluation import EvaluationCase, compare_retrievers, evaluate_ranking
-from src.retriever import BM25Retriever, DocumentRetriever, HybridRetriever
-from src.rrf import reciprocal_rank_fusion
+from src.rag.retrieval_evaluation import EvaluationCase, compare_retrievers, evaluate_ranking
+from src.rag.retriever import BM25Retriever, DocumentRetriever, HybridRetriever
+from src.rag.rrf import reciprocal_rank_fusion
 from src.vector_db.search_bootstrap import load_keyword_documents, create_team_hybrid_retriever
 from src.vectorstore import VectorSearchHit
 

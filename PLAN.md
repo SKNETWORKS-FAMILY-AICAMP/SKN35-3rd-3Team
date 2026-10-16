@@ -41,15 +41,6 @@ PDF의 9개 생활분쟁 범주를 기획 범위로 유지하되, 실제 시연 
 전체 법률 분야 확장, 승소·처벌 결과 예측, 근거가 불충분한 환급액 자동 계산은 핵심 범위에 포함하지 않는다. 이미지 입력은 현재 코드에 있는 확장 기능으로 분류하며 핵심 시연 포함 여부는 별도 확정한다.
 
 ### 1-3. 역할 분담
-<p allign="left">
-<img src="profile_img/LAW_MATE_DY.png" width="20%">
- &nbsp;&nbsp;&nbsp;&nbsp;
-<img src="profile_img/LAW_MATE_MH.png" width="20%">
- &nbsp;&nbsp;&nbsp;&nbsp;
-<img src="profile_img/LAW_MATE_EM.png" width="20%">
- &nbsp;&nbsp;&nbsp;&nbsp;
- <img src="profile_img/LAW_MATE_JB.png" width="20%">
- 
 </p>
 
 

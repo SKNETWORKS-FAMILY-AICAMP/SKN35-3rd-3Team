@@ -75,6 +75,15 @@ LAW:MATE는 **상황 입력 → 관련 자료 검색 → 답변 확인 → 근�
 <a id="team"></a>
 
 ## 2. 팀 구성과 역할
+<p allign="left">
+<img src="profile_img/LAW_MATE_DY.png" width="20%">
+ &nbsp;&nbsp;&nbsp;&nbsp;
+<img src="profile_img/LAW_MATE_MH.png" width="20%">
+ &nbsp;&nbsp;&nbsp;&nbsp;
+<img src="profile_img/LAW_MATE_EM.png" width="20%">
+ &nbsp;&nbsp;&nbsp;&nbsp;
+ <img src="profile_img/LAW_MATE_JB.png" width="20%">
+ 
 
 
 [프로젝트 계획서](PLAN.md)의 정·부 담당 분담을 기준으로 정리했습니다. 개인별 단독 구현 실적이나 커밋 기여도 집계는 아닙니다.

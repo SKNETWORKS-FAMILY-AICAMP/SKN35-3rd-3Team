@@ -32,6 +32,8 @@
 | :---: | :---: | :---: | :---: |
 | **4,932청크** | **법령·판례·안내서·소비자 자료** | **RAG / MCP** | **공통 20문항 / 확장 70문항** |
 
+비교 기준: main 커밋 `93ba5caa901138938d01657749457d0a9ad1a82b`. 본문의 “기준 커밋”은 이 커밋을 뜻합니다.
+
 ## 목차
 
 1. [프로젝트 소개](#overview)
@@ -75,7 +77,7 @@ LAW:MATE는 **상황 입력 → 관련 자료 검색 → 답변 확인 → 근�
 <a id="team"></a>
 
 ## 2. 팀 구성과 역할
-<p allign="left">
+<p align="left">
 <img src="profile_img/LAW_MATE_DY.png" width="20%">
  &nbsp;&nbsp;&nbsp;&nbsp;
 <img src="profile_img/LAW_MATE_MH.png" width="20%">
@@ -86,11 +88,13 @@ LAW:MATE는 **상황 입력 → 관련 자료 검색 → 답변 확인 → 근�
  
 
 
-[프로젝트 계획서](PLAN.md)의 정·부 담당 분담을 기준으로 정리했습니다. 개인별 단독 구현 실적이나 커밋 기여도 집계는 아닙니다.
+</p>
+
+[프로젝트 계획서](PLAN.md)의 정·부 담당 분담을 기준으로 정리했습니다. 
 
 | 업무 | 정 담당 | 부 담당 | 담당 범위 |
 | --- | --- | --- | --- |
-| 수집·전처리 | 민하 | 은미 | 공식 원본 수집, 정제·청킹, 출처·시점·조건 보존, 데이터 인계 |
+| 수집·전처리·UI | 민하 | 은미 | 공식 원본 수집, 정제·청킹, 출처·시점·조건 보존, 데이터 인계 |
 | 벡터 DB·MCP | 진봉 | 민하 | 임베딩·Qdrant 적재·검증, Hybrid 검색, MCP 도구 계약 |
 | RAG | 은미 | 도영 | 재작성·멀티쿼리·RRF·재정렬·생성·인용 모듈, 검색 평가 |
 | LangGraph·플로우 | 도영 | 진봉 | 질문 분류, State·노드 연결, RAG·MCP 분기, 재시도·오류 처리 |
@@ -132,7 +136,7 @@ LAW:MATE는 **상황 입력 → 관련 자료 검색 → 답변 확인 → 근�
 
 위 문장은 입력 시나리오이며, 검증된 실제 응답 결과를 인용한 것은 아닙니다. 시연 전 이미지 해석·관련 근거·답변을 같은 환경에서 확인해야 합니다.
 
-분석 화면의 출처 목록은 인용 구조 검사 통과 상태를 요구합니다. 기준 커밋에서는 메인 그래프에 Citation 노드가 연결돼 있지 않아 목록이 비어 있을 수 있습니다. [구현 상태](#limitations)에 현재 연결과 남은 작업을 구분했습니다.
+분석 화면은 인용 구조 검사를 통과한 출처와 검색된 근거 후보를 구분해 표시합니다. 메인 그래프에는 RAG 답변 생성 후와 MCP 답변 생성 후에 공통 Citation 노드가 연결돼 있습니다. [구현 상태](#limitations)에 현재 연결과 남은 작업을 구분했습니다.
 
 <a id="screen-map"></a>
 
@@ -183,15 +187,15 @@ OpenAI 모델은 질문 분류·이미지 설명·재작성·생성에 사용합
     │   → 대화 이력 기반 질문 재작성
     │   → 멀티쿼리·법령·판례 보강 검색
     │   → RRF 후보 결합 → 재정렬 → 결과 검증
-    │      ├─ 근거 확보 → 답변 생성 → 종료
+    │      ├─ 근거 확보 → 답변 생성 → Citation 구조 검사 → 종료
     │      ├─ 근거 부족·횟수 미소진 → 질문 재작성부터 반복
-    │      └─ 횟수 소진 → 생성 노드에서 근거 부족 응답 → 종료
+    │      └─ 횟수 소진 → 생성 노드에서 근거 부족 응답 → Citation 구조 검사 → 종료
     └─ mcp
         → health_check → get_collection_info → search_documents
         → 결과 검증
-           ├─ 정상 → lookup_document → 답변 생성 → 종료
+           ├─ 정상 → lookup_document → 답변 생성 → Citation 구조 검사 → 종료
            ├─ 실패·횟수 미소진 → 상태 확인부터 반복
-           └─ 횟수 소진 → 빈 근거에 대한 응답 생성 → 종료
+           └─ 횟수 소진 → 빈 근거에 대한 응답 생성 → Citation 구조 검사 → 종료
 ```
 
 - RAG는 생활법률 상담, MCP는 특정 법령·자료의 원문 조회 요청을 분류하도록 프롬프트에 정의돼 있습니다. 실제 분류는 LLM이 수행합니다.
@@ -201,7 +205,7 @@ OpenAI 모델은 질문 분류·이미지 설명·재작성·생성에 사용합
 - 재정렬에서 `0.1` 미만인 문서는 제외합니다. RAG는 현재 최초 검색을 포함해 최대 2회 수행하며, 횟수 소진 시 검증 노드의 `is_valid=True`는 반복 종료를 뜻할 수 있습니다.
 - 생성기는 빈 근거, 정보 부족, 버전 충돌, 호출 오류, 출처 형식 오류를 구분하도록 구현돼 있습니다. 의미적 사실성의 자동 검증 완료를 뜻하지 않습니다.
 
-구현: [메인 그래프](src/graph/workflow.py) · [RAG 그래프](src/graph/rag_graph.py) · [MCP 그래프](src/graph/mcp_graph.py)
+구현: [메인 그래프](src/graph/workflow.py) · [RAG 그래프](src/graph/rag_graph/rag_graph.py) · [MCP 그래프](src/graph/mcp_graph/mcp_graph.py)
 
 <a id="implementation"></a>
 
@@ -211,7 +215,7 @@ OpenAI 모델은 질문 분류·이미지 설명·재작성·생성에 사용합
 
 Qdrant는 **한 질의의 Dense·Sparse 결과**를 RRF로 결합합니다. 이후 애플리케이션의 `rrf.py`는 **여러 검색 질의에서 나온 결과**를 다시 결합하고 동일 청크를 중복 제거합니다. 서로 다른 점수 척도보다 순위를 활용해 후보를 통합합니다.
 
-구현: [검색 저장소](src/vector_db/qdrant_store.py) · [멀티쿼리](src/multi_query.py) · [RRF](src/rrf.py)
+구현: [검색 저장소](src/vector_db/qdrant_store.py) · [멀티쿼리](src/rag/multi_query.py) · [RRF](src/rag/rrf.py)
 
 ### ② 법령·판례 후보 보강과 재정렬
 
@@ -219,7 +223,7 @@ Qdrant는 **한 질의의 Dense·Sparse 결과**를 RRF로 결합합니다. 이�
 
 기본 흐름은 RRF 후보 20개를 재정렬해 최대 5개를 반환합니다. 점수는 모델의 관련성 출력이며 답변 정답 확률이 아닙니다.
 
-구현: [멀티쿼리 검색](src/multi_query.py) · [재정렬](src/rerank.py)
+구현: [멀티쿼리 검색](src/rag/multi_query.py) · [재정렬](src/rag/rerank.py)
 
 ### ③ 원문과 검색 보조 표현의 분리
 
@@ -229,9 +233,9 @@ Qdrant는 **한 질의의 Dense·Sparse 결과**를 RRF로 결합합니다. 이�
 
 ### ④ 생성 형식 검사와 의미 검증의 구분
 
-생성기는 실제 검색 근거로 컨텍스트를 구성하고, 답변·주장별 출처 ID를 JSON으로 받습니다. 존재하지 않는 인용이나 잘못된 형식은 답변 보류로 처리합니다. 별도 `citation.py`는 인용 구조를 검사하지만, **기준 커밋의 메인 그래프에는 미연결**입니다. 주장과 근거의 의미 일치를 판정하는 Judge도 후속 작업입니다.
+생성기는 실제 검색 근거로 컨텍스트를 구성하고, 답변·주장별 출처 ID를 JSON으로 받습니다. 존재하지 않는 인용이나 잘못된 형식은 답변 보류로 처리합니다. `citation.py`는 인용 구조를 검사하며, **메인 그래프에서 RAG·MCP 답변 생성 후 공통 Citation 노드로 실행**됩니다. 주장과 근거의 의미 일치를 판정하는 Judge도 후속 작업입니다.
 
-구현: [답변 생성](src/generator.py) · [인용 구조 검사](src/citation.py)
+구현: [답변 생성](src/rag/generator.py) · [인용 구조 검사](src/citation.py)
 
 ### ⑤ 역할별 프롬프트 분리
 
@@ -250,7 +254,7 @@ Qdrant는 **한 질의의 Dense·Sparse 결과**를 RRF로 결합합니다. 이�
 
 ## 6. 데이터 구성과 전처리
 
-`dev`에 저장된 청크 파일을 집계한 결과입니다.
+기준 main 커밋에 저장된 청크 파일을 집계한 결과입니다.
 
 | 자료 | 검색 문서 기준 | 청크 |
 | --- | --- | ---: |
@@ -309,7 +313,7 @@ flowchart LR
 - 현재 코드는 상담 질문·첨부를 Qdrant 지식 데이터로 자동 적재하지 않습니다. 상담 기록의 영구 보관도 구현돼 있지 않습니다.
 - 이미지·PDF 변환 이미지는 모델 API로 전달됩니다. 이미지 프롬프트는 개인정보를 설명문에 옮기지 않도록 지시하지만, **전송 전 이미지의 자동 마스킹을 구현한 것은 아닙니다.**
 
-구현: [그래프 State](src/graph/state.py) · [적재와 분할](src/vector_db/ingestion.py) · [컨텍스트 구성](src/generator.py) · [세션 처리](src/app/Chat.py)
+구현: [그래프 State](src/graph/state.py) · [적재와 분할](src/vector_db/ingestion.py) · [컨텍스트 구성](src/rag/generator.py) · [세션 처리](src/app/Chat.py)
 
 <a id="source-maintenance"></a>
 
@@ -332,7 +336,7 @@ flowchart LR
 
 ## 7. 평가 결과와 재현
 
-아래 수치는 `dev`에 저장된 보고서에서 가져왔습니다. 이번 README 수정에서는 검색·모델 추론을 다시 실행하지 않았습니다.
+아래 수치는 기존 README에 기재된 평가 기록입니다. 기준 main 커밋에는 해당 원본 보고서와 재현 코드가 포함돼 있지 않아 수치를 대조·검증할 수 없습니다. 이번 README 수정에서는 검색·모델 추론을 다시 실행하지 않았습니다.
 
 ### 7-1. 검색 단계별 비교 · 20문항
 
@@ -350,7 +354,7 @@ flowchart LR
 - Multi Query 결과에 RRF가 포함돼 두 단계를 별도의 개선 효과로 중복 계산하지 않습니다.
 - 저장 보고서의 프로젝트 제안 기준에서 Hit·MRR은 충족했지만 Recall·Precision·nDCG는 미달입니다.
 
-출처: [20문항 단계별 평가 보고서](test/rag_test/docs/rag_report.md)
+원본 보고서: `test/rag_test/docs/rag_report.md` — 기준 main 커밋에 미포함되어 위 수치의 원본 대조가 필요합니다.
 
 ### 7-2. 동일 후보 재정렬 비교 · 별도 70문항 실험
 
@@ -366,7 +370,7 @@ flowchart LR
 
 보고서 기준 순위 품질 변화는 개선 34개·동일 6개·악화 7개입니다. 개선 수치와 함께 악화 사례도 검토합니다. 이 결과는 검색·재정렬 평가이며 최종 답변의 법적 정확도나 전체 서비스 성공률이 아닙니다.
 
-출처: [재정렬 평가 보고서](test/rerank/docs/rag_rerank_report.md)
+원본 보고서: `test/rerank/docs/rag_rerank_report.md` — 기준 main 커밋에 미포함되어 위 수치의 원본 대조가 필요합니다.
 
 ### 7-3. 재현 명령과 평가 자료
 
@@ -375,50 +379,28 @@ flowchart LR
 ```powershell
 # 데이터·전처리 검증
 uv run python -m unittest discover -s src/scripts/tests -t . -p "test*_pmh.py"
-
-# 공용 검색·벡터 DB·MCP·그래프 기능 테스트
-uv run python -m unittest discover -s tests -p "test_*.py"
-
-# 저장된 점수를 사용하는 임계값 평가 로직 테스트
-uv run python -m unittest discover -s test/rerank -p "test_threshold_evaluation.py"
 ```
 
-테스트 존재와 실제 통과 여부는 구분합니다. 기준 커밋에는 `0.01` 점수의 근거를 승인하도록 기대하는 테스트와 `0.1` 미만을 거절하는 구현 사이의 불일치가 있습니다. 다른 브랜치의 테스트 실행 결과를 이 커밋의 통과 결과로 간주하지 않습니다.
+테스트 존재와 실제 통과 여부는 구분합니다. 기준 main 커밋에는 `tests/`와 `test/rerank/`가 포함돼 있지 않아 관련 기능·임계값 테스트의 실행이나 구현과의 불일치 여부를 확인할 수 없습니다.
 
 #### 실제 검색·모델 평가
 
-API·DB 연결과 모델 실행이 필요한 명령입니다. 생성·임베딩 호출 비용과 실행 시간이 발생할 수 있습니다.
-
-```powershell
-# 공통 20문항의 동일 후보 재정렬 전후 평가
-uv run python -m tests.rag_rerank_evaluation
-
-# 단계별 비교: 기본 첫 20문항, 후보 5개 조건
-uv run python -m test.rag_test.run_fast
-
-# 확장 70문항의 Top20·50 재정렬 점수·보고서 생성
-uv run python -m test.rerank.rag_rerank_evaluation
-
-# 저장된 점수로 개발·검증 분할의 임계값 평가
-uv run python -m test.rerank.threshold_evaluation
-```
-
-마지막 명령은 점수 파일을 읽는 오프라인 평가이며 검색·모델 추론은 다시 하지 않습니다.
+기준 main 커밋에는 `tests.rag_rerank_evaluation`, `test.rag_test.run_fast`, `test.rerank.rag_rerank_evaluation`, `test.rerank.threshold_evaluation` 모듈이 포함돼 있지 않습니다. 따라서 이 모듈들을 사용하는 평가 명령은 현재 main에서 재현할 수 없습니다. 평가 코드·원본 보고서가 제공된 뒤 실행 조건과 재현 명령을 확인해야 합니다.
 
 | 평가 자료 | 위치·용도 |
 | --- | --- |
 | 공통 참고 질문 20개 | `rag_evaluation_cases.review.json` |
 | 확장 질문 70개 | `rag_evaluation_cases_list.json` |
-| 단계별 검색 보고서 | [test/rag_test/docs/rag_report.md](test/rag_test/docs/rag_report.md) |
-| 재정렬·점수 분포 | [test/rerank/docs/rag_rerank_report.md](test/rerank/docs/rag_rerank_report.md) |
-| 임계값 평가 | [test/rerank/docs/report.md](test/rerank/docs/report.md) |
+| 단계별 검색 보고서 | `test/rag_test/docs/rag_report.md` — 기준 main 커밋에 미포함 |
+| 재정렬·점수 분포 | `test/rerank/docs/rag_rerank_report.md` — 기준 main 커밋에 미포함 |
+| 임계값 평가 | `test/rerank/docs/report.md` — 기준 main 커밋에 미포함 |
 | 성능 비교 | [docs/rag_performance/rag_performance_comparison.md](docs/rag_performance/rag_performance_comparison.md) |
 | 재정렬 평가 안내 | [docs/rag_rerank_evaluation_guide.md](docs/rag_rerank_evaluation_guide.md) |
 | 분야별 자료 검토 | [data/processed/retrieval_evaluation/domain_coverage_report_pmh.md](data/processed/retrieval_evaluation/domain_coverage_report_pmh.md) |
 
 질문셋·후보 수·실행 조건이 다른 보고서의 수치는 섞지 않습니다. 평가 라벨은 AI 검수 참고 라벨이며, 사람이 검증한 법률 정답이나 모든 관련 문서를 망라한 정답이 아닙니다.
 
-`test/rerank`의 기존 평가는 Identity를 적용한 원시 logit을, 서비스의 기본 로더는 Sigmoid 점수를 사용합니다. 임계값은 점수 척도와 검색 조건을 맞춰 비교해야 하며, 평가 값을 그대로 서비스의 `0.1`과 비교할 수 없습니다.
+기준 main 커밋에는 과거 평가 코드가 포함돼 있지 않아 평가 시 Identity 적용 여부와 점수 척도를 확인할 수 없습니다. 임계값은 실제 점수 척도와 검색 조건을 확인한 뒤 비교해야 하며, 과거 평가 값을 서비스의 `0.1`과 바로 비교하지 않습니다.
 
 ### 7-4. 검증 범위 읽는 법
 
@@ -427,7 +409,7 @@ uv run python -m test.rerank.threshold_evaluation
 | 원본·청크 정합성 | 전처리 테스트·데이터 인계서 | 법률 내용 자체의 정답성 평가와 별도 |
 | 검색·재정렬 품질 | 저장된 20·70문항 보고서 | 질문셋·후보 수·평가 분할·점수 척도별 해석 |
 | 생성 결과 형식 | Generator의 JSON·출처 ID 검사 | 주장의 의미적 타당성을 보장하지 않음 |
-| Citation 구조 | 별도 모듈·점검 실행기 | 기준 메인 그래프에는 미연결 |
+| Citation 구조 | 메인 그래프의 공통 Citation 노드 | RAG·MCP 답변 생성 후 구조 검사 수행, 의미 검증과 별도 |
 | MCP 도구 통신 | `mcp_server --check-tools` 실행기 | 내부 서비스 직접 호출과 별도 stdio 통신 구분 |
 | 화면·상담 전체 흐름 | UI 코드와 통합 점검 실행기 | 실행기 존재와 해당 환경의 실제 성공은 별도 |
 | 생성·인용 의미 평가 | Judge용 상태·입력 구조 | Judge 실행·최종 품질 합격은 미완료 |
@@ -747,13 +729,12 @@ SKN35-3rd-3Team/
 │  ├─ evaluation-cases-notes.md
 │  ├─ rag_rerank_evaluation_guide.md
 │  └─ 데이터_인계서_pmh.md
-├─ tmp/                                         # 원격 dev에 남아 있는 작업·UI 점검 파일
+├─ tmp/                                         # main에 포함된 작업·UI 점검 파일
 ├─ main.py                                      # Streamlit 진입점·check-all
 ├─ mcp_live_check.py                            # 별도 MCP 점검
 ├─ rag_evaluation_cases.review.json             # 공통 평가 입력
 ├─ rag_evaluation_cases_list.json               # 확장 평가 입력
 ├─ PLAN.md
-├─ PLAN_jb.md
 ├─ README.md                                    # 프로젝트 통합 안내
 ├─ README_jb.md                                 # 벡터 DB·MCP 상세 안내
 ├─ .env.example                                 # 환경변수 예시
@@ -773,8 +754,8 @@ SKN35-3rd-3Team/
 | --- | --- |
 | RAG·MCP 분기 | 검색·조회·생성까지 연결 |
 | 별도 Citation 모듈 | ID·본문·메타데이터의 구조 검사 구현 |
-| 메인 그래프의 Citation 연결 | 미연결. `citation_node.py`가 있어도 `workflow.py`에서 실행되지 않음 |
-| 분석 화면 출처 목록 | 구조 검사 통과 상태가 필요해 기본 상담 결과에서는 비어 있을 수 있음 |
+| 메인 그래프의 Citation 연결 | 연결됨. RAG → Citation, MCP → Generator → Citation 순서로 실행 |
+| 분석 화면 출처 목록 | 구조 검사를 통과한 인용 출처와 검색된 근거 후보를 구분해 표시 |
 | 의미적 검증 Judge | 미연결, `judge_status=not_run` |
 | 독립 법령·판례 검색 | 미구현. 해당 메뉴는 현재 상담의 분석 결과 화면 |
 | 판례 3~5건 확보 | 항상 보장하지 않음. 검색 관련성과 자료 범위에 따라 달라짐 |
@@ -789,7 +770,7 @@ SKN35-3rd-3Team/
 | 증상 | 확인할 지점 |
 | --- | --- |
 | 생성 시 환경변수 오류 | `GENERATOR_CONTEXT_TOKENS`·`GENERATOR_MAX_OUTPUT_TOKENS` 설정 |
-| 답변은 있지만 분석 출처가 0건 | 기준 커밋의 Citation 노드 미연결과 UI의 검사 통과 조건 |
+| 답변은 있지만 확인된 인용 출처가 0건 | `citation_validation_status`, 생성 상태·출처 매핑 확인. 검색된 근거 후보는 별도 표시 |
 | 검색 후 근거 부족 응답 | 데이터 범위, 후보 본문, 재정렬 점수·`0.1` 기준 |
 | MCP로 추가 검색될 것으로 기대했지만 종료 | RAG → MCP 자동 전환은 구현돼 있지 않음 |
 | 첫 응답 지연 | 모델 다운로드·CPU 로딩·외부 API·DB 연결 상태 |
@@ -809,7 +790,8 @@ SKN35-3rd-3Team/
 
 ### 개선 과제
 
-- [ ] 공통 Citation 노드를 RAG·MCP 뒤에 연결하고 출처 표시를 통합 검증
+- [x] 공통 Citation 노드를 RAG·MCP 답변 생성 후에 연결
+- [ ] 연결된 Citation 노드와 화면 출처 표시의 통합 동작 검증
 - [ ] 답변·인용 내용의 의미 정확도를 독립적으로 평가
 - [ ] 현재 질의·점수 산출 방식에 맞춰 관련성 임계값 검증
 - [ ] 부족한 주제·과거 법령 버전·표 조건의 근거 보강

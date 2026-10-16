@@ -242,22 +242,3 @@ def rerank(state, top_k=5, *, model=None, batch_size=DEFAULT_BATCH_SIZE,
         _print_documents(response["documents"])
     return response
 
-
-if __name__ == "__main__":
-    # 실제 멀티쿼리·Qdrant·RRF 후보로 재정렬 전후를 비교합니다.
-    question = input("질문을 입력하세요: ")
-    results = multi_query(question)
-    hits = reciprocal_rank_fusion(results["rankings"], top_k=20)
-    state = {"origin_query": question, "documents": [hit.to_document() for hit in hits]}
-    response = rerank(state)
-    if response["low_confidence"]:
-        print(f"\n관련 근거를 찾지 못했습니다 (기준 점수 {MIN_RELEVANCE_SCORE} 미만).")
-    for label, docs in [("재정렬 전", state["documents"][:5]),
-                        ("재정렬 후", response["documents"])]:
-        print(f"\n=== {label} ===")
-        for index, doc in enumerate(docs, 1):
-            print(
-                f"[{index}] [{_document_type_label(doc)}] "
-                f"id={doc['point_id']}, score={doc['score']:.4f}\n"
-                f"{doc['text'][:200]}\n"
-            )

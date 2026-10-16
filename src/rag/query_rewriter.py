@@ -32,8 +32,3 @@ def query_rewriter(text, llm=None, history: str = ""):
     response = response or text.strip()
     print(f"[재작성 질문] {response}")
     return response
-
-
-if __name__ == "__main__":
-    # 터미널에서 직접 실행한 경우에만 질문을 입력받아 재작성합니다.
-    query_rewriter(input("질문을 입력하세요: "))

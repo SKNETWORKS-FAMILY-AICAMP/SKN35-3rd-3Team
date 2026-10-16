@@ -271,7 +271,3 @@ def main(argv=None):
         return 1
     print(f"청크 생성: 법령 {report['law_count']}종 / 조문 {report['chunked_article_count']}개 / 청크 {report['chunk_count']}개")
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

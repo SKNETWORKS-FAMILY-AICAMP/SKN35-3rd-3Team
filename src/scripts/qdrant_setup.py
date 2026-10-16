@@ -114,7 +114,3 @@ def main() -> int:
     except (ValueError, RuntimeError) as error:
         print(f"설정 오류: {error}", file=sys.stderr)
         return 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

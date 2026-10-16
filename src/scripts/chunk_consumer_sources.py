@@ -262,7 +262,3 @@ def main(argv=None):
         return 1
     print(f"문서 {result['document_count']} / 청크 {result['chunk_count']}")
     return 0
-
-
-if __name__=='__main__':
-    raise SystemExit(main())

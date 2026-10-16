@@ -227,7 +227,3 @@ def main(argv=None):
     except (ValueError, OSError) as exc:
         print(f"수집 시작 실패: {exc}")
         return 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

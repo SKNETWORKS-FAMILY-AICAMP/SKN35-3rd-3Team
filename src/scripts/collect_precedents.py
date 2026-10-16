@@ -256,7 +256,3 @@ def main(argv=None):
     except (RuntimeError, OSError, ValueError) as exc:
         print(f"수집을 시작할 수 없습니다: {exc}", file=sys.stderr)
         return 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

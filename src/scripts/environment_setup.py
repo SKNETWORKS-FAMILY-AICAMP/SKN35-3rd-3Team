@@ -116,7 +116,3 @@ def main() -> int:
 
     print("필수 비밀값 설정 확인: 완료")
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

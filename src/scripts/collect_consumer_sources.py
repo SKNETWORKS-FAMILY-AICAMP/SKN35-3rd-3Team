@@ -371,7 +371,3 @@ def main(argv=None):
         return 1
     print(f"수집 {len(report['saved'])} / 실패 {len(report['failures'])}")
     return 1 if report['failures'] else 0
-
-
-if __name__ == '__main__':
-    raise SystemExit(main())

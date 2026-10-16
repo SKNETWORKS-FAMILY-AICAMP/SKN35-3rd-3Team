@@ -64,7 +64,3 @@ def main(argv=None):
     print("응답 일부:")
     print(response.text[:1500])
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

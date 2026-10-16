@@ -67,36 +67,3 @@ def rrf(state):
     # print_hits(response)
     return response
 
-
-if __name__ == "__main__":
-    # RRF 자체는 LLM을 사용하지 않습니다. 비교할 검색 표현들을 직접 입력합니다.
-    queries = [query.strip() for query in input("검색 표현을 ;로 구분해 입력하세요: ").split(";") if query.strip()]
-    if not queries:
-        raise ValueError("검색 표현을 하나 이상 입력하세요.")
-    # 실제 원격 Qdrant 검색 결과를 받아 RRF를 실행합니다.
-    searcher = create_team_retriever(search_mode="hybrid")
-    try:
-        rankings = {f"query_{i}": searcher.search_documents(query, top_k=20)
-                    for i, query in enumerate(queries)}
-        hits = reciprocal_rank_fusion(rankings, top_k=3)
-        # 질문 번호와 검색 표현을 먼저 보여 줍니다.
-        print("\n[검색 표현]")
-        for i, query in enumerate(queries):
-            print(f"query_{i}: {query}")
-
-        # 각 문서가 질문별 검색에서 몇 위였는지 통합 점수와 함께 비교합니다.
-        print("\n[질문별 순위 비교 — 통합 상위 3개]")
-        print("'-'는 해당 질문의 검색 후보 20개에 없었다는 뜻입니다.")
-        for hit in hits:
-            sources = hit.metadata["rrf_sources"]
-            ranks = " | ".join(
-                f"{name}_rank={sources.get(name, {}).get('rank', '-')}"
-                for name in rankings
-            )
-            print(f"id={hit.point_id} | {ranks} | RRF={hit.score:.6f}")
-
-        print("\n[통합 상위 3개 본문]")
-        for i, hit in enumerate(hits, 1):
-            print(f"[{i}] id={hit.point_id}, RRF={hit.score:.6f}\n{hit.text[:200]}\n")
-    finally:
-        searcher.vector_store.client.close()

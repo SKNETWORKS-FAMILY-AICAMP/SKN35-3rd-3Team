@@ -41,13 +41,3 @@ def validation(state: State) -> dict:
                     "retry_count": retries + 1}
     print(response)
     return response
-
-
-if __name__ == "__main__":
-    # 실제 검색·RRF·재정렬 결과로 검사를 실행합니다. 경로와 모델 생성은 공통 코드를 사용합니다.
-    question = input("질문을 입력하세요: ")
-    results = multi_query(question)
-    hits = reciprocal_rank_fusion(results["rankings"], top_k=20)
-    state = {"origin_query": question, "documents": [hit.to_document() for hit in hits], "retry_count": 0}
-    state.update(rerank(state))
-    validation(state)

@@ -176,7 +176,3 @@ def main(argv=None):
         return 1
     print(json.dumps({"chunk_count": report["chunk_count"], "counts": report["counts"]}, ensure_ascii=False))
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

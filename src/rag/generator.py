@@ -271,14 +271,3 @@ def generator(state: dict, *, llm=None, verbose: bool = True) -> dict:
     if verbose:
         print_response(response)
     return response
-
-
-if __name__ == "__main__":
-    # 기존 검색 함수를 재사용하고 실제 검색 근거로 생성을 실행합니다.
-    question = input("질문을 입력하세요: ")
-    rewritten = query_rewriter(question)
-    result = multi_query(rewritten)
-    hits = reciprocal_rank_fusion(result["rankings"], top_k=20)
-    state = {"origin_query": question, "documents": [h.to_document() for h in hits]}
-    state.update(rerank(state, verbose=False))
-    generator(state)

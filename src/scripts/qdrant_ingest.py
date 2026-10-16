@@ -194,8 +194,3 @@ def main() -> int:
     except (OSError, TypeError, ValueError, RuntimeError) as error:
         print(f"실행 오류: {error}", file=sys.stderr)
         return 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-

@@ -1410,7 +1410,3 @@ def main(argv=None):
                  update_manifest=not args.no_update_manifest)
     print(f"정제 {len(result['saved'])} / 실패 {len(result['failures'])} / 검색 제외 {len(result['excluded'])}")
     return 1 if result['failures'] else 0
-
-
-if __name__=='__main__':
-    raise SystemExit(main())

@@ -390,7 +390,3 @@ def main(argv=None):
     print(f"중복 제외 {len(report['duplicates'])}, 추가 검토 {len(report['manual_review'])}")
     print(f"저장 위치: {args.output_dir}")
     return 1 if report["failures"] else 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

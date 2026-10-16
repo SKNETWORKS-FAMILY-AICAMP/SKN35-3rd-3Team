@@ -399,7 +399,3 @@ def main(argv=None):
                      'comparisons':len(report['comparisons']),
                      'changed_rows':sum(r['status']!='same_except_whitespace' for r in report['comparisons'])},ensure_ascii=False))
     return 0
-
-
-if __name__=='__main__':
-    raise SystemExit(main())

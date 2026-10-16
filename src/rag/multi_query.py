@@ -133,7 +133,3 @@ def create_multi_query_searcher(searcher, llm=None):
         return response
 
     return SimpleNamespace(search_documents=search_documents)
-
-if __name__ == "__main__":
-    question = input("질문을 입력하세요: ")
-    multi_query(question)

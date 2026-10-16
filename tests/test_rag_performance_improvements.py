@@ -2,9 +2,9 @@
 
 import unittest
 
-from src.graph.validation_node import validation_node
-from src.multi_query import search_rankings
-from src.rerank import _preserve_primary_laws, _rerank_question
+from src.graph.rag_graph.validation_node import validation_node
+from src.rag.multi_query import search_rankings
+from src.rag.rerank import _preserve_primary_laws, _rerank_question
 
 
 class FakeSearcher:

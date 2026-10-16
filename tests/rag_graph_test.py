@@ -1,4 +1,4 @@
-from src.graph.rag_graph import build_rag_graph
+from src.graph.rag_graph.rag_graph import build_rag_graph
 import contextlib
 import io
 

@@ -10,9 +10,9 @@ from langchain_core.messages import AIMessage
 
 from src.app.evidence import display_sources, verified_sources
 from src.citation import citation
-from src.generator import generator
+from src.rag.generator import generator
 from src.graph import workflow
-from src.graph.mcp_lookup_document import create_mcp_lookup_document_graph_node
+from src.graph.mcp_graph.mcp_lookup_document import create_mcp_lookup_document_graph_node
 from src.mcp_tools.contracts import serialize_tool_response
 
 

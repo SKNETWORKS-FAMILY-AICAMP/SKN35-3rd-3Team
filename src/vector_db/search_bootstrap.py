@@ -10,10 +10,10 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from src.vector_db.bootstrap import create_team_retriever
-from src.multi_query import create_multi_query_searcher
-from src.rerank import rerank
+from src.rag.multi_query import create_multi_query_searcher
+from src.rag.rerank import rerank
 
-from src.retriever import BM25Retriever, DocumentRetriever, HybridRetriever, tokenize_keywords
+from src.rag.retriever import BM25Retriever, DocumentRetriever, HybridRetriever, tokenize_keywords
 from src.vectorstore import VectorSearchHit, VectorSearchRequest
 
 

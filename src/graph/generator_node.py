@@ -1,5 +1,5 @@
 from src.graph.state import State
-from src.generator import generator
+from src.rag.generator import generator
 from langchain_core.messages import HumanMessage, AIMessage
 # 노드 입니다.
 

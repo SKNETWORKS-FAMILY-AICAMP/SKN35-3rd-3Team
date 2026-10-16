@@ -6,7 +6,7 @@ from pathlib import Path
 
 from src.const.qdrant_config import load_qdrant_settings
 from src.embedder import create_embedding_provider
-from src.retriever import DocumentRetriever
+from src.rag.retriever import DocumentRetriever
 from src.vector_db.qdrant_store import QdrantVectorStore
 from src.vector_db.sparse_embedder import create_sparse_embedding_provider
 

@@ -16,7 +16,7 @@ from src.mcp_tools.contracts import (
     SearchDocumentsRequest,
     serialize_tool_response,
 )
-from src.retriever import SearchBackend
+from src.rag.retriever import SearchBackend
 from src.vectorstore import VectorStoreError
 
 

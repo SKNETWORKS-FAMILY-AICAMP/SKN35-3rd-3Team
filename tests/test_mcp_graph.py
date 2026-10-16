@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
 
-from src.graph.mcp_graph import build_mcp_graph, route_after_mcp_validation
+from src.graph.mcp_graph.mcp_graph import build_mcp_graph, route_after_mcp_validation
 from src.mcp_tools.contracts import serialize_tool_response
 
 

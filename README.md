@@ -354,7 +354,7 @@ flowchart LR
 - Multi Query 결과에 RRF가 포함돼 두 단계를 별도의 개선 효과로 중복 계산하지 않습니다.
 - 저장 보고서의 프로젝트 제안 기준에서 Hit·MRR은 충족했지만 Recall·Precision·nDCG는 미달입니다.
 
-원본 보고서: `test/rag_test/docs/rag_report.md` — 기준 main 커밋에 미포함되어 위 수치의 원본 대조가 필요합니다.
+원본 보고서: `test/rag_test/docs/rag_report.md`
 
 ### 7-2. 동일 후보 재정렬 비교 · 별도 70문항 실험
 
@@ -370,7 +370,7 @@ flowchart LR
 
 보고서 기준 순위 품질 변화는 개선 34개·동일 6개·악화 7개입니다. 개선 수치와 함께 악화 사례도 검토합니다. 이 결과는 검색·재정렬 평가이며 최종 답변의 법적 정확도나 전체 서비스 성공률이 아닙니다.
 
-원본 보고서: `test/rerank/docs/rag_rerank_report.md` — 기준 main 커밋에 미포함되어 위 수치의 원본 대조가 필요합니다.
+원본 보고서: `test/rerank/docs/rag_rerank_report.md` 
 
 ### 7-3. 재현 명령과 평가 자료
 
@@ -391,9 +391,9 @@ uv run python -m unittest discover -s src/scripts/tests -t . -p "test*_pmh.py"
 | --- | --- |
 | 공통 참고 질문 20개 | `rag_evaluation_cases.review.json` |
 | 확장 질문 70개 | `rag_evaluation_cases_list.json` |
-| 단계별 검색 보고서 | `test/rag_test/docs/rag_report.md` — 기준 main 커밋에 미포함 |
-| 재정렬·점수 분포 | `test/rerank/docs/rag_rerank_report.md` — 기준 main 커밋에 미포함 |
-| 임계값 평가 | `test/rerank/docs/report.md` — 기준 main 커밋에 미포함 |
+| 단계별 검색 보고서 | `test/rag_test/docs/rag_report.md` |
+| 재정렬·점수 분포 | `test/rerank/docs/rag_rerank_report.md` |
+| 임계값 평가 | `test/rerank/docs/report.md` |
 | 성능 비교 | [docs/rag_performance/rag_performance_comparison.md](docs/rag_performance/rag_performance_comparison.md) |
 | 재정렬 평가 안내 | [docs/rag_rerank_evaluation_guide.md](docs/rag_rerank_evaluation_guide.md) |
 | 분야별 자료 검토 | [data/processed/retrieval_evaluation/domain_coverage_report_pmh.md](data/processed/retrieval_evaluation/domain_coverage_report_pmh.md) |
@@ -808,3 +808,4 @@ SKN35-3rd-3Team/
 - [MCP 패키지](src/mcp_tools/README.md): Tool 계약·서버·클라이언트 실행
 - [Qdrant 패키지](src/vector_db/README.md): 입력 계약·검색·적재 검증
 - [계획서](PLAN.md): 프로젝트 범위·역할·일정
+- [테스트 결과서] https://docs.google.com/spreadsheets/d/1mz_BWuioY1EaA9N8kmsp-S7DCcrZB6LBDx8XHXLVhJA/edit?usp=drive_link

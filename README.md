@@ -808,4 +808,4 @@ SKN35-3rd-3Team/
 - [MCP 패키지](src/mcp_tools/README.md): Tool 계약·서버·클라이언트 실행
 - [Qdrant 패키지](src/vector_db/README.md): 입력 계약·검색·적재 검증
 - [계획서](PLAN.md): 프로젝트 범위·역할·일정
-- [테스트 결과서] https://docs.google.com/spreadsheets/d/1mz_BWuioY1EaA9N8kmsp-S7DCcrZB6LBDx8XHXLVhJA/edit?usp=drive_link
+- [테스트 결과서](https://docs.google.com/spreadsheets/d/1mz_BWuioY1EaA9N8kmsp-S7DCcrZB6LBDx8XHXLVhJA/edit?usp=drive_link): 테스트 수행 결과 및 검증 내역
